@@ -2,6 +2,11 @@
 # ============================
 # This file logs all modifications made to the codebase
 
+## 2024-07-05: Git Repository Update
+- Completed merge process and committed changes including the LICENSE file
+- Pushed the latest changes to the remote GitHub repository (https://github.com/graeme-harrison/overclock)
+- Set up the main branch to track the remote origin/main branch
+
 ## 2023-XX-XX: Initial creation of history log
 - Created this history log file to track modifications to the codebase 
 
