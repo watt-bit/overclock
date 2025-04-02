@@ -163,7 +163,7 @@ class TiledBackgroundWidget(QWidget):
 class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Watt-Bit Sandbox | augur vc | https://augurvc.com")
+        self.setWindowTitle("Overclock Watt-Bit Sandbox | augur vc | https://augurvc.com")
         self.resize(2400, 1200)
         
         # Initialize variables
