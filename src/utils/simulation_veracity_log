@@ -60,4 +60,83 @@ Next steps for simulation veracity would be to address the previously identified
 - Incorporating frequency dynamics
 - Enhancing economic dispatch functionality
 
-These improvements can now be more easily implemented due to the clean separation of concerns in the architecture. 
+These improvements can now be more easily implemented due to the clean separation of concerns in the architecture.
+
+## 2024-07-05 - Comprehensive SimulationEngine Analysis
+
+### Review Scope
+- Conducted detailed analysis of src/simulation/engine.py
+- Examined simulation flow and calculation logic
+- Reviewed energy conservation principles
+- Analyzed component interaction and priority order
+- Evaluated revenue calculation mechanisms
+
+### Key Findings
+
+1. Simulation Architecture
+   - Well-structured multi-pass approach ensures proper priority order
+   - Clear separation between time management and simulation updates
+   - Strong encapsulation of simulation state with proper initialization
+   - Elegant design pattern with main window reference for scene access
+
+2. Power Flow Calculations
+   - Eight-pass algorithm with clear priority hierarchy:
+     * Pass 1: Calculate total load, generator capacity, find batteries
+     * Pass 2: Calculate local generation (priority order: Static > BTF Unit Commitment > BTF Droop)
+     * Pass 3: Use battery discharge for remaining load
+     * Pass 4: Use grid import for remaining load
+     * Pass 5: Charge batteries with surplus power
+     * Pass 6: Proactively charge batteries using available generator capacity
+     * Pass 7: Use grid import to charge batteries if capacity available
+     * Pass 8: Export surplus power to grid
+   - Consistent energy conservation principles throughout all passes
+   - Proper handling of remaining load and surplus power between passes
+
+3. Generator Control Strategies
+   - Sophisticated implementation of multiple operating modes:
+     * Static (Auto): Fixed output regardless of system load
+     * BTF Unit Commitment (Auto): Responds to remaining load after Static generators
+     * BTF Droop (Auto): Shares load equally among multiple generators based on percentage
+   - Proper implementation of ramp rate limiting for BTF Droop generators
+   - Clean handling of generator state between simulation steps
+
+4. Battery Management
+   - Comprehensive battery charging/discharging logic
+   - Multiple charging pathways (surplus power, generator capacity, grid import)
+   - Proper energy accounting during charge/discharge operations
+   - Battery state preservation between simulation steps
+
+5. System Stability
+   - Implementation of stability tolerance to handle minor imbalances
+   - Clear stability flags to indicate system status
+   - Proper handling of load satisfaction during instability
+
+6. Revenue Calculations
+   - Multi-source revenue tracking:
+     * Load component revenue based on energy consumed and price
+     * Cloud workload revenue from data center loads
+     * Export revenue from grid exports with bulk PPA pricing
+   - Proper accumulation and time-step handling for revenue calculations
+   - Comprehensive gross revenue data array for historical tracking
+
+7. Time Management
+   - Steps permanently fixed at 1 to maintain simulation fidelity
+   - Proper handling of timeline scrubbing vs. regular simulation
+   - Clean state management during time transitions
+
+### Notable Optimizations
+- Stability tolerance prevents small rounding errors from triggering instability
+- Efficient sorting of generators by operating mode to maintain priority order
+- Smart use of component iteration to minimize redundant calculations
+- Clean handling of time steps for energy accounting
+
+### Areas for Future Enhancement
+- Potential for more sophisticated power flow calculations with network topology
+- Opportunity to add transmission constraints between components
+- Possibility for frequency response modeling in future versions
+- Potential to expand economic dispatch algorithms for generators
+
+### Conclusion
+The SimulationEngine implements a robust, physically accurate power system simulation with proper energy conservation principles. The multi-pass approach ensures correct priority order for power sources while maintaining system stability tracking. The implementation effectively balances simulation accuracy with computational efficiency.
+
+The revenue calculation system provides a strong foundation for financial analysis, with comprehensive tracking of multiple revenue streams. The code organization facilitates future enhancements while maintaining backwards compatibility with existing components and saved models. 

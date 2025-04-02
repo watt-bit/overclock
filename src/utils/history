@@ -897,3 +897,16 @@
 ## 2025-03-30: Added application icon:
 - Added appicon.png as the application icon
 - Modified src/main.py to set the window icon using QApplication.setWindowIcon() 
+
+## 2024-07-05: Updated Simulation Veracity Log
+- Conducted comprehensive review of src/simulation/engine.py
+- Added detailed analysis of SimulationEngine implementation to the simulation veracity log
+- Documented key findings related to:
+  * Simulation architecture and multi-pass design
+  * Power flow calculations and energy conservation principles
+  * Generator control strategies and operation modes
+  * Battery management and charging/discharging logic
+  * System stability monitoring
+  * Revenue calculation mechanisms
+  * Time management strategies
+- Identified notable optimizations and areas for future enhancement 
