@@ -30,7 +30,7 @@ class SolarPanelComponent(ComponentBase):
         
         # Calculate image area with 1:1 aspect ratio (square)
         # Using 80% of height for the larger image
-        image_height = rect.height() * 0.8
+        image_height = rect.height() * 0.65
         image_size = min(rect.width(), image_height)
         
         # Center the image horizontally
@@ -74,37 +74,15 @@ class SolarPanelComponent(ComponentBase):
         font = QFont('Arial', 14 * scale_factor)
         painter.setFont(font)
         
+        # Get current output percentage
+        if self.capacity > 0:
+            output_percentage = int((self.last_output / self.capacity) * 100)
+        else:
+            output_percentage = 0
+        
         # Draw the operating mode text
-        status_text = f"Solar Panel ({self.operating_mode})"
+        status_text = f"{self.capacity} kW (solar) | {output_percentage}%"
         painter.drawText(text_rect, Qt.AlignCenter, status_text)
-        
-        # Draw capacity information
-        capacity_rect = QRectF(
-            rect.x(),
-            rect.y() + image_size + (rect.height() * 0.2),  # Position below operating mode text
-            rect.width(),
-            rect.height() * 0.2
-        )
-        capacity_text = f"{self.capacity} kW (capacity)"
-        painter.drawText(capacity_rect, Qt.AlignCenter, capacity_text)
-        
-        # Draw output information
-        if self.operating_mode != "Disabled":
-            output_rect = QRectF(
-                rect.x(),
-                rect.y() + image_size + (rect.height() * 0.4),  # Position below capacity text
-                rect.width(),
-                rect.height() * 0.2
-            )
-            
-            # Get current output percentage
-            if self.capacity > 0:
-                output_percentage = int((self.last_output / self.capacity) * 100)
-            else:
-                output_percentage = 0
-                
-            output_text = f"Output: {output_percentage}%"
-            painter.drawText(output_rect, Qt.AlignCenter, output_text)
     
     def load_capacity_factors(self):
         """Load capacity factors from CSV file"""
