@@ -1,0 +1,1 @@
+2025-04-01: Removed the step forward and step backward buttons from the simulation control panel in src/ui/main_window.py to simplify the UI. Users can now use only the time slider and the play/pause button for simulation time control. 

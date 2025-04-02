@@ -520,14 +520,6 @@ class PowerSystemSimulator(QMainWindow):
         self.play_btn.clicked.connect(self.toggle_simulation)
         self.play_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }")
         
-        self.step_back_btn = QPushButton("◀")
-        self.step_back_btn.clicked.connect(lambda: self.step_simulation(-1))
-        self.step_back_btn.setStyleSheet(default_button_style)
-        
-        self.step_forward_btn = QPushButton("▶")
-        self.step_forward_btn.clicked.connect(lambda: self.step_simulation(1))
-        self.step_forward_btn.setStyleSheet(default_button_style)
-        
         self.reset_btn = QPushButton("⟲ (R)eset")
         self.reset_btn.clicked.connect(self.reset_simulation)
         self.reset_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #f44336; color: white; font-weight: bold; font-size: 16px; }")
@@ -575,9 +567,7 @@ class PowerSystemSimulator(QMainWindow):
         self.time_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
         time_controls.addWidget(self.reset_btn)
-        time_controls.addWidget(self.step_back_btn)
         time_controls.addWidget(self.play_btn)
-        time_controls.addWidget(self.step_forward_btn)
         time_controls.addWidget(self.time_slider)
         time_controls.addWidget(self.background_toggle_btn)
         time_controls.addWidget(self.screenshot_btn)
