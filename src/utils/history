@@ -1,0 +1,889 @@
+# CODEBASE MODIFICATION HISTORY
+# ============================
+# This file logs all modifications made to the codebase
+
+## 2023-XX-XX: Initial creation of history log
+- Created this history log file to track modifications to the codebase 
+
+## 2023-XX-XX: Enhanced system architecture documentation
+- Updated the lessons file with comprehensive architecture documentation
+- Added detailed information about:
+  - Directory structure
+  - Core modules (UI System, Component System, Simulation Engine)
+  - Component hierarchy and specialization
+  - UI structure and panels
+  - Data management capabilities
+  - Design patterns used in the system
+  - Notable code features
+  - Potential improvement areas
+
+## 2023-XX-XX: Application title change
+- Changed the application title from "Power System Simulator" to "Watt-Bit Sandbox"
+- Updated in src/ui/main_window.py 
+
+## 2023-XX-XX: Extracted simulation engine
+- Created new SimulationEngine class in src/simulation/engine.py
+- Moved all simulation logic from main_window.py to SimulationEngine
+- Preserved exact behavior of:
+  - Time step calculations
+  - Component state updates
+  - Battery charging/discharging logic
+  - Power flow calculations
+  - Energy accounting
+  - Analytics updates
+- Updated main_window.py to delegate to SimulationEngine
+- No changes to UI or component behavior 
+
+## 2024-03-26 01:22: Successfully completed simulation engine extraction
+- Created SimulationEngine class in src/simulation/engine.py
+- Moved all simulation logic from main_window.py to SimulationEngine
+- Preserved exact behavior of:
+  * Time step calculations
+  * Component state updates
+  * Battery logic
+  * Power flow calculations
+  * Energy accounting
+  * Analytics updates
+- Updated main_window.py to delegate to SimulationEngine
+- Verified functionality through test run
+- No changes to UI or component behavior
+- No unintended side effects observed 
+
+## 2024-03-26 01:45 - Component Properties System Extraction
+- Created new ComponentPropertiesManager class in src/ui/properties_manager.py
+- Moved all component property management logic from main_window.py to the new class
+- Preserved exact behavior of:
+  * Property display and updates
+  * Component-specific property handling
+  * Validation logic
+  * Numeric precision handling
+  * Custom profile loading
+  * UI interaction patterns
+- Updated main_window.py to use the new ComponentPropertiesManager
+- Verified all property interactions work as before
+- No changes to component behavior or UI appearance 
+
+## 2024-03-26 02:00 - Code Cleanup
+- Removed redundant component property methods from main_window.py:
+  * Deleted show_component_properties method
+  * Deleted set_up_numeric_field method
+- Verified no remaining references to these methods in main_window.py
+- Ensured clean separation between UI (main_window.py) and property management (properties_manager.py)
+- Tested application to confirm all functionality works correctly 
+
+## 2024-03-26 02:15 - Feature Removal
+- Removed the following features from main_window.py:
+  * Export Data feature (removed export_data method)
+  * Full Year Explorer feature (removed open_full_year_explorer method)
+  * Full Year Simulation feature (removed simulate_full_year method)
+- Removed toolbar buttons for these features
+- Removed csv import as it was only used for the export_data feature
+- Simplified application by focusing on core real-time simulation functionality 
+
+## 2024-03-26 02:30 - Full Year Explorer File Removal
+- Deleted src/ui/full_year_explorer.py file
+- File contained the implementation of the Full Year Explorer feature which was previously removed from main_window.py
+- Complete removal of feature from the codebase to streamline maintenance and reduce complexity 
+
+## 2024-03-26 02:45 - Connection Management System Extraction
+- Created new ConnectionManager class in src/ui/connection_manager.py
+- Moved all connection related functionality from main_window.py to the new class:
+  * Connection creation and handling
+  * Connection severing
+  * Autoconnection
+  * Cursor management during connection operations
+  * Connection validation logic
+- Updated main_window.py to delegate to the ConnectionManager
+- Maintained exact behavior of all connection operations
+- Preserved complete compatibility with the existing UI and component system
+- Simplified the main_window.py file by removing significant amounts of code 
+
+## 2024-03-26 03:00 - Architectural Review and Technical Debt Reduction
+- Completed major refactoring of the codebase with three key extractions:
+  * Simulation Engine extraction to src/simulation/engine.py
+  * Component Properties Manager extraction to src/ui/properties_manager.py
+  * Connection Manager extraction to src/ui/connection_manager.py
+- Significantly reduced the size and complexity of main_window.py
+- Established clear architectural boundaries between:
+  * Core UI management (main_window.py)
+  * Simulation logic (SimulationEngine)
+  * Component property management (ComponentPropertiesManager)
+  * Connection handling (ConnectionManager)
+- Removed defunct features:
+  * Full Year Explorer
+  * Export Data functionality
+- Reduced technical debt through:
+  * Better encapsulation of related functionality
+  * Clearer separation of concerns
+  * Removal of dead code
+  * More maintainable structure with specialized manager classes
+- Maintained complete backward compatibility throughout all changes
+- Application passes all manual tests with identical functionality to the original 
+
+## 2024-03-26 03:15 - Removed Non-Functional Fuel Concept
+- Removed all references to the non-functional "fuel" concept from the codebase:
+  * Removed fuel_rate and fuel_cost properties from GeneratorComponent
+  * Removed calculate_fuel_consumption and calculate_fuel_cost methods from GeneratorComponent
+  * Removed fuel-related variables and calculations from SimulationEngine's update_simulation method
+  * Updated AnalyticsPanel's update_analytics method signature to remove fuel parameters
+  * Removed fuel-related UI elements from ComponentPropertiesManager
+  * Updated main_window.py to handle loading generator components without fuel properties
+- This was a targeted cleanup of non-functional code, with minimal changes required
+- No functional code unrelated to fuel was modified 
+
+## 2024-03-26 03:45 - Removed Money/Cost Concepts
+- Removed all monetary calculation code from the codebase:
+  * Removed export_price property and calculate_export_revenue method from GridExportComponent
+  * Removed import_cost property and calculate_import_cost method from GridImportComponent
+  * Removed cost-related variables (import_cost, export_revenue, net_cost) from SimulationEngine
+  * Updated AnalyticsPanel's update_analytics method signature to remove net_cost parameter
+  * Removed cost-related UI elements and labels from ComponentPropertiesManager
+  * Updated main_window.py to handle loading grid components without cost properties
+- This was a targeted cleanup to temporarily remove financial tracking functionality
+- Modified only code directly related to monetary calculations
+- No changes to the core power flow or simulation logic 
+
+## 2024-03-26 03:30 - Simulation Logic Encapsulation Verification
+- Verified successful encapsulation of all power flow simulation logic in SimulationEngine class
+- Confirmed clean separation between UI coordination and simulation calculations
+- Validated component isolation and proper state management
+- No changes made to codebase, only verification performed 
+
+## 2024-03-26 04:00 - Model Save/Load Functionality Extraction
+- Created new ModelManager class in src/models/model_manager.py
+- Extracted save_scenario, load_scenario, and new_scenario methods from main_window.py
+- Updated main_window.py to delegate to ModelManager
+- No functional changes made to the save/load logic
+- Preserved all file handling, serialization, and component reconstruction 
+
+## 2024-03-26 04:45 - Milestone: Model Management Separation Complete
+- Created a new `ModelManager` class in `src/models/model_manager.py` to encapsulate model operations
+- Successfully extracted save/load/new scenario functionality from main window
+- Refactored main window to delegate to ModelManager while preserving existing API
+- Tested application to verify functionality works as expected
+- Completed the separation of concerns between UI and model management 
+
+## 2024-03-26 05:00 - Added Exit Confirmation Features
+- Implemented `closeEvent` handler in PowerSystemSimulator class
+- Added confirmation dialog when attempting to exit while simulation is running
+- Added save prompt dialog when exiting the application
+- Improved user experience by preventing accidental data loss 
+
+## 2024-03-26 05:15 - Created UI Assets Directory
+- Created new directory `src/ui/assets` for storing UI assets
+- Directory will be used for component images with transparent backgrounds
+- Organized UI assets separately from code for better maintainability 
+
+## 2024-03-26 05:30 - Enhanced Generator Component Visualization
+- Modified GeneratorComponent class to use the generator.png image
+- Replaced the green square with a properly sized PNG image with transparent background
+- Positioned the component text below the image with white font
+- Increased component size to approximately double the original size (200x120)
+- Maintained transparent background and aspect ratio of the image
+- Improved visual appearance of the component in the simulation view 
+
+## 2024-03-26 05:35 - Updated Generator Image to 1:1 Aspect Ratio
+- Modified the paint method in GeneratorComponent class
+- Changed image display to use a perfect 1:1 aspect ratio (square)
+- Implemented horizontal centering of the square image within the component
+- Adjusted text positioning to appear below the square image
+- Maintained transparent background and white text 
+
+## 2024-03-26 05:40 - Enlarged Generator Component Image
+- Increased the overall component size from 200x120 to 300x220
+- Enlarged the image area to use 80% of component height (up from 70%)
+- Added small margins for better spacing (5% top margin)
+- Increased text font size from 12pt to 14pt
+- Maintained 1:1 aspect ratio and transparent background
+- Component now displays a significantly larger, more detailed generator image 
+
+## 2024-03-26 05:45 - Enhanced Load Component Visualization
+- Modified LoadComponent class to use the load.png image
+- Replaced the red square with a properly sized PNG image with transparent background
+- Matched the same component size as the generator (300x220)
+- Implemented 1:1 aspect ratio for the image with horizontal centering
+- Positioned the demand text below the image with white font (size 14)
+- Maintained consistent visual style with the generator component 
+
+## 2024-03-26 05:50 - Enhanced Bus Component Visualization
+- Modified BusComponent class to use PNG images instead of colored rectangles
+- Implemented conditional image loading:
+  * Shows busloaded.png when the bus has load connections
+  * Shows busauto image when the bus is in auto mode (no load connections)
+- Matched the same component size and styling as generator and load components (300x220)
+- Used 1:1 aspect ratio for images with horizontal centering
+- Positioned component text below the image with white font (size 14)
+- Preserved the status text display showing "AUTO" or "LOAD ON/OFF" as appropriate 
+
+## 2024-03-26 06:00 - Added Zoom Functionality
+- Added zoom slider to the toolbar with range from 0.2x to 1.0x
+- Implemented zoom_changed method to handle view scaling
+- Added visual feedback with a zoom factor label 
+- Set default zoom to 1.0x
+- Implemented proper transform scaling for the QGraphicsView
+- Modified all component classes (Generator, Load, Bus) to maintain consistent text size during zooming
+- Added scale_factor calculation in paint methods to adjust text size inversely to zoom level
+- Ensured text remains readable even at minimum zoom level (0.2x)
+- Maintained component visibility at different zoom levels 
+
+## 2024-03-26 06:15 - Adjusted Zoom Slider Range
+- Modified the minimum zoom level from 0.2x to 0.4x
+- Updated the zoom slider's minimum value from 20 to 40
+- Improved usability by ensuring components remain sufficiently visible at all zoom levels 
+
+## 2024-03-26 06:30 - Enhanced Grid Import/Export Component Visualization
+- Modified GridImportComponent class to use the grid_import.png image
+- Modified GridExportComponent class to use the grid_export.png image
+- Replaced colored rectangles with properly sized PNG images with transparent backgrounds
+- Matched the same component size as other components (300x220)
+- Implemented 1:1 aspect ratio for images with horizontal centering
+- Positioned capacity text below the images with white font (size 14)
+- Added scale-aware font sizing to maintain text readability during zooming
+- Maintained consistent visual style with other components
+- All components now use image-based visualization for improved aesthetics 
+
+## 2024-03-26 06:45 - Enhanced Battery Component Visualization
+- Modified BatteryComponent class to use the battery.png image
+- Replaced the indigo rectangle with a properly sized PNG image with transparent background
+- Matched the same component size as other components (300x220)
+- Implemented 1:1 aspect ratio for the image with horizontal centering
+- Positioned the power and charge percentage information below the image with white font (size 14)
+- Simplified the display text to be more readable (power capacity and charge percentage)
+- Added scale-aware font sizing to maintain text readability during zooming
+- Completed the visual overhaul of all components to use image-based visualization 
+
+## 2024-03-26 07:00 - Removed Black Border from Components
+- Modified the ComponentBase class to remove the black border around all components
+- Changed the pen from a 2-pixel black pen to Qt.NoPen in the base class constructor
+- Applied change affects all components (Generator, Load, Bus, Grid Import, Grid Export, Battery)
+- Improved visual appearance by removing unnecessary outline around components
+- Further refined the clean, modern look of the component visualization 
+
+## 2024-03-26 07:15 - Added Tiled Background to Modeling Window
+- Modified the CustomScene class to implement a tiled background using background.png
+- Created a drawBackground method in CustomScene to render the background as 50x50 pixel tiles
+- Set the background image to render at the bottom layer, beneath all components
+- Implemented proper grid alignment for tiles based on the visible viewport
+- Added proper handling for zoom levels
+- Enhanced the visual appeal of the modeling area with a textured background
+- Improved the context for components by providing a consistent surface for them to "sit" on 
+
+## 2024-03-26 07:30 - Increased Background Tile Size
+- Changed the background tile size from 50x50 pixels to 100x100 pixels at 1x resolution
+- Doubled the size of background image tiles to improve visibility
+- Maintained proper grid alignment and zoom level handling
+- Made the background pattern more prominent and visually appealing
+- Enhanced the visual context for components 
+
+## 2024-03-26 07:45 - Further Increased Background Tile Size
+- Changed the background tile size from 100x100 pixels to 200x200 pixels at 1x resolution
+- Doubled the tile size again to maximize visibility of the background pattern
+- Further enhanced the visual appeal of the modeling environment
+- Made individual background tiles more distinguishable and prominent
+- Maintained proper grid alignment and zoom handling
+- Improved the overall aesthetic of the application 
+
+## 2024-03-26 08:00 - Added Live Demand Percentage Display
+- Enhanced the LoadComponent to display current demand as a percentage of maximum capacity
+- Implemented real-time calculation of demand percentage based on the current time step
+- Added proper error handling for accessing the simulation engine
+- Updated the component text display to show both maximum capacity and current percentage
+- Improved user visibility into the actual load at the current simulation time
+- Provides immediate visual feedback about load variations throughout the simulation 
+
+## 2024-03-26 08:15 - Fixed Live Load Percentage Display
+- Added component update call to refresh load components when simulation time changes
+- Modified SimulationEngine to update all LoadComponent instances after each simulation step
+- Ensured load percentages update dynamically during simulation, especially for variable profiles
+- Fixed issue where percentage display remained static at 50% regardless of simulation time
+- Improved responsiveness of the visual display during simulation time changes
+- Enhanced user experience with more accurate real-time load information 
+
+## 2024-03-26 08:30 - Added Live Output Percentage Display to Generator Component
+- Enhanced the GeneratorComponent to display current output as a percentage of maximum capacity
+- Implemented dynamic calculation of output percentage based on operating mode:
+  * For "Static" mode: displays the configured output level
+  * For "Load-Following" mode: calculates actual output based on system load
+- Added code to collect system load information for "Load-Following" calculation
+- Updated SimulationEngine to refresh generator components after each simulation step
+- Improved visualization consistency between load and generator components
+- Provides real-time visibility into generator utilization during simulation 
+
+## 2024-03-26 08:45 - Enhanced Component Shadow Effect
+- Replaced the default QGraphicsDropShadowEffect with a custom-drawn shadow implementation
+- Created a realistic ground shadow beneath each component using a radial gradient
+- Implemented an elliptical shadow shape to simulate light casting on a flat surface
+- Added configurable shadow properties (opacity, blur radius, y-offset)
+- Shadow is rendered beneath the component in the paint method
+- Improved the 3D appearance of components by making them appear to "float" above the background
+- Enhanced the overall visual quality and depth perception of the modeling window 
+
+## 2024-03-26 09:00 - Refined Component Shadow Effect
+- Reduced the vertical offset of shadows from 10 to 3 pixels
+- Made shadows appear closer to their components for a more realistic effect
+- Decreased shadow height from 25% to 20% of component height for a flatter appearance
+- Improved the realism of the shadow effect to better simulate natural light casting
+- Fine-tuned the visual proportions to create a more cohesive design
+- Enhanced the perception that components are sitting just above the background surface 
+
+## 2024-03-26 09:30 - Added Decorative Tree Component
+- Created a new TreeComponent class for purely decorative elements
+- Implemented a tree visualization using the tree.png image from the assets folder
+- Added "Add Tree" button to the component palette in the main window
+- Excluded tree components from network connectivity checks (purely decorative)
+- Updated ModelManager to save and load trees in a separate "decorations" section
+- Maintained visual consistency with other components (same size, shadow effects)
+- Enhanced the visual appeal of the modeling environment with non-functional elements
+- Provided users with the ability to create more visually interesting scenarios 
+
+## 2024-03-26 10:50 - Fixed TreeComponent Deletion Bug
+- Updated properties_manager.py to properly handle TreeComponent deletion
+- Added check to skip removing TreeComponent from components list since they are decorative
+- Modified delete_component method to handle trees as non-functional elements
+- Added TreeComponent-specific UI in show_component_properties method
+- Added clear information that trees are decorative with no editable properties
+- Successfully tested deletion of tree components with no errors
+- Fixed bug where application crashed with "list.remove(x): x not in list" error 
+
+## 2024-03-26 11:00 - Made TreeComponent Connection-Proof
+- Modified ConnectionManager to ignore TreeComponent instances during connection creation
+- Updated handle_connection_click to skip actions when a tree is clicked in connection mode
+- Updated handle_sever_connection to skip actions when a tree is clicked in sever mode
+- Overrode mousePressEvent in TreeComponent to prevent it from emitting clicked signals during connection mode
+- Enhanced separation between functional and decorative components in the UI
+- Ensured users cannot mistakenly attempt to connect decorative tree elements to the power network
+- Preserved all other tree-related functionality (selection, deletion, properties display) 
+
+## 2024-03-26 11:15 - Fixed Connection Cursor Reset Bug
+- Fixed issue where connection cursor didn't reset when clicking on a tree during connection creation
+- Updated ConnectionManager.handle_connection_click method to properly cancel ongoing connections when a tree is clicked
+- Added cleanup code to ensure temporary connection lines are removed
+- Restored default cursor and proper signal connections when interacting with TreeComponents
+- Implemented proper state reset for the connection manager
+- Improved user experience by ensuring the cursor always returns to normal state 
+
+## 2024-03-26 11:30 - Added Decorative Bush Component
+- Created a new BushComponent class for additional decorative elements
+- Implemented bush visualization using the bush.png image from the assets folder
+- Added "Add Bush" button to the component palette in the main window
+- Configured bushes as decorative elements that cannot form connections
+- Updated ConnectionManager to ignore BushComponent instances during connection creation
+- Modified properties_manager.py to properly handle the delete operation for bushes
+- Updated ModelManager to save and load bushes in the "decorations" section
+- Ensured bushes maintain visual consistency with other decorative elements
+- Enhanced the visual variety of decorative elements available to users 
+
+## 2024-03-26 11:45 - Fixed Save/Load Compatibility and Rendering Issues
+- Updated ModelManager to handle older save files without the 'decorations' key
+- Modified the load_scenario method to use get() with default empty lists for all sections
+- Updated keys access to safely handle potentially missing data in saved scenarios
+- Fixed type comparison issue in BushComponent's paint method
+- Added robust type checking and conversion for rect dimensions and coordinates
+- Ensured proper handling of potential tuple values in graphics calculations
+- Improved backward compatibility with older save files
+- Fixed TypeError that occurred when comparing tuples with float values 
+
+## 2024-03-26 12:00 - Reduced Shadow Width for Decorative Components
+- Modified TreeComponent and BushComponent to have shadows half as wide as normal components
+- Changed shadow width coefficient from 0.9 to 0.45 for all decorative elements
+- Overrode the paint method in both classes to replace the standard shadow rendering
+- Maintained the same shadow height and opacity as other components
+- Customized render pipeline to handle shadows separately from the base class
+- Properly implemented selection highlight logic in the modified components
+- Enhanced visual distinction between functional power components and decorative elements
+- Improved the realism of shadows for objects with narrower ground contact (trees, bushes) 
+
+## 2024-03-26 12:15 - Reduced Shadow Size for Battery Component
+- Modified BatteryComponent to have a shadow that's 75% of the original size
+- Changed shadow width coefficient from 0.9 to 0.675 (0.9 * 0.75)
+- Changed shadow height coefficient from 0.4 to 0.3 (0.4 * 0.75)
+- Overrode the paint method to implement custom shadow rendering
+- Maintained the same shadow positioning and opacity
+- Customized the render pipeline to handle shadows separately from the base class
+- Properly implemented selection highlight logic
+- Created more appropriate visual representation for the battery's form factor
+- Improved the visual hierarchy of different component types through shadow sizing 
+
+## 2024-03-26 12:30 - Relocated Zoom Control to Timeline Area
+- Moved the zoom slider and its label from the toolbar to the timeline scrubber area
+- Positioned the zoom control to the left of the simulation speed control
+- Preserved all zoom functionality, appearance, and behavior exactly as before
+- Maintained same slider width, range (0.4x to 1.0x), and default zoom level (1.0x)
+- Improved UI organization by grouping view control (zoom) with playback controls
+- Enhanced user experience by co-locating related view and time controls 
+
+## 2024-03-26 12:45 - Added Component Palette Visual Separator
+- Added a horizontal line separator in the component palette
+- Positioned the separator between the grid export button and the connection button
+- Used QFrame with HLine shape and Sunken shadow style for the separator
+- Created a visual distinction between component creation buttons and connection management buttons
+- Improved UI organization by grouping related functionality
+- Enhanced user experience with clearer visual categorization of tools 
+
+## 2024-03-26 12:50 - Added Second Component Palette Separator
+- Added a second horizontal line separator in the component palette
+- Positioned the separator between the sever connection button and the tree button
+- Used QFrame with HLine shape and Sunken shadow style for consistency with the first separator
+- Created a visual distinction between connection management buttons and decorative element buttons
+- Now the component palette is visually organized into three distinct sections:
+  1. Functional components (generator, battery, load, bus, grid import/export)
+  2. Connection management tools (create connection, autoconnect, sever connection)
+  3. Decorative elements (tree, bush)
+- Further enhanced UI organization and improved visual categorization 
+
+## 2024-03-26 13:00 - Added Third Component Palette Separator
+- Added a third horizontal line separator in the component palette
+- Positioned the separator between the bus button and the grid import button
+- Used QFrame with HLine shape and Sunken shadow style for consistency with other separators
+- Created a visual distinction between local power components and grid connection components
+- Now the component palette is organized into four distinct sections:
+  1. Core power components (generator, battery, load, bus)
+  2. Grid connection components (import, export)
+  3. Connection management tools (create connection, autoconnect, sever connection)
+  4. Decorative elements (tree, bush)
+- Further refined UI organization with clearer conceptual grouping
+- Completed the visual categorization of all component types in the palette 
+
+## 2024-03-26 13:15 - Reduced Shadow Size for Bus Component
+- Modified BusComponent to have a shadow that's 75% of the original size
+- Changed shadow width coefficient from 0.9 to 0.675 (0.9 * 0.75)
+- Changed shadow height coefficient from 0.4 to 0.3 (0.4 * 0.75)
+- Overrode the paint method to implement custom shadow rendering
+- Maintained the same shadow positioning and opacity
+- Customized the render pipeline to handle shadows separately from the base class
+- Properly implemented selection highlight logic
+- Now all component types have appropriately sized shadows based on their nature:
+  * Standard components (generator, load, grid connections): 100% shadow
+  * Bus and battery components: 75% shadow
+  * Decorative elements (tree, bush): 50% shadow
+- Completed the visual refinement of shadows throughout the application 
+
+## 2024-03-26 13:30 - Added Decorative Pond Component
+- Created a new PondComponent class for water feature decorative elements
+- Implemented pond visualization using the pond.png image from the assets folder
+- Used a 3:2.2 aspect ratio (width:height) instead of square for more realistic water representation
+- Made the pond image larger than other decorative elements (85% vs 60-68% of component height)
+- Added "Add Pond" button to the component palette in the decorative elements section
+- Updated ConnectionManager to treat ponds as non-connectable decorative elements
+- Modified properties_manager.py to handle pond components properly during selection and deletion
+- Updated ModelManager to save and load ponds in the "decorations" section
+- Maintained the same shadow style as other decorative elements (50% width of normal components)
+- Further enhanced the variety of decorative options available to users
+- Completed the decorative elements suite with ground (bush), vertical (tree), and water (pond) features
+
+## 2024-03-27 09:00 - Added Graphics On/Off Toggle for Load Components
+- Added a graphics_enabled flag to the LoadComponent class
+- Updated the paint method to respect this flag when rendering
+- Modified the component properties panel to include a "Graphics ON/OFF" toggle button
+- Positioned the toggle button under the Delete button in the right column
+- Added visual feedback with green/red button colors for ON/OFF states
+- Updated the component serialization to save the graphics state
+- Modified the ModelManager to load the graphics_enabled property with backward compatibility
+- Graphics toggle affects only the load image while maintaining the text and selection box
+- Enhanced user flexibility to simplify visual representation for complex systems
+- Load components with graphics disabled still show demand value and percentage 
+
+## 2024-03-27 10:00 - Added House1 Decorative Component
+- Created a new House1Component class based on BushComponent
+- Implemented house visualization using the house1.png image from the assets folder
+- Added "Add House 1" button to the component palette in the decorative elements section
+- Configured houses as decorative elements that cannot form connections
+- Updated ConnectionManager to ignore House1Component instances during connection creation
+- Modified properties_manager.py to properly handle the delete operation for houses
+- Updated ModelManager to save and load houses in the "decorations" section
+- Ensured houses maintain visual consistency with other decorative elements
+- Enhanced the visual variety of decorative elements available to users 
+
+## 2024-03-27 10:30 - Fixed Load Component Graphics Toggle Bug
+- Fixed bug where shadows were still visible when load graphics were turned off
+- Modified LoadComponent's paint method to skip the shadow drawing when graphics_enabled is false
+- Implemented custom selection highlight logic to maintain selection visibility
+- Ensured text display remains consistent regardless of graphics state
+- Maintained proper zoom-aware text scaling
+- Improved consistency of the graphics on/off toggle functionality
+- Better visual clarity when graphics are disabled 
+
+## 2024-03-27 11:00 - Added House2 Decorative Component
+- Created a new House2Component class based on House1Component
+- Implemented house visualization using the house2.png image from the assets folder
+- Added "Add House 2" button to the component palette in the decorative elements section
+- Configured houses as decorative elements that cannot form connections
+- Updated ConnectionManager to ignore House2Component instances during connection creation
+- Modified properties_manager.py to properly handle the delete operation for houses
+- Updated ModelManager to save and load houses in the "decorations" section
+- Ensured houses maintain visual consistency with other decorative elements
+- Further enhanced the variety of decorative housing options available to users 
+
+## 2024-03-27 11:30 - Fixed Autoconnect Crash Bug
+- Fixed critical bug in ConnectionManager.autoconnect_all_components method
+- Problem was in the connection cleanup process during deletion of existing connections
+- Implemented a more conservative approach for connection removal:
+  * Safely access and remove connections without disturbing components
+  * Added robust error handling with try/except blocks for scene manipulation
+  * Prevented loss of component references during cleanup
+  * Simplified connect_all_in_sequence to focus only on connection creation
+  * Added proper button disabling to prevent concurrent operations
+- Added safety checks to the Connection class's update_position method:
+  * Added try/except handling for C++ object deletion errors
+  * Implemented graceful failure when components are no longer valid
+  * Added comprehensive cleanup of connection references
+- Enhanced create_connection_between method with additional safety checks:
+  * Verify both components are still in the scene before connecting
+  * Properly handle exceptions if components have been deleted
+- Fixed crash that occurred when pressing 'A' to autoconnect components
+- Greatly improved the application's stability during connection management operations
+- Addressed the "wrapped C/C++ object has been deleted" error in Qt scene manipulation 
+
+## 2024-03-27 12:00 - Fixed Autoconnect Not Working After Loading Scenario
+- Identified and fixed an issue where the autoconnect feature wasn't working after loading a scenario
+- Problem was in the ConnectionManager class which maintained stale references to component lists
+- Modified ConnectionManager to always access components and connections directly via main_window
+- Removed local caching of components and connections lists in ConnectionManager
+- Updated all methods in ConnectionManager to use main_window.components and main_window.connections
+- This ensures ConnectionManager always has access to the most up-to-date component lists
+- Fixed issue where component lists would be replaced during scenario loading
+- Improved sync between the UI and the underlying data model
+- Enhanced application reliability after loading or creating new scenarios 
+
+## 2024-03-27 13:00 - Added Screenshot Feature
+- Added a "Screenshot" button to the simulation controls area
+- Positioned the button to the left of the zoom slider
+- Implemented take_screenshot method to capture the modeling view
+- Added functionality to copy the screenshot to the system clipboard
+- Included confirmation popup to inform users when screenshot is copied
+- Captures only the modeling canvas with components and background
+- Enhances user ability to document and share model configurations
+- Provides visual exports without requiring full application view
+
+## 2024-03-27 14:00 - Added Component Workflow Documentation
+- Created new documentation file at docs/component_workflow.md
+- Documented the standard workflow for adding new decorative components
+- Included step-by-step instructions for:
+  * Creating the component class
+  * Updating MainWindow
+  * Updating ConnectionManager
+  * Updating PropertiesManager
+  * Updating ModelManager
+  * Documenting changes in history
+- Added code examples and templates for each step
+- Included important considerations and best practices
+- Listed existing decorative components as reference templates
+- Standardized the process to ensure consistency for future component additions 
+
+## 2024-03-27 15:00 - Added Factory Decorative Component
+- Created a new FactoryComponent class in src/components/factory.py
+- Added "Add Factory" button to the decorative components section of the palette
+- Used the factory.png image from the assets folder
+- Configured factory as a decorative element that cannot form connections
+- Updated ConnectionManager to ignore FactoryComponent instances during connection creation
+- Modified PropertiesManager to properly handle factory components during selection and deletion
+- Updated ModelManager to save and load factory components in the "decorations" section
+- Followed the standardized component workflow documented in docs/component_workflow.md
+- Enhanced the variety of decorative buildings available to users
+- Maintained consistent visual style with other decorative elements (shadow properties, size, etc.) 
+
+## 2024-03-27 15:30 - Fixed Save/Load Attribute Name Mismatch
+- Fixed critical bugs in ModelManager's save_scenario method
+- For GeneratorComponent:
+  * Changed 'mode' attribute to 'operating_mode' to match actual implementation
+- For LoadComponent:
+  * Changed 'capacity' attribute to 'demand' to match actual LoadComponent implementation
+  * Changed 'profile' attribute to 'profile_type' to match actual LoadComponent implementation
+- For BatteryComponent:
+  * Changed 'capacity' to 'power_capacity'
+  * Changed 'charge_rate', 'discharge_rate', 'initial_charge' to 'energy_capacity', 'current_charge', and 'operating_mode'
+- Added backward compatibility to handle older saved files
+- Implemented fallback checking for both old and new attribute names during loading
+- Converted initial charge percentage to absolute value for batteries when needed
+- Resolved "AttributeError" crashes during save operation
+- Ensured compatibility with existing save files while using correct attribute names 
+
+## 2024-03-27 16:00 - Fixed Scenario Loading Error
+- Fixed critical bug in ModelManager's load_scenario method
+- Corrected method call from non-existent `simulate_time(0)` to `update_simulation()`
+- Resolved the "PowerSystemSimulator object has no attribute simulate_time" error when loading scenarios
+- Ensured proper state initialization after loading a scenario
+- Prevented scenario data loss that occurred when the error caused a new scenario to be created
+- Added lessons documentation about the importance of attribute name consistency in serialization code 
+
+## 2024-03-27 16:30 - Added Delete Key Shortcut
+- Implemented Delete key shortcut for removing components from the simulation
+- Added Delete key handling in the main window's keyPressEvent method
+- Checks if a component is currently selected in the properties manager
+- Calls the properties_manager.delete_component() method when Delete key is pressed
+- Maintains all existing connection cleanup and scene update logic
+- Improves user experience by providing a familiar keyboard shortcut for deletion
+- Works regardless of connection mode or simulation state
+- Provides consistent behavior with the Delete button in the properties panel 
+
+## 2024-03-27 17:00 - Added Reset Hotkey
+- Implemented R key shortcut for resetting the simulation
+- Added R key handling in the main window's keyPressEvent method
+- Updated Reset button text to "⟲ Reset (R)" to indicate the hotkey
+- Made the hotkey active regardless of connection mode or simulation state
+- Improves user experience by providing quick access to the reset functionality
+- Maintains consistent behavior with the Reset button in the simulation controls
+- Follows the pattern established with Space for play/pause and Delete for component deletion 
+
+## 2024-03-27 18:00 - Fixed Time Scrubber Crash Bug
+- Fixed critical bug in the time scrubber functionality that caused the application to crash when moving the time slider
+- Identified and corrected a parameter mismatch in the `minimal_analytics_update` method of `main_window.py`
+- Problem: The method was passing positional arguments incorrectly to the `update_analytics` method in `AnalyticsPanel`
+- The method was incorrectly passing 5 positional arguments plus a named argument `is_scrubbing=True`:
+  * This caused a "multiple values for argument 'is_scrubbing'" error when moving the time slider
+- Solution: Reorganized the method call to correctly provide parameters in the right order:
+  * Set power_produced, power_consumed as 0
+  * Passed current_time as self.simulation_engine.current_time_step
+  * Set total_capacity as 0
+  * Used is_scrubbing=True as a named parameter
+- Eliminated the crash during scrubbing operations which improves usability
+- Users can now freely scrub through the timeline without application crashes 
+
+## 2024-03-27 19:00 - Fixed Connection Serialization Bug
+- Fixed a critical bug in the save/load functionality where connections between components were not preserved correctly
+- Problem: When loading a saved scenario, connections would be made between incorrect components
+- Root cause analysis:
+  * The component indexing in the save method was using `self.main_window.components.index()` which could produce inconsistent indices
+  * The scene item order didn't always match the components list order, leading to index mismatches
+  * Connections were incorrectly mapped to component indices during both save and load operations
+- Solution:
+  * Added a proper component_index_map in the save_scenario method to track exact indices of each component
+  * Modified the save logic to use this explicit mapping instead of dynamic index lookup
+  * Streamlined the connection creation in load_scenario to properly map to component indices
+  * Added better error handling for invalid connection indices
+  * Removed redundant connection.append calls (the Connection constructor already handles this)
+- This ensures that saved scenarios will now correctly restore all connections between the right components
+- Improves overall application reliability for save/load operations 
+
+## 2024-03-27 19:30 - Added Logo to Component Palette
+- Added the Augur Vibe logo (augurvibelogosmall.png) to the bottom of the component palette
+- Modified the PowerSystemSimulator.init_ui method to create a QLabel with the logo image
+- Implemented automatic scaling of the logo to match the width of component buttons while maintaining aspect ratio
+- Set center alignment for the logo to ensure proper positioning
+- Added error handling to gracefully handle missing logo files
+- Enhanced the application's visual identity and branding
+- Logo appears below all component buttons and at the very bottom of the component palette area 
+
+## 2024-03-27 20:00 - Added Background Toggle Feature
+- Added a toggle button in the simulation controls to switch between two background textures
+- Placed the button to the left of the Screenshot button
+- Implemented set_background method in CustomScene to change the background image
+- Added toggle_background method in PowerSystemSimulator to switch between backgrounds
+- Set "background.png" as the default (Background 1)
+- Added "background2.png" as the alternative (Background 2)
+- Updated button text to reflect current background selection
+- Enhanced user experience by allowing customization of the modeling environment
+- Maintains consistent behavior with other UI controls for a cohesive experience 
+
+## 2024-03-27 21:00 - Added View Menu for Panel Management
+- Added a View menu to the toolbar with options to restore closed panels
+- Created three menu items:
+  * Show Components Panel
+  * Show Properties Panel
+  * Show Analytics Panel
+- Implemented corresponding methods to restore each panel if closed
+- Made dock widgets instance variables with unique object names for better identification
+- Fixed usability issue where users could close panels with no way to reopen them
+- Organized the toolbar interface with a logical grouping of view-related actions
+- Improved application resilience by allowing recovery from accidental panel closure
+- Enhanced user experience with more accessible UI management 
+
+## 2024-03-27 21:30 - Fixed View Menu Click Behavior
+- Modified the View menu button in the toolbar to respond when clicking either the text or arrow
+- Replaced QAction-based implementation with a QToolButton approach
+- Set the QToolButton's popup mode to InstantPopup for immediate menu display on text click
+- Added QToolButton to the imports in the main window file
+- Improved UI usability by making the entire button area clickable
+- Enhanced user experience with more intuitive menu interaction
+- Fixed usability issue where users could only access the View menu by clicking the arrow
+- Maintains same menu functionality with more accessible trigger area 
+
+## 2024-03-27 22:00 - Integrated Reset and Clear History Functions
+- Merged the functionality of the Clear History button into the Reset button
+- Modified the reset_simulation method in PowerSystemSimulator to also call analytics_panel.clear_chart_history()
+- Removed the now-redundant Clear History button from the AnalyticsPanel UI
+- Simplified the user interface by eliminating duplicate functionality
+- Enhanced user experience by providing a single reset point for both simulation state and historical data
+- Improved interface consistency by making Reset truly reset all aspects of the simulation
+- Maintained all existing functionality while reducing UI complexity 
+
+## 2024-03-27 22:30 - Fixed Steppet in Simulation
+- Set steps permanently to 1 in order to avoid problems with simulation fidelity with the variable system
+- Noted in code to make sure the agent does not revert
+
+## 2025-03-28 22:30 - UI Enhancements
+- Modified properties panel to be floating and hidden by default
+- Added automatic positioning of properties panel at 300px up and right from screen center
+- Added 'P' hotkey to toggle properties panel visibility
+- Made properties panel auto-open when selecting a component
+- Made analytics panel hidden by default
+- Enhanced dock widget title bars with darker background and centered text
+- Increased speed selector dropdown width to prevent text cutting off
+- Added position_properties_panel_if_needed method for consistent panel positioning
+- These changes provide a cleaner UI by default with quick access to panels when needed
+
+## 2025-03-28 22:35 - Implemented Properties Panel Auto-Resize
+- Modified properties panel to automatically resize to fit its contents
+- Added size policy configurations to allow the panel to shrink to its minimum size
+- Reduced layout margins to create a more compact properties panel
+- Added adjustSize() calls after updating panel contents
+- Configured dock widget features to support proper resizing behavior
+- This change provides a cleaner, more space-efficient UI experience
+- Properties panel now takes up minimal screen space based on its content
+
+## 2025-03-28 22:50 - Removed Title Bars from Fixed Panels
+- Removed title bars from Components panel and Simulation Controls panel
+- Prevented these panels from being undocked or closed
+- Used setTitleBarWidget(QWidget()) to remove the title bars
+- Set dock widget features to QDockWidget.NoDockWidgetFeatures
+- This creates a cleaner, more integrated UI with fixed panels
+- Reduces visual clutter and prevents accidental panel undocking/closing
+
+## 2025-03-28 22:55 - Added Camera Emoji to Screenshot Button 
+- Added camera emoji (📷) to the beginning of the Screenshot button text
+- Improves button recognition through visual iconography
+- Makes the UI more visually intuitive
+- Maintains the existing functionality while enhancing visual clarity
+
+## 2025-03-28 23:15 - Added Title Screen
+- Created new TitleScreen class in src/ui/title_screen.py
+- Implemented a frameless window that displays a title image
+- Set up the window to close when Enter key is pressed
+- Modified src/main.py to show the title screen first before the main application window
+- Set up proper event handling to load the main window after the title screen closes
+- Uses the demotitle.png image (1536x1024px) from the assets folder
+- Image is displayed at native resolution and centered on screen
+- Provides a more professional application entry experience
+
+## 2025-03-28 23:30 - Fixed Title Screen Transition Bug
+- Modified title screen implementation to use a custom signal approach instead of relying on the destroyed signal
+- Added transition_to_main signal to TitleScreen class
+- Updated keyPressEvent to emit the signal before closing the window
+- Updated main.py to connect to the transition_to_main signal instead of destroyed
+- Reordered object creation in main.py to create the main window first
+- Fixed issue where pressing Enter or Space wasn't consistently opening the main window
+- Improved reliability of the launch sequence with explicit signaling
+
+## 2025-03-28 23:45 - Added Main Window Centering
+- Implemented center_on_screen method in PowerSystemSimulator class
+- Added automatic centering of the main window when it opens
+- Used the same approach as the title screen centering for consistency
+- Provides a more polished user experience with properly positioned windows
+- Main window now appears centered on the user's screen after the title screen closes
+
+## 2025-03-29 00:00 - Added Welcome Text for New Users
+- Added a welcome message in the center of the modeling area
+- Displays "Welcome" and "Build Here" to guide new users
+- Message automatically disappears when the first component is added
+- Text is styled with large, semi-transparent white font for good visibility
+- Implemented with delayed positioning to ensure proper centering after view initialization
+- Improves usability for first-time users by providing clear instruction
+
+## 2025-03-29 00:00 - Improved Welcome Text Alignment
+- Updated the welcome text to be center-aligned within its textbox
+- Used HTML formatting with <div align='center'> to properly center the text
+- Set a fixed text width to control the alignment area
+- Provides a more professional and polished appearance for the welcome message
+
+## 2025-03-29 00:15 - Fixed Welcome Text Deletion Error
+- Fixed critical bug where welcome text would cause crash after using the New button
+- Updated new_scenario method to properly handle welcome text reference
+- Added proper cleanup of old welcome text when creating a new scenario
+- Added recreation of welcome text after scene is cleared
+- Resolved "wrapped C/C++ object of type QGraphicsTextItem has been deleted" error
+
+## 2025-03-29 00:45 - Enhanced Button Appearance During Simulation
+- Updated component and connection buttons to have grey text when disabled during simulation
+- Added visual distinction between enabled (white text) and disabled (grey text) buttons
+- Maintained the same background color and border style for consistency
+- Improved user interface by providing clearer visual feedback about button availability
+- Enhanced user experience by making the disabled state more visually apparent
+
+## 2025-03-29 01:00 - Added Component Panel Header Image
+- Added a new image to the top of the components panel
+- Used componentspaneltop.png image from assets folder
+- Scaled the image to match the width of component buttons while preserving aspect ratio
+- Positioned the image at the very top of the component layout before any buttons
+- Enhanced the visual appeal and branding of the component panel
+- Created a more polished and professional interface appearance
+
+## 2025-03-29 01:15 - Added Golden Border to Component Panel Header Image
+- Added a 2px wide golden border around the component panel header image
+- Used CSS styling with "border: 2px solid gold" on the image label
+- Enhanced the visual prominence of the header image
+- Created an elegant framing effect that highlights the branding element
+- Improved visual distinction between the header image and component buttons
+
+## 2025-03-29 01:30 - Fixed Toolbar Font Size Issue
+- Fixed issue where toolbar font size wasn't changing despite setting the font point size
+- Replaced direct font setting approach with CSS stylesheet method
+- Used "QToolBar { font-size: 14pt; } QToolButton { font-size: 14pt; }" to ensure consistent sizing
+- Applied styling to both the toolbar and its buttons for comprehensive coverage
+- Increased font size from 12pt to 14pt for better visibility
+- Ensured consistent font sizing across all toolbar elements
+
+## 2025-03-29 01:45 - Added Auto-Charge Batteries Feature for Grid Import Components
+- Added a new property 'auto_charge_batteries' to GridImportComponent (enabled by default)
+- Added toggle button in the properties panel for controlling this feature
+- Modified the simulation engine to respect this setting during battery charging
+- Updated the 7th pass of simulation to only use grid import components with auto_charge_batteries enabled
+- Added proper serialization and loading of this property in save/load functionality
+- Provides users with more control over battery charging behavior from grid imports
+- Similar functionality to the generator's auto-charging capability but for grid import pathways
+
+## 2025-03-29 10:25 - Fixed Panel Sizes for UI Consistency
+- Set components panel to a fixed width of 250px
+- Set simulation controls panel to a fixed height of 80px
+- Removed user ability to resize these panels for a more consistent UI experience
+- Ensures UI elements maintain their intended proportions
+- Prevents accidental resizing of critical interface elements
+
+## 2024-03-29 23:47 - Fixed Battery Division by Zero Error
+- Fixed division by zero error in BatteryComponent when energy_capacity is zero
+- Added safety checks in BatteryComponent.paint method to prevent division by zero
+- Added similar safety checks in ComponentPropertiesManager._add_battery_properties method
+- Bug occurred when entering values in the battery properties panel
+- Ensures charge_percent calculation is safe even when energy_capacity is temporarily zero
+- No changes to existing functionality, just added error prevention
+
+## 2024-03-30 01:00 - Added Bulk PPA Price for Grid Export Component
+- Added 'Bulk PPA Price' property to GridExportComponent class with default value of $0.00
+- Added 'accumulated_revenue' property to track revenue from exported energy
+- Updated GridExportComponent's paint method to display accumulated revenue
+- Modified ComponentPropertiesManager to add Bulk PPA Price field to grid export properties
+- Updated SimulationEngine to calculate export revenue based on Bulk PPA Price
+- Added export revenue to gross revenue calculations and chart
+- Export revenue now appears alongside load revenue in the revenue chart
+- This change allows users to track revenue from both load service and grid export
+
+## 2023-05-15
+- Created CloudWorkloadComponent class in src/components/cloud_workload.py
+- Added Cloud Workload button to the main window UI
+- Integrated the component with keyboard shortcut (W)
+- Updated model manager to handle saving and loading of CloudWorkloadComponent
+- Added cloud workload properties display in the properties manager
+- Updated connection manager to handle the new component
+
+## 2023-05-16
+- Added Multi-Cloud Spot operating mode to CloudWorkloadComponent
+- Added resource parameters for Traditional Cloud, GPU Intensive, and Crypto ASIC
+- Updated properties panel to display parameters when in Multi-Cloud Spot mode
+- Implemented revenue calculation based on energy consumed by Data Center loads
+- Updated simulation engine to include cloud workload revenue in gross revenue calculations
+- Added revenue display to CloudWorkloadComponent and properties panel
+- Ensured proper serialization and deserialization of accumulated revenue 
+
+## 2023-05-17
+- Fixed bug where cloud workload component revenue display was not reset when the Reset button was pressed
+- Updated reset_simulation method in main_window.py to also reset CloudWorkloadComponent instances 
+
+## 2025-03-30: Set form layout alignment to left align in properties panels:
+- Modified src/ui/properties_manager.py to set left alignment for form layouts
+- Applied to main properties layout, left column, and resource params layout
+
+## 2025-03-30: Removed shadow effect from cloud workload component only:
+- Modified src/components/cloud_workload.py to set shadow_opacity = 0
+
+## 2025-03-30: Added application icon:
+- Added appicon.png as the application icon
+- Modified src/main.py to set the window icon using QApplication.setWindowIcon() 

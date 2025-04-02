@@ -1,0 +1,753 @@
+# CODEBASE LESSONS & INSIGHTS
+# ==========================
+# This file records important learnings about the codebase
+
+## Project Overview
+The project appears to be a Power System Simulator with a PyQt5-based GUI that allows users to:
+- Create and manipulate power system components (generators, loads, buses, batteries, grid imports/exports)
+- Connect components to create a power network
+- Simulate power flow over time
+- Analyze system behavior and metrics
+
+## Architecture Overview
+1. **Directory Structure**:
+   - `src/`: Main source code directory
+     - `ui/`: User interface modules
+     - `components/`: Power system component definitions
+     - `utils/`: Utility functions and helpers
+   - Main entry point: `src/main.py`
+
+2. **Core Modules**:
+   - **UI System**: Built with PyQt5
+     - `main_window.py` (2399 lines): Central GUI controller with PowerSystemSimulator class
+     - `analytics.py` (503 lines): Visualization and data analysis panel using Matplotlib
+     - `full_year_explorer.py` (473 lines): Extended timeline analysis interface
+   
+   - **Component System**: Power system elements in `src/components/`
+     - `base.py`: Contains ComponentBase class, inherits QGraphicsRectItem to provide visual representation
+     - Component types: Generator, Load, Bus, Battery, GridImport, GridExport
+     - `connection.py`: Manages visual and logical connections between components
+   
+   - **Simulation Engine**: Embedded within the PowerSystemSimulator class
+     - Time-based simulation with variable speed control (0.1x to 3x)
+     - Power flow calculation and monitoring
+     - System stability checks
+     - Energy tracking (import/export, production/consumption)
+
+3. **Component Hierarchy**:
+   - `ComponentBase` (Qt's QGraphicsRectItem): Base class providing:
+     - Visual representation (rectangle with configurable appearance)
+     - Mouse/hover/selection event handling
+     - Connection management
+     - Property panel interactions
+   
+   - **Specialized Components**:
+     - `GeneratorComponent`: Simulates power production with configurable output levels
+     - `LoadComponent`: Models power consumption with various profiles (data center, random, etc.)
+     - `BusComponent`: Connects multiple components, can be toggled on/off
+     - `BatteryComponent`: Simulates energy storage with charging/discharging
+     - `GridImportComponent`: Represents power import from external grid
+     - `GridExportComponent`: Represents power export to external grid
+   
+   - **Connection System**:
+     - Connects components to form a network
+     - Visual representation with animated dashed lines
+     - Centralized animation management for all connections
+
+4. **UI Structure**:
+   - Main window (PowerSystemSimulator class):
+     - Canvas (QGraphicsView/QGraphicsScene) for component placement and interaction
+     - Dockable panels for controls and information
+   
+   - Component palette: Tool panel for adding new components
+   
+   - Properties panel: Dynamic form that shows properties of selected component
+   
+   - Analytics panel: Charts and metrics for system performance
+     - Real-time power balance charts using Matplotlib
+     - Progress bars for current system values
+     - Time series data visualization
+   
+   - Simulation Controls:
+     - Timeline slider for time step navigation
+     - Play/pause/step buttons
+     - Speed controls (0.1x to 3x)
+     - Reset functionality
+
+5. **Data Management**:
+   - Scenario saving/loading (JSON format)
+   - Data export functionality (CSV)
+   - Time series data for all system metrics
+
+## Key Design Patterns
+1. **Inheritance**: All components inherit from ComponentBase, providing common functionality
+2. **Event-driven architecture**: Uses Qt's signal/slot mechanism for component interactions
+3. **Observer pattern**: Components update their visual state based on simulation state
+4. **Model-View-Controller (MVC)**: Separates data (power system state), view (UI), and controller (simulation logic)
+5. **Factory pattern**: Used in component creation based on type
+
+## Notable Code Features
+1. The simulation engine handles time-series data with different simulation speeds
+2. Components can be connected to form a network with power flow calculations
+3. The system includes real-time analytics and visualization capabilities
+4. The codebase uses Qt's graphics framework for interactive visualization
+5. Connection animations are synchronized across all connections
+6. Dynamic property panel that adapts to the selected component type
+7. Support for various load profiles and generation characteristics
+8. Full-year simulation capabilities for long-term analysis
+
+## Areas for Potential Improvement
+1. Modularization of main_window.py (2399 lines) into smaller, more focused modules
+2. Clearer separation of UI logic from simulation logic
+3. Moving common UI patterns into reusable components
+4. Dedicated simulation engine class separate from the UI controller
+5. More comprehensive error handling and validation
+
+## Simulation Engine Extraction (2024-03-26)
+Key Lessons:
+1. Successful refactoring requires strict preservation of existing behavior
+   - Keeping exact numerical calculations
+   - Maintaining all method signatures
+   - Preserving state management
+   - Not "improving" working code
+
+2. UI and Logic Separation
+   - Clean separation between UI (main_window.py) and simulation logic (engine.py)
+   - UI delegates to simulation engine without knowing implementation details
+   - Components remain independent of simulation logic
+
+3. State Management
+   - Simulation state centralized in SimulationEngine
+   - Clear ownership of simulation flags and counters
+   - Consistent time step handling
+   - Battery state properly tracked
+
+4. Critical Dependencies
+   - Battery logic tightly coupled with time step calculations
+   - Component updates must happen in specific order
+   - Grid import/export calculations depend on prior power balance
+   - Analytics updates must follow state changes
+
+5. Refactoring Strategy
+   - Move code without changing it
+   - Test thoroughly after each change
+   - Keep UI interaction patterns unchanged
+   - Maintain exact compatibility with existing components 
+
+## Component Properties System Extraction (2024-03-26)
+1. UI Component Separation
+   - Properties management is a distinct concern from main window management
+   - Each component type has its own property display logic
+   - Property validation and updates should be centralized
+   - UI state management for properties should be encapsulated
+
+2. Signal Handling
+   - Component click signals need careful management when switching between modes
+   - Signal connections/disconnections must be properly sequenced
+   - Multiple handlers may need to be coordinated (properties, connections, etc.)
+
+3. Property Management Patterns
+   - Each component type requires specific property fields and validation
+   - Numeric input handling needs consistent validation and formatting
+   - Custom profile loading requires proper error handling and UI feedback
+   - Property updates should trigger appropriate simulation updates
+
+4. Code Organization
+   - Property-related code should be grouped by component type
+   - Common property handling logic should be shared
+   - UI layout management should be encapsulated
+   - Property state should be managed independently of main window state
+
+5. Testing Considerations
+   - Property display should be verified for each component type
+   - Validation logic should be tested with various inputs
+   - Custom profile loading should be tested with different file formats
+   - Property updates should be verified to trigger correct simulation updates 
+
+## Connection Management System Extraction (2024-03-26)
+1. Clear Interface Boundaries
+   - Connection-related operations form a cohesive group of functionality
+   - Connection state management should be encapsulated in a single class
+   - Both connection creation and severing follow similar patterns
+   - Connection validation is a separate concern from UI management
+
+2. Cross-Component Communication
+   - Connection manager needs to interact with main window, scene, and components
+   - State needs to be synchronized between manager and main window (e.g., creating_connection flag)
+   - Signal handling requires careful coordination between classes
+   - Event filtering can be delegated while maintaining proper control flow
+
+3. Cursor and Visual Feedback
+   - Connection operations have distinct visual feedback requirements
+   - Cursor changes provide important user feedback
+   - Temporary visual elements (like connection lines) need proper lifecycle management
+   - Animation effects should be managed in a single location
+
+4. Algorithmic Complexity
+   - Autoconnection algorithms are complex and form a cohesive unit
+   - Graph-based operations benefit from being grouped together
+   - Component type identification and special handling is a discrete concern
+   - Connection validation is a separate concern from creation
+
+5. Refactoring Strategy
+   - Extract related methods as a complete unit
+   - Maintain state in both old and new classes during transition
+   - Delegate method calls without changing signatures
+   - Keep event handling compatible with existing patterns 
+
+## Architecture and Design Review (2024-03-26)
+1. Overall Architecture
+   - The application now follows a clean, modular architecture with distinct layers:
+     * UI Layer: Main window and specialized UI managers
+     * Component Layer: Power system components with defined behaviors
+     * Simulation Layer: Encapsulated simulation logic
+     * Connection Layer: Component relationship management
+   - Clear entry point through main.py with minimal bootstrapping logic
+   - Well-defined module boundaries with appropriate imports
+
+2. Design Patterns
+   - Manager Pattern: Specialized classes that handle specific concerns
+   - Observer Pattern: Components observe and react to state changes
+   - Command Pattern: Actions encapsulated as discrete operations
+   - Dependency Injection: Managers receive required dependencies
+   - Proxy Pattern: Main window delegates to specialized managers
+
+3. Separation of Concerns
+   - UI logic separated from simulation logic
+   - Component behavior separated from connection logic
+   - Property management separated from main window management
+   - Animation and cursor handling encapsulated in respective managers
+
+4. Code Quality Improvements
+   - Reduced duplication through proper extraction
+   - Better cohesion with related functionality grouped together
+   - Lower coupling between different subsystems
+   - Improved readability with focused classes and methods
+   - Consistent method signatures and naming conventions
+
+5. Refactoring Strategy Lessons
+   - Incremental extraction is safer than full rewrites
+   - Maintain backward compatibility at each step
+   - Extract complete logical units rather than individual methods
+   - Use composition over inheritance for flexibility
+   - Test after each significant change
+   - Document architectural decisions in logs 
+
+## Feature Removal Strategy (2024-03-26)
+Key lessons from removing the non-functional fuel concept:
+
+1. Code Auditing and Impact Analysis
+   - Perform thorough search across the entire codebase for all references
+   - Identify all files and systems that use the feature
+   - Look for both direct references (variable names) and indirect dependencies
+   - Evaluate the impact of removal on each affected system
+   - Map out all code paths that would need modification
+
+2. Cross-Component Dependencies
+   - Fuel concept had dependencies across multiple components:
+     * Generator component properties and methods
+     * Simulation engine calculations
+     * Analytics panel parameter handling
+     * Properties UI elements
+     * JSON serialization/deserialization
+   - Removing a feature requires coordinated changes across these components
+   - Each dependency point must be modified consistently
+
+3. Method Signature Changes
+   - Analytics method signature required updating
+   - Simulation engine calls to analytics had to be updated to match
+   - Such signature changes create cascading update requirements
+
+4. Minimal Intervention Principle
+   - Feature removal should avoid changing unrelated code
+   - Prefer simple removal over complex refactoring when deprecating features
+   - Keep changes focused solely on the target feature
+   - Maintain exact compatibility with remaining features
+
+5. Backward Compatibility Considerations
+   - Loading existing save files might reference removed properties
+   - Added backward compatibility code to handle missing fields
+   - Used defensive coding (checking if properties exist before accessing) 
+
+## Financial Feature Temporary Removal (2024-03-26)
+Key lessons from removing monetary/cost-related functionality:
+
+1. Feature Identification and Isolation
+   - Money-related code was concentrated in specific areas of the codebase:
+     * GridImportComponent (import_cost property and calculate_import_cost method)
+     * GridExportComponent (export_price property and calculate_export_revenue method)
+     * SimulationEngine (cost calculation variables and aggregation logic)
+     * Analytics panel (net_cost parameter)
+     * Properties UI (cost/price input fields and currency symbols)
+   - These features were well-encapsulated and easier to remove than deeply integrated ones
+
+2. Incremental Feature Removal
+   - Removed functionality in one category without impacting core simulation behavior
+   - Cost tracking was a "read-only" feature that didn't affect power flow calculations
+   - Made it possible to cleanly remove without side effects on critical functionality
+
+3. UI Considerations
+   - Removing UI elements required careful attention to layout management
+   - Removed currency symbols and price/cost fields from property panels
+   - Property manager handled input validation and state updates for these fields
+
+4. Dead Code Detection
+   - Some cost-related code was only used in one place
+   - Calculating values that weren't displayed elsewhere
+   - Removing one feature highlighted code that was only supporting that feature
+
+5. Serialization Impact
+   - JSON serialization/deserialization was affected by property removal
+   - Loading saved files required handling missing properties
+   - Saving files would now exclude these properties 
+
+## Model Manager Extraction (2024-03-26)
+
+### Key Insights
+1. **File Handling Isolation**: Extracting file operations into a dedicated class improves separation of concerns and keeps the UI layer focused on presentation.
+
+2. **Preservation of Dialog Behavior**: When extracting file dialogs, it's important to preserve the parent window reference for proper modal behavior and platform-specific appearance.
+
+3. **Component Registration Management**: The serialization and deserialization processes highlight the importance of maintaining consistent component registration with the scene.
+
+4. **Backward Compatibility Handling**: The load functionality contains several defensive coding patterns (using .get() with defaults) to handle loading older save files.
+
+5. **State Reset Procedures**: The new_scenario method shows the importance of thoroughly resetting all state when clearing a scene, including UI state, simulation state, and visual elements.
+
+6. **Clean Delegation**: By maintaining identical method signatures while delegating to a specialized class, we achieve better code organization without requiring changes to calling code.
+
+7. **Centralized File Format Management**: Having all serialization/deserialization logic in one place will make it easier to evolve the file format in the future. 
+
+## Milestone: Clean Module Separation (2024-03-26)
+
+The project has reached an important architectural milestone with the completion of several key refactorings:
+
+1. **Simulation Logic Extraction**: Simulation engine extracted into a dedicated class with clear responsibility
+2. **Component Properties Management**: Properties handling extracted into a dedicated management system
+3. **Connection Management**: Connection logic extracted into a dedicated system
+4. **Financial Feature Removal**: Temporary removal of non-critical cost calculations to simplify the codebase
+5. **Model Management**: Save/load functionality extracted from UI layer into dedicated ModelManager
+
+These refactorings have transformed the codebase from a monolithic design to a modular architecture with clear separation of concerns:
+- UI layer now focuses purely on presentation and user interaction
+- Simulation layer handles power flow calculations and time advancement
+- Component layer manages individual power system elements
+- Model layer handles persistence and serialization
+
+This milestone represents the successful application of SRP (Single Responsibility Principle) and has positioned the codebase for easier maintenance and future enhancements. 
+
+## Exit Confirmation Implementation (2024-03-26)
+
+### Key Insights
+1. **Application Lifecycle Management**: Qt applications rely on specific event handlers like `closeEvent` for handling application shutdown, providing an opportunity to intercept and control the exit process.
+
+2. **Context-Aware Confirmations**: Different confirmation messages and options should be presented based on the current application state (e.g., running simulation requires different handling than idle state).
+
+3. **Intuitive User Flow**: The confirmation dialogs follow a logical sequence: first check critical operations (running simulation), then handle data persistence (save prompt).
+
+4. **Multi-Option Dialogs**: Providing Yes/No/Cancel options gives users complete control over the application's behavior during exit.
+
+5. **State-Dependent Default Choices**: Setting safer defaults (No for exiting running simulation, Yes for saving) guides users toward data-preserving choices.
+
+6. **Quality of Life Improvements**: Small usability enhancements like exit confirmations significantly improve user experience with minimal code changes.
+
+7. **Asynchronous Operation Handling**: The closeEvent handler properly handles the asynchronous nature of user interaction, allowing the application to continue if the user cancels the exit process. 
+
+## Zoom Implementation Techniques (2024-03-26)
+
+### Key Insights
+1. **QGraphicsView Transformations**: Qt's QGraphicsView provides built-in scaling functionality through transform matrices, making it straightforward to implement zoom functionality.
+
+2. **Selective Scaling**: We can selectively scale different elements (e.g., keep text size consistent while scaling images) by applying inverse scale factors to text rendering.
+
+3. **Scale-Invariant Rendering**: Using the inverse of the view transform scale factor (`1.0 / view.transform().m11()`) allows us to maintain consistent text sizes across different zoom levels.
+
+4. **UI Feedback for Zoom Level**: Including a visible zoom level indicator provides important user feedback about the current state of the view.
+
+5. **Transform Management**: It's important to reset transforms before applying new ones to avoid compounding scaling effects.
+
+6. **Painter State Management**: Using `painter.save()` and `painter.restore()` ensures that transformations applied for one element don't affect others.
+
+7. **Zoom Range Limitations**: Limiting the zoom range (0.2x to 1.0x) prevents usability issues that could arise from extreme zoom levels. 
+
+## Attribute Name Consistency in Serialization Code (2024-03-26)
+
+### Key Insights
+1. **Consistency in Naming**: Ensuring that attribute names in serialization code are consistent and meaningful helps maintain readability and maintainability of the code.
+
+2. **Avoid Ambiguity**: Using clear and descriptive names can prevent confusion and errors when deserializing data.
+
+3. **Future-Proofing**: Consistent naming conventions make it easier to update serialization code in the future if the data structure changes.
+
+4. **Code Readability**: Consistent naming improves the readability of the code, making it easier for other developers to understand and maintain.
+
+5. **Error Prevention**: Consistent naming can help prevent errors in deserialization by ensuring that the data structure matches the expected format. 
+
+## Keyboard Shortcuts for Common Operations (2024-03-27)
+
+### Key Insights
+1. **User Experience Enhancement**: Adding familiar keyboard shortcuts (like Delete for deletion) significantly improves user experience with minimal code changes.
+
+2. **Consistent Behavior**: Ensuring that keyboard shortcuts trigger the same actions as their button counterparts maintains a consistent user interface.
+
+3. **Mode Awareness**: Some shortcuts should be aware of the application's current mode (e.g., connection mode vs. normal mode) to prevent unintended actions.
+
+4. **UI Context Sensitivity**: Shortcuts like Delete only make sense when a component is selected, so checks should be in place before triggering actions.
+
+5. **Input Focus Handling**: Keyboard shortcuts should be disabled when the user is typing in text fields to avoid unintended actions.
+
+6. **Hotkey Documentation**: It's important to document available keyboard shortcuts for users, potentially through tooltips or a help menu.
+
+7. **Priority Hierarchy**: Some shortcuts like Play/Pause (Space) and Reset (R) should be globally available regardless of application mode, while others should be context-sensitive.
+
+8. **Visual Indicators**: Including the keyboard shortcut in the button text (e.g., "Reset (R)") makes shortcuts discoverable without requiring separate documentation.
+
+9. **Consistent Mapping**: Following established patterns (R for Reset, Space for Play/Pause) makes shortcuts intuitive and easier to remember. 
+
+## Parameter Management in Method Calls (2024-03-27)
+
+### Key Insights
+1. **Positional vs. Named Arguments**: Be careful when mixing positional and named arguments, especially with methods that have many parameters. Use named arguments for clarity when there are more than 3-4 parameters.
+
+2. **Method Signature Evolution**: As method signatures evolve over time (adding more parameters), calls to those methods should be reviewed and updated throughout the codebase.
+
+3. **Parameter Documentation**: Add comments to method calls with many arguments to clarify what each parameter represents. This makes code more maintainable and reduces confusion.
+
+4. **Default Parameters**: When a method has many parameters with default values, prefer named arguments for optional parameters to make the code more self-documenting and less error-prone.
+
+5. **Parameter Order Sensitivity**: Positional arguments are order-sensitive; changing parameter order in a method signature requires updating all calls to that method. Named arguments mitigate this risk.
+
+6. **Argument Type Checking**: Consider adding type hints and validation for method parameters to catch errors at development time rather than at runtime.
+
+7. **Duplicate Argument Prevention**: The same parameter cannot be specified as both a positional and named argument in Python (`TypeError: got multiple values for argument`). This is a common source of errors when refactoring.
+
+8. **Method Signature Refactoring**: When a method has many parameters, consider refactoring to use a configuration object or parameter class to simplify the interface and make it more maintainable. 
+
+## Data Serialization and Component References (2024-03-27)
+
+### Key Insights
+1. **Stable Component Indexing**: When saving object references to a file, always use a consistent and explicit indexing scheme rather than relying on dynamic list indexing or object identity.
+
+2. **Explicit Mapping Tables**: Maintain mapping tables between in-memory objects and their serialized representations to ensure consistent referencing, especially for graph-like structures.
+
+3. **Scene vs. Model Consistency**: In graphical applications, the scene graph order may not match the logical model order. Never assume scene items and model components share the same ordering.
+
+4. **Reference Integrity**: When reconstructing object relationships from serialized data, verify that all referenced objects actually exist before attempting to create connections.
+
+5. **Error Resilience**: Include error handling when loading potentially corrupted or incompatible data files. Log warnings for invalid references rather than failing silently.
+
+6. **Bidirectional References**: When objects reference each other (like components and connections), ensure that both sides of the relationship are properly updated or rely on constructors to handle this automatically.
+
+7. **Versioning Considerations**: As data models evolve, maintain backward compatibility by handling different attribute names or structures in serialized data, with sensible defaults for missing attributes.
+
+8. **Graph Serialization**: When saving graph-like structures (nodes and edges), it's most reliable to first serialize all nodes with stable IDs, then separately serialize all edges referencing those IDs. 
+
+## UI Enhancement Lessons (2025-03-28)
+1. User Interface Defaults
+   - Starting with hidden panels provides a cleaner interface focused on the main content
+   - Auto-opening panels only when relevant (like when selecting a component) improves UX
+   - Floating panels can provide better workspace flexibility than docked panels
+   - Well-positioned floating panels (relative to screen center) ensure good visibility
+
+2. Keyboard Shortcuts
+   - Hotkeys for commonly used panels improve workflow efficiency
+   - Documenting hotkeys in menu items (e.g., "Show Properties Panel (P)") improves discoverability
+   - Toggle behavior (show/hide) is more intuitive than separate show/hide actions
+   - Hotkeys should still work regardless of simulation state for consistent experience
+
+3. Stylesheet Management
+   - QSS (Qt Style Sheets) provide powerful styling capabilities
+   - Centralized stylesheet definition improves consistency across UI elements
+   - Targeting specific widgets (like QDockWidget::title) allows for precise styling
+   - Small visual improvements (darker title bars, centered text) can significantly enhance UI appearance
+
+4. UI Element Sizing
+   - Elements need minimum size constraints to prevent content truncation
+   - Testing on different screen sizes and resolutions is important
+   - Small adjustments (like dropdown width) can have meaningful impact on usability
+   - Visual consistency across similar controls improves overall application appearance
+
+5. Panel Management
+   - Panels should remember position when hidden/shown
+   - First-time positioning logic should be separate from general visibility toggling
+   - Using desktop geometry helps ensure panels appear in sensible positions
+   - Boundary checking ensures panels don't appear off-screen 
+
+## UI Panel Auto-Resizing (2025-03-28)
+Key insights from implementing auto-resizing panels:
+
+1. Size Policy Management
+   - QSizePolicy.Preferred allows widgets to expand and contract based on content size
+   - Setting appropriate size policies is crucial for responsive UI behavior
+   - Both the container widget and its parent dock need compatible size policies
+
+2. Layout Margin Optimization
+   - Reducing layout margins helps create more compact UI elements
+   - Hierarchical layout margin management (outer vs inner layouts)
+   - Strategic use of spacing provides balance between compactness and readability
+
+3. Explicit Size Adjustment
+   - Explicit calls to adjustSize() are sometimes needed to force layout recalculation
+   - Widget hierarchies may require adjustment at multiple levels
+   - Size adjustments should be called after content changes are complete
+
+4. Dock Widget Configuration
+   - Dock widgets need specific features enabled to support proper resizing
+   - Floating docks have different resize behavior than docked panels
+   - QDockWidget features control what operations are permitted on the panel
+
+5. Widget Hierarchy Awareness
+   - Size changes propagate through the widget hierarchy
+   - Parent widgets need to accommodate child widget size changes
+   - Layout policies at each level affect overall resizing behavior 
+
+## Fixed Panel UI Integration (2025-03-28)
+Key insights from implementing fixed panels without title bars:
+
+1. Dock Widget Customization
+   - QDockWidget.setTitleBarWidget(QWidget()) replaces the title bar with an empty widget
+   - This creates a seamless integration with the main application window
+   - Panels without title bars appear as permanent parts of the UI rather than movable components
+
+2. Feature Control
+   - QDockWidget.NoDockWidgetFeatures removes all interactive capabilities (floating, closing, moving)
+   - This prevents accidental panel closure or repositioning
+   - Fixed panels provide a more stable, consistent user experience
+   - Selective feature enabling/disabling can create hybrid behaviors when needed
+
+3. Visual Hierarchy
+   - Removing title bars from fixed panels while keeping them on optional panels creates a visual hierarchy
+   - Users can visually distinguish between permanent UI elements and supplementary panels
+   - This establishes a clear information architecture in the application UI
+
+4. Application Frame Design
+   - Fixed panels create a "frame" around the central workspace
+   - This design pattern is common in professional tools and creative applications
+   - The pattern creates a consistent application boundary with tool access always in the same location
+
+5. Widget Customization Balance
+   - Not all panels should be fixed - floating panels are valuable for temporary properties/settings
+   - A mixed approach with some fixed and some floating panels provides the best user experience
+   - Only panels that provide core functionality should be fixed in the interface 
+
+## Application Launch Flow (2025-03-28)
+Key insights from implementing a title screen and custom application startup sequence:
+
+1. Sequential UI Loading
+   - QApplication instance should be created first and shared across all windows
+   - Showing windows in sequence requires careful signal/slot connections
+   - The destroyed signal can be used to trigger showing subsequent windows
+   - Using connect() to link window lifecycle events creates clean transitions
+
+2. Frameless Window Design
+   - Qt.FramelessWindowHint flag creates borderless windows for splash screens
+   - Frameless windows require custom position handling (no default window manager decorations)
+   - Setting zero content margins in layouts ensures edge-to-edge image display
+   - Fixed window sizing prevents unexpected resizing of splash content
+
+3. Image-Based UI Elements
+   - QPixmap provides efficient display of static images in Qt
+   - Error handling for missing images is essential for robustness
+   - Setting fallback UI for missing resources improves reliability
+   - Preserving native image resolution maintains visual quality
+
+4. Window Positioning
+   - Calculating screen dimensions via QApplication.desktop().screenGeometry()
+   - Center positioning requires accounting for both screen and window size
+   - Using integer division for coordinates prevents pixel offset issues
+   - Different monitors may have different DPI settings requiring handling
+
+5. Event Handling for User Input
+   - KeyPressEvent override provides custom keyboard interaction
+   - Supporting multiple keys (Enter, Space, Escape) improves user experience
+   - Always call the parent class implementation for unhandled events
+   - Using event.key() with Qt.Key_* constants ensures cross-platform compatibility 
+
+## Signal-Slot Patterns for Window Transitions (2025-03-28)
+Key insights from implementing reliable window transitions in Qt applications:
+
+1. Custom Signal Definition
+   - PyQt's signal-slot mechanism is more reliable than relying on built-in widget lifecycle signals
+   - Defining custom signals (pyqtSignal) provides explicit control over transition timing
+   - Signal emission can be placed at the exact point in code flow where the transition should occur
+   - Custom signals make the intent clearer than repurposing built-in signals like destroyed
+
+2. Signal Emission Timing
+   - Emit signals before performing destructive operations like window.close()
+   - Qt's destroyed signal is intended for cleanup operations, not for UI flow control
+   - The close() method might disrupt signal propagation if the signal handler is connected to the destroyed signal
+   - Emitting signals before closing ensures the connected slots are executed properly
+
+3. Object Creation Order
+   - Create target windows (destinations) before creating source windows (origins)
+   - This ensures signal connections can be established before any signals might be emitted
+   - Follow the pattern: create destination → connect signals → show origin
+   - Consistent object creation ordering prevents race conditions in the UI flow
+
+4. Launch Sequence Design
+   - Separate window creation from window display for better control
+   - Handle transitions as explicit events rather than side effects
+   - Create a clear visual indication of the application's entry point
+   - Design for both normal flow and edge cases (like rapid key presses)
+
+5. Testing for Window Transitions
+   - Test all possible transition triggers (different keys, window close button, etc.)
+   - Verify that resources are properly cleaned up after transitions
+   - Check that the application responds correctly to rapid or repeated transition requests
+   - Ensure transition behavior is consistent across different platforms 
+
+## Window Positioning Consistency (2025-03-28)
+Key insights from implementing consistent window positioning:
+
+1. Consistent User Experience
+   - All application windows should follow the same positioning principles
+   - Main windows and title screens both benefit from screen centering
+   - Centered windows provide a professional appearance across different screen sizes
+   - Window positioning is an often overlooked but important aspect of UX
+
+2. Adaptive Positioning Techniques
+   - Using screen geometry to calculate center points works across different monitors
+   - QApplication.desktop().screenGeometry() provides the current screen dimensions
+   - Integer division prevents pixel alignment issues from floating-point calculations
+   - Consistent positioning techniques should be applied throughout the application
+
+3. Window Size Considerations
+   - For accurate centering, window geometry must be retrieved after window size is set
+   - Setting default window sizes before centering ensures proper placement
+   - Different window types (frameless, normal) should maintain consistent positioning
+   - Consistent visual flow from title screen to main application enhances user experience
+
+4. Cross-Platform Compatibility
+   - Window positioning code should work consistently across operating systems
+   - Qt's platform-independent approach helps ensure consistent behavior
+   - Screen DPI variations are handled properly through Qt's screen geometry functions
+   - Simple positioning algorithms (like centering) work well across different platforms
+
+5. Sequential Window Presentation
+   - When transitioning between windows, consistent positioning creates a smoother experience
+   - Users perceive the application as more professional when windows appear in predictable locations
+   - Avoid jarring transitions where windows jump to different screen positions
+   - Maintain spatial consistency throughout the application lifecycle 
+
+## UI Onboarding and Guidance (2025-03-29)
+Key insights from implementing welcome text and user guidance:
+
+1. Contextual Instruction
+   - In-context guidance (like welcome text in the work area) is more effective than separate instructions
+   - Simple, clear directives like "Build Here" communicate the expected action directly
+   - Minimal text encourages exploration while providing just enough direction
+   - Placing instructions in the relevant work area creates spatial association with the task
+
+2. Progressive Disclosure
+   - Automatically removing guidance text after first action prevents information overload
+   - Users only need initial direction and can then explore the interface more naturally
+   - Temporary guidance doesn't clutter the interface for experienced users
+   - The timing of guidance disappearance provides feedback that the user is making progress
+
+3. Visual Styling Considerations
+   - Semi-transparent text ensures guidance is noticeable without dominating the interface
+   - Larger font size increases visibility while conveying importance
+   - Bold text styling helps differentiate guidance from regular interface elements
+   - Proper positioning in the center of the work area ensures the guidance is seen before interaction begins
+
+4. Technical Implementation
+   - Using a QGraphicsTextItem allows for flexible positioning within the scene
+   - Delayed positioning (with QTimer.singleShot) ensures the view is fully initialized before calculating center position
+   - Checking if text exists and is visible prevents errors if components are added after text is removed
+   - Component-type filtering prevents decorative components from triggering guidance removal
+
+5. Empty State Design
+   - The initial "empty" state of an application can be confusing without proper guidance
+   - Welcome text transforms an empty canvas into an instruction
+   - First-use experience significantly impacts user perception of application complexity
+   - Simple guidance can reduce the intimidation factor of a blank workspace
+   - First-use experience significantly impacts user perception of application complexity
+   - Simple guidance can reduce the intimidation factor of a blank workspace 
+
+## Property Interface Consistency Across Component Types (2025-03-29)
+When implementing related properties across different component types:
+
+1. Property Pattern Consistency
+   - Similar properties should have consistent naming across component types
+   - Use the same default values and behavior patterns for conceptually related properties
+   - Example: `auto_charging` in generators and `auto_charge_batteries` in grid imports follow the same pattern
+
+2. UI Control Standardization
+   - Use the same UI control types for similar properties across components
+   - Apply consistent styling, colors, and button states (green/red for ON/OFF toggles)
+   - Maintain consistent property label naming in the properties panel
+   - This reduces user learning curve when interacting with different components
+
+3. Simulation Logic Cohesion
+   - Properties that influence the same simulation aspects should work consistently
+   - Battery charging behavior is controlled the same way whether from generators or grid imports
+   - Preserve the same priority order and calculation flow in the simulation engine
+   - Consistent handling in the simulation engine's step-by-step process
+
+4. Serialization Standardization
+   - Include all similar properties in component serialization with consistent formatting
+   - Handle backward compatibility the same way for all components
+   - Default to sensible values when properties are missing from saved files
+   - Example: Both component types default to `True` for auto-charging when not specified
+
+5. Documentation and Naming
+   - Use descriptive, self-explanatory property names
+   - Keep naming consistent with the domain terminology
+   - Document properties similarly across component types
+   - Maintain consistent commenting style in property declarations
+
+6. Migration Strategy
+   - When adding properties to one component type, consider if other types need similar properties
+   - Plan for cross-component consistency from the beginning of feature implementation
+   - Document changes to component properties in history logs with consistent detail 
+
+   # Lessons Learned About the Codebase
+
+- Load components have a demand property that specifies kW consumption
+- The simulation engine calculates energy consumption on an hourly basis
+- Each component has a paint method that handles rendering its visual representation
+- The properties_manager.py file contains the UI forms for editing component properties
+- The simulation engine updates all components during each step
+- LoadComponent.calculate_demand() is used to calculate demand at each time step
+- The analytics panel uses matplotlib to render time series data charts
+- The simulation engine tracks energy imports/exports and can now track revenue
+- Revenue is calculated based on price per kWh and energy consumed by loads
+- The analytics panel has a modular design that allows adding new charts 
+- When adding accumulated properties to components, ensure they are reset in the reset_simulation method
+
+# Lessons Learned
+
+## Component System
+- Components inherit from ComponentBase
+- Each component type has its own class file in src/components/
+- Components have a visual representation in the paint method
+- Components can have properties that affect simulation behavior
+- Functional components are stored in the main_window.components list
+- Decorative components are not added to components list (they don't affect network connectivity)
+
+## Adding New Components
+To add a new component:
+1. Create a new class file in src/components/
+2. Import the component in main_window.py
+3. Add a button to place the component
+4. Add handling in add_component method
+5. Update model_manager.py for saving/loading
+6. Add property display in properties_manager.py
+7. Update connection_manager.py if needed
+
+## UI System
+- Uses PyQt5 for UI components
+- Main window organizes dockable panels
+- Component buttons are in the left panel
+- Properties are displayed in a floating panel
+- Simulation controls are at the bottom
+
+## Revenue Calculation System
+- Revenue can come from multiple sources (loads, grid exports, cloud workloads)
+- All revenue sources are accumulated into the gross_revenue_data array in SimulationEngine
+- Components track their own accumulated_revenue property
+- Revenue calculation happens in the update_simulation method based on energy consumed
+- The system supports different revenue models (per kWh, per resource, bulk PPA)
+- CloudWorkloadComponent demonstrates how to implement cross-component revenue calculations
+- Revenue calculations are time-step aware and properly handle simulation speed changes
+- Components with accumulated values must be reset in the reset_simulation method to ensure proper visual display 

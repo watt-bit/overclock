@@ -1,0 +1,316 @@
+{
+    "components": [
+        {
+            "type": "Load",
+            "x": -1005.0,
+            "y": 527.5,
+            "demand": 200.0,
+            "profile_type": "Random 8760",
+            "graphics_enabled": false
+        },
+        {
+            "type": "Load",
+            "x": 667.1739130434783,
+            "y": -912.5000000000002,
+            "demand": 2000.0,
+            "profile_type": "Random 8760",
+            "graphics_enabled": false
+        },
+        {
+            "type": "Load",
+            "x": 885.0,
+            "y": 665.0,
+            "demand": 500,
+            "profile_type": "Data Center",
+            "graphics_enabled": true
+        },
+        {
+            "type": "Bus",
+            "x": -567.5,
+            "y": 582.5,
+            "is_on": true
+        },
+        {
+            "type": "Bus",
+            "x": 510.0,
+            "y": 727.5,
+            "is_on": true
+        },
+        {
+            "type": "Bus",
+            "x": 225.0,
+            "y": -950.0,
+            "is_on": true
+        },
+        {
+            "type": "Battery",
+            "x": -284.99999999999994,
+            "y": -77.49999999999989,
+            "power_capacity": 500,
+            "energy_capacity": 2000,
+            "current_charge": 2000.0,
+            "operating_mode": "Basic BTF"
+        },
+        {
+            "type": "Generator",
+            "x": 500.0,
+            "y": -157.5,
+            "capacity": 1000,
+            "operating_mode": "Static"
+        },
+        {
+            "type": "Generator",
+            "x": 377.5,
+            "y": -132.49999999999997,
+            "capacity": 1000,
+            "operating_mode": "Static"
+        },
+        {
+            "type": "Bus",
+            "x": 80.0,
+            "y": -70.0,
+            "is_on": true
+        },
+        {
+            "type": "Bus",
+            "x": -242.5,
+            "y": -297.5,
+            "is_on": true
+        },
+        {
+            "type": "GridExport",
+            "x": -507.5,
+            "y": -249.99999999999994,
+            "capacity": 1500
+        },
+        {
+            "type": "GridImport",
+            "x": -462.49999999999994,
+            "y": -280.0,
+            "capacity": 2000
+        },
+        {
+            "type": "Generator",
+            "x": 622.5,
+            "y": -175.0,
+            "capacity": 1000,
+            "operating_mode": "Static"
+        }
+    ],
+    "connections": [
+        {
+            "source": 12,
+            "target": 11
+        },
+        {
+            "source": 10,
+            "target": 12
+        },
+        {
+            "source": 9,
+            "target": 10
+        },
+        {
+            "source": 13,
+            "target": 9
+        },
+        {
+            "source": 7,
+            "target": 9
+        },
+        {
+            "source": 8,
+            "target": 9
+        },
+        {
+            "source": 6,
+            "target": 10
+        },
+        {
+            "source": 9,
+            "target": 3
+        },
+        {
+            "source": 9,
+            "target": 4
+        },
+        {
+            "source": 9,
+            "target": 5
+        },
+        {
+            "source": 1,
+            "target": 5
+        },
+        {
+            "source": 2,
+            "target": 4
+        },
+        {
+            "source": 0,
+            "target": 3
+        }
+    ],
+    "decorations": [
+        {
+            "type": "BushComponent",
+            "x": 1173.9130434782605,
+            "y": 732.6086956521739
+        },
+        {
+            "type": "TreeComponent",
+            "x": 826.0869565217391,
+            "y": 519.5652173913044
+        },
+        {
+            "type": "TreeComponent",
+            "x": 1184.7826086956522,
+            "y": 547.8260869565217
+        },
+        {
+            "type": "PondComponent",
+            "x": 1147.8260869565217,
+            "y": 669.5652173913044
+        },
+        {
+            "type": "BushComponent",
+            "x": -13.043478260869591,
+            "y": -717.391304347826
+        },
+        {
+            "type": "TreeComponent",
+            "x": -34.78260869565216,
+            "y": -1047.8260869565217
+        },
+        {
+            "type": "TreeComponent",
+            "x": 28.260869565217376,
+            "y": -778.2608695652174
+        },
+        {
+            "type": "TreeComponent",
+            "x": 1049.9999999999998,
+            "y": -1078.2608695652173
+        },
+        {
+            "type": "BushComponent",
+            "x": 997.8260869565216,
+            "y": -836.9565217391305
+        },
+        {
+            "type": "BushComponent",
+            "x": 528.2608695652174,
+            "y": -997.8260869565216
+        },
+        {
+            "type": "TreeComponent",
+            "x": 682.6086956521739,
+            "y": -1036.9565217391303
+        },
+        {
+            "type": "TreeComponent",
+            "x": 1056.5217391304345,
+            "y": -884.782608695652
+        },
+        {
+            "type": "TreeComponent",
+            "x": 347.8260869565217,
+            "y": -745.6521739130434
+        },
+        {
+            "type": "TreeComponent",
+            "x": 182.6086956521739,
+            "y": -1110.8695652173913
+        },
+        {
+            "type": "TreeComponent",
+            "x": 397.8260869565217,
+            "y": -1100.0
+        },
+        {
+            "type": "TreeComponent",
+            "x": 117.39130434782606,
+            "y": -965.2173913043478
+        },
+        {
+            "type": "FactoryComponent",
+            "x": 545.6521739130435,
+            "y": -1058.695652173913
+        },
+        {
+            "type": "FactoryComponent",
+            "x": 415.21739130434787,
+            "y": -808.695652173913
+        },
+        {
+            "type": "FactoryComponent",
+            "x": 1010.8695652173913,
+            "y": -945.6521739130434
+        },
+        {
+            "type": "FactoryComponent",
+            "x": 943.478260869565,
+            "y": -947.8260869565217
+        },
+        {
+            "type": "FactoryComponent",
+            "x": 878.2608695652174,
+            "y": -954.3478260869565
+        },
+        {
+            "type": "FactoryComponent",
+            "x": 810.8695652173911,
+            "y": -954.3478260869564
+        },
+        {
+            "type": "BushComponent",
+            "x": -1240.0,
+            "y": 477.5
+        },
+        {
+            "type": "TreeComponent",
+            "x": -1000.0,
+            "y": 447.5
+        },
+        {
+            "type": "TreeComponent",
+            "x": -1230.0,
+            "y": 632.5
+        },
+        {
+            "type": "TreeComponent",
+            "x": -1385.0,
+            "y": 375.00000000000006
+        },
+        {
+            "type": "BushComponent",
+            "x": -1345.0,
+            "y": 367.5
+        },
+        {
+            "type": "House1Component",
+            "x": -1075.0,
+            "y": 507.5
+        },
+        {
+            "type": "House2Component",
+            "x": -1067.5,
+            "y": 459.99999999999994
+        },
+        {
+            "type": "House1Component",
+            "x": -1190.0,
+            "y": 444.99999999999994
+        },
+        {
+            "type": "House1Component",
+            "x": -1095.0,
+            "y": 430.0
+        },
+        {
+            "type": "PondComponent",
+            "x": -1230.0,
+            "y": 317.5
+        }
+    ]
+}

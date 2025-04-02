@@ -1,0 +1,472 @@
+from PyQt5.QtWidgets import (QGraphicsLineItem, QMessageBox, QApplication, QProgressDialog)
+from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor
+import math
+
+from src.components.bus import BusComponent
+from src.components.generator import GeneratorComponent
+from src.components.load import LoadComponent
+from src.components.grid_import import GridImportComponent
+from src.components.grid_export import GridExportComponent
+from src.components.connection import Connection
+from src.components.tree import TreeComponent
+from src.components.bush import BushComponent
+from src.components.pond import PondComponent
+from src.components.house1 import House1Component
+from src.components.house2 import House2Component
+from src.components.factory import FactoryComponent
+from src.components.cloud_workload import CloudWorkloadComponent
+
+class ConnectionManager:
+    def __init__(self, main_window):
+        self.main_window = main_window
+        self.scene = main_window.scene
+        self.view = main_window.view
+        
+        # Connection state variables
+        self.creating_connection = False
+        self.connection_source = None
+        self.temp_connection = None
+        self.cursor_phase = 0
+        
+        # Reference to UI elements
+        self.connection_btn = main_window.connection_btn
+        self.sever_connection_btn = main_window.sever_connection_btn
+        self.cursor_timer = main_window.cursor_timer
+        self.cursor_size = main_window.cursor_size
+        
+    def start_connection(self):
+        if not self.creating_connection:
+            # Clean up any existing state
+            self.cursor_timer.stop()
+            self.view.setCursor(Qt.ArrowCursor)
+            self.view.viewport().setCursor(Qt.ArrowCursor)
+            
+            self.creating_connection = True
+            self.main_window.creating_connection = True
+            # Disable connection button
+            self.connection_btn.setEnabled(False)
+            # Start cursor animation
+            self.cursor_phase = 0
+            self.cursor_timer.start(50)  # Update every 50ms
+            # Set initial cursor
+            cursor = self.create_connection_cursor(self.cursor_phase)
+            self.view.setCursor(cursor)  # Set cursor on both view
+            self.view.viewport().setCursor(cursor)  # and viewport
+            # Disconnect component clicked from properties
+            self.scene.component_clicked.disconnect(self.main_window.properties_manager.show_component_properties)
+            # Connect to handle_connection_click instead
+            self.scene.component_clicked.connect(self.handle_connection_click)
+    
+    def cancel_connection(self):
+        """Cancel the current connection creation"""
+        if self.creating_connection:
+            # Clean up temporary connection if it exists
+            if self.temp_connection:
+                self.scene.removeItem(self.temp_connection)
+                self.temp_connection = None
+            
+            self.connection_source = None
+            self.creating_connection = False
+            self.main_window.creating_connection = False
+            # Stop cursor animation and restore default cursor
+            self.cursor_timer.stop()
+            self.view.setCursor(Qt.ArrowCursor)
+            self.view.viewport().setCursor(Qt.ArrowCursor)
+            # Re-enable connection button
+            self.connection_btn.setEnabled(True)
+            self.view.setMouseTracking(False)
+            self.view.viewport().removeEventFilter(self.main_window)
+            # Restore original click behavior
+            if self.scene.receivers(self.scene.component_clicked) > 0:
+                self.scene.component_clicked.disconnect(self.handle_connection_click)
+            self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
+    
+    def handle_connection_click(self, component):
+        """Handle clicks on components for connection creation"""
+        # Ignore decorative components
+        if isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent)):
+            return
+            
+        if not self.connection_source:
+            # First click - set source
+            self.connection_source = component
+            # Create temporary visual connection that follows mouse
+            self.temp_connection = QGraphicsLineItem()
+            self.temp_connection.setPen(QPen(Qt.darkGray, 2, Qt.DashLine))
+            self.scene.addItem(self.temp_connection)
+            # Enable mouse tracking
+            self.view.setMouseTracking(True)
+            self.view.viewport().installEventFilter(self.main_window)
+        else:
+            # Second click - create final connection
+            if component != self.connection_source:  # Prevent self-connection
+                connection = Connection(self.connection_source, component)
+                self.scene.addItem(connection)
+                connection.setup_component_tracking()
+                self.main_window.connections.append(connection)
+                
+                # Validate bus states after creating a connection
+                self.main_window.validate_bus_states()
+            
+            # Clean up
+            if self.temp_connection:
+                self.scene.removeItem(self.temp_connection)
+            self.temp_connection = None
+            self.connection_source = None
+            self.creating_connection = False
+            self.main_window.creating_connection = False
+            # Stop cursor animation and restore default cursor
+            self.cursor_timer.stop()
+            # Reset cursor on both view and viewport
+            self.view.setCursor(Qt.ArrowCursor)
+            self.view.viewport().setCursor(Qt.ArrowCursor)
+            # Re-enable connection button
+            self.connection_btn.setEnabled(True)
+            self.view.setMouseTracking(False)
+            self.view.viewport().removeEventFilter(self.main_window)
+            # Restore original click behavior
+            self.scene.component_clicked.disconnect(self.handle_connection_click)
+            self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
+            
+            self.main_window.update_simulation()
+            
+            # Validate bus states after removing connections
+            self.main_window.validate_bus_states()
+    
+    def handle_mouse_move_for_connection(self, event):
+        """Handle mouse movement for the temporary connection line"""
+        if self.temp_connection and self.connection_source:
+            # Get source component center in scene coordinates
+            source_pos = self.connection_source.sceneBoundingRect().center()
+            # Convert mouse position to scene coordinates
+            mouse_pos = self.view.mapToScene(event.pos())
+            # Update the temporary line
+            self.temp_connection.setLine(source_pos.x(), source_pos.y(),
+                                     mouse_pos.x(), mouse_pos.y())
+            return True  # Event has been handled
+        return False
+    
+    def create_connection_cursor(self, phase):
+        """Create a custom cursor for connection mode with pulsing effect"""
+        size = self.cursor_size
+        pixmap = QPixmap(size, size)
+        pixmap.fill(Qt.transparent)
+        
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        
+        # Calculate pulse effect (0.0 to 1.0)
+        pulse = abs(math.sin(phase))
+        
+        # Draw outer glow with higher opacity
+        glow_color = QColor(255, 215, 0, int(180 * pulse))  # Golden yellow with varying opacity
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(glow_color)
+        painter.drawEllipse(4, 4, size-8, size-8)
+        
+        # Draw crosshair with thicker lines
+        painter.setPen(QPen(QColor(255, 215, 0), 3))  # Thicker golden yellow lines
+        # Horizontal line
+        painter.drawLine(2, size//2, size-2, size//2)
+        # Vertical line
+        painter.drawLine(size//2, 2, size//2, size-2)
+        
+        # Must end painter before creating cursor
+        painter.end()
+        
+        # Set hot spot to center of cursor
+        return QCursor(pixmap, size//2, size//2)
+
+    def update_cursor(self):
+        """Update the cursor appearance for the pulsing effect"""
+        if self.creating_connection:
+            self.cursor_phase += 0.2
+            cursor = self.create_connection_cursor(self.cursor_phase)
+            self.view.setCursor(cursor)  # Set cursor on both view
+            self.view.viewport().setCursor(cursor)  # and viewport 
+
+    def autoconnect_all_components(self):
+        """Automatically connect all components in the scene to form a valid network"""
+        if not self.main_window.components:
+            QMessageBox.information(self.main_window, "Autoconnect", "No components available to connect.")
+            return
+        
+        # Disable the autoconnect button to prevent double-clicks
+        if hasattr(self.main_window, 'autoconnect_btn'):
+            self.main_window.autoconnect_btn.setEnabled(False)
+        
+        try:
+            # Save a copy of the components list
+            saved_components = self.main_window.components.copy()
+            
+            # Remove all connections manually
+            for connection in list(self.main_window.connections):
+                # First clean up the connection
+                connection.cleanup()
+                # Remove from scene if it's still valid
+                try:
+                    self.scene.removeItem(connection)
+                except RuntimeError:
+                    pass  # Already removed, ignore
+            
+            # Clear connections list
+            self.main_window.connections.clear()
+            
+            # Show progress dialog for larger networks
+            if len(self.main_window.components) > 10:
+                progress = QMessageBox()
+                progress.setWindowTitle("Autoconnect")
+                progress.setText("Creating connections...\nPlease wait.")
+                progress.setStandardButtons(QMessageBox.NoButton)
+                progress.show()
+                QApplication.processEvents()  # Force UI update
+                
+            # Dictionary to track which components are already connected
+            connected_pairs = set()
+            
+            # Strategy: Connect components in a logical pattern
+            # Priority: Bus → Generators → Loads → Grid connections
+            
+            # Find components by type (exclude TreeComponent instances)
+            buses = [c for c in self.main_window.components if isinstance(c, BusComponent)]
+            generators = [c for c in self.main_window.components if isinstance(c, GeneratorComponent)]
+            loads = [c for c in self.main_window.components if isinstance(c, LoadComponent)]
+            grid_import = [c for c in self.main_window.components if isinstance(c, GridImportComponent)]
+            grid_export = [c for c in self.main_window.components if isinstance(c, GridExportComponent)]
+            
+            # 1. If there are buses, connect generators to buses
+            if buses:
+                # Connect generators to buses (distribute evenly if multiple buses)
+                for i, generator in enumerate(generators):
+                    bus = buses[i % len(buses)]  # Distribute evenly
+                    self.create_connection_between(generator, bus, connected_pairs)
+                
+                # Connect loads to buses (distribute evenly if multiple buses)
+                for i, load in enumerate(loads):
+                    bus = buses[i % len(buses)]  # Distribute evenly
+                    self.create_connection_between(load, bus, connected_pairs)
+                
+                # Connect grid connections to buses
+                for i, grid in enumerate(grid_import + grid_export):
+                    bus = buses[i % len(buses)]  # Distribute evenly
+                    self.create_connection_between(grid, bus, connected_pairs)
+            else:
+                # No buses - connect generators directly to loads
+                if generators and loads:
+                    # Connect generators to loads (distribute evenly)
+                    for i, generator in enumerate(generators):
+                        load = loads[i % len(loads)]
+                        self.create_connection_between(generator, load, connected_pairs)
+                
+                # Connect grid import to loads if there are any loads
+                if loads and grid_import:
+                    for i, load in enumerate(loads):
+                        grid = grid_import[i % len(grid_import)]
+                        self.create_connection_between(grid, load, connected_pairs)
+                
+                # Connect generators to grid export if there are any grid exports
+                if generators and grid_export:
+                    for i, generator in enumerate(generators):
+                        grid = grid_export[i % len(grid_export)]
+                        self.create_connection_between(generator, grid, connected_pairs)
+                
+                # Connect grid import to grid export if both exist
+                if grid_import and grid_export:
+                    for i, g_import in enumerate(grid_import):
+                        g_export = grid_export[i % len(grid_export)]
+                        self.create_connection_between(g_import, g_export, connected_pairs)
+            
+            # STEP 2: Ensure all components are connected in a single network
+            # Build a graph of the current connections
+            connection_graph = {id(component): set() for component in self.main_window.components}
+            for pair in connected_pairs:
+                source_id, target_id = pair
+                connection_graph[source_id].add(target_id)
+                connection_graph[target_id].add(source_id)
+            
+            # Find connected components in the graph (using BFS)
+            connected_components = self.find_connected_components(connection_graph)
+            
+            # If more than one connected component, connect them together
+            if len(connected_components) > 1:
+                # Connect each component to the next one
+                for i in range(len(connected_components) - 1):
+                    # Take one node from each component
+                    comp1_node_id = connected_components[i][0]
+                    comp2_node_id = connected_components[i + 1][0]
+                    
+                    # Find the actual component objects
+                    comp1_node = next(c for c in self.main_window.components if id(c) == comp1_node_id)
+                    comp2_node = next(c for c in self.main_window.components if id(c) == comp2_node_id)
+                    
+                    # Connect them
+                    self.create_connection_between(comp1_node, comp2_node, connected_pairs)
+            
+            # STEP 3: Final check - ensure any isolated components are connected
+            # Create a list of all component IDs
+            all_component_ids = [id(c) for c in self.main_window.components]
+            
+            # Find any components not in any connection
+            connected_component_ids = set(sum(connected_components, []))
+            isolated_component_ids = set(all_component_ids) - connected_component_ids
+            
+            # Connect any isolated components to the main network
+            if isolated_component_ids and connected_component_ids:
+                # Take the first node from the largest connected component as anchor
+                largest_component = max(connected_components, key=len)
+                anchor_id = largest_component[0]
+                anchor_component = next(c for c in self.main_window.components if id(c) == anchor_id)
+                
+                # Connect each isolated component to the anchor
+                for isolated_id in isolated_component_ids:
+                    isolated_component = next(c for c in self.main_window.components if id(c) == isolated_id)
+                    self.create_connection_between(anchor_component, isolated_component, connected_pairs)
+            
+            # Close progress dialog if it was shown
+            if len(self.main_window.components) > 10:
+                progress.close()
+            
+            # Verify network connectivity
+            if self.main_window.check_network_connectivity():
+                QMessageBox.information(self.main_window, "Autoconnect", f"Successfully created {len(self.main_window.connections)} connections.")
+            else:
+                # Final fallback: connect everything in a line
+                if not self.main_window.check_network_connectivity():
+                    self.connect_all_in_sequence(connected_pairs)
+        finally:
+            # Re-enable the autoconnect button
+            if hasattr(self.main_window, 'autoconnect_btn'):
+                self.main_window.autoconnect_btn.setEnabled(True)
+    
+    def find_connected_components(self, graph):
+        """Find connected components in the graph (using BFS)"""
+        components = []
+        visited = set()
+        
+        for node in graph:
+            if node not in visited:
+                # Start a new connected component
+                component = []
+                queue = [node]
+                visited.add(node)
+                
+                while queue:
+                    current = queue.pop(0)
+                    component.append(current)
+                    
+                    for neighbor in graph[current]:
+                        if neighbor not in visited:
+                            visited.add(neighbor)
+                            queue.append(neighbor)
+                
+                components.append(component)
+        
+        return components
+    
+    def connect_all_in_sequence(self, connected_pairs):
+        """Last resort fallback: connect all components in a simple line/sequence"""
+        # Simply connect each component to the next one
+        for i in range(len(self.main_window.components) - 1):
+            component1 = self.main_window.components[i]
+            component2 = self.main_window.components[i + 1]
+            self.create_connection_between(component1, component2, connected_pairs)
+
+    def create_connection_between(self, source, target, connected_pairs):
+        """Create a connection between two components if not already connected"""
+        # Check if this pair is already connected (in either direction)
+        if (id(source), id(target)) in connected_pairs or (id(target), id(source)) in connected_pairs:
+            return False
+            
+        # Safety check for deleted components
+        try:
+            # Verify both components are still valid
+            if not source.scene() or not target.scene():
+                return False
+                
+            # Create the connection
+            connection = Connection(source, target)
+            self.scene.addItem(connection)
+            connection.setup_component_tracking()
+            self.main_window.connections.append(connection)
+            
+            # Mark this pair as connected
+            connected_pairs.add((id(source), id(target)))
+            return True
+        except (RuntimeError, AttributeError):
+            # Handle case where C++ objects have been deleted
+            return False
+
+    def start_sever_connection(self):
+        """Start the sever connection mode"""
+        # Clean up any existing state
+        self.cursor_timer.stop()
+        self.view.setCursor(Qt.ArrowCursor)
+        self.view.viewport().setCursor(Qt.ArrowCursor)
+        
+        # If we're already in create connection mode, cancel it
+        if self.creating_connection:
+            self.cancel_connection()
+            
+        # Disable both connection and sever buttons
+        self.connection_btn.setEnabled(False)
+        self.sever_connection_btn.setEnabled(False)
+        
+        # Set cursor to indicate deletion mode
+        self.view.setCursor(Qt.CrossCursor)
+        self.view.viewport().setCursor(Qt.CrossCursor)
+        
+        # Disconnect component clicked from properties
+        self.scene.component_clicked.disconnect(self.main_window.properties_manager.show_component_properties)
+        # Connect to handle_sever_connection instead
+        self.scene.component_clicked.connect(self.handle_sever_connection)
+        
+        # Show message to guide user
+        QMessageBox.information(self.main_window, "Sever Connections", 
+                              "Click on a component to remove all of its connections.\n\n"
+                              "Press ESC to cancel.")
+    
+    def handle_sever_connection(self, component):
+        """Handle clicks on components for connection severing"""
+        # Ignore decorative components
+        if isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent)):
+            return
+            
+        # Find all connections associated with this component
+        connections_to_remove = [conn for conn in self.main_window.connections
+                               if conn.source == component or conn.target == component]
+        
+        if not connections_to_remove:
+            QMessageBox.information(self.main_window, "Sever Connection", 
+                                  "This component has no connections to sever.")
+        else:
+            # Remove connections
+            for connection in connections_to_remove:
+                connection.cleanup()
+                self.scene.removeItem(connection)
+                self.main_window.connections.remove(connection)
+            
+            # Exit sever mode
+            self.cancel_sever_connection()
+            
+            # Validate bus states after removing connections
+            self.main_window.validate_bus_states()
+            self.main_window.update_simulation()
+    
+    def cancel_sever_connection(self):
+        """Cancel the sever connection mode"""
+        # Reset cursor
+        self.view.setCursor(Qt.ArrowCursor)
+        self.view.viewport().setCursor(Qt.ArrowCursor)
+        
+        # Re-enable buttons
+        self.connection_btn.setEnabled(True)
+        self.sever_connection_btn.setEnabled(True)
+        
+        # Restore original click behavior
+        if self.scene.receivers(self.scene.component_clicked) > 0:
+            self.scene.component_clicked.disconnect(self.handle_sever_connection)
+        self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
+        
+        # Update simulation
+        self.main_window.update_simulation() 
