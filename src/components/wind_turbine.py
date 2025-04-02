@@ -1,0 +1,157 @@
+from PyQt5.QtGui import QBrush, QColor, QPen, QPainter, QFont, QPixmap
+from PyQt5.QtCore import Qt, QRectF
+from .base import ComponentBase
+import csv
+import os
+
+class WindTurbineComponent(ComponentBase):
+    def __init__(self, x, y):
+        # Initialize with a larger size to accommodate bigger image
+        super().__init__(x, y, 300, 220)  # Same size as other components
+        # Make brush transparent (no background)
+        self.setBrush(Qt.transparent)
+        # Load the image
+        self.image = QPixmap("src/ui/assets/windturbine.png")
+        
+        # Wind turbine properties
+        self.capacity = 500  # kW - default capacity
+        self.operating_mode = "Disabled"  # Start in disabled mode
+        self.capacity_factors = None  # Will hold data from CSV file
+        self.last_output = 0  # Track the last output for display
+    
+    def paint(self, painter, option, widget):
+        # Call base class paint to handle the selection highlight
+        painter.save()
+        super().paint(painter, option, widget)
+        painter.restore()
+        
+        # Get component dimensions
+        rect = self.boundingRect()
+        
+        # Calculate image area with 1:1 aspect ratio (square)
+        # Using 80% of height for the larger image
+        image_height = rect.height() * 0.65
+        image_size = min(rect.width(), image_height)
+        
+        # Center the image horizontally
+        x_offset = (rect.width() - image_size) / 2
+        
+        # Create square image rect
+        image_rect = QRectF(
+            rect.x() + x_offset,
+            rect.y() + (rect.height() * 0.05),  # Add a small top margin
+            image_size,
+            image_size
+        )
+        
+        # Draw the image with transparent background and 1:1 aspect ratio
+        if not self.image.isNull():
+            painter.drawPixmap(
+                image_rect,
+                self.image,
+                QRectF(0, 0, self.image.width(), self.image.height())
+            )
+        
+        # Calculate text area (remaining space below the image)
+        text_rect = QRectF(
+            rect.x(),
+            rect.y() + image_size + (rect.height() * 0.05),  # Position below image with margin
+            rect.width(),
+            rect.height() * 0.2
+        )
+        
+        # Draw the text in white
+        painter.setPen(QPen(Qt.white))
+        
+        # Get the current view scale factor to adjust text size
+        scale_factor = 1.0
+        if self.scene() and self.scene().views():
+            view = self.scene().views()[0]
+            if hasattr(view, 'transform'):
+                scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
+        
+        # Set font with size adjusted for current zoom level
+        font = QFont('Arial', 14 * scale_factor)
+        painter.setFont(font)
+        
+        # Get current output percentage
+        if self.capacity > 0:
+            output_percentage = int((self.last_output / self.capacity) * 100)
+        else:
+            output_percentage = 0
+        
+        # Draw the operating mode text
+        status_text = f"{self.capacity} kW (wind) | {output_percentage}%"
+        painter.drawText(text_rect, Qt.AlignCenter, status_text)
+    
+    def load_capacity_factors(self):
+        """Load capacity factors from CSV file"""
+        if self.capacity_factors is None:
+            # Load data from CSV file
+            csv_path = "src/data/Powerlandia-WindGen-Year1.csv"
+            
+            if os.path.exists(csv_path):
+                try:
+                    self.capacity_factors = []
+                    with open(csv_path, 'r', encoding='utf-8-sig') as file:  # utf-8-sig handles BOM character
+                        # Read each line and convert to float
+                        for line in file:
+                            line = line.strip()
+                            if line:  # Skip empty lines
+                                try:
+                                    self.capacity_factors.append(float(line))
+                                except ValueError:
+                                    # Skip lines that can't be converted to float
+                                    print(f"Warning: Could not convert '{line}' to float, skipping.")
+                            
+                    # Ensure we have enough data (8760 hours)
+                    if len(self.capacity_factors) < 8760:
+                        print(f"Warning: CSV file has only {len(self.capacity_factors)} entries, expected 8760.")
+                        # Pad with zeros if needed
+                        self.capacity_factors.extend([0.0] * (8760 - len(self.capacity_factors)))
+                except Exception as e:
+                    print(f"Error loading capacity factors: {e}")
+                    self.capacity_factors = [0.0] * 8760  # Default to zero on error
+            else:
+                print(f"File not found: {csv_path}")
+                self.capacity_factors = [0.0] * 8760  # Default to zero if file not found
+    
+    def calculate_output(self, total_load):
+        """Calculate wind turbine output based on capacity and capacity factors"""
+        # If in disabled mode, return 0
+        if self.operating_mode == "Disabled":
+            self.last_output = 0
+            return 0
+            
+        # If in Powerlandia mode, calculate output based on capacity factors
+        if self.operating_mode == "Powerlandia 8760 - Midwest 1":
+            # Load capacity factors if not already loaded
+            if self.capacity_factors is None:
+                self.load_capacity_factors()
+                
+            # Get current time step from the simulation engine
+            current_time = 0
+            if self.scene() and hasattr(self.scene(), 'parent'):
+                parent = self.scene().parent()
+                if hasattr(parent, 'simulation_engine') and hasattr(parent.simulation_engine, 'current_time_step'):
+                    current_time = parent.simulation_engine.current_time_step
+            
+            # Get capacity factor for current hour (wrap around if beyond 8760)
+            hour_index = current_time % len(self.capacity_factors)
+            capacity_factor = self.capacity_factors[hour_index] / 10 # divide by 10 to scale down to 0-1, temporary fix because data file is 0-10 not 0-1
+            
+            # Calculate output based on capacity and capacity factor
+            self.last_output = self.capacity * capacity_factor
+            return self.last_output
+            
+        # Default case (should not reach here)
+        return 0
+    
+    def serialize(self):
+        return {
+            'type': 'wind_turbine',
+            'x': self.x(),
+            'y': self.y(),
+            'capacity': self.capacity,
+            'operating_mode': self.operating_mode
+        } 

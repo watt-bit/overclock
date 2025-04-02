@@ -17,6 +17,7 @@ from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
+from src.components.wind_turbine import WindTurbineComponent
 
 class ModelManager:
     """
@@ -168,6 +169,16 @@ class ModelManager:
                 index += 1
                 data["components"].append({
                     "type": "SolarPanel",
+                    "x": item.x(),
+                    "y": item.y(),
+                    "capacity": item.capacity,
+                    "operating_mode": item.operating_mode
+                })
+            elif isinstance(item, WindTurbineComponent):
+                component_index_map[item] = index
+                index += 1
+                data["components"].append({
+                    "type": "WindTurbine",
                     "x": item.x(),
                     "y": item.y(),
                     "capacity": item.capacity,
@@ -334,6 +345,17 @@ class ModelManager:
                     
                 elif component_type == "SolarPanel":
                     component = SolarPanelComponent(x, y)
+                    component.capacity = component_data.get("capacity", 500)
+                    component.operating_mode = component_data.get("operating_mode", "Disabled")
+                    # Load capacity factors if in active mode
+                    if component.operating_mode == "Powerlandia 8760 - Midwest 1":
+                        component.load_capacity_factors()
+                    self.main_window.scene.addItem(component)
+                    self.main_window.components.append(component)
+                    component_map.append(component)
+                
+                elif component_type == "WindTurbine":
+                    component = WindTurbineComponent(x, y)
                     component.capacity = component_data.get("capacity", 500)
                     component.operating_mode = component_data.get("operating_mode", "Disabled")
                     # Load capacity factors if in active mode

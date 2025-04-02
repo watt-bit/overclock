@@ -7,6 +7,7 @@ from src.components.grid_import import GridImportComponent
 from src.components.grid_export import GridExportComponent
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
+from src.components.wind_turbine import WindTurbineComponent
 
 class SimulationEngine(QObject):
     """
@@ -91,6 +92,8 @@ class SimulationEngine(QObject):
                     total_capacity += item.capacity
                 elif isinstance(item, SolarPanelComponent) and item.operating_mode == "Powerlandia 8760 - Midwest 1":
                     total_capacity += item.capacity
+                elif isinstance(item, WindTurbineComponent) and item.operating_mode == "Powerlandia 8760 - Midwest 1":
+                    total_capacity += item.capacity
                 elif isinstance(item, BatteryComponent):
                     total_battery_charge += item.current_charge / 1000.0
                     if item.operating_mode == "BTF Basic Unit (Auto)":
@@ -99,9 +102,9 @@ class SimulationEngine(QObject):
             # Second pass: calculate local generation first (priority)
             remaining_load = total_load
             
-            # Start with Solar Panel generation - highest priority
+            # Start with Solar Panel and Wind Turbine generation - highest priority
             for item in self.main_window.scene.items():
-                if isinstance(item, SolarPanelComponent) and item.operating_mode == "Powerlandia 8760 - Midwest 1":
+                if (isinstance(item, SolarPanelComponent) or isinstance(item, WindTurbineComponent)) and item.operating_mode == "Powerlandia 8760 - Midwest 1":
                     output = item.calculate_output(remaining_load)
                     local_generation += output
                     remaining_load = max(0, remaining_load - output)

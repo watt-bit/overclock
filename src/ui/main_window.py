@@ -28,6 +28,7 @@ from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
+from src.components.wind_turbine import WindTurbineComponent
 from src.simulation.engine import SimulationEngine
 from .analytics import AnalyticsPanel
 from .properties_manager import ComponentPropertiesManager
@@ -426,6 +427,10 @@ class PowerSystemSimulator(QMainWindow):
         solar_panel_btn = QPushButton("Solar Array")
         solar_panel_btn.setStyleSheet(opaque_button_style)
         solar_panel_btn.clicked.connect(lambda: self.add_component("solar_panel"))
+        
+        wind_turbine_btn = QPushButton("Wind Turbine")
+        wind_turbine_btn.setStyleSheet(opaque_button_style)
+        wind_turbine_btn.clicked.connect(lambda: self.add_component("wind_turbine"))
 
         # Create a popup menu for props
         props_menu = QMenu(self)
@@ -468,6 +473,7 @@ class PowerSystemSimulator(QMainWindow):
         component_layout.addWidget(self.sever_connection_btn)
         component_layout.addWidget(separator2)
         component_layout.addWidget(solar_panel_btn)
+        component_layout.addWidget(wind_turbine_btn)
         component_layout.addWidget(self.props_btn)
         component_layout.addStretch()
         
@@ -495,6 +501,7 @@ class PowerSystemSimulator(QMainWindow):
         self.component_buttons = [
             generator_btn, 
             solar_panel_btn,
+            wind_turbine_btn,
             grid_import_btn, 
             grid_export_btn, 
             bus_btn, 
@@ -743,6 +750,10 @@ class PowerSystemSimulator(QMainWindow):
             component = SolarPanelComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+        elif component_type == "wind_turbine":
+            component = WindTurbineComponent(0, 0)
+            self.scene.addItem(component)
+            self.components.append(component)
         elif component_type == "tree":
             component = TreeComponent(0, 0)
             self.scene.addItem(component)
@@ -775,7 +786,7 @@ class PowerSystemSimulator(QMainWindow):
             # and should not affect network connectivity checks
         
         # Hide welcome text after adding the first component (if it's not decorative)
-        if component_type in ["generator", "grid_import", "grid_export", "bus", "load", "battery", "cloud_workload", "solar_panel"]:
+        if component_type in ["generator", "grid_import", "grid_export", "bus", "load", "battery", "cloud_workload", "solar_panel", "wind_turbine"]:
             if self.welcome_text and self.welcome_text.isVisible():
                 self.welcome_text.setVisible(False)
     

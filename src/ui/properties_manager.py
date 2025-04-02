@@ -21,6 +21,7 @@ from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
+from src.components.wind_turbine import WindTurbineComponent
 
 # Define common styles
 COMMON_BUTTON_STYLE = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
@@ -138,6 +139,8 @@ class ComponentPropertiesManager:
             self._add_cloud_workload_properties(component, left_column)
         elif isinstance(component, SolarPanelComponent):
             self._add_solar_panel_properties(component, left_column)
+        elif isinstance(component, WindTurbineComponent):
+            self._add_wind_turbine_properties(component, left_column)
         elif isinstance(component, TreeComponent):
             # Trees are decorative with no functional properties
             tree_info = QLabel("Decorative element - no properties to edit")
@@ -845,6 +848,42 @@ class ComponentPropertiesManager:
     
     def _add_solar_panel_properties(self, component, layout):
         """Add properties for SolarPanelComponent"""
+        # Add operating mode selector
+        mode_selector = QComboBox()
+        mode_selector.setStyleSheet(COMBOBOX_STYLE)
+        mode_selector.addItems(["Disabled", "Powerlandia 8760 - Midwest 1"])
+        mode_selector.setCurrentText(component.operating_mode)
+        
+        def on_mode_changed(text):
+            component.operating_mode = text
+            # If switching to Powerlandia mode, load capacity factors
+            if text == "Powerlandia 8760 - Midwest 1":
+                component.load_capacity_factors()
+            component.update()  # Refresh the component display
+            self.main_window.update_simulation()  # Update simulation to reflect the change
+        
+        mode_selector.currentTextChanged.connect(on_mode_changed)
+        layout.addRow("Operating Mode:", mode_selector)
+        
+        # Add capacity field
+        capacity_field = QLineEdit(str(component.capacity))
+        capacity_field.setStyleSheet(INPUT_STYLE)
+        
+        def update_capacity(value):
+            try:
+                component.capacity = float(value)
+                component.update()  # Refresh the component display
+                self.main_window.update_simulation()
+            except (ValueError, TypeError):
+                # Restore previous value if input is invalid
+                capacity_field.setText(str(component.capacity))
+        
+        # Set up numeric validation for the capacity field
+        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=0)
+        layout.addRow("Capacity (kW):", capacity_field)
+    
+    def _add_wind_turbine_properties(self, component, layout):
+        """Add properties for WindTurbineComponent"""
         # Add operating mode selector
         mode_selector = QComboBox()
         mode_selector.setStyleSheet(COMBOBOX_STYLE)
