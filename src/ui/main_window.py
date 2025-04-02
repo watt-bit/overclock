@@ -384,7 +384,7 @@ class PowerSystemSimulator(QMainWindow):
         separator2.setFrameShadow(QFrame.Sunken)
         separator2.setLineWidth(1)
 
-        solar_panel_btn = QPushButton("Solar Panel")
+        solar_panel_btn = QPushButton("Solar Array")
         solar_panel_btn.setStyleSheet(opaque_button_style)
         solar_panel_btn.clicked.connect(lambda: self.add_component("solar_panel"))
 
