@@ -19,7 +19,7 @@ class TitleScreen(QWidget):
         
         # Load and display the title image
         title_image = QLabel()
-        pixmap = QPixmap("src/ui/assets/demotitle.png")
+        pixmap = QPixmap("src/ui/assets/demotitle5.png")
         if not pixmap.isNull():
             title_image.setPixmap(pixmap)
         else:
