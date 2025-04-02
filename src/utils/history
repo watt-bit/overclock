@@ -910,3 +910,45 @@
   * Revenue calculation mechanisms
   * Time management strategies
 - Identified notable optimizations and areas for future enhancement 
+
+## 2025-04-01 20:20 - Added Solar Panel Component
+- Created new SolarPanelComponent class in src/components/solar_panel.py
+- Component uses solarpanel.png image with transparent background
+- Added "Solar (P)anel" button to the UI with keyboard shortcut 'P'
+- Implemented property handling with "Operating Mode" dropdown (currently only "Disabled" option)
+- Added serialization support for saving/loading solar panel components
+- Integrated component with the connection system for network connectivity
+- Component is currently non-functional (doesn't generate power) as it's in "Disabled" mode 
+
+## 2025-04-01 20:30 - Fixed Welcome Text Bug with Solar Panel Component
+- Fixed bug where welcome text didn't disappear when adding a solar panel as the first component
+- Added "solar_panel" to the list of component types that trigger hiding the welcome text
+- Bug was caused by solar panel not being included in the original list of components that hide the text
+- Ensures consistent behavior when adding any functional (non-decorative) component as the first component 
+
+## 2025-04-01 20:35 - Added Capacity Property to Solar Panel Component
+- Added "Capacity" property to SolarPanelComponent with a default value of 500 kW
+- Updated the component's paint method to display capacity information
+- Added capacity field to the properties panel for user editing
+- Implemented proper validation for numeric input
+- Updated the serialize/deserialize methods to save and load the capacity property
+- Updated the visual display to show capacity information below operating mode
+- The component remains non-functional (doesn't generate power) as it's still in "Disabled" mode
+
+## 2025-04-01 20:45 - Added Powerlandia 8760 Solar Generation Capability
+- Added "Powerlandia 8760 - Midwest 1" operating mode to SolarPanelComponent
+- Implemented CSV data loading for hourly solar capacity factors from powerlandia-solargen-year1.csv
+- Updated the calculate_output method to use capacity factors based on simulation time
+- Modified the simulation engine to prioritize solar generation before other sources
+- Updated the properties panel to include the new operating mode option
+- Added output percentage display to show current generation relative to capacity
+- Enhanced the model manager to properly save/load solar panel operating mode
+- Solar generation is now fully integrated with the existing power flow logic
+- Interface shows real-time solar output percentage based on time-of-day factors
+
+## 2025-04-01 20:55 - Fixed Solar Panel Capacity Accounting Bug
+- Fixed bug where solar panel generation was incorrectly showing up as "unused capacity"
+- Added solar panel capacity to the total_capacity calculation in the simulation engine
+- Only counts capacity for solar panels in "Powerlandia 8760" mode (not disabled panels)
+- Ensures solar generation is properly accounted for in capacity utilization calculations
+- Fixes incorrect analytics display showing solar generation as unused when it was actually serving load

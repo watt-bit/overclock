@@ -6,6 +6,7 @@ from src.components.battery import BatteryComponent
 from src.components.grid_import import GridImportComponent
 from src.components.grid_export import GridExportComponent
 from src.components.cloud_workload import CloudWorkloadComponent
+from src.components.solar_panel import SolarPanelComponent
 
 class SimulationEngine(QObject):
     """
@@ -88,6 +89,8 @@ class SimulationEngine(QObject):
                     total_load += item.calculate_demand(current_time)
                 elif isinstance(item, GeneratorComponent):
                     total_capacity += item.capacity
+                elif isinstance(item, SolarPanelComponent) and item.operating_mode == "Powerlandia 8760 - Midwest 1":
+                    total_capacity += item.capacity
                 elif isinstance(item, BatteryComponent):
                     total_battery_charge += item.current_charge / 1000.0
                     if item.operating_mode == "BTF Basic Unit (Auto)":
@@ -96,7 +99,14 @@ class SimulationEngine(QObject):
             # Second pass: calculate local generation first (priority)
             remaining_load = total_load
             
-            # First get generation from all Static (Auto) generators
+            # Start with Solar Panel generation - highest priority
+            for item in self.main_window.scene.items():
+                if isinstance(item, SolarPanelComponent) and item.operating_mode == "Powerlandia 8760 - Midwest 1":
+                    output = item.calculate_output(remaining_load)
+                    local_generation += output
+                    remaining_load = max(0, remaining_load - output)
+            
+            # Then get generation from all Static (Auto) generators
             for item in self.main_window.scene.items():
                 if isinstance(item, GeneratorComponent) and item.operating_mode == "Static (Auto)":
                     output = item.calculate_output(remaining_load)
@@ -191,7 +201,7 @@ class SimulationEngine(QObject):
                 if remaining_load > self.stability_tolerance:
                     self.system_stable = False
             
-            # Fifth pass: check for surplus power to charge batteries v
+            # Fifth pass: check for surplus power to charge batteries -- this should include solar and renewables as they are added too
             surplus_power = (local_generation + grid_import) - total_load
             
             if surplus_power > 0 and active_batteries:
@@ -215,7 +225,7 @@ class SimulationEngine(QObject):
                     
                 surplus_power = remaining_surplus
             
-            # Sixth Pass: If batteries still have capacity, try to use local generation to charge them -- the batteries WILL spin up BTF unit commitment mode generators to get power
+            # Sixth Pass: If batteries still have capacity, try to use local generation to charge them -- the batteries WILL spin up generators with auto-charging enabled to get power
             if active_batteries and any(battery.has_capacity() for battery in active_batteries):
                 unused_gen_capacity = 0
                 for item in self.main_window.scene.items():
@@ -285,7 +295,7 @@ class SimulationEngine(QObject):
                 if surplus_power > self.stability_tolerance:
                     self.system_stable = False
             
-            # Update energy accounting if not in scrub mode
+            # Update energy accounting if not in scrub mode 
             if not self.is_scrubbing and current_time != self.last_time_step:
                 if current_time > self.last_time_step or current_time == 0:
                     steps_moved = 1 if current_time == 0 else current_time - self.last_time_step

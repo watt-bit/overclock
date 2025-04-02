@@ -16,6 +16,7 @@ from src.components.house1 import House1Component
 from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
 from src.components.cloud_workload import CloudWorkloadComponent
+from src.components.solar_panel import SolarPanelComponent
 
 class ModelManager:
     """
@@ -161,6 +162,16 @@ class ModelManager:
                     "y": item.y(),
                     "operating_mode": item.operating_mode,
                     "accumulated_revenue": item.accumulated_revenue
+                })
+            elif isinstance(item, SolarPanelComponent):
+                component_index_map[item] = index
+                index += 1
+                data["components"].append({
+                    "type": "SolarPanel",
+                    "x": item.x(),
+                    "y": item.y(),
+                    "capacity": item.capacity,
+                    "operating_mode": item.operating_mode
                 })
             elif isinstance(item, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent)):
                 data["decorations"].append({
@@ -317,6 +328,17 @@ class ModelManager:
                     component = CloudWorkloadComponent(x, y)
                     component.operating_mode = component_data.get("operating_mode", "No Customer")
                     component.accumulated_revenue = component_data.get("accumulated_revenue", 0.0)
+                    self.main_window.scene.addItem(component)
+                    self.main_window.components.append(component)
+                    component_map.append(component)
+                    
+                elif component_type == "SolarPanel":
+                    component = SolarPanelComponent(x, y)
+                    component.capacity = component_data.get("capacity", 500)
+                    component.operating_mode = component_data.get("operating_mode", "Disabled")
+                    # Load capacity factors if in active mode
+                    if component.operating_mode == "Powerlandia 8760 - Midwest 1":
+                        component.load_capacity_factors()
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
                     component_map.append(component)
