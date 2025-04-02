@@ -33,6 +33,8 @@ from .properties_manager import ComponentPropertiesManager
 from .connection_manager import ConnectionManager
 from src.models.model_manager import ModelManager
 
+# TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
+
 class CustomScene(QGraphicsScene, QObject):
     component_clicked = pyqtSignal(object)
     
