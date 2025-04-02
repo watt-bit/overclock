@@ -1,6 +1,6 @@
 import sys
 import os
-# Watt-Bit Sandbox from Augur | https://augurvc.com
+# OVERCLOCK Watt-Bit Sandbox from Augur | https://augurvc.com
 # Add the parent directory to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

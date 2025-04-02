@@ -44,6 +44,24 @@ class ComponentPropertiesManager:
         self.properties_layout.setLabelAlignment(Qt.AlignLeft)
         self.properties_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
     
+    def clear_properties_panel(self):
+        """Clear all widgets from the properties panel"""
+        while self.properties_layout.count():
+            item = self.properties_layout.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+            elif item.layout():
+                # Clear sub-layouts
+                while item.layout().count():
+                    sub_item = item.layout().takeAt(0)
+                    if sub_item.widget():
+                        sub_item.widget().deleteLater()
+                item.layout().deleteLater()
+        
+        # Force the properties dock to resize to its minimum size
+        self.properties_widget.adjustSize()
+        self.main_window.properties_dock.adjustSize()
+    
     def show_component_properties(self, component):
         """Display the properties for the selected component"""
         # Only show properties if not in connection mode

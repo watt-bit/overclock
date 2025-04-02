@@ -751,3 +751,34 @@ To add a new component:
 - CloudWorkloadComponent demonstrates how to implement cross-component revenue calculations
 - Revenue calculations are time-step aware and properly handle simulation speed changes
 - Components with accumulated values must be reset in the reset_simulation method to ensure proper visual display 
+
+## QGraphicsView Overlays
+- To add a fixed overlay on top of a QGraphicsView:
+  - Create a QLabel as a child of the QGraphicsView
+  - Use setAttribute(Qt.WA_TransparentForMouseEvents) to make it click-through
+  - Handle the QGraphicsView's resize events to reposition the overlay
+  - Be careful not to override the existing resize behavior by saving/calling the original implementation 
+
+## PyQt5 UI Styling (2025-04-01)
+1. **QSlider Styling**:
+   - QSlider has multiple sub-elements that can be styled independently:
+     * `QSlider::groove` - The entire track the handle moves along
+     * `QSlider::sub-page` - The portion of the track between minimum value and handle
+     * `QSlider::add-page` - The portion of the track between handle and maximum value
+     * `QSlider::handle` - The part that users can drag
+   - Visual progress indication can be created by styling the `sub-page` differently from the `groove`
+   - Example: `QSlider::sub-page:horizontal { background: rgb(255, 215, 0); height: 8px; border-radius: 4px; }`
+   - Border radius should be consistent between groove and sub-page to maintain smooth appearance
+   - The same styling approach works for both horizontal and vertical sliders
+
+2. **Style Consistency**:
+   - UI components should maintain consistent styling across the application
+   - Color schemes should be reused where appropriate (e.g., using connection colors for related UI elements)
+   - Visual feedback should be consistent (progress indicators, selections, etc.)
+   - Consider creating style constants or variables for frequently used colors/styles
+
+3. **QStyleSheet Best Practices**:
+   - Keep related style rules grouped in a single stylesheet string
+   - Be specific with selectors to avoid unintended style application
+   - Use consistent formatting for readability
+   - Document style choices, especially for complex widgets 

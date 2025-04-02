@@ -952,3 +952,12 @@
 - Only counts capacity for solar panels in "Powerlandia 8760" mode (not disabled panels)
 - Ensures solar generation is properly accounted for in capacity utilization calculations
 - Fixes incorrect analytics display showing solar generation as unused when it was actually serving load
+
+## April 3, 2023
+- Added overclocklogo.png to the bottom right corner of the modeling window
+- Logo is displayed at 10% of its original size with transparent background
+- Implemented proper positioning to stay in bottom-right corner when window is resized
+- Made the logo click-through so users can interact with components behind it
+- Updated the screenshot function to include the Overclock logo in captured screenshots
+
+## 2023-10-31 Modified main_window.py to set the dock widget corners to give priority to left and right dock areas for the top corners, and bottom dock area for the bottom corners. This makes the top dock area (like the properties panel) appear "inside" the left and right dock areas, while the bottom dock area (simulation controls) appears "outside" them and takes priority at the corners.

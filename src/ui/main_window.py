@@ -54,6 +54,19 @@ class CustomScene(QGraphicsScene, QObject):
         # Grey color for solid background matching other windows
         self.background_color = QColor("#2D2D2D")
     
+    def mouseReleaseEvent(self, event):
+        """Handle mouse release events on the scene background"""
+        items = self.items(event.scenePos())
+        if not items:
+            # If clicked on empty space (no items at the position)
+            if hasattr(self, 'parent') and self.parent() and hasattr(self.parent(), 'properties_manager'):
+                # Clear the properties panel
+                self.parent().properties_manager.clear_properties_panel()
+                # Also hide the properties panel
+                if hasattr(self.parent(), 'properties_dock'):
+                    self.parent().properties_dock.setVisible(False)
+        super().mouseReleaseEvent(event)
+    
     def set_background(self, mode):
         """Change the background based on the specified mode
         mode: 0 = image1, 1 = image2, 2 = solid color
@@ -164,7 +177,7 @@ class TiledBackgroundWidget(QWidget):
 class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Overclock Watt-Bit Sandbox | augur vc | https://augurvc.com")
+        self.setWindowTitle("OVERCLOCK Watt-Bit Sandbox | https://augurvc.com")
         self.resize(2400, 1200)
         
         # Initialize variables
@@ -246,6 +259,12 @@ class PowerSystemSimulator(QMainWindow):
         self.setCentralWidget(main_widget)
         main_layout = QHBoxLayout(main_widget)
         
+        # Set the corners to give priority to left and right dock areas
+        self.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
+        self.setCorner(Qt.TopRightCorner, Qt.RightDockWidgetArea)
+        self.setCorner(Qt.BottomLeftCorner, Qt.BottomDockWidgetArea)
+        self.setCorner(Qt.BottomRightCorner, Qt.BottomDockWidgetArea)
+        
         # Create a stylesheet for dock widgets to have modern flat dark gray title bars
         dock_title_style = """
         QMainWindow::separator {
@@ -296,6 +315,26 @@ class PowerSystemSimulator(QMainWindow):
         
         # Install event filter for key events
         self.view.installEventFilter(self)
+        
+        # Create Overclock logo overlay
+        self.logo_overlay = QLabel(self.view)
+        logo_pixmap = QPixmap("src/ui/assets/overclocklogo.png")
+        if not logo_pixmap.isNull():
+            # Calculate 10% of the original size while maintaining aspect ratio
+            scaled_width = int(logo_pixmap.width() * 0.1)
+            scaled_height = int(logo_pixmap.height() * 0.1)
+            scaled_logo = logo_pixmap.scaled(scaled_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.logo_overlay.setPixmap(scaled_logo)
+            self.logo_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)  # Make it click-through
+            
+            # Position in bottom right corner with padding
+            self.logo_overlay.move(self.view.width() - scaled_width - 10, self.view.height() - scaled_height - 10)
+            
+            # Connect to view's resize event to maintain position
+            self.view.resizeEvent = self.on_view_resize
+            
+            # Make the logo visible
+            self.logo_overlay.show()
         
         # Component palette
         self.component_dock = QDockWidget("Components", self)
@@ -479,6 +518,8 @@ class PowerSystemSimulator(QMainWindow):
         self.properties_dock.setFeatures(QDockWidget.DockWidgetFloatable | 
                                         QDockWidget.DockWidgetMovable | 
                                         QDockWidget.DockWidgetClosable)
+        # Prevent the properties panel from being docked
+        self.properties_dock.setAllowedAreas(Qt.NoDockWidgetArea)
         # Ensure the dock resizes to the minimum size of its contents
         self.properties_dock.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         self.addDockWidget(Qt.RightDockWidgetArea, self.properties_dock)
@@ -522,16 +563,16 @@ class PowerSystemSimulator(QMainWindow):
         
         self.reset_btn = QPushButton("⟲ (R)eset")
         self.reset_btn.clicked.connect(self.reset_simulation)
-        self.reset_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #f44336; color: white; font-weight: bold; font-size: 16px; }")
+        self.reset_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #f44336; color: white; font-weight: bold; font-size: 14px; }")
         
         # Add speed control
         speed_label = QLabel("⏩ Speed:")
         self.speed_selector = QComboBox()
-        self.speed_selector.addItems(["0.1x", "1x", "2x", "3x"])
-        self.speed_selector.setCurrentIndex(1)  # Set default to 1x (now index 1)
+        self.speed_selector.addItems(["▶", "▶▶", "▶▶▶"])
+        self.speed_selector.setCurrentIndex(0)  # Set default to 1x (now index 1)
         self.speed_selector.currentIndexChanged.connect(self.change_simulation_speed)
-        self.speed_selector.setStyleSheet("QComboBox { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }")
-        self.speed_selector.setMinimumWidth(80)  # Set minimum width to prevent text cutoff
+        self.speed_selector.setStyleSheet("QComboBox { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}")
+        self.speed_selector.setMinimumWidth(90)  # Set minimum width to prevent text cutoff
         
         # Add zoom control to time controls (moved from toolbar)
         zoom_label = QLabel("🔭 Zoom:")
@@ -564,18 +605,22 @@ class PowerSystemSimulator(QMainWindow):
         self.time_slider.sliderReleased.connect(self.stop_scrubbing)
         # Set the time slider to expand horizontally
         self.time_slider.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.time_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
+        self.time_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::sub-page:horizontal { background: rgb(255, 215, 0); height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
+        # Add a fixed 200px spacer before the reset button
+        left_spacer = QWidget()
+        left_spacer.setFixedWidth(175)
+        
+        time_controls.addWidget(left_spacer)
         time_controls.addWidget(self.reset_btn)
         time_controls.addWidget(self.play_btn)
+        time_controls.addWidget(self.speed_selector)
         time_controls.addWidget(self.time_slider)
         time_controls.addWidget(self.background_toggle_btn)
         time_controls.addWidget(self.screenshot_btn)
         time_controls.addWidget(zoom_label)
         time_controls.addWidget(self.zoom_slider)
         time_controls.addWidget(self.zoom_label)
-        time_controls.addWidget(speed_label)
-        time_controls.addWidget(self.speed_selector)
         
         time_layout.addLayout(time_controls)
         
@@ -613,25 +658,25 @@ class PowerSystemSimulator(QMainWindow):
         # Create View menu for showing/hiding panels
         view_menu = QMenu("View", self)
         
-        # Create actions for toggling panel visibility
-        show_components_action = QAction("Show Components Panel", self)
-        show_components_action.triggered.connect(self.show_components_panel)
-        view_menu.addAction(show_components_action)
-        
-        show_properties_action = QAction("Show (P)roperties Panel", self)
-        show_properties_action.triggered.connect(self.show_properties_panel)
-        view_menu.addAction(show_properties_action)
-        
-        show_analytics_action = QAction("Show Analytics Panel", self)
-        show_analytics_action.triggered.connect(self.show_analytics_panel)
-        view_menu.addAction(show_analytics_action)
-        
+        # Create actions for toggling panel visibility - store references for later updates
+        self.properties_action = QAction("Show (P)roperties Panel", self)
+        self.properties_action.triggered.connect(self.toggle_properties_panel)
+        view_menu.addAction(self.properties_action)
+
+        self.analytics_action = QAction("Show Analytics Panel", self)
+        self.analytics_action.triggered.connect(self.toggle_analytics_panel)
+        view_menu.addAction(self.analytics_action)
+
         # Use QToolButton instead of QAction for View menu to make text clickable
         view_button = QToolButton()
         view_button.setText("View")
         view_button.setMenu(view_menu)
         view_button.setPopupMode(QToolButton.InstantPopup)  # Show menu when clicking anywhere on button
         toolbar.addWidget(view_button)
+
+        # Connect visibility changed signals to update menu text
+        self.properties_dock.visibilityChanged.connect(self.update_properties_menu_text)
+        self.analytics_dock.visibilityChanged.connect(self.update_analytics_menu_text)
     
     def add_welcome_text(self):
         """Add welcome text to the middle of the canvas"""
@@ -844,7 +889,7 @@ class PowerSystemSimulator(QMainWindow):
     
     def change_simulation_speed(self, index):
         """Change the simulation speed based on the selected option"""
-        speeds = [0.1, 1, 2, 3]  # Maps to 0.1x, 1x, 2x, 3x
+        speeds = [1, 2, 3]  # Maps to 1x, 2x, 3x
         self.simulation_speed = speeds[index]
         
         # If simulation is running, restart the timer with the new interval
@@ -1124,6 +1169,15 @@ class PowerSystemSimulator(QMainWindow):
         # Render the view onto the pixmap
         self.view.render(painter)
         
+        # Add the Overclock logo overlay if it exists
+        if hasattr(self, 'logo_overlay') and not self.logo_overlay.pixmap().isNull():
+            # Get the logo position and pixmap
+            logo_pos = self.logo_overlay.pos()
+            logo_pixmap = self.logo_overlay.pixmap()
+            
+            # Draw the logo at its current position
+            painter.drawPixmap(logo_pos, logo_pixmap)
+        
         # End painting
         painter.end()
         
@@ -1180,11 +1234,55 @@ class PowerSystemSimulator(QMainWindow):
             # Mark as positioned
             self.properties_panel_positioned = True
     
+    def toggle_properties_panel(self):
+        """Toggle the properties panel visibility"""
+        
+        self.properties_dock.setVisible(not self.properties_dock.isVisible())
+        if self.properties_dock.isVisible():
+            self.position_properties_panel_if_needed()
+
+    def toggle_analytics_panel(self):
+        """Toggle the analytics panel visibility"""
+        self.analytics_dock.setVisible(not self.analytics_dock.isVisible())
+
+    def update_properties_menu_text(self, visible):
+        """Update the properties panel menu text based on visibility"""
+        if visible:
+            self.properties_action.setText("Hide (P)roperties Panel")
+        else:
+            self.properties_action.setText("Show (P)roperties Panel")
+
+    def update_analytics_menu_text(self, visible):
+        """Update the analytics panel menu text based on visibility"""
+        if visible:
+            self.analytics_action.setText("Hide Analytics Panel")
+        else:
+            self.analytics_action.setText("Show Analytics Panel")
+
     def show_properties_panel(self):
         """Show the properties panel if it's hidden"""
+        # When in fullscreen mode, don't use floating properties panel
+        if self.isFullScreen() and self.properties_dock.isFloating():
+            self.properties_dock.setFloating(False)
+        
         self.properties_dock.setVisible(True)
         self.position_properties_panel_if_needed()
     
     def show_analytics_panel(self):
         """Show the analytics panel if it's hidden"""
-        self.analytics_dock.setVisible(True) 
+        self.analytics_dock.setVisible(True)
+
+    def on_view_resize(self, event):
+        """Handle resize events to reposition the logo overlay"""
+        if hasattr(self, 'logo_overlay') and not self.logo_overlay.pixmap().isNull():
+            # Reposition logo in bottom right when view is resized
+            logo_width = self.logo_overlay.pixmap().width()
+            logo_height = self.logo_overlay.pixmap().height()
+            self.logo_overlay.move(self.view.width() - logo_width - 10, self.view.height() - logo_height - 10)
+        
+        # Call original resize event if it was saved
+        if hasattr(self, 'original_resize_event'):
+            self.original_resize_event(event)
+        else:
+            # Call base QGraphicsView implementation
+            QGraphicsView.resizeEvent(self.view, event) 
