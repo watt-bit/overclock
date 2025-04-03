@@ -1,11 +1,11 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout
-from PyQt5.QtGui import QPixmap, QKeyEvent, QFont
+from PyQt5.QtGui import QPixmap, QKeyEvent
 from PyQt5.QtCore import Qt, QTimer, QSize, pyqtSignal
 
-class TitleScreen(QWidget):
-    # Add a custom signal to indicate the title screen should be closed
-    transition_to_main = pyqtSignal()
+class AugurTitleScreen(QWidget):
+    # Add a custom signal to indicate the Augur title screen should transition to the next screen
+    transition_to_next = pyqtSignal()
     
     def __init__(self):
         super().__init__()
@@ -17,14 +17,14 @@ class TitleScreen(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         
-        # Load and display the title image
+        # Load and display the Augur title image
         title_image = QLabel()
-        pixmap = QPixmap("src/ui/assets/demotitle6.png")
+        pixmap = QPixmap("src/ui/assets/augurtitle2.png")
         if not pixmap.isNull():
             title_image.setPixmap(pixmap)
         else:
             # Fallback if image is not found
-            title_image.setText("Title Screen (Image Not Found)")
+            title_image.setText("Augur Title Screen (Image Not Found)")
             title_image.setStyleSheet("font-size: 24px; color: white;")
             self.setStyleSheet("background-color: #2A2A2A;")
         
@@ -34,25 +34,6 @@ class TitleScreen(QWidget):
         
         # Set the window size to match the image size
         self.setFixedSize(pixmap.width(), pixmap.height())
-        
-        # Create "powered by" text label
-        self.powered_by_label = QLabel("Press (space) to start building", self)
-        
-        # Set font to bold 24px
-        font = QFont()
-        font.setPointSize(24)
-        self.powered_by_label.setFont(font)
-        
-        # Set text color to white
-        self.powered_by_label.setStyleSheet("font-style: normal; font-size: 18px; font-weight: bold; color: white;")
-        
-        # Position at specific coordinates - ADJUST THESE X,Y VALUES AS NEEDED
-        self.powered_by_x = 650  # X position from left
-        self.powered_by_y = 900  # Y position from top
-        self.powered_by_label.move(self.powered_by_x, self.powered_by_y)
-        
-        # Ensure label size fits the text
-        self.powered_by_label.adjustSize()
         
         # Center the window on the screen
         self.center_on_screen()
@@ -69,22 +50,22 @@ class TitleScreen(QWidget):
     
     def keyPressEvent(self, event: QKeyEvent):
         """Handle key press events"""
-        # Close the title screen when Enter is pressed
+        # Transition to the next screen when Enter is pressed
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
             # Emit signal before closing
-            self.transition_to_main.emit()
+            self.transition_to_next.emit()
             self.close()
-        # Also close on Escape or Space for user convenience
+        # Also transition on Escape or Space for user convenience
         elif event.key() in (Qt.Key_Escape, Qt.Key_Space):
             # Emit signal before closing
-            self.transition_to_main.emit()
+            self.transition_to_next.emit()
             self.close()
         else:
             super().keyPressEvent(event)
 
-# For testing the title screen independently
+# For testing the Augur title screen independently
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    title = TitleScreen()
+    title = AugurTitleScreen()
     title.show()
     sys.exit(app.exec_()) 

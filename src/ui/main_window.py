@@ -178,7 +178,7 @@ class TiledBackgroundWidget(QWidget):
 class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("OVERCLOCK Watt-Bit Sandbox by Watt-Bit Research | https://watt-bit.com | Powered by Augur VC | https://augurvc.com")
+        self.setWindowTitle("OVERCLOCK Watt-Bit Sandbox | Watt-Bit Research | https://watt-bit.com | Augur VC | https://augurvc.com")
         self.resize(2400, 1200)
         
         # Initialize variables
@@ -362,7 +362,19 @@ class PowerSystemSimulator(QMainWindow):
             # We'll wait to set the actual image after the first button is created
             top_image_label.setAlignment(Qt.AlignCenter)
             component_layout.addWidget(top_image_label)
-        
+
+        # Add WBR logo overlay
+        self.wbr_logo_label = QLabel(top_image_label)  # Set parent to top_image_label
+        self.wbr_logo_label.setStyleSheet("border: none; background: transparent;")
+        wbr_logo_pixmap = QPixmap("src/ui/assets/wbrlogo.png")
+        if not wbr_logo_pixmap.isNull():
+            # Scale to 125px width while preserving aspect ratio
+            aspect_ratio = wbr_logo_pixmap.height() / wbr_logo_pixmap.width()
+            scaled_height = int(125 * aspect_ratio)
+            scaled_logo = wbr_logo_pixmap.scaled(125, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.wbr_logo_label.setPixmap(scaled_logo)
+            # Will position after top_image_label is sized
+
         # Define a common button style with opaque background
         opaque_button_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
         
@@ -483,6 +495,11 @@ class PowerSystemSimulator(QMainWindow):
             top_scaled_height = int(generator_btn.sizeHint().width() + 75 * top_aspect_ratio)
             scaled_top_pixmap = top_pixmap.scaled(generator_btn.sizeHint().width() + 75, top_scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             top_image_label.setPixmap(scaled_top_pixmap)
+            
+            # Position the WBR logo in the bottom left corner of top image
+            if hasattr(self, 'wbr_logo_label') and not self.wbr_logo_label.pixmap().isNull():
+                self.wbr_logo_label.move(0, top_scaled_height - self.wbr_logo_label.pixmap().height())
+                self.wbr_logo_label.raise_()  # Ensure it renders on top
         
         # Store references to all component and connection buttons for later enabling/disabling
         self.component_buttons = [

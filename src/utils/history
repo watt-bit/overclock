@@ -2,6 +2,19 @@
 # ============================
 # This file logs all modifications made to the codebase
 
+## 2024-07-06: Added Augur Title Screen
+- Created new AugurTitleScreen class in src/ui/augur_title_screen.py
+- Implemented a third title screen in the sequence between WBR title and the original title screen
+- Modified main.py to create the Augur title screen and connect it in the transition sequence
+- Used augurtitle.png image from src/ui/assets directory
+- Maintained consistent behavior with the other title screens
+
+## 2024-07-06: Added "powered by" Label to Title Screen
+- Added a "powered by" text label to the original title screen (title_screen.py)
+- Implemented with bold 24px white font
+- Positioned at adjustable x,y coordinates (initially 50,50)
+- Added for easy branding customization
+
 ## 2024-07-06: Added WBR Title Screen
 - Created new WBRTitleScreen class in src/ui/wbr_title_screen.py
 - Implemented a title screen that shows before the original title screen

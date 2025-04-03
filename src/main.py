@@ -13,6 +13,7 @@ from PyQt5.QtGui import QIcon
 from src.ui.main_window import PowerSystemSimulator
 from src.ui.title_screen import TitleScreen
 from src.ui.wbr_title_screen import WBRTitleScreen
+from src.ui.augur_title_screen import AugurTitleScreen
 
 def main():
     app = QApplication(sys.argv)
@@ -30,11 +31,17 @@ def main():
     # Connect the title screen's transition signal to show the main window
     title_screen.transition_to_main.connect(main_window.show)
     
+    # Create the Augur title screen but don't show it yet
+    augur_title_screen = AugurTitleScreen()
+    
+    # Connect the Augur title screen's transition signal to show the original title screen
+    augur_title_screen.transition_to_next.connect(title_screen.show)
+    
     # Create the WBR title screen first
     wbr_title_screen = WBRTitleScreen()
     
-    # Connect the WBR title screen's transition signal to show the original title screen
-    wbr_title_screen.transition_to_next.connect(title_screen.show)
+    # Connect the WBR title screen's transition signal to show the Augur title screen
+    wbr_title_screen.transition_to_next.connect(augur_title_screen.show)
     
     # Show the WBR title screen first
     wbr_title_screen.show()

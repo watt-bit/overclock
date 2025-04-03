@@ -2,6 +2,8 @@
 
 2025-04-01: Modified the time slider in src/ui/main_window.py to show a golden yellow color (RGB 255,215,0) for the portion of the groove that has been traversed, matching the connection line color. This provides a visual indication of simulation progress.
 
+2023-07-11: Added WBR logo overlay to the components panel. The logo is positioned in the bottom left corner of the componentspaneltop.png image, scaled to 100px width while preserving aspect ratio, and displayed on top of the existing image.
+
 2023-07-10: Implemented clearing the properties panel when the user clicks on the background (deselects all components). Added a clear_properties_panel method to ComponentPropertiesManager class and modified the CustomScene's mouseReleaseEvent to detect clicks on empty areas.
 
 2023-07-10: Enhanced background click behavior to also hide the properties panel when the user clicks on the background, providing a cleaner interface when no components are selected. 

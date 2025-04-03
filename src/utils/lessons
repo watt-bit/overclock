@@ -702,19 +702,21 @@ When implementing related properties across different component types:
    - Document changes to component properties in history logs with consistent detail 
 
 ## Multi-Stage Title Screen System (2024-07-06)
-- The application now uses a multi-stage title screen approach:
+- The application now uses a three-stage title screen approach:
   * First shows the WBR title screen (using WBRtitle.png)
+  * Then transitions to the Augur title screen (using augurtitle.png)
   * Then transitions to the original title screen
   * Finally transitions to the main application window
 - Title screens use PyQt5's signal/slot mechanism for transitions:
-  * WBRTitleScreen emits transition_to_next signal
-  * TitleScreen emits transition_to_main signal
-- Both screens share common functionality:
+  * WBRTitleScreen emits transition_to_next signal to show AugurTitleScreen
+  * AugurTitleScreen emits transition_to_next signal to show TitleScreen
+  * TitleScreen emits transition_to_main signal to show main application window
+- All screens share common functionality:
   * Frameless window design
   * Centered position on screen
   * Key press handling (Enter/Space/Escape to advance)
   * Image display with fallback text
-- This approach can be extended to create longer sequences of splash/intro screens
+- This approach demonstrates the flexibility of the design to support a sequence of any number of introductory screens
 
 # Lessons Learned About the Codebase
 
