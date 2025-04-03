@@ -2,6 +2,13 @@
 # ============================
 # This file logs all modifications made to the codebase
 
+## 2024-07-06: Added WBR Title Screen
+- Created new WBRTitleScreen class in src/ui/wbr_title_screen.py
+- Implemented a title screen that shows before the original title screen
+- Modified main.py to show WBR title screen first, then transition to original title screen
+- Used WBRtitle.png image from src/ui/assets directory
+- Maintained same functionality of key press detection (Enter/Space/Escape) to transition to next screen
+
 ## 2024-07-05: Code Cleanup and Repository Update
 - Deleted test save files (newsavetest1connect.json and newsavetest2.json)
 - Updated setup.py and history files

@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from src.ui.main_window import PowerSystemSimulator
 from src.ui.title_screen import TitleScreen
+from src.ui.wbr_title_screen import WBRTitleScreen
 
 def main():
     app = QApplication(sys.argv)
@@ -23,14 +24,20 @@ def main():
     # Create the main window but don't show it yet
     main_window = PowerSystemSimulator()
     
-    # Create the title screen first
+    # Create the original title screen but don't show it yet
     title_screen = TitleScreen()
     
     # Connect the title screen's transition signal to show the main window
     title_screen.transition_to_main.connect(main_window.show)
     
-    # Show the title screen
-    title_screen.show()
+    # Create the WBR title screen first
+    wbr_title_screen = WBRTitleScreen()
+    
+    # Connect the WBR title screen's transition signal to show the original title screen
+    wbr_title_screen.transition_to_next.connect(title_screen.show)
+    
+    # Show the WBR title screen first
+    wbr_title_screen.show()
     
     sys.exit(app.exec_())
 

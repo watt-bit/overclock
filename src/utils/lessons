@@ -701,7 +701,22 @@ When implementing related properties across different component types:
    - Plan for cross-component consistency from the beginning of feature implementation
    - Document changes to component properties in history logs with consistent detail 
 
-   # Lessons Learned About the Codebase
+## Multi-Stage Title Screen System (2024-07-06)
+- The application now uses a multi-stage title screen approach:
+  * First shows the WBR title screen (using WBRtitle.png)
+  * Then transitions to the original title screen
+  * Finally transitions to the main application window
+- Title screens use PyQt5's signal/slot mechanism for transitions:
+  * WBRTitleScreen emits transition_to_next signal
+  * TitleScreen emits transition_to_main signal
+- Both screens share common functionality:
+  * Frameless window design
+  * Centered position on screen
+  * Key press handling (Enter/Space/Escape to advance)
+  * Image display with fallback text
+- This approach can be extended to create longer sequences of splash/intro screens
+
+# Lessons Learned About the Codebase
 
 - Load components have a demand property that specifies kW consumption
 - The simulation engine calculates energy consumption on an hourly basis
