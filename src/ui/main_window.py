@@ -477,25 +477,12 @@ class PowerSystemSimulator(QMainWindow):
         component_layout.addWidget(self.props_btn)
         component_layout.addStretch()
         
-        # Add logo at the bottom of the component palette
-        logo_label = QLabel()
-        logo_pixmap = QPixmap("src/ui/assets/augurvibelogosmall.png")
-        if not logo_pixmap.isNull():
-            # Calculate the scaled size to match component button width while maintaining aspect ratio
-            button_width = generator_btn.sizeHint().width() + 75
-            aspect_ratio = logo_pixmap.height() / logo_pixmap.width()
-            scaled_height = int(button_width * aspect_ratio)
-            logo_pixmap = logo_pixmap.scaled(button_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            logo_label.setPixmap(logo_pixmap)
-            logo_label.setAlignment(Qt.AlignCenter)
-            component_layout.addWidget(logo_label)
-            
-            # Now that we have a button, set the top image size to match component width
-            if not top_pixmap.isNull():
-                top_aspect_ratio = top_pixmap.height() / top_pixmap.width()
-                top_scaled_height = int(button_width * top_aspect_ratio)
-                scaled_top_pixmap = top_pixmap.scaled(button_width, top_scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                top_image_label.setPixmap(scaled_top_pixmap)
+        # Now that we have a button, set the top image size to match component width
+        if not top_pixmap.isNull():
+            top_aspect_ratio = top_pixmap.height() / top_pixmap.width()
+            top_scaled_height = int(generator_btn.sizeHint().width() + 75 * top_aspect_ratio)
+            scaled_top_pixmap = top_pixmap.scaled(generator_btn.sizeHint().width() + 75, top_scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            top_image_label.setPixmap(scaled_top_pixmap)
         
         # Store references to all component and connection buttons for later enabling/disabling
         self.component_buttons = [
@@ -614,11 +601,23 @@ class PowerSystemSimulator(QMainWindow):
         self.time_slider.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.time_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::sub-page:horizontal { background: rgb(255, 215, 0); height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
-        # Add a fixed 200px spacer before the reset button
-        left_spacer = QWidget()
-        left_spacer.setFixedWidth(175)
+        # Add logo on the left side instead of a spacer
+        sim_logo_label = QLabel()
+        sim_logo_pixmap = QPixmap("src/ui/assets/augurvibelogosmall.png")
+        if not sim_logo_pixmap.isNull():
+            # Set fixed width to 175px (same as the left spacer it's replacing)
+            sim_logo_label.setFixedWidth(175)
+            # Calculate the correct height based on aspect ratio
+            aspect_ratio = sim_logo_pixmap.height() / sim_logo_pixmap.width()
+            scaled_width = 175
+            scaled_height = int(scaled_width * aspect_ratio)
+            # Scale the logo while maintaining aspect ratio
+            scaled_logo = sim_logo_pixmap.scaled(scaled_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            sim_logo_label.setPixmap(scaled_logo)
+            # Center the logo vertically in the label
+            sim_logo_label.setAlignment(Qt.AlignCenter)
         
-        time_controls.addWidget(left_spacer)
+        time_controls.addWidget(sim_logo_label)
         time_controls.addWidget(self.reset_btn)
         time_controls.addWidget(self.play_btn)
         time_controls.addWidget(self.speed_selector)

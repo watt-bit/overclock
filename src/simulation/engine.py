@@ -414,6 +414,10 @@ class SimulationEngine(QObject):
                 elif isinstance(item, CloudWorkloadComponent):
                     item.update()
             
+            #Inmmplement historian system here. The historian will be a separate class that records all the state data from every component in the simulation per hour.
+            #The user will be able to export the data as a csv file.
+
+
             # Move to next time step if auto-playing
             if self.simulation_running:
                 next_time = current_time + 1
