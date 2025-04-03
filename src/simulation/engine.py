@@ -37,7 +37,6 @@ class SimulationEngine(QObject):
         self.gross_revenue_data = [0.0] * 8761  # Initialize with 8761 entries (0-8760 hours)
         
     def step_simulation(self, steps):
-        """Exactly mirrors the existing step_simulation logic"""
         # Check network connectivity before stepping
         if not self.simulation_running and not self.main_window.check_network_connectivity():
             return False
@@ -54,7 +53,6 @@ class SimulationEngine(QObject):
         return True
         
     def update_simulation(self):
-        """Exactly mirrors the existing update_simulation logic"""
         # Guard against recursive calls
         if self.updating_simulation:
             return
