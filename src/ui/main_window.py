@@ -541,6 +541,11 @@ class PowerSystemSimulator(QMainWindow):
         # Analytics panel
         self.analytics_dock = QDockWidget("Analytics", self)
         self.analytics_dock.setObjectName("analytics_dock")
+        # Remove title bar and prevent undocking/closing
+        self.analytics_dock.setTitleBarWidget(QWidget())
+        self.analytics_dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
+        # Ensure no borders are visible
+        self.analytics_dock.setStyleSheet("QDockWidget { border: none; }")
         self.analytics_panel = AnalyticsPanel()
         self.analytics_dock.setWidget(self.analytics_panel)
         self.addDockWidget(Qt.RightDockWidgetArea, self.analytics_dock)
@@ -586,7 +591,7 @@ class PowerSystemSimulator(QMainWindow):
         self.speed_selector.setMinimumWidth(90)  # Set minimum width to prevent text cutoff
         
         # Add zoom control to time controls (moved from toolbar)
-        zoom_label = QLabel("🔭 Zoom:")
+        zoom_label = QLabel("🔭")
         self.zoom_slider = QSlider(Qt.Horizontal)
         self.zoom_slider.setMinimum(40)  # 0.4x zoom (changed from 20/0.2x)
         self.zoom_slider.setMaximum(100)  # 1.0x zoom
@@ -594,7 +599,6 @@ class PowerSystemSimulator(QMainWindow):
         self.zoom_slider.setFixedWidth(150)
         self.zoom_slider.valueChanged.connect(self.zoom_changed)
         self.zoom_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
-        self.zoom_label = QLabel("0.8x")
         
         # Add screenshot button
         self.screenshot_btn = QPushButton("📷 Screenshot")
@@ -643,7 +647,6 @@ class PowerSystemSimulator(QMainWindow):
         time_controls.addWidget(self.screenshot_btn)
         time_controls.addWidget(zoom_label)
         time_controls.addWidget(self.zoom_slider)
-        time_controls.addWidget(self.zoom_label)
         
         time_layout.addLayout(time_controls)
         
@@ -1162,9 +1165,6 @@ class PowerSystemSimulator(QMainWindow):
         """Handle zoom slider value changes"""
         # Convert slider value (40-100) to zoom factor (0.4-1.0)
         zoom_factor = value / 100.0
-        
-        # Update the zoom label
-        self.zoom_label.setText(f"{zoom_factor:.1f}x")
         
         # Save the current zoom level
         self.current_zoom = zoom_factor
