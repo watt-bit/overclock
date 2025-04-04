@@ -633,9 +633,9 @@ class PowerSystemSimulator(QMainWindow):
         self.screenshot_btn.setStyleSheet(default_button_style)
         
         # Add Autocomplete button
-        self.autocomplete_btn = QPushButton("Autocomplete (Enter)")
+        self.autocomplete_btn = QPushButton("🚀 Autocomplete (Enter)")
         self.autocomplete_btn.clicked.connect(self.run_autocomplete)
-        self.autocomplete_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }")
+        self.autocomplete_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #4CAF50; color: white; font-weight: bold; font-size: 16px; }")
         
         # Add background toggle button
         self.background_toggle_btn = QPushButton("🌄 Background Off")
