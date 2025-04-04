@@ -436,13 +436,20 @@ class PowerSystemSimulator(QMainWindow):
         separator2.setFrameShadow(QFrame.Sunken)
         separator2.setLineWidth(1)
 
-        solar_panel_btn = QPushButton("Solar Array")
-        solar_panel_btn.setStyleSheet(opaque_button_style)
-        solar_panel_btn.clicked.connect(lambda: self.add_component("solar_panel"))
+        # Create a popup menu for renewables
+        renewables_menu = QMenu(self)
         
-        wind_turbine_btn = QPushButton("Wind Turbine")
-        wind_turbine_btn.setStyleSheet(opaque_button_style)
-        wind_turbine_btn.clicked.connect(lambda: self.add_component("wind_turbine"))
+        # Add actions for each renewable type
+        solar_panel_action = renewables_menu.addAction("Add Solar Array")
+        solar_panel_action.triggered.connect(lambda: self.add_component("solar_panel"))
+        
+        wind_turbine_action = renewables_menu.addAction("Add Wind Turbine")
+        wind_turbine_action.triggered.connect(lambda: self.add_component("wind_turbine"))
+        
+        # Create the Add Renewables button with dropdown menu
+        self.renewables_btn = QPushButton("Add Renewables")
+        self.renewables_btn.setStyleSheet(opaque_button_style)
+        self.renewables_btn.clicked.connect(lambda: renewables_menu.exec_(self.renewables_btn.mapToGlobal(self.renewables_btn.rect().bottomLeft())))
 
         # Create a popup menu for props
         props_menu = QMenu(self)
@@ -484,8 +491,7 @@ class PowerSystemSimulator(QMainWindow):
         component_layout.addWidget(autoconnect_btn)
         component_layout.addWidget(self.sever_connection_btn)
         component_layout.addWidget(separator2)
-        component_layout.addWidget(solar_panel_btn)
-        component_layout.addWidget(wind_turbine_btn)
+        component_layout.addWidget(self.renewables_btn)
         component_layout.addWidget(self.props_btn)
         component_layout.addStretch()
         
@@ -504,14 +510,13 @@ class PowerSystemSimulator(QMainWindow):
         # Store references to all component and connection buttons for later enabling/disabling
         self.component_buttons = [
             generator_btn, 
-            solar_panel_btn,
-            wind_turbine_btn,
             grid_import_btn, 
             grid_export_btn, 
             bus_btn, 
             load_btn, 
             battery_btn,
             cloud_workload_btn,
+            self.renewables_btn,
             self.props_btn,
             self.connection_btn,
             autoconnect_btn,
@@ -685,7 +690,7 @@ class PowerSystemSimulator(QMainWindow):
         view_menu = QMenu("View", self)
         
         # Create actions for toggling panel visibility - store references for later updates
-        self.properties_action = QAction("Show (P)roperties Panel", self)
+        self.properties_action = QAction("Show Properties Panel", self)
         self.properties_action.triggered.connect(self.toggle_properties_panel)
         view_menu.addAction(self.properties_action)
 
@@ -1062,20 +1067,12 @@ class PowerSystemSimulator(QMainWindow):
             # Check if a component is selected and the properties manager has a current component
             if hasattr(self.properties_manager, 'current_component') and self.properties_manager.current_component:
                 self.properties_manager.delete_component()
+                self.properties_dock.setVisible(False)
                 return
                 
         # R key for reset simulation - always active regardless of mode
         if key == Qt.Key_R:
             self.reset_simulation()
-            return
-            
-        # P key to toggle properties panel visibility - always active
-        if key == Qt.Key_P:
-            if not self.properties_dock.isVisible():
-                self.properties_dock.setVisible(True)
-                self.position_properties_panel_if_needed()
-            else:
-                self.properties_dock.setVisible(False)
             return
         
         # Only process if not in connection mode, sever mode, and simulation is not running
@@ -1275,9 +1272,9 @@ class PowerSystemSimulator(QMainWindow):
     def update_properties_menu_text(self, visible):
         """Update the properties panel menu text based on visibility"""
         if visible:
-            self.properties_action.setText("Hide (P)roperties Panel")
+            self.properties_action.setText("Hide Properties Panel")
         else:
-            self.properties_action.setText("Show (P)roperties Panel")
+            self.properties_action.setText("Show Properties Panel")
 
     def update_analytics_menu_text(self, visible):
         """Update the analytics panel menu text based on visibility"""
