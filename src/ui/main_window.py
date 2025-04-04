@@ -1078,8 +1078,39 @@ class PowerSystemSimulator(QMainWindow):
             
         # Delete key for deleting selected component - active regardless of mode
         if key == Qt.Key_Delete:
-            # Check if a component is selected and the properties manager has a current component
-            if hasattr(self.properties_manager, 'current_component') and self.properties_manager.current_component:
+            # Check if any components are selected in the scene
+            selected_items = [item for item in self.scene.selectedItems() if hasattr(item, 'connections')]
+            
+            if selected_items:
+                # Delete all selected components
+                for component in selected_items:
+                    # Find and remove all connections associated with this component
+                    connections_to_remove = [conn for conn in self.connections 
+                                    if conn.source == component or conn.target == component]
+                    
+                    for connection in connections_to_remove:
+                        connection.cleanup()
+                        self.scene.removeItem(connection)
+                        if connection in self.connections:
+                            self.connections.remove(connection)
+                    
+                    # Remove the component from the scene
+                    self.scene.removeItem(component)
+                    
+                    # Only remove from components list if it's a functional component and in the list
+                    if (not isinstance(component, (TreeComponent, BushComponent, PondComponent, 
+                                                  House1Component, House2Component, FactoryComponent)) and 
+                        component in self.components):
+                        self.components.remove(component)
+                
+                # Clear the properties panel
+                self.properties_dock.setVisible(False)
+                
+                # Update simulation state
+                self.update_simulation()
+                return
+            # If no scene items are selected, check if properties manager has a current component
+            elif hasattr(self.properties_manager, 'current_component') and self.properties_manager.current_component:
                 self.properties_manager.delete_component()
                 self.properties_dock.setVisible(False)
                 return

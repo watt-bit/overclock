@@ -799,3 +799,28 @@ To add a new component:
    - Be specific with selectors to avoid unintended style application
    - Use consistent formatting for readability
    - Document style choices, especially for complex widgets 
+
+## Multi-Component Selection and Deletion (2025-04-03)
+1. Selection Handling
+   - The application supports multi-component selection using Qt's standard selection mechanism
+   - The scene.selectedItems() method returns all currently selected items
+   - Selected items must be filtered to only include components with the needed properties
+   - Each component has an isSelected() method from QGraphicsItem that can be checked
+
+2. Multiple Component Operations
+   - Operations like deletion need to handle both single and multiple selections
+   - When deleting multiple components, each component must be processed individually
+   - Error handling must be robust to handle components that may not be in certain lists
+   - Always check if an item is in a collection before removing it to avoid ValueErrors
+
+3. Component Management
+   - The main_window.components list tracks only functional components, not decorative ones
+   - Different component types require different cleanup procedures
+   - Connections between components must be properly cleaned up when components are deleted
+   - The scene and the components list must stay in sync during deletion operations
+
+4. UI State Management
+   - After deleting components, the properties panel should be updated or hidden
+   - The simulation state needs to be updated after component deletion
+   - Error handling should be comprehensive to avoid crashes during bulk operations
+   - The order of operations is important: first remove connections, then components from scene, then from lists 

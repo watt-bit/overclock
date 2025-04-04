@@ -398,7 +398,7 @@ class ComponentPropertiesManager:
         auto_charging_btn.clicked.connect(toggle_auto_charging)
         
         layout.addRow("Max Capacity (kW):", capacity_edit)
-        layout.addRow("Operating Mode:", QLabel("Auto"))
+        layout.addRow("Operating Mode:", QLabel("Last Resort (Auto)"))
         layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
     
     def _add_grid_export_properties(self, component, layout):
@@ -413,7 +413,7 @@ class ComponentPropertiesManager:
         
         layout.addRow("Max Capacity (kW):", capacity_edit)
         layout.addRow("Bulk Export PPA ($/kWh):", price_edit)
-        layout.addRow("Operating Mode:", QLabel("Auto"))
+        layout.addRow("Operating Mode:", QLabel("Last Resort (Auto)"))
     
     def _add_load_properties(self, component, layout):
         demand_edit = QLineEdit(str(component.demand))

@@ -12,7 +12,7 @@ class GridExportComponent(ComponentBase):
         self.image = QPixmap("src/ui/assets/grid_export.png")
         
         self.capacity = 1500  # kW - maximum export capacity
-        self.operating_mode = "Auto"  # Only Auto mode for now
+        self.operating_mode = "Last Resort (Auto)"  # Only Auto mode for now
         self.bulk_ppa_price = 0.00  # $/kWh - price received for exported power
         self.accumulated_revenue = 0.00  # Track accumulated revenue in dollars
     
