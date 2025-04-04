@@ -34,6 +34,7 @@ from .analytics import AnalyticsPanel
 from .properties_manager import ComponentPropertiesManager
 from .connection_manager import ConnectionManager
 from src.models.model_manager import ModelManager
+from .historian_manager import HistorianManager
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -206,6 +207,9 @@ class PowerSystemSimulator(QMainWindow):
         # Create model manager
         self.model_manager = ModelManager(self)
         
+        # Create historian manager
+        self.historian_manager = HistorianManager(self)
+        
         # Cursor animation
         self.cursor_timer = QTimer()
         self.cursor_timer.timeout.connect(self.update_cursor)
@@ -218,6 +222,9 @@ class PowerSystemSimulator(QMainWindow):
         
         # Set the initial background mode to solid color
         self.scene.set_background(self.background_mode)
+        
+        # Flag to track whether we're in model or historian view
+        self.is_model_view = True
         
         self.init_ui()
         
@@ -336,6 +343,15 @@ class PowerSystemSimulator(QMainWindow):
             
             # Make the logo visible
             self.logo_overlay.show()
+        
+        # Create Model/Historian toggle button in top-left corner
+        self.mode_toggle_btn = QPushButton("🧩 Model", self.view)
+        self.mode_toggle_btn.setStyleSheet("QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; width: 125px; font-weight: bold; font-size: 14px; }")
+        self.mode_toggle_btn.clicked.connect(self.toggle_mode_button)
+        # Position in top left corner with padding
+        self.mode_toggle_btn.move(10, 10)
+        # Make the button visible
+        self.mode_toggle_btn.show()
         
         # Component palette
         self.component_dock = QDockWidget("Components", self)
@@ -1349,9 +1365,86 @@ class PowerSystemSimulator(QMainWindow):
             logo_height = self.logo_overlay.pixmap().height()
             self.logo_overlay.move(self.view.width() - logo_width - 10, self.view.height() - logo_height - 10)
         
+        # Reposition mode toggle button in top left corner
+        if hasattr(self, 'mode_toggle_btn'):
+            self.mode_toggle_btn.move(10, 10)
+        
         # Call original resize event if it was saved
         if hasattr(self, 'original_resize_event'):
             self.original_resize_event(event)
         else:
             # Call base QGraphicsView implementation
-            QGraphicsView.resizeEvent(self.view, event) 
+            QGraphicsView.resizeEvent(self.view, event)
+
+    def toggle_mode_button(self):
+        """Toggle the mode button text between Model and Historian"""
+        if self.mode_toggle_btn.text() == "🧩 Model":
+            # Switching to Historian mode
+            self.mode_toggle_btn.setText("💾 Historian")
+            
+            # Hide the properties panel if it's open
+            if self.properties_dock.isVisible():
+                self.properties_dock.setVisible(False)
+            
+            # Hide the analytics panel if it's open
+            if self.analytics_dock.isVisible():
+                self.analytics_dock.setVisible(False)
+            
+            # Disable the toolbar menu buttons for properties and analytics
+            self.properties_action.setEnabled(False)
+            self.analytics_action.setEnabled(False)
+            
+            # Disable all component buttons
+            self.disable_component_buttons(True)
+            
+            # Switch to the historian view
+            self.switch_to_historian_view()
+        else:
+            # Switching back to Model mode
+            self.mode_toggle_btn.setText("🧩 Model")
+            
+            # Re-enable the toolbar menu buttons
+            self.properties_action.setEnabled(True)
+            self.analytics_action.setEnabled(True)
+            
+            # Re-enable all component buttons
+            self.disable_component_buttons(False)
+            
+            # Switch back to the model view
+            self.switch_to_model_view()
+
+    def switch_to_historian_view(self):
+        """Switch from model view to historian view"""
+        if self.is_model_view:
+            # Set flag to indicate we're now in historian view
+            self.is_model_view = False
+            
+            # Change the view to show the historian scene
+            self.view.setScene(self.historian_manager.historian_scene)
+            
+            # Apply the current zoom level to the historian view
+            transform = self.view.transform()
+            transform.reset()
+            transform.scale(self.current_zoom, self.current_zoom)
+            self.view.setTransform(transform)
+            
+            # Update the view
+            self.view.update()
+
+    def switch_to_model_view(self):
+        """Switch from historian view back to model view"""
+        if not self.is_model_view:
+            # Set flag to indicate we're now in model view
+            self.is_model_view = True
+            
+            # Change the view back to show the model scene
+            self.view.setScene(self.scene)
+            
+            # Apply the current zoom level to the model view
+            transform = self.view.transform()
+            transform.reset()
+            transform.scale(self.current_zoom, self.current_zoom)
+            self.view.setTransform(transform)
+            
+            # Update the view
+            self.view.update() 
