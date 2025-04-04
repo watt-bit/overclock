@@ -588,11 +588,9 @@ class PowerSystemSimulator(QMainWindow):
         
         # Add speed control
         speed_label = QLabel("⏩ Speed:")
-        self.speed_selector = QComboBox()
-        self.speed_selector.addItems(["▶", "▶▶", "▶▶▶"])
-        self.speed_selector.setCurrentIndex(0)  # Set default to 1x (now index 1)
-        self.speed_selector.currentIndexChanged.connect(self.change_simulation_speed)
-        self.speed_selector.setStyleSheet("QComboBox { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}")
+        self.speed_selector = QPushButton("▶▷▷")
+        self.speed_selector.clicked.connect(self.cycle_simulation_speed)
+        self.speed_selector.setStyleSheet("QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}")
         self.speed_selector.setMinimumWidth(90)  # Set minimum width to prevent text cutoff
         
         # Add zoom control to time controls (moved from toolbar)
@@ -921,6 +919,22 @@ class PowerSystemSimulator(QMainWindow):
                 0,  # total_capacity
                 is_scrubbing=True
             )
+    
+    def cycle_simulation_speed(self):
+        """Cycle through simulation speeds and update the button text"""
+        # Get current speed setting (default is 1)
+        # Map speeds [1, 2, 3] to indices [0, 1, 2]
+        current_index = self.simulation_speed - 1
+        
+        # Cycle to next speed: 0->1->2->0
+        next_index = (current_index + 1) % 3
+        
+        # Update button text with appropriate number of arrows
+        speed_texts = ["▶▷▷", "▶▶▷", "▶▶▶"]
+        self.speed_selector.setText(speed_texts[next_index])
+        
+        # Call the existing change_simulation_speed method with the new index
+        self.change_simulation_speed(next_index)
     
     def change_simulation_speed(self, index):
         """Change the simulation speed based on the selected option"""
