@@ -82,6 +82,36 @@ class ConnectionManager:
                 self.scene.component_clicked.disconnect(self.handle_connection_click)
             self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
     
+    def validate_cloud_workload_connection(self, source, target):
+        """
+        Validate that cloud workload components can only connect to data center loads
+        
+        Args:
+            source: The source component
+            target: The target component
+            
+        Returns:
+            (bool, str): Tuple of (is_valid, error_message)
+        """
+        # Check if either component is a CloudWorkloadComponent
+        is_cloud_source = isinstance(source, CloudWorkloadComponent)
+        is_cloud_target = isinstance(target, CloudWorkloadComponent)
+        
+        # If neither is a cloud component, connection is valid
+        if not is_cloud_source and not is_cloud_target:
+            return True, ""
+        
+        # We have a cloud workload component, check the other component
+        cloud_component = source if is_cloud_source else target
+        other_component = target if is_cloud_source else source
+        
+        # Cloud workload can only connect to Data Center load
+        if isinstance(other_component, LoadComponent) and other_component.profile_type == "Data Center":
+            return True, ""
+        
+        # Connection is invalid - return error message
+        return False, "Cloud Workload components can only connect to Load components in Data Center mode."
+    
     def handle_connection_click(self, component):
         """Handle clicks on components for connection creation"""
         # Ignore decorative components
@@ -101,6 +131,35 @@ class ConnectionManager:
         else:
             # Second click - create final connection
             if component != self.connection_source:  # Prevent self-connection
+                # Validate cloud workload connection
+                is_valid, error_message = self.validate_cloud_workload_connection(
+                    self.connection_source, component
+                )
+                
+                if not is_valid:
+                    # Show error message
+                    QMessageBox.warning(self.main_window, "Invalid Connection - Cloud Workload must connect to Data Center Load", error_message)
+                    # Clean up and exit connection mode
+                    if self.temp_connection:
+                        self.scene.removeItem(self.temp_connection)
+                    self.temp_connection = None
+                    self.connection_source = None
+                    self.creating_connection = False
+                    self.main_window.creating_connection = False
+                    # Stop cursor animation and restore default cursor
+                    self.cursor_timer.stop()
+                    self.view.setCursor(Qt.ArrowCursor)
+                    self.view.viewport().setCursor(Qt.ArrowCursor)
+                    # Re-enable connection button
+                    self.connection_btn.setEnabled(True)
+                    self.view.setMouseTracking(False)
+                    self.view.viewport().removeEventFilter(self.main_window)
+                    # Restore original click behavior
+                    self.scene.component_clicked.disconnect(self.handle_connection_click)
+                    self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
+                    return
+                
+                # Valid connection - create it
                 connection = Connection(self.connection_source, component)
                 self.scene.addItem(connection)
                 connection.setup_component_tracking()
@@ -234,6 +293,10 @@ class ConnectionManager:
             loads = [c for c in self.main_window.components if isinstance(c, LoadComponent)]
             grid_import = [c for c in self.main_window.components if isinstance(c, GridImportComponent)]
             grid_export = [c for c in self.main_window.components if isinstance(c, GridExportComponent)]
+            cloud_workloads = [c for c in self.main_window.components if isinstance(c, CloudWorkloadComponent)]
+            
+            # Identify data center loads specifically
+            data_center_loads = [load for load in loads if load.profile_type == "Data Center"]
             
             # 1. If there are buses, connect generators to buses
             if buses:
@@ -251,6 +314,11 @@ class ConnectionManager:
                 for i, grid in enumerate(grid_import + grid_export):
                     bus = buses[i % len(buses)]  # Distribute evenly
                     self.create_connection_between(grid, bus, connected_pairs)
+                    
+                # Connect cloud workloads to buses (they'll indirectly connect to data center loads)
+                for i, cloud in enumerate(cloud_workloads):
+                    bus = buses[i % len(buses)]  # Distribute evenly
+                    self.create_connection_between(cloud, bus, connected_pairs)
             else:
                 # No buses - connect generators directly to loads
                 if generators and loads:
@@ -276,6 +344,32 @@ class ConnectionManager:
                     for i, g_import in enumerate(grid_import):
                         g_export = grid_export[i % len(grid_export)]
                         self.create_connection_between(g_import, g_export, connected_pairs)
+                        
+                # Connect cloud workloads directly to data center loads if available
+                if cloud_workloads and data_center_loads:
+                    for i, cloud in enumerate(cloud_workloads):
+                        # Try to connect to a data center load
+                        dc_load = data_center_loads[i % len(data_center_loads)]
+                        self.create_connection_between(cloud, dc_load, connected_pairs)
+            
+            # Special handling: Ensure all cloud workloads are connected to data center loads when possible
+            # Do this separately to prioritize these connections regardless of other network structure
+            if cloud_workloads and data_center_loads:
+                for cloud in cloud_workloads:
+                    # Check if cloud workload is already connected
+                    cloud_id = id(cloud)
+                    cloud_connected = False
+                    
+                    for pair in connected_pairs:
+                        if cloud_id in pair:
+                            cloud_connected = True
+                            break
+                    
+                    # If not connected, try to connect to any data center load
+                    if not cloud_connected:
+                        for dc_load in data_center_loads:
+                            if self.create_connection_between(cloud, dc_load, connected_pairs):
+                                break  # Successfully connected
             
             # STEP 2: Ensure all components are connected in a single network
             # Build a graph of the current connections
@@ -376,6 +470,11 @@ class ConnectionManager:
         """Create a connection between two components if not already connected"""
         # Check if this pair is already connected (in either direction)
         if (id(source), id(target)) in connected_pairs or (id(target), id(source)) in connected_pairs:
+            return False
+        
+        # Validate cloud workload connection
+        is_valid, _ = self.validate_cloud_workload_connection(source, target)
+        if not is_valid:
             return False
             
         # Safety check for deleted components

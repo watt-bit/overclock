@@ -113,6 +113,20 @@ class CloudWorkloadComponent(ComponentBase):
         # Restore painter state
         painter.restore()
     
+    def is_directly_connected_to_load(self, load_component):
+        """Check if this cloud workload is directly connected to a specific load component
+        
+        Args:
+            load_component: The load component to check
+            
+        Returns:
+            bool: True if directly connected, False otherwise
+        """
+        for connection in self.connections:
+            if connection.source == load_component or connection.target == load_component:
+                return True
+        return False
+    
     def calculate_cloud_revenue(self, load_component, energy_consumed, time_step=1.0):
         """Calculate cloud revenue based on load type and energy consumed
         
@@ -124,6 +138,10 @@ class CloudWorkloadComponent(ComponentBase):
         Returns:
             Revenue generated in dollars
         """
+        # Check if the load component is directly connected to this cloud workload
+        if not self.is_directly_connected_to_load(load_component):
+            return 0.0
+            
         if self.operating_mode != "Multi-Cloud Spot" or load_component.profile_type != "Data Center":
             return 0.0
         

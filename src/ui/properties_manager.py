@@ -415,6 +415,25 @@ class ComponentPropertiesManager:
         layout.addRow("Bulk Export PPA ($/kWh):", price_edit)
         layout.addRow("Operating Mode:", QLabel("Last Resort (Auto)"))
     
+    def _is_connected_to_cloud_workload(self, load_component):
+        """Check if a load component is connected to a cloud workload component
+        
+        Args:
+            load_component: The load component to check
+            
+        Returns:
+            bool: True if connected to a cloud workload, False otherwise
+        """
+        if not isinstance(load_component, LoadComponent):
+            return False
+            
+        for connection in load_component.connections:
+            if isinstance(connection.source, CloudWorkloadComponent):
+                return True
+            if isinstance(connection.target, CloudWorkloadComponent):
+                return True
+        return False
+    
     def _add_load_properties(self, component, layout):
         demand_edit = QLineEdit(str(component.demand))
         demand_edit.setStyleSheet(INPUT_STYLE)
@@ -425,10 +444,26 @@ class ComponentPropertiesManager:
         price_edit.setStyleSheet(INPUT_STYLE)
         self._set_up_numeric_field(price_edit, lambda value: setattr(component, 'price_per_kwh', value), min_value=0.00)
         
+        # Check if connected to cloud workload
+        connected_to_cloud = self._is_connected_to_cloud_workload(component)
+        
         profile_type = QComboBox()
         profile_type.setStyleSheet(COMBOBOX_STYLE)
         profile_type.addItems(["Data Center", "Sine Wave", "Custom", "Random 8760", "Constant"])
         profile_type.setCurrentText(component.profile_type)
+        
+        # Disable profile switching if connected to cloud workload
+        if connected_to_cloud:
+            profile_type.setEnabled(False)
+            # Apply a specific style for the disabled state with greyed out text
+            disabled_combobox_style = COMBOBOX_STYLE + """
+                QComboBox:disabled {
+                    color: #808080;  /* Grey color */
+                    background-color: #2A2A2A;  /* Darker background */
+                    border: 1px solid #444444;  /* Darker border */
+                }
+            """
+            profile_type.setStyleSheet(disabled_combobox_style)
         
         # Create a horizontal layout for profile selection and load button
         profile_layout = QHBoxLayout()
@@ -449,6 +484,9 @@ class ComponentPropertiesManager:
         profile_info = QLabel()
         if component.profile_type == "Custom" and component.profile_name:
             profile_info.setText(f"Loaded: {component.profile_name}")
+        elif connected_to_cloud:
+            profile_info.setText("<i>Cloud Workload connected</i>")
+            profile_info.setStyleSheet("color: #808080;")
         else:
             profile_info.setText("")
         
@@ -649,6 +687,14 @@ class ComponentPropertiesManager:
         time_offset_widget.setVisible(component.profile_type in ["Sine Wave", "Custom"])
         
         def on_profile_changed(text):
+            # If connected to a cloud workload, do not allow changing from Data Center
+            if connected_to_cloud and component.profile_type == "Data Center" and text != "Data Center":
+                # Silently revert back to Data Center
+                profile_type.blockSignals(True)
+                profile_type.setCurrentText("Data Center")
+                profile_type.blockSignals(False)
+                return
+                
             setattr(component, 'profile_type', text)
             load_profile_btn.setVisible(text == "Custom")
             time_offset_widget.setVisible(text in ["Sine Wave", "Custom"])
