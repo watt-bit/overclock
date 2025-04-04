@@ -36,6 +36,20 @@ class SimulationEngine(QObject):
         # Add array to track gross revenue
         self.gross_revenue_data = [0.0] * 8761  # Initialize with 8761 entries (0-8760 hours)
         
+        # Create Historian data object to record simulation history
+        self.historian = {
+            'total_generation': [0.0] * 8761  # Initialize with 8761 entries (0-8760 hours)
+        }
+        
+    def reset_historian(self):
+        """Reset all data arrays within the historian object."""
+        for key in self.historian:
+            # Assuming all historian data are lists of numbers initialized to 0.0
+            if isinstance(self.historian[key], list):
+                # Re-initialize the list with zeros
+                self.historian[key] = [0.0] * len(self.historian[key])
+        print("Historian data reset.")
+        
     def step_simulation(self, steps):
         # Check network connectivity before stepping
         if not self.simulation_running and not self.main_window.check_network_connectivity():
@@ -52,7 +66,7 @@ class SimulationEngine(QObject):
         
         return True
         
-    def update_simulation(self):
+    def update_simulation(self, skip_ui_updates=False):
         # Guard against recursive calls
         if self.updating_simulation:
             return
@@ -386,36 +400,42 @@ class SimulationEngine(QObject):
             # Calculate total generation including battery discharge
             total_generation = local_generation + max(0, battery_power)
             
-            # Update analytics with all values
-            self.main_window.analytics_panel.update_analytics(
-                total_generation,
-                total_load,
-                current_time,
-                total_capacity,
-                is_scrubbing=False,
-                grid_import=grid_import,
-                grid_export=grid_export,
-                total_imported=self.total_energy_imported,
-                total_exported=self.total_energy_exported,
-                system_stable=self.system_stable,
-                battery_power=battery_power,
-                total_battery_charge=total_battery_charge,
-                gross_revenue_data=self.gross_revenue_data
-            )
+            # Record total generation in Historian
+            if 0 <= current_time < len(self.historian['total_generation']):
+                self.historian['total_generation'][current_time] = total_generation
             
-            # Update all load components to refresh their visual display with current demand percentage
-            for item in self.main_window.scene.items():
-                if isinstance(item, LoadComponent):
-                    item.update()
-                elif isinstance(item, GeneratorComponent):
-                    item.update()
-                elif isinstance(item, CloudWorkloadComponent):
-                    item.update()
+            # Update analytics with all values (conditionally)
+            if not skip_ui_updates:
+                self.main_window.analytics_panel.update_analytics(
+                    total_generation,
+                    total_load,
+                    current_time,
+                    total_capacity,
+                    is_scrubbing=False,
+                    grid_import=grid_import,
+                    grid_export=grid_export,
+                    total_imported=self.total_energy_imported,
+                    total_exported=self.total_energy_exported,
+                    system_stable=self.system_stable,
+                    battery_power=battery_power,
+                    total_battery_charge=total_battery_charge,
+                    gross_revenue_data=self.gross_revenue_data
+                )
             
-            #Inmmplement historian system here. The historian will be a separate class that records all the state data from every component in the simulation per hour.
-            #The user will be able to export the data as a csv file.
-
-
+            # Update all load components to refresh their visual display with current demand percentage (conditionally)
+            if not skip_ui_updates:
+                for item in self.main_window.scene.items():
+                    if isinstance(item, LoadComponent):
+                        item.update()
+                    elif isinstance(item, GeneratorComponent):
+                        item.update()
+                    elif isinstance(item, CloudWorkloadComponent):
+                        item.update()
+            
+            # Update historian chart if in historian view (conditionally)
+            if not skip_ui_updates and hasattr(self.main_window, 'is_model_view') and not self.main_window.is_model_view:
+                self.main_window.historian_manager.update_chart()
+            
             # Move to next time step if auto-playing
             if self.simulation_running:
                 next_time = current_time + 1

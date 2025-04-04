@@ -192,6 +192,11 @@ class PowerSystemSimulator(QMainWindow):
         self.is_scrubbing = False
         self.scrub_timer = None
         
+        # Autocomplete state
+        self.is_autocompleting = False
+        self.autocomplete_timer = None
+        self.autocomplete_end_time = 0
+        
         # Track if the properties panel has been positioned yet
         self.properties_panel_positioned = False
         
@@ -225,6 +230,9 @@ class PowerSystemSimulator(QMainWindow):
         
         # Flag to track whether we're in model or historian view
         self.is_model_view = True
+        
+        # Store the previous zoom value when switching to historian
+        self.previous_zoom_value = None
         
         self.init_ui()
         
@@ -624,6 +632,11 @@ class PowerSystemSimulator(QMainWindow):
         self.screenshot_btn.clicked.connect(self.take_screenshot)
         self.screenshot_btn.setStyleSheet(default_button_style)
         
+        # Add Autocomplete button
+        self.autocomplete_btn = QPushButton("Autocomplete (TAB)")
+        self.autocomplete_btn.clicked.connect(self.run_autocomplete)
+        self.autocomplete_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }")
+        
         # Add background toggle button
         self.background_toggle_btn = QPushButton("🌄 Background Off")
         self.background_toggle_btn.clicked.connect(self.toggle_background)
@@ -662,6 +675,7 @@ class PowerSystemSimulator(QMainWindow):
         time_controls.addWidget(self.play_btn)
         time_controls.addWidget(self.speed_selector)
         time_controls.addWidget(self.time_slider)
+        time_controls.addWidget(self.autocomplete_btn)
         time_controls.addWidget(self.background_toggle_btn)
         time_controls.addWidget(self.screenshot_btn)
         time_controls.addWidget(zoom_label)
@@ -920,8 +934,8 @@ class PowerSystemSimulator(QMainWindow):
         # But only show minimal time update info without rendering data
         self.minimal_analytics_update()
         
-        # Only update full simulation if not in scrub mode
-        if not self.simulation_engine.simulation_running and not self.is_scrubbing:
+        # Only update full simulation if not playing, scrubbing, or autocompleting
+        if not self.simulation_engine.simulation_running and not self.is_scrubbing and not self.is_autocompleting:
             self.update_simulation()
     
     def minimal_analytics_update(self):
@@ -1005,6 +1019,20 @@ class PowerSystemSimulator(QMainWindow):
         self.simulation_engine.update_simulation()
     
     def reset_simulation(self):
+        # Stop autocomplete if it's running
+        if self.is_autocompleting:
+            if self.autocomplete_timer:
+                self.autocomplete_timer.stop()
+            self.is_autocompleting = False
+            # Re-enable controls that were disabled by autocomplete
+            self.play_btn.setEnabled(True)
+            self.reset_btn.setEnabled(True)
+            self.time_slider.setEnabled(True)
+            self.autocomplete_btn.setEnabled(True)
+            self.speed_selector.setEnabled(True)
+            self.disable_component_buttons(False)
+            print("Autocomplete interrupted by reset.")
+        
         self.simulation_engine.current_time_step = 0
         self.simulation_engine.simulation_running = False
         self.simulation_engine.total_energy_imported = 0
@@ -1030,6 +1058,10 @@ class PowerSystemSimulator(QMainWindow):
         # Clear the analytics chart history
         self.analytics_panel.clear_chart_history()
         
+        # Reset Historian data and clear its chart
+        self.simulation_engine.reset_historian()
+        self.historian_manager.clear_chart()
+        
         self.update_simulation()
     
     def new_scenario(self):
@@ -1052,6 +1084,14 @@ class PowerSystemSimulator(QMainWindow):
     
     def load_scenario(self):
         """Load a scenario from a file"""
+        # Stop autocomplete if it's running before loading
+        if self.is_autocompleting:
+            if self.autocomplete_timer:
+                self.autocomplete_timer.stop()
+            self.is_autocompleting = False
+            # Controls will be re-enabled after successful load by model_manager
+            print("Autocomplete interrupted by load scenario.")
+        
         self.model_manager.load_scenario()
 
     def create_connection_cursor(self, phase):
@@ -1090,6 +1130,11 @@ class PowerSystemSimulator(QMainWindow):
         # Space for play/pause - always active regardless of mode
         if key == Qt.Key_Space:
             self.toggle_simulation()
+            return
+            
+        # Tab key for autocomplete - active unless simulation is running
+        if key == Qt.Key_Tab and not self.simulation_engine.simulation_running:
+            self.run_autocomplete()
             return
             
         # Delete key for deleting selected component - active regardless of mode
@@ -1358,7 +1403,7 @@ class PowerSystemSimulator(QMainWindow):
         self.analytics_dock.setVisible(True)
 
     def on_view_resize(self, event):
-        """Handle resize events to reposition the logo overlay"""
+        """Handle resize events to reposition the logo overlay and historian chart"""
         if hasattr(self, 'logo_overlay') and not self.logo_overlay.pixmap().isNull():
             # Reposition logo in bottom right when view is resized
             logo_width = self.logo_overlay.pixmap().width()
@@ -1368,6 +1413,11 @@ class PowerSystemSimulator(QMainWindow):
         # Reposition mode toggle button in top left corner
         if hasattr(self, 'mode_toggle_btn'):
             self.mode_toggle_btn.move(10, 10)
+        
+        # Resize historian chart if in historian view
+        if not self.is_model_view and hasattr(self, 'historian_manager'):
+            view_size = self.view.viewport().size()
+            self.historian_manager.resize_chart_widget(view_size.width(), view_size.height())
         
         # Call original resize event if it was saved
         if hasattr(self, 'original_resize_event'):
@@ -1416,20 +1466,28 @@ class PowerSystemSimulator(QMainWindow):
     def switch_to_historian_view(self):
         """Switch from model view to historian view"""
         if self.is_model_view:
+            # Store the current zoom slider value
+            self.previous_zoom_value = self.zoom_slider.value()
+            
             # Set flag to indicate we're now in historian view
             self.is_model_view = False
+            
+            # Update the historian chart with current data
+            self.historian_manager.update_chart()
             
             # Change the view to show the historian scene
             self.view.setScene(self.historian_manager.historian_scene)
             
-            # Apply the current zoom level to the historian view
-            transform = self.view.transform()
-            transform.reset()
-            transform.scale(self.current_zoom, self.current_zoom)
-            self.view.setTransform(transform)
+            # Resize the chart widget to fit the current view size
+            view_size = self.view.viewport().size()
+            self.historian_manager.resize_chart_widget(view_size.width(), view_size.height())
             
-            # Update the view
-            self.view.update()
+            # Set zoom to 1x and disable slider
+            self.zoom_slider.setValue(100)  # Set slider to 1.0x
+            self.zoom_slider.setEnabled(False)
+            
+            # Note: Setting the slider value automatically triggers zoom_changed,
+            # which applies the transform and updates the view.
 
     def switch_to_model_view(self):
         """Switch from historian view back to model view"""
@@ -1440,11 +1498,92 @@ class PowerSystemSimulator(QMainWindow):
             # Change the view back to show the model scene
             self.view.setScene(self.scene)
             
-            # Apply the current zoom level to the model view
-            transform = self.view.transform()
-            transform.reset()
-            transform.scale(self.current_zoom, self.current_zoom)
-            self.view.setTransform(transform)
+            # Re-enable zoom slider and restore previous value
+            self.zoom_slider.setEnabled(True)
+            if self.previous_zoom_value is not None:
+                self.zoom_slider.setValue(self.previous_zoom_value)
             
-            # Update the view
-            self.view.update() 
+            # Reset the stored previous value
+            self.previous_zoom_value = None
+            
+            # Note: Setting the slider value automatically triggers zoom_changed,
+            # which applies the transform and updates the view. 
+
+    def run_autocomplete(self):
+        """Run the simulation from the current time to the end asynchronously"""
+        
+        # Check if already running
+        if self.simulation_engine.simulation_running or self.is_autocompleting:
+            return
+        
+        # Check network connectivity first
+        if not self.check_network_connectivity():
+            QMessageBox.warning(self, "Simulation Error",
+                              "All components must be connected in a single network to run the simulation.\n\n"
+                              "Please ensure all generators and loads are connected before starting.")
+            return
+        
+        # Ensure we're not in scrub mode
+        self.simulation_engine.is_scrubbing = False
+        
+        # Get current and end times
+        start_time = self.simulation_engine.current_time_step
+        self.autocomplete_end_time = self.time_slider.maximum()
+        
+        # If already at the end, do nothing
+        if start_time >= self.autocomplete_end_time:
+            return
+            
+        print("Starting Autocomplete simulation...")
+        self.is_autocompleting = True
+        
+        # Disable controls during autocomplete
+        self.play_btn.setEnabled(False)
+        self.reset_btn.setEnabled(False)
+        self.time_slider.setEnabled(False)
+        self.autocomplete_btn.setEnabled(False)
+        self.speed_selector.setEnabled(False)
+        self.disable_component_buttons(True) # Also disable component add/connect buttons
+
+        # Create and start the timer if it doesn't exist
+        if not self.autocomplete_timer:
+            self.autocomplete_timer = QTimer(self)
+            self.autocomplete_timer.timeout.connect(self._step_autocomplete)
+            
+        # Start timer with 0 interval for maximum speed while yielding
+        self.autocomplete_timer.start(0) 
+        
+    def _step_autocomplete(self):
+        """Perform a single step of the autocomplete process"""
+        current_time = self.simulation_engine.current_time_step
+        
+        if current_time < self.autocomplete_end_time:
+            # Perform one simulation step, skipping UI updates
+            self.simulation_engine.current_time_step += 1
+            self.simulation_engine.update_simulation(skip_ui_updates=True)
+            
+            # Update only the time slider during the loop
+            self.time_slider.setValue(self.simulation_engine.current_time_step)
+            
+            # Keep timer running for the next step
+        else:
+            # Reached the end
+            self.autocomplete_timer.stop()
+            self.is_autocompleting = False
+            
+            # Perform one final update to refresh UI elements and charts
+            # This call will not skip UI updates
+            self.simulation_engine.update_simulation()
+            # Explicitly update historian chart if needed
+            if not self.is_model_view:
+                self.historian_manager.update_chart()
+            
+            # Re-enable controls
+            self.play_btn.setEnabled(True)
+            self.reset_btn.setEnabled(True)
+            self.time_slider.setEnabled(True)
+            self.autocomplete_btn.setEnabled(True)
+            self.speed_selector.setEnabled(True)
+            self.disable_component_buttons(False)
+            
+            print("Autocomplete simulation finished.") 
