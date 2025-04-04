@@ -353,7 +353,7 @@ class PowerSystemSimulator(QMainWindow):
             self.logo_overlay.show()
         
         # Create Model/Historian toggle button in top-left corner
-        self.mode_toggle_btn = QPushButton("🧩 Model", self.view)
+        self.mode_toggle_btn = QPushButton("🧩 Model (TAB)", self.view)
         self.mode_toggle_btn.setStyleSheet("QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; width: 125px; font-weight: bold; font-size: 14px; }")
         self.mode_toggle_btn.clicked.connect(self.toggle_mode_button)
         # Position in top left corner with padding
@@ -633,7 +633,7 @@ class PowerSystemSimulator(QMainWindow):
         self.screenshot_btn.setStyleSheet(default_button_style)
         
         # Add Autocomplete button
-        self.autocomplete_btn = QPushButton("Autocomplete (TAB)")
+        self.autocomplete_btn = QPushButton("Autocomplete (Enter)")
         self.autocomplete_btn.clicked.connect(self.run_autocomplete)
         self.autocomplete_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }")
         
@@ -736,6 +736,10 @@ class PowerSystemSimulator(QMainWindow):
         # Connect visibility changed signals to update menu text
         self.properties_dock.visibilityChanged.connect(self.update_properties_menu_text)
         self.analytics_dock.visibilityChanged.connect(self.update_analytics_menu_text)
+        
+        # Create a keyboard shortcut for Tab to switch between views
+        self.tab_shortcut = QShortcut(QKeySequence(Qt.Key_Tab), self)
+        self.tab_shortcut.activated.connect(self.toggle_mode_button)
     
     def add_welcome_text(self):
         """Add welcome text to the middle of the canvas"""
@@ -1132,8 +1136,10 @@ class PowerSystemSimulator(QMainWindow):
             self.toggle_simulation()
             return
             
-        # Tab key for autocomplete - active unless simulation is running
-        if key == Qt.Key_Tab and not self.simulation_engine.simulation_running:
+        # Tab is now handled by QShortcut for better reliability
+        
+        # Enter key for autocomplete - active unless simulation is running
+        if key == Qt.Key_Return and not self.simulation_engine.simulation_running:
             self.run_autocomplete()
             return
             
@@ -1428,9 +1434,9 @@ class PowerSystemSimulator(QMainWindow):
 
     def toggle_mode_button(self):
         """Toggle the mode button text between Model and Historian"""
-        if self.mode_toggle_btn.text() == "🧩 Model":
+        if self.is_model_view:
             # Switching to Historian mode
-            self.mode_toggle_btn.setText("💾 Historian")
+            self.mode_toggle_btn.setText("💾 Historian (TAB)")
             
             # Hide the properties panel if it's open
             if self.properties_dock.isVisible():
@@ -1451,7 +1457,7 @@ class PowerSystemSimulator(QMainWindow):
             self.switch_to_historian_view()
         else:
             # Switching back to Model mode
-            self.mode_toggle_btn.setText("🧩 Model")
+            self.mode_toggle_btn.setText("🧩 Model (TAB)")
             
             # Re-enable the toolbar menu buttons
             self.properties_action.setEnabled(True)
