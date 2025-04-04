@@ -1028,12 +1028,22 @@ class PowerSystemSimulator(QMainWindow):
             if self.autocomplete_timer:
                 self.autocomplete_timer.stop()
             self.is_autocompleting = False
+            
+            # Define original styles for buttons
+            play_btn_style = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; } QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }"
+            speed_selector_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
+            
             # Re-enable controls that were disabled by autocomplete
             self.play_btn.setEnabled(True)
+            self.play_btn.setStyleSheet(play_btn_style)
+            
             self.reset_btn.setEnabled(True)
             self.time_slider.setEnabled(True)
             self.autocomplete_btn.setEnabled(True)
+            
             self.speed_selector.setEnabled(True)
+            self.speed_selector.setStyleSheet(speed_selector_style)
+            
             self.disable_component_buttons(False)
             print("Autocomplete interrupted by reset.")
         
@@ -1093,6 +1103,15 @@ class PowerSystemSimulator(QMainWindow):
             if self.autocomplete_timer:
                 self.autocomplete_timer.stop()
             self.is_autocompleting = False
+            
+            # Define original styles for buttons
+            play_btn_style = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; } QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }"
+            speed_selector_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
+            
+            # Reset the button styles
+            self.play_btn.setStyleSheet(play_btn_style)
+            self.speed_selector.setStyleSheet(speed_selector_style)
+            
             # Controls will be re-enabled after successful load by model_manager
             print("Autocomplete interrupted by load scenario.")
         
@@ -1543,12 +1562,25 @@ class PowerSystemSimulator(QMainWindow):
         print("Starting Autocomplete simulation...")
         self.is_autocompleting = True
         
+        # Define disabled styles for buttons
+        disabled_play_btn_style = "QPushButton { background-color: #2196F3; color: #99CCFF; border: 1px solid #555555; border-radius: 3px; padding: 5px; font-weight: bold; font-size: 16px; }"
+        disabled_speed_selector_style = "QPushButton { background-color: #3D3D3D; color: #999999; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
+        
+        # Save original button text for restoration
+        self.play_btn_text = self.play_btn.text()
+        self.speed_selector_text = self.speed_selector.text()
+        
         # Disable controls during autocomplete
         self.play_btn.setEnabled(False)
+        self.play_btn.setStyleSheet(disabled_play_btn_style)
+        
         self.reset_btn.setEnabled(False)
         self.time_slider.setEnabled(False)
         self.autocomplete_btn.setEnabled(False)
+        
         self.speed_selector.setEnabled(False)
+        self.speed_selector.setStyleSheet(disabled_speed_selector_style)
+        
         self.disable_component_buttons(True) # Also disable component add/connect buttons
 
         # Create and start the timer if it doesn't exist
@@ -1584,12 +1616,21 @@ class PowerSystemSimulator(QMainWindow):
             if not self.is_model_view:
                 self.historian_manager.update_chart()
             
+            # Define original styles for buttons
+            play_btn_style = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; } QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }"
+            speed_selector_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
+            
             # Re-enable controls
             self.play_btn.setEnabled(True)
+            self.play_btn.setStyleSheet(play_btn_style)
+            
             self.reset_btn.setEnabled(True)
             self.time_slider.setEnabled(True)
             self.autocomplete_btn.setEnabled(True)
+            
             self.speed_selector.setEnabled(True)
+            self.speed_selector.setStyleSheet(speed_selector_style)
+            
             self.disable_component_buttons(False)
             
             print("Autocomplete simulation finished.") 
