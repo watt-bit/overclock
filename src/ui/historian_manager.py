@@ -28,7 +28,7 @@ class HistorianManager:
         self.historian_scene = QGraphicsScene()
         
         # Set dark grey background
-        background_color = QColor("#2D2D2D")
+        background_color = QColor("#141414")
         self.historian_scene.setBackgroundBrush(QBrush(background_color))
         
         # Create a widget to hold the chart
@@ -37,12 +37,12 @@ class HistorianManager:
         
         # Create matplotlib figure for the generation chart
         self.figure = plt.figure(figsize=(12, 6))
-        self.figure.patch.set_facecolor('#2D2D2D')  # Dark background for figure
+        self.figure.patch.set_facecolor('#141414')  # Dark background for figure
         self.ax = self.figure.add_subplot(111)
-        self.ax.set_facecolor('#3D3D3D')  # Dark background for plot area
+        self.ax.set_facecolor('#1E1E1E')  # Dark background for plot area
         
         # Adjust subplot parameters to give specified padding
-        self.figure.subplots_adjust(left=0.1, right=0.98, bottom=0.12, top=0.95)
+        self.figure.subplots_adjust(left=0.05, right=0.99, bottom=0.09, top=0.96)
         
         # Create canvas for the figure
         self.canvas = FigureCanvas(self.figure)
@@ -55,12 +55,12 @@ class HistorianManager:
         self.ax.grid(True, color='#555555')  # Lighter gray grid
         
         # Create empty line for generation data with the same color as in analytics
-        self.generation_line, = self.ax.plot([], [], '-', color='#4CAF50', linewidth=2, 
-                                            label='Total Generation', alpha=0.9,
+        self.generation_line, = self.ax.plot([], [], '-', color='#4CAF50', linewidth=0.5, 
+                                            label='Total Generation', alpha=0.8,
                                             path_effects=[
                                                 path_effects.SimpleLineShadow(
                                                     shadow_color='#4CAF50', alpha=0.2, 
-                                                    offset=(0,0), linewidth=7
+                                                    offset=(0,0), linewidth=10
                                                 ),
                                                 path_effects.Normal()
                                             ])
