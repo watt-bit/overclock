@@ -987,3 +987,14 @@
 - Added checks to safely delete multiple components at once when pressing the Delete key
 - Prevented the 'component not in list' error when deleting multiple selected components
 - Improved user experience by allowing batch deletion of components
+
+## 2024-07-08: Enhanced Historian Chart for Dynamic Data Series
+- Modified the HistorianManager class in src/ui/historian_manager.py to support multiple data series
+- Replaced the single generation_line with a dictionary of lines to handle arbitrary data series
+- Added a color management system with predefined colors for known data types and dynamic color generation
+- Implemented dynamic creation of lines based on data available in the historian
+- Added proper line formatting with consistent styling (paths, shadows, colors)
+- Improved legend management to show all active data series
+- Enhanced the clear_chart method to handle multiple lines
+- Made the chart automatically detect and visualize any data added to the historian dictionary
+- Maintained backward compatibility with existing total_generation data

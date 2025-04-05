@@ -824,3 +824,30 @@ To add a new component:
    - The simulation state needs to be updated after component deletion
    - Error handling should be comprehensive to avoid crashes during bulk operations
    - The order of operations is important: first remove connections, then components from scene, then from lists 
+
+## Dynamic Data Visualization in Historian (2024-07-08)
+Key insights from implementing a dynamic multi-series chart system:
+
+1. Data-Driven Visualization
+   - The chart system now automatically adapts to whatever data is present in the historian
+   - No hardcoded series names or references, everything is generated from the dictionary keys
+   - New data series are automatically detected and visualized without code changes
+   - This allows for easy extension of the historian with additional metrics
+
+2. Consistent Visual Language
+   - Predefined color mapping ensures that common data types always use the same colors
+   - Automatic color generation for new data types uses a golden ratio approach for visual distinction
+   - All lines share consistent styling (shadow effects, line width, alpha) for visual cohesion
+   - Human-readable labels are automatically generated from data keys (e.g., 'total_generation' → 'Total Generation')
+
+3. Resource Management
+   - Lines are created only when needed and stored in a dictionary for reuse
+   - Memory usage scales linearly with the number of data series
+   - Color assignments are cached to ensure consistent colors across sessions
+   - The system efficiently updates only what has changed rather than redrawing everything
+
+4. Backward Compatibility
+   - The new system maintains perfect compatibility with existing code that expects 'total_generation'
+   - No changes needed to the simulation engine or other components that produce historian data
+   - Existing save files will load and display correctly with the new visualization system
+   - Gradual transition path from single-line to multi-line visualization 
