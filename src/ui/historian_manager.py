@@ -91,7 +91,8 @@ class HistorianManager:
         # Use golden ratio to get diverse colors
         golden_ratio_conjugate = 0.618033988749895
         h = hash(data_key) * golden_ratio_conjugate % 1
-        r, g, b = plt.cm.hsv(h)
+        rgba = plt.cm.hsv(h)  # This returns 4 values (r, g, b, a)
+        r, g, b, _ = rgba  # Unpack and ignore alpha
         
         # Convert to hex
         hex_color = "#{:02x}{:02x}{:02x}".format(

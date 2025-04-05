@@ -853,3 +853,25 @@ Key insights from implementing a dynamic multi-series chart system:
    - Gradual transition path from single-line to multi-line visualization 
 
 Apr 05, 2024: When implementing time-based simulations with discrete steps, it's critical to process the current time step BEFORE incrementing to the next time step. This ensures that the initial state (t=0) is properly calculated and not skipped. This pattern applies to both the main simulation loop and any auxiliary functions like autocomplete that process multiple time steps. In our case, the simulation was incrementing first, then processing, which caused it to always skip time step 0. 
+
+## Extending the Historian with New Data Series (2024-07-08)
+Key insights from adding new data series to the historian:
+
+1. Modular Data Addition
+   - Adding a new data series to the historian is a simple two-step process:
+     * Initialize the data array in the historian dictionary
+     * Add code to update the array at each time step
+   - No visualization code changes are needed due to the dynamic chart system
+   - The chart automatically detects and displays the new data series
+
+2. Data Consistency
+   - All data arrays in the historian should have the same length (8761 entries for hourly data over a year)
+   - Initialize with zeros to ensure proper data type and prevent null values
+   - Ensure proper bounds checking when accessing array elements
+   - Use the same naming convention for related data series
+
+3. Performance Considerations
+   - Only record data when within the valid index range
+   - Store time series data efficiently to minimize memory usage
+   - Adding more data series has minimal performance impact as they share the same update cycle
+   - The historian provides an efficient way to track system metrics over time 

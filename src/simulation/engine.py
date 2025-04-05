@@ -38,7 +38,8 @@ class SimulationEngine(QObject):
         
         # Create Historian data object to record simulation history
         self.historian = {
-            'total_generation': [0.0] * 8761  # Initialize with 8761 entries (0-8760 hours)
+            'total_generation': [0.0] * 8761,  # Initialize with 8761 entries (0-8760 hours)
+            'total_load': [0.0] * 8761  # Add total_load tracking to historian
         }
         
     def reset_historian(self):
@@ -413,6 +414,7 @@ class SimulationEngine(QObject):
             # Record total generation in Historian
             if 0 <= current_time < len(self.historian['total_generation']):
                 self.historian['total_generation'][current_time] = total_generation
+                self.historian['total_load'][current_time] = total_load  # Record total load in historian
             
             # Update analytics with all values (conditionally)
             if not skip_ui_updates:
