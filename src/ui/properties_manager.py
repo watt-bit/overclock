@@ -94,7 +94,7 @@ class ComponentPropertiesManager:
         
         # Add common buttons to the right column
         delete_btn = QPushButton("Delete (DEL)")
-        delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }")
+        delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; font-weight: bold; }")
         delete_btn.clicked.connect(self.delete_component)
         
         right_column.addWidget(delete_btn)
@@ -143,27 +143,27 @@ class ComponentPropertiesManager:
             self._add_wind_turbine_properties(component, left_column)
         elif isinstance(component, TreeComponent):
             # Trees are decorative with no functional properties
-            tree_info = QLabel("Decorative element - no properties to edit")
+            tree_info = QLabel("Tree Prop")
             left_column.addRow(tree_info)
         elif isinstance(component, BushComponent):
             # Bushes are decorative with no functional properties
-            bush_info = QLabel("Decorative element - no properties to edit")
+            bush_info = QLabel("Bush Prop")
             left_column.addRow(bush_info)
         elif isinstance(component, PondComponent):
             # Ponds are decorative with no functional properties
-            pond_info = QLabel("Decorative element - no properties to edit")
+            pond_info = QLabel("Pond Prop")
             left_column.addRow(pond_info)
         elif isinstance(component, House1Component):
             # Houses are decorative with no functional properties
-            house1_info = QLabel("Decorative element - no properties to edit")
+            house1_info = QLabel("House Prop")
             left_column.addRow(house1_info)
         elif isinstance(component, House2Component):
             # Houses are decorative with no functional properties
-            house2_info = QLabel("Decorative element - no properties to edit")
+            house2_info = QLabel("Greenhouse Prop")
             left_column.addRow(house2_info)
         elif isinstance(component, FactoryComponent):
             # Factories are decorative with no functional properties
-            factory_info = QLabel("Decorative element - no properties to edit")
+            factory_info = QLabel("Factory Prop")
             left_column.addRow(factory_info)
         else:
             # Add default message
@@ -227,8 +227,8 @@ class ComponentPropertiesManager:
         # Add on/off toggle - renamed to Load State
         state_toggle = QPushButton("ON" if component.is_on else "OFF")
         state_toggle.setStyleSheet(
-            COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.is_on 
-            else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
+            COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; width: 47px; }" if component.is_on 
+            else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white;  width: 47px; }"
         )
         
         # Enable or disable based on load connections
@@ -241,7 +241,7 @@ class ComponentPropertiesManager:
             if not component.is_on:
                 component.is_on = True
                 state_toggle.setText("ON")
-                state_toggle.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }")
+                state_toggle.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; width: 47px; }")
                 component.update()  # Redraw the component
         else:
             state_toggle.setToolTip("Toggle power to connected loads.")
@@ -252,8 +252,8 @@ class ComponentPropertiesManager:
                 component.is_on = not component.is_on
                 state_toggle.setText("ON" if component.is_on else "OFF")
                 state_toggle.setStyleSheet(
-                    COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.is_on 
-                    else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
+                    COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; width: 47px; }" if component.is_on 
+                    else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; width: 47px; }"
                 )
                 component.update()  # Redraw the component
                 self.main_window.update_simulation()  # Update the simulation state
@@ -274,6 +274,7 @@ class ComponentPropertiesManager:
         
         # Add output level slider for static mode
         output_level_layout = QHBoxLayout()
+        output_level_layout.setContentsMargins(0, 0, 0, 0)
         output_level_slider = QSlider(Qt.Horizontal)
         output_level_slider.setMinimum(0)
         output_level_slider.setMaximum(100)
@@ -302,7 +303,7 @@ class ComponentPropertiesManager:
         
         # Add ramp rate limiter controls
         ramp_rate_layout = QHBoxLayout()
-        
+        ramp_rate_layout.setContentsMargins(0, 0, 0, 0)
         # Checkbox to enable/disable
         ramp_rate_checkbox = QPushButton("OFF")
         ramp_rate_checkbox.setCheckable(True)
@@ -467,6 +468,7 @@ class ComponentPropertiesManager:
         
         # Create a horizontal layout for profile selection and load button
         profile_layout = QHBoxLayout()
+        profile_layout.setContentsMargins(0, 0, 0, 0)
         profile_layout.addWidget(profile_type)
         
         # Add load profile button (only visible for Custom type)
@@ -492,6 +494,7 @@ class ComponentPropertiesManager:
         
         # Create data center type selector
         data_center_layout = QHBoxLayout()
+        data_center_layout.setContentsMargins(0, 0, 0, 0)
         data_center_type = QComboBox()
         data_center_type.setStyleSheet(COMBOBOX_STYLE)
         data_center_type.addItems(["GPU Intensive", "Traditional Cloud", "Crypto ASIC"])
@@ -506,6 +509,7 @@ class ComponentPropertiesManager:
         
         # Create data center profile generator button
         dc_generate_layout = QHBoxLayout()
+        dc_generate_layout.setContentsMargins(0, 0, 0, 0)
         dc_generate_btn = QPushButton("Generate Data Center Profile")
         dc_generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
         
@@ -529,6 +533,7 @@ class ComponentPropertiesManager:
         
         # Create random profile generator controls
         random_profile_layout = QHBoxLayout()
+        random_profile_layout.setContentsMargins(0, 0, 0, 0)
         generate_btn = QPushButton("Generate Random Data")
         generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
         
@@ -552,56 +557,34 @@ class ComponentPropertiesManager:
         
         # Create max ramp rate control for Random 8760 mode
         ramp_rate_layout = QHBoxLayout()
-        ramp_rate_edit = QLineEdit(str(int(component.max_ramp_rate * 100)))
-        ramp_rate_edit.setMaximumWidth(50)
-        ramp_rate_edit.setStyleSheet(INPUT_STYLE)
-        
-        # Helper method to update component from the edit field
-        def update_ramp_rate_from_edit_value(value):
-            int_value = int(value)
-            component.max_ramp_rate = int_value / 100.0
-            ramp_rate_slider.setValue(int_value)
-            ramp_rate_value_label.setText(f"{int_value}%/hr")
-            # Only regenerate if we have an existing profile
-            if component.random_profile and not ramp_rate_slider.isSliderDown():
-                generate_random_data()
-        
-        # Set up numeric validation for the edit field
-        self._set_up_numeric_field(ramp_rate_edit, 
-                                 update_ramp_rate_from_edit_value,
-                                 is_float=False, min_value=1, max_value=100)
-        
+        ramp_rate_layout.setContentsMargins(0, 0, 0, 0)
+
         ramp_rate_slider = QSlider(Qt.Horizontal)
         ramp_rate_slider.setMinimum(1)  # 1% minimum
         ramp_rate_slider.setMaximum(100)  # 100% maximum
         ramp_rate_slider.setValue(int(component.max_ramp_rate * 100))
         ramp_rate_slider.setStyleSheet(SLIDER_STYLE)
-        
+
         # Add a ramp rate value label
         ramp_rate_value_label = QLabel(f"{int(component.max_ramp_rate * 100)}%/hr")
-        
+
         # Connect the controls to update the component
         def update_ramp_rate_from_slider(value):
             component.max_ramp_rate = value / 100.0
-            # Use blockSignals to prevent recursive updates
-            ramp_rate_edit.blockSignals(True)
-            ramp_rate_edit.setText(str(value))
-            ramp_rate_edit.blockSignals(False)
             ramp_rate_value_label.setText(f"{value}%/hr")
             # Don't regenerate while dragging - wait until slider is released
-        
+
         def regenerate_on_slider_release():
             # Only regenerate when slider is released
             if component.random_profile:
                 generate_random_data()
-        
+
         ramp_rate_slider.valueChanged.connect(update_ramp_rate_from_slider)
         ramp_rate_slider.sliderReleased.connect(regenerate_on_slider_release)
-        
-        ramp_rate_layout.addWidget(ramp_rate_edit)
+
         ramp_rate_layout.addWidget(ramp_rate_slider)
         ramp_rate_layout.addWidget(ramp_rate_value_label)
-        
+
         # Create a widget to hold the ramp rate controls
         ramp_rate_widget = QWidget()
         ramp_rate_widget.setLayout(ramp_rate_layout)
@@ -609,6 +592,7 @@ class ComponentPropertiesManager:
         
         # Create time offset control (spinner and slider)
         time_offset_layout = QHBoxLayout()
+        time_offset_layout.setContentsMargins(0, 0, 0, 0)
         time_offset_edit = QLineEdit(str(component.time_offset))
         time_offset_edit.setMaximumWidth(50)
         time_offset_edit.setStyleSheet(INPUT_STYLE)
@@ -642,6 +626,7 @@ class ComponentPropertiesManager:
         
         # Create frequency control for Sine Wave mode
         frequency_layout = QHBoxLayout()
+        frequency_layout.setContentsMargins(0, 0, 0, 0)
         frequency_edit = QLineEdit(str(component.frequency))
         frequency_edit.setMaximumWidth(50)
         frequency_edit.setStyleSheet(INPUT_STYLE)
@@ -827,6 +812,7 @@ class ComponentPropertiesManager:
         charge_bar.valueChanged.connect(update_charge_from_slider)
         
         charge_layout = QHBoxLayout()
+        charge_layout.setContentsMargins(0, 0, 0, 0)
         charge_layout.addWidget(charge_bar, 7)
         charge_layout.addWidget(charge_label, 1)
         
