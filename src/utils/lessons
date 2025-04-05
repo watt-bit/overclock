@@ -824,3 +824,31 @@ To add a new component:
    - The simulation state needs to be updated after component deletion
    - Error handling should be comprehensive to avoid crashes during bulk operations
    - The order of operations is important: first remove connections, then components from scene, then from lists 
+
+## Chart Data Filtering for Dynamic Simulations (2024-07-06)
+When displaying time-series data in chart components during simulation:
+
+1. **Zero Value Filtering**
+   - When initializing data arrays with zeros, be aware that these zeros can appear as valid data points
+   - Initialize arrays with zeros for memory allocation, but filter zeros when displaying if they represent "uninitialized" values
+   - Use explicit filtering in chart update methods to exclude data points that haven't been properly calculated
+
+2. **Chart Data vs. Raw Data**
+   - Maintain separation between raw data storage (full arrays) and displayed data (filtered arrays)
+   - The historian_manager's update_chart method now filters raw data before plotting
+   - This allows the full data structure to remain simple while the visualization layer handles filtering
+
+3. **Implementation Pattern**
+   - Use paired x_values and y_values arrays to maintain coordinate relationships
+   - Filter both arrays together based on criteria (e.g., non-zero values)
+   - Update plot data with the filtered arrays using set_data() method
+
+4. **Different Chart Requirements**
+   - Different chart components may need different filtering strategies
+   - The analytics chart already implemented proper filtering by tracking actual data points
+   - The historian chart needed explicit zero filtering to display correctly during playback
+
+5. **Edge Cases in Simulation Playback**
+   - When simulation jumps around in time (scrubbing or manual time setting), be careful with data initialization
+   - Consider all possible simulation traversal patterns: linear play, scrubbing, reset, etc.
+   - Test chart behavior with various playback patterns to ensure consistent visualization 
