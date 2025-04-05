@@ -445,6 +445,10 @@ class ComponentPropertiesManager:
         price_edit.setStyleSheet(INPUT_STYLE)
         self._set_up_numeric_field(price_edit, lambda value: setattr(component, 'price_per_kwh', value), min_value=0.00)
         
+        # Add operating mode display (not editable)
+        operating_mode_label = QLabel(component.operating_mode)
+        operating_mode_label.setStyleSheet("color: white;")
+        
         # Check if connected to cloud workload
         connected_to_cloud = self._is_connected_to_cloud_workload(component)
         
@@ -703,6 +707,7 @@ class ComponentPropertiesManager:
         
         layout.addRow("Demand (kW):", demand_edit)
         layout.addRow("Price per kWh ($):", price_edit)
+        layout.addRow("Operating Mode:", operating_mode_label)
         layout.addRow("Profile Type:", profile_widget)
         layout.addRow("", profile_info)
         layout.addRow("Data Center Type:", data_center_widget)

@@ -16,6 +16,7 @@ class LoadComponent(ComponentBase):
         
         self.demand = 500  # kW
         self.price_per_kwh = 0.00  # Default price per kWh in dollars
+        self.operating_mode = "Demand Droop (Auto)"  # Fixed operating mode
         self.accumulated_revenue = 0.00  # Track accumulated revenue in dollars
         self.profile_type = "Data Center"  # Constant, Sine Wave, Custom, Random 8760, Data Center
         self.custom_profile = None
@@ -318,6 +319,7 @@ class LoadComponent(ComponentBase):
             'y': self.y(),
             'demand': self.demand,
             'price_per_kwh': self.price_per_kwh,
+            'operating_mode': self.operating_mode,
             'accumulated_revenue': self.accumulated_revenue,
             'profile_type': self.profile_type,
             'custom_profile': self.custom_profile,
