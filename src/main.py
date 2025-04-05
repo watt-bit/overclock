@@ -34,17 +34,17 @@ def main():
     # Create the Augur title screen but don't show it yet
     augur_title_screen = AugurTitleScreen()
     
-    # Connect the Augur title screen's transition signal to show the original title screen
-    augur_title_screen.transition_to_next.connect(title_screen.show)
-    
-    # Create the WBR title screen first
+    # Create the WBR title screen
     wbr_title_screen = WBRTitleScreen()
     
-    # Connect the WBR title screen's transition signal to show the Augur title screen
-    wbr_title_screen.transition_to_next.connect(augur_title_screen.show)
+    # Connect the Augur title screen's transition signal to show the WBR title screen
+    augur_title_screen.transition_to_next.connect(wbr_title_screen.show)
     
-    # Show the WBR title screen first
-    wbr_title_screen.show()
+    # Connect the WBR title screen's transition signal to show the original title screen
+    wbr_title_screen.transition_to_next.connect(title_screen.show)
+    
+    # Show the Augur title screen first
+    augur_title_screen.show()
     
     sys.exit(app.exec_())
 

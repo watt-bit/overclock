@@ -201,6 +201,9 @@ class HistorianManager:
         # Make it checkable (toggle button)
         button.setCheckable(True)
         
+        # Set initial state - only total_generation is unchecked (visible) by default
+        button.setChecked(data_key != 'total_generation')
+        
         # Connect the clicked signal to update the chart
         button.clicked.connect(lambda checked, k=data_key: self.toggle_line_visibility(k, checked))
         
@@ -272,8 +275,8 @@ class HistorianManager:
         )
         
         # Initialize visibility state
-        # Secondary axis series start hidden by default
-        initial_visible = data_key not in self.secondary_axis_series
+        # Only total_generation starts visible by default
+        initial_visible = data_key == 'total_generation'
         self.line_visibility[data_key] = initial_visible
         line.set_visible(initial_visible)
         
@@ -415,16 +418,16 @@ class HistorianManager:
         
         # Reset all toggle buttons to their default states
         for key, button in self.toggle_buttons.items():
-            if key in self.secondary_axis_series:
-                # Secondary axis buttons start checked (off)
-                button.setChecked(True)
-                self.line_visibility[key] = False
-                self.lines[key].set_visible(False)
-            else:
-                # Primary axis buttons start unchecked (on)
+            if key == 'total_generation':
+                # Only total_generation starts unchecked (on)
                 button.setChecked(False)
                 self.line_visibility[key] = True
                 self.lines[key].set_visible(True)
+            else:
+                # All other buttons start checked (off)
+                button.setChecked(True)
+                self.line_visibility[key] = False
+                self.lines[key].set_visible(False)
         
         # Update axis visibility
         self.update_axis_visibility()

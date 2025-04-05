@@ -1060,3 +1060,7 @@
 - Fixed a critical bug in the export revenue calculation system where the component_exports dictionary was only initialized when surplus power existed
 - Modified the code to initialize the dictionary outside the conditional block so it's always available
 - Prevents "UnboundLocalError: local variable 'component_exports' referenced before assignment" crash when calculating revenue without any surplus power
+
+Modified historian_manager.py to make only the total_generation series visible by default, instead of all primary axis series. Updated the create_line_for_data, create_toggle_button, and clear_chart methods to implement this behavior.
+
+## 2023-05-21: Swapped the order of title screens - changed flow from WBR->Augur->Original to Augur->WBR->Original by adjusting the connection sequence and changing which screen is shown first.
