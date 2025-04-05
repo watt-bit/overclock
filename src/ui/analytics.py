@@ -426,8 +426,8 @@ class AnalyticsPanel(QWidget):
         # Handle time series data based on whether we're moving forward or backward
         if not self.time_data or current_time > self.time_data[-1]:
             # Moving forward - normal operation, append data
-            # Keep last 100 points
-            if len(self.time_data) > 100:
+            # Keep last 200 points
+            if len(self.time_data) > 200:
                 self.time_data.pop(0)
                 self.generation_data.pop(0)
                 self.battery_data.pop(0)
