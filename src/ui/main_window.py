@@ -1596,9 +1596,11 @@ class PowerSystemSimulator(QMainWindow):
         current_time = self.simulation_engine.current_time_step
         
         if current_time < self.autocomplete_end_time:
-            # Perform one simulation step, skipping UI updates
-            self.simulation_engine.current_time_step += 1
+            # Process the current time step first (including time step 0)
             self.simulation_engine.update_simulation(skip_ui_updates=True)
+            
+            # Then increment for the next iteration
+            self.simulation_engine.current_time_step += 1
             
             # Update only the time slider during the loop
             self.time_slider.setValue(self.simulation_engine.current_time_step)

@@ -21,7 +21,7 @@ class AnalyticsPanel(QWidget):
         
         # Create figure with adjusted size and margins for power chart
         self.figure = plt.figure(figsize=(6, 4))
-        self.figure.patch.set_facecolor('#141414')  # Dark background for figure
+        self.figure.patch.set_facecolor('#1E1E1E')  # Dark background for figure
         self.ax = self.figure.add_subplot(111)
         self.ax.set_facecolor('#1E1E1E')  # Dark background for plot area
         # Adjust subplot parameters to give specified padding
@@ -268,7 +268,7 @@ class AnalyticsPanel(QWidget):
         
         # Create figure with adjusted size and margins for revenue chart
         self.revenue_figure = plt.figure(figsize=(6, 3))
-        self.revenue_figure.patch.set_facecolor('#141414')  # Dark background for figure
+        self.revenue_figure.patch.set_facecolor('#1E1E1E')  # Dark background for figure
         self.revenue_ax = self.revenue_figure.add_subplot(111)
         self.revenue_ax.set_facecolor('#1E1E1E')  # Dark background for plot area
         # Adjust subplot parameters to give specified padding

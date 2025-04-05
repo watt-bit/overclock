@@ -28,7 +28,7 @@ class HistorianManager:
         self.historian_scene = QGraphicsScene()
         
         # Set dark grey background
-        background_color = QColor("#141414")
+        background_color = QColor("#1E1E1E")
         self.historian_scene.setBackgroundBrush(QBrush(background_color))
         
         # Create a widget to hold the chart
@@ -37,7 +37,7 @@ class HistorianManager:
         
         # Create matplotlib figure for the generation chart
         self.figure = plt.figure(figsize=(12, 6))
-        self.figure.patch.set_facecolor('#141414')  # Dark background for figure
+        self.figure.patch.set_facecolor('#1E1E1E')  # Dark background for figure
         self.ax = self.figure.add_subplot(111)
         self.ax.set_facecolor('#1E1E1E')  # Dark background for plot area
         
