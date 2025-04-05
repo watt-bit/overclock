@@ -104,17 +104,9 @@ class HistorianManager:
         if current_time <= 0:
             return
             
-        # Get the generation data up to the current time but filter out zeros
-        # which represent uninitialized values during playback
-        x_values = []
-        y_values = []
-        
-        for i in range(current_time + 1):
-            value = historian_data['total_generation'][i]
-            # Only include non-zero values which have been properly calculated
-            if value > 0:
-                x_values.append(i)
-                y_values.append(value)
+        # Get the generation data up to the current time
+        x_values = list(range(current_time + 1))
+        y_values = historian_data['total_generation'][:current_time + 1]
         
         # Update the chart data
         self.generation_line.set_data(x_values, y_values)
