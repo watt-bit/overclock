@@ -851,3 +851,5 @@ Key insights from implementing a dynamic multi-series chart system:
    - No changes needed to the simulation engine or other components that produce historian data
    - Existing save files will load and display correctly with the new visualization system
    - Gradual transition path from single-line to multi-line visualization 
+
+Apr 05, 2024: When implementing time-based simulations with discrete steps, it's critical to process the current time step BEFORE incrementing to the next time step. This ensures that the initial state (t=0) is properly calculated and not skipped. This pattern applies to both the main simulation loop and any auxiliary functions like autocomplete that process multiple time steps. In our case, the simulation was incrementing first, then processing, which caused it to always skip time step 0. 

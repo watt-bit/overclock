@@ -57,11 +57,21 @@ class SimulationEngine(QObject):
             
         # UPDATED -- Keep this at 1 step per update to preserve fidelity, do not modify based on speed factor, do not revert to old logic that multiplied steps by speed factor 
         steps = 1
-            
-        self.current_time_step += steps
+        
+        # Process the current time step first, then increment for the next step
+        # (Don't increment when checking return value; just return success)
+        
+        # Make sure current_time_step is clamped to valid range
         if self.current_time_step < 0:
             self.current_time_step = 0
         elif self.current_time_step > self.main_window.time_slider.maximum():
+            self.current_time_step = self.main_window.time_slider.maximum()
+            
+        # After processing current step, increment for next iteration
+        self.current_time_step += steps
+        
+        # Keep step in bounds after increment too
+        if self.current_time_step > self.main_window.time_slider.maximum():
             self.current_time_step = self.main_window.time_slider.maximum()
         
         return True

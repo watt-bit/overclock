@@ -1014,10 +1014,16 @@ class PowerSystemSimulator(QMainWindow):
             self.play_btn.setText("Play (Space)")
             self.sim_timer.stop()
             self.disable_component_buttons(False)
+            return
             
+        # First, process the current time step (time t)
+        self.simulation_engine.update_simulation()
+        
+        # Then increment to the next time step (time t+1)
+        # Only if we successfully performed the step
         if self.simulation_engine.step_simulation(steps):
+            # Update the time slider to show the new position
             self.time_slider.setValue(self.simulation_engine.current_time_step)
-            self.simulation_engine.update_simulation()
     
     def update_simulation(self):
         self.simulation_engine.update_simulation()

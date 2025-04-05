@@ -998,3 +998,7 @@
 - Enhanced the clear_chart method to handle multiple lines
 - Made the chart automatically detect and visualize any data added to the historian dictionary
 - Maintained backward compatibility with existing total_generation data
+
+## Apr 05, 2024: Fixed critical timing bug where time step 0 was being skipped in both autocomplete and play modes. The issue was in the simulation engine's step_simulation method, which was incrementing the current_time_step before processing it. This made the simulation jump from 0 to 1 without ever processing the initial state (t=0). Modified the step_simulation method to ensure it processes the current time step first, and only then increments for the next iteration.
+
+## Apr 05, 2024: Fixed additional timing bug in the main window's step_simulation method. The previous fix correctly updated the simulation engine but there was still an issue in the calling sequence. The method was calling step_simulation (which increments time) before calling update_simulation (which processes the current time). Reordered the operations to process the current time step first, then increment for the next step, ensuring time step 0 is properly processed when playing the simulation.
