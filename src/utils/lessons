@@ -968,3 +968,13 @@ Key insights from implementing dual y-axes in the historian chart:
    - Categories of data (power vs. financial) are clearly defined for future expansion
    - Button creation and management are separated by data type category
    - The system handles dynamic addition of new data series while maintaining proper categorization 
+
+## Revenue Calculation Lessons (2024-07-08)
+- When calculating revenue from exports, it's important to track how much each individual component exports rather than applying the total export amount to each component. This prevents double-counting in scenarios with multiple export connections.
+- The simulation engine should maintain separate accounting for each component's contribution to system-level values like grid_export, especially when these values are used for subsequent calculations like revenue. 
+
+## Variable Initialization and Conditional Blocks (2024-07-08)
+- Always initialize variables before they might be used, even if initialization seems unnecessary in some code paths
+- When a variable is used in multiple code paths, initialize it outside conditional blocks to ensure it's always available
+- Be especially careful with dictionaries or collections that are referenced in financial or revenue calculations
+- Proper initialization prevents "referenced before assignment" errors that can crash the application 

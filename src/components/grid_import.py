@@ -12,7 +12,7 @@ class GridImportComponent(ComponentBase):
         self.image = QPixmap("src/ui/assets/grid_import.png")
         
         self.capacity = 2000  # kW - maximum import capacity
-        self.operating_mode = "Last Resort (Auto)"  # Only Auto mode for now
+        self.operating_mode = "Last Resort Unit (Auto)"  # Only Auto mode for now
         self.auto_charge_batteries = True  # Whether this component will charge batteries with grid power
     
     def paint(self, painter, option, widget):

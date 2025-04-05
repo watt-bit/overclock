@@ -313,12 +313,18 @@ class SimulationEngine(QObject):
                             battery.update()
             
             # Eighth Pass: if there's still surplus power, use grid export
+            # Initialize component_exports dictionary regardless of surplus power
+            component_exports = {}
+            
             if surplus_power > 0:
                 for item in self.main_window.scene.items():
                     if isinstance(item, GridExportComponent):
                         export_amount = item.calculate_export(surplus_power)
                         grid_export += export_amount
                         surplus_power = max(0, surplus_power - export_amount)
+                        
+                        # Store this component's export amount
+                        component_exports[item] = export_amount
                 
                 # Only mark as unstable if surplus power exceeds the tolerance
                 if surplus_power > self.stability_tolerance:
@@ -385,8 +391,11 @@ class SimulationEngine(QObject):
                     # Calculate revenue from exports
                     for item in self.main_window.scene.items():
                         if isinstance(item, GridExportComponent) and item.bulk_ppa_price > 0:
+                            # Get this component's specific export amount rather than the total grid_export
+                            component_export = component_exports.get(item, 0)
+                            
                             # Calculate the export revenue for this time step
-                            export_energy = item.calculate_export(grid_export) * steps_moved  # kWh exported
+                            export_energy = component_export * steps_moved  # kWh exported
                             export_revenue = export_energy * item.bulk_ppa_price
                             
                             # Add to accumulated revenue for this export component

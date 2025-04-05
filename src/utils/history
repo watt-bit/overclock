@@ -1053,3 +1053,10 @@
 - Enhanced the update_chart method to properly handle the default visibility states
 - Improved usability by focusing initial view on core power metrics without financial data
 - Secondary axis remains completely hidden until explicitly toggled on by the user
+
+## 2023-09-19: Fixed a bug in the export revenue calculation where multiple export connections would generate multiplied revenue. Now properly tracks individual export amounts per component and uses those for revenue calculations rather than applying the total grid export to each component.
+
+## 2024-07-08: Fixed Grid Export Revenue Calculation Bug
+- Fixed a critical bug in the export revenue calculation system where the component_exports dictionary was only initialized when surplus power existed
+- Modified the code to initialize the dictionary outside the conditional block so it's always available
+- Prevents "UnboundLocalError: local variable 'component_exports' referenced before assignment" crash when calculating revenue without any surplus power
