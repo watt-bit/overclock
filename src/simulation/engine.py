@@ -39,7 +39,10 @@ class SimulationEngine(QObject):
         # Create Historian data object to record simulation history
         self.historian = {
             'total_generation': [0.0] * 8761,  # Initialize with 8761 entries (0-8760 hours)
-            'total_load': [0.0] * 8761  # Add total_load tracking to historian
+            'total_load': [0.0] * 8761,  # Add total_load tracking to historian
+            'grid_import': [0.0] * 8761,  # Add grid_import tracking to historian
+            'grid_export': [0.0] * 8761,   # Add grid_export tracking to historian
+            'cumulative_revenue': [0.0] * 8761  # Add cumulative revenue tracking to historian
         }
         
     def reset_historian(self):
@@ -395,7 +398,14 @@ class SimulationEngine(QObject):
                     for hour in range(self.last_time_step, current_time):
                         if 0 <= hour < len(self.gross_revenue_data):
                             # Distribute revenue evenly across all hours if we jumped multiple steps
-                            self.gross_revenue_data[hour] = current_hourly_revenue / steps_moved
+                            hourly_revenue = current_hourly_revenue / steps_moved
+                            self.gross_revenue_data[hour] = hourly_revenue
+                            
+                            # Update cumulative revenue in historian
+                            if hour > 0:
+                                self.historian['cumulative_revenue'][hour] = self.historian['cumulative_revenue'][hour-1] + hourly_revenue
+                            else:
+                                self.historian['cumulative_revenue'][hour] = hourly_revenue
                 
                 self.last_time_step = current_time
             
@@ -415,6 +425,8 @@ class SimulationEngine(QObject):
             if 0 <= current_time < len(self.historian['total_generation']):
                 self.historian['total_generation'][current_time] = total_generation
                 self.historian['total_load'][current_time] = total_load  # Record total load in historian
+                self.historian['grid_import'][current_time] = grid_import  # Record grid import in historian
+                self.historian['grid_export'][current_time] = grid_export  # Record grid export in historian
             
             # Update analytics with all values (conditionally)
             if not skip_ui_updates:

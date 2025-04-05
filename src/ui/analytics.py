@@ -14,6 +14,7 @@ class AnalyticsPanel(QWidget):
         
     def init_ui(self):
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
         
         # Create matplotlib figure and canvas for time series
         chart_group = QGroupBox()
@@ -25,7 +26,7 @@ class AnalyticsPanel(QWidget):
         self.ax = self.figure.add_subplot(111)
         self.ax.set_facecolor('#1E1E1E')  # Dark background for plot area
         # Adjust subplot parameters to give specified padding
-        self.figure.subplots_adjust(left=0.15, right=0.98, bottom=0.12, top=0.98)
+        self.figure.subplots_adjust(left=0.15, right=0.98, bottom=0.12, top=0.97)
         self.canvas = FigureCanvas(self.figure)
         
         # Initialize empty data lists

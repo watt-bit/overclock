@@ -875,3 +875,96 @@ Key insights from adding new data series to the historian:
    - Store time series data efficiently to minimize memory usage
    - Adding more data series has minimal performance impact as they share the same update cycle
    - The historian provides an efficient way to track system metrics over time 
+
+## Grid Import/Export Data Tracking (2024-07-08)
+Key insights from implementing grid import/export tracking in the historian:
+
+1. Comprehensive System Monitoring
+   - Tracking both generation/load and grid import/export provides a complete picture of power flow
+   - Grid transactions represent the system's interaction with the external world
+   - Import/export data helps analyze system self-sufficiency and external dependencies
+   - These metrics provide key indicators for optimizing power system design
+
+2. Data Collection Timing
+   - Grid import/export values are calculated during each simulation timestep
+   - Recording happens at the same point as other historian data (generation, load)
+   - Using the same array length (8761) maintains consistency across all data series
+   - Collecting data at each simulation step ensures high-fidelity historical record
+
+3. Color Coordination
+   - The dynamic chart system automatically assigns appropriate colors to each data series
+   - Grid import receives purple to match the grid import component color
+   - Grid export receives amber to match the grid export component color
+   - Color coordination helps users intuitively connect UI elements with chart data
+
+4. Simulation Engine Integration
+   - The import/export values are already calculated as part of the simulation logic
+   - Adding historian recording required minimal changes to existing code
+   - No impact on simulation performance or accuracy since values were already computed
+   - The dynamic historian system demonstrates the benefits of loosely coupled design 
+
+## Chart Visualization Controls (2024-07-08)
+Key insights from implementing toggle controls for data series in the historian chart:
+
+1. Interactive Data Visualization
+   - Interactive controls greatly enhance chart usability when dealing with multiple data series
+   - Toggle buttons allow users to focus on specific metrics by hiding irrelevant ones
+   - The ability to select which series to display helps identify correlations between specific metrics
+   - Control placement (left side of chart) follows standard UI conventions for toolbars/controls
+
+2. Visual Consistency
+   - Matching button colors to their corresponding chart lines creates intuitive visual connection
+   - Maintaining the same naming convention between buttons and legend entries reduces cognitive load
+   - Using checkable buttons with clear visual states (colored when visible, gray when hidden) provides clear feedback
+   - Faded legend entries for hidden series maintain context while clearly indicating what's not being displayed
+
+3. Dynamic UI Generation
+   - Generating UI controls dynamically based on available data follows the data-driven approach
+   - Controls are created on-demand as new data series appear in the historian
+   - This avoids hardcoding assumptions about what data will be available
+   - The scroll area ensures the UI remains usable even with many data series
+
+4. Performance Optimization
+   - Focusing y-axis scaling only on visible series improves data visualization
+   - Hiding series doesn't delete the data, allowing quick toggling without data loss
+   - The chart still maintains all lines but simply toggles their visibility property
+   - This approach is more efficient than recreating lines when toggling visibility
+
+5. Extensibility
+   - The toggle control system works with any number of data series
+   - New data metrics can be added to the historian without UI modifications
+   - The unified approach to toggle controls ensures consistent behavior across all data types
+   - This pattern can be extended to other visualization features like line style or thickness controls 
+
+## Dual Y-Axis Chart Visualization (2024-07-08)
+Key insights from implementing dual y-axes in the historian chart:
+
+1. Data Type Separation
+   - Using separate y-axes allows visualization of data with different units and scales
+   - Power measurements (kW) and financial data ($) can be displayed simultaneously without scale conflicts
+   - Separating axes prevents one data type from visually dominating the chart when scales differ significantly
+   - Consistent color-coding between axis, line, and button creates intuitive association
+
+2. Axis Management
+   - Matplotlib's twinx() method creates a second y-axis that shares the same x-axis
+   - Each axis needs independent styling (colors, labels, tick parameters)
+   - Programmatically choosing which axis to plot on based on data type ensures consistency
+   - Dynamic visibility control for the secondary axis prevents cluttered UI when not needed
+
+3. Interface Organization
+   - Visual separation in the control panel (using horizontal lines) creates clear data categories
+   - Adding unit indicators ([$]) to button labels reduces confusion about which axis applies
+   - Consistent positioning of related controls (cumulative revenue always at bottom) aids discoverability
+   - Secondary y-axis placement (right side) follows visualization conventions
+
+4. Scale Independence
+   - Each axis scales independently based on its visible data series
+   - Automatic hiding of unused axes maintains clean presentation
+   - Independent max value tracking ensures optimal visualization of each data type
+   - Setting appropriate padding (10% headroom) improves readability for both axes
+
+5. Extensible Design
+   - The secondary_axis_series list allows easy addition of new financial metrics in the future
+   - Categories of data (power vs. financial) are clearly defined for future expansion
+   - Button creation and management are separated by data type category
+   - The system handles dynamic addition of new data series while maintaining proper categorization 

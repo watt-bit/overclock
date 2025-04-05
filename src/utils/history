@@ -1008,3 +1008,48 @@
 - Added 'total_load' array initialization in the historian dictionary
 - Added code to record the total_load value at each time step
 - Leverages the dynamic chart system to automatically display the new data series without requiring visualization code changes
+
+## 2024-07-08: Added Grid Import and Export to Historian
+- Modified SimulationEngine to track and record grid_import and grid_export in the historian data
+- Added 'grid_import' and 'grid_export' arrays to the historian dictionary initialization
+- Added code to record the grid import and export values at each time step
+- Leverages the dynamic chart system to automatically visualize grid import/export without additional code changes
+
+## 2024-07-08: Added Data Series Toggle Controls to Historian View
+- Modified the HistorianManager to include a panel of toggle buttons to the left of the chart
+- Added one button for each data series in the historian
+- Buttons allow users to show/hide individual data series on the chart
+- Implemented visual styling with buttons matching the line colors
+- Added scroll area to support many data series
+- Updated the chart to only consider visible lines when calculating y-axis scaling
+- Enhanced legend to show faded entries for hidden data series
+- Made all buttons dynamically generate as new data series are added to the historian
+- Maintained backward compatibility with the existing historian functionality
+
+## 2024-07-08: Removed Legend from Historian Chart
+- Removed the redundant legend from the historian chart
+- The color-coded buttons in the data series toggle panel already provide the same information
+- Removed label parameter from plot lines to ensure clean rendering without legend
+- Simplified chart layout and reduced visual clutter
+- Maintains all functionality while providing a cleaner, more streamlined interface
+
+## 2024-07-08: Added Cumulative Revenue Tracking with Secondary Y-Axis
+- Added cumulative_revenue to the historian data to track revenue accumulation over time
+- Modified the SimulationEngine to calculate and record cumulative revenue at each time step
+- Enhanced the HistorianManager to support dual y-axes for different data types
+- Added a secondary y-axis with distinct styling (pink color) for revenue data
+- Implemented automatic axis visibility based on visible data series
+- Added visual separation between power data and revenue data in the control panel
+- Ensured revenue toggle button always appears at the bottom of the control list
+- Added $ symbol to the revenue button label for clearer identification
+- Maintained consistent behavior with existing toggle functionality
+- Enhanced the clear_chart method to properly reset both axes
+
+## 2024-07-08: Made Secondary Axis Data Series Hidden by Default
+- Modified the HistorianManager to hide secondary axis data series (like cumulative revenue) by default
+- Updated line creation to initialize secondary axis series as invisible
+- Made secondary axis toggle buttons start in the "off" state (checked)
+- Updated the clear_chart method to maintain separate default states for primary and secondary axis series
+- Enhanced the update_chart method to properly handle the default visibility states
+- Improved usability by focusing initial view on core power metrics without financial data
+- Secondary axis remains completely hidden until explicitly toggled on by the user
