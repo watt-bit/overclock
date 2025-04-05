@@ -54,7 +54,7 @@ class CustomScene(QGraphicsScene, QObject):
         # Background mode: 0 = image1, 1 = image2, 2 = solid color
         self.background_mode = 0
         # Grey color for solid background matching other windows
-        self.background_color = QColor("#2D2D2D")
+        self.background_color = QColor("#1E1E1E")
     
     def mouseReleaseEvent(self, event):
         """Handle mouse release events on the scene background"""

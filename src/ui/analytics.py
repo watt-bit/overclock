@@ -598,15 +598,6 @@ class AnalyticsPanel(QWidget):
         self.revenue_ax.set_xlim(0, 8760)  # Show full year
         self.revenue_ax.set_ylim(0, 100)
         
-        # Ensure dark mode styling is maintained for both charts
-        self.ax.set_facecolor('#3D3D3D')
-        self.figure.patch.set_facecolor('#2D2D2D')
-        self.ax.grid(True, color='#555555')
-        
-        self.revenue_ax.set_facecolor('#3D3D3D')
-        self.revenue_figure.patch.set_facecolor('#2D2D2D')
-        self.revenue_ax.grid(True, color='#555555')
-        
         # Apply dark mode styling to spine lines
         for spine in self.ax.spines.values():
             spine.set_color('#888888')
