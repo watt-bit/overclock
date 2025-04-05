@@ -107,7 +107,7 @@ class HistorianManager:
         # Get the generation data up to the current time
         x_values = list(range(current_time))
         y_values = historian_data['total_generation'][:current_time]
-        
+
         # Update the chart data
         self.generation_line.set_data(x_values, y_values)
         

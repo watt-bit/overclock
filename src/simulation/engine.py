@@ -444,8 +444,7 @@ class SimulationEngine(QObject):
                     self.simulation_running = False
                     # The main window will handle updating UI elements
                 else:
-                    self.current_time_step = next_time
-                    self.main_window.time_slider.setValue(next_time)
+                    self.main_window.time_slider.setValue(self.current_time_step)
         
         finally:
             self.updating_simulation = False 
