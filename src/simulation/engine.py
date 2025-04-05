@@ -421,10 +421,14 @@ class SimulationEngine(QObject):
             # Calculate total generation including battery discharge
             total_generation = local_generation + max(0, battery_power)
             
+            # Include battery charging in total_load
+            battery_charging = min(0, battery_power)  # Will be negative or zero
+            adjusted_total_load = total_load - battery_charging  # Subtract negative value = add to consumption
+            
             # Record total generation in Historian
             if 0 <= current_time < len(self.historian['total_generation']):
                 self.historian['total_generation'][current_time] = total_generation
-                self.historian['total_load'][current_time] = total_load  # Record total load in historian
+                self.historian['total_load'][current_time] = adjusted_total_load  # Record adjusted total load in historian
                 self.historian['grid_import'][current_time] = grid_import  # Record grid import in historian
                 self.historian['grid_export'][current_time] = grid_export  # Record grid export in historian
             
@@ -432,7 +436,7 @@ class SimulationEngine(QObject):
             if not skip_ui_updates:
                 self.main_window.analytics_panel.update_analytics(
                     total_generation,
-                    total_load,
+                    adjusted_total_load,  # Pass the adjusted load including battery charging
                     current_time,
                     total_capacity,
                     is_scrubbing=False,

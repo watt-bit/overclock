@@ -323,18 +323,17 @@ class AnalyticsPanel(QWidget):
         if self.is_drawing:
             return
             
-        # Calculate surplus/deficit (after accounting for grid export and battery activity)
-        # When battery_power is negative (charging), count it as additional consumption
-        # When battery_power is positive (discharging), count it as additional production
-        battery_charging = min(0, battery_power)  # Will be negative or zero
+        # Calculate surplus/deficit
+        # When battery_power is negative (charging), it's already included in power_consumed from engine.py
+        # When battery_power is positive (discharging), it's already included in power_produced from engine.py
+        battery_charging = min(0, battery_power)  # Will be negative or zero (for reference only)
         battery_discharging = max(0, battery_power)  # Will be positive or zero
         
-        # Note: power_produced already includes battery discharge from main_window.py
-        # So we don't need to adjust it, just for charging
-        adjusted_consumption = power_consumed - battery_charging  # Subtract negative value = add to consumption
+        # Note: power_produced already includes battery discharge from engine.py
+        # Note: power_consumed already includes battery charging from engine.py
         
-        # Final surplus/deficit calculation - don't subtract battery_discharging since it's already included
-        power_surplus = (power_produced + grid_import - grid_export) - adjusted_consumption
+        # Final surplus/deficit calculation
+        power_surplus = (power_produced + grid_import - grid_export) - power_consumed
         
         # Make sure unused capacity calculation ignores battery completely
         # Extract the generator-only production (without battery) and use that for unused capacity
@@ -349,7 +348,7 @@ class AnalyticsPanel(QWidget):
             return
             
         # Calculate maximum value for scaling the bars
-        max_power = max(power_produced, abs(battery_power), grid_import, grid_export, adjusted_consumption, abs(power_surplus), unused_capacity, 1000)
+        max_power = max(power_produced, abs(battery_power), grid_import, grid_export, power_consumed, abs(power_surplus), unused_capacity, 1000)
         
         # Update generation bar (excluding battery)
         self.generation_bar.setMaximum(int(max_power))
@@ -375,8 +374,8 @@ class AnalyticsPanel(QWidget):
         
         # Update load bar
         self.load_bar.setMaximum(int(max_power))
-        self.load_bar.setValue(int(adjusted_consumption))
-        self.load_bar.setFormat(f"{adjusted_consumption:.0f} kW")
+        self.load_bar.setValue(int(power_consumed))
+        self.load_bar.setFormat(f"{power_consumed:.0f} kW")
         
         # Update surplus/deficit bar
         self.surplus_bar.setMaximum(int(max_power))
@@ -443,7 +442,7 @@ class AnalyticsPanel(QWidget):
             self.battery_data.append(battery_power)
             self.grid_import_data.append(grid_import)
             self.grid_export_data.append(grid_export)
-            self.load_data.append(adjusted_consumption)
+            self.load_data.append(power_consumed)
             self.surplus_data.append(power_surplus)
             self.unused_capacity_data.append(unused_capacity)
         else:
@@ -455,7 +454,7 @@ class AnalyticsPanel(QWidget):
                 self.battery_data[idx] = battery_power
                 self.grid_import_data[idx] = grid_import
                 self.grid_export_data[idx] = grid_export
-                self.load_data[idx] = adjusted_consumption
+                self.load_data[idx] = power_consumed
                 self.surplus_data[idx] = power_surplus
                 self.unused_capacity_data[idx] = unused_capacity
             else:
@@ -470,7 +469,7 @@ class AnalyticsPanel(QWidget):
                 self.battery_data.insert(idx, battery_power)
                 self.grid_import_data.insert(idx, grid_import)
                 self.grid_export_data.insert(idx, grid_export)
-                self.load_data.insert(idx, adjusted_consumption)
+                self.load_data.insert(idx, power_consumed)
                 self.surplus_data.insert(idx, power_surplus)
                 self.unused_capacity_data.insert(idx, unused_capacity)
                 
