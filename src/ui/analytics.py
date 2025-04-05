@@ -318,22 +318,18 @@ class AnalyticsPanel(QWidget):
     def update_analytics(self, power_produced, power_consumed, current_time,
                          total_capacity=0, is_scrubbing=False, grid_import=0, grid_export=0,
                          total_imported=0, total_exported=0, system_stable=True, battery_power=0, 
-                         total_battery_charge=0, gross_revenue_data=None):
+                         total_battery_charge=0, gross_revenue_data=None, power_surplus=0):
         # Protect against re-entrance
         if self.is_drawing:
             return
             
-        # Calculate surplus/deficit
-        # When battery_power is negative (charging), it's already included in power_consumed from engine.py
+        # Extract battery discharging for unused capacity calculation
         # When battery_power is positive (discharging), it's already included in power_produced from engine.py
-        battery_charging = min(0, battery_power)  # Will be negative or zero (for reference only)
         battery_discharging = max(0, battery_power)  # Will be positive or zero
         
         # Note: power_produced already includes battery discharge from engine.py
         # Note: power_consumed already includes battery charging from engine.py
-        
-        # Final surplus/deficit calculation
-        power_surplus = (power_produced + grid_import - grid_export) - power_consumed
+        # Note: power_surplus is calculated in engine.py
         
         # Make sure unused capacity calculation ignores battery completely
         # Extract the generator-only production (without battery) and use that for unused capacity

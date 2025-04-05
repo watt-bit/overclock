@@ -425,6 +425,9 @@ class SimulationEngine(QObject):
             battery_charging = min(0, battery_power)  # Will be negative or zero
             adjusted_total_load = total_load - battery_charging  # Subtract negative value = add to consumption
             
+            # Calculate power surplus/deficit
+            power_surplus = (total_generation + grid_import - grid_export) - adjusted_total_load
+            
             # Record total generation in Historian
             if 0 <= current_time < len(self.historian['total_generation']):
                 self.historian['total_generation'][current_time] = total_generation
@@ -447,7 +450,8 @@ class SimulationEngine(QObject):
                     system_stable=self.system_stable,
                     battery_power=battery_power,
                     total_battery_charge=total_battery_charge,
-                    gross_revenue_data=self.gross_revenue_data
+                    gross_revenue_data=self.gross_revenue_data,
+                    power_surplus=power_surplus  # Pass power surplus to analytics panel
                 )
             
             # Update all load components to refresh their visual display with current demand percentage (conditionally)
