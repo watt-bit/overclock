@@ -1064,3 +1064,12 @@
 Modified historian_manager.py to make only the total_generation series visible by default, instead of all primary axis series. Updated the create_line_for_data, create_toggle_button, and clear_chart methods to implement this behavior.
 
 ## 2023-05-21: Swapped the order of title screens - changed flow from WBR->Augur->Original to Augur->WBR->Original by adjusting the connection sequence and changing which screen is shown first.
+
+## 2025-04-05 - Added Grid Export Price Prioritization
+- Modified the simulation engine to prioritize grid export components based on their bulk PPA price
+- Changed the export order to process grid exports in descending price order (highest price first)
+- Added a proper grid_export_components sorting mechanism in the Eighth Pass section of update_simulation
+- Used Python's sort with a key function to sort components by bulk_ppa_price with reverse=True
+- Fixed a bug where component_exports was referenced before assignment in some cases
+- This change ensures that when multiple grid export components exist, exports (and revenue) will be 
+  allocated to higher-priced components first to maximize revenue

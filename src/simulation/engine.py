@@ -317,14 +317,20 @@ class SimulationEngine(QObject):
             component_exports = {}
             
             if surplus_power > 0:
-                for item in self.main_window.scene.items():
-                    if isinstance(item, GridExportComponent):
-                        export_amount = item.calculate_export(surplus_power)
-                        grid_export += export_amount
-                        surplus_power = max(0, surplus_power - export_amount)
-                        
-                        # Store this component's export amount
-                        component_exports[item] = export_amount
+                # Get all GridExportComponent instances and sort by bulk_ppa_price in descending order
+                grid_export_components = [item for item in self.main_window.scene.items() 
+                                          if isinstance(item, GridExportComponent)]
+                
+                # Sort by bulk_ppa_price in descending order (highest price first)
+                grid_export_components.sort(key=lambda x: x.bulk_ppa_price, reverse=True)
+                
+                for item in grid_export_components:
+                    export_amount = item.calculate_export(surplus_power)
+                    grid_export += export_amount
+                    surplus_power = max(0, surplus_power - export_amount)
+                    
+                    # Store this component's export amount
+                    component_exports[item] = export_amount
                 
                 # Only mark as unstable if surplus power exceeds the tolerance
                 if surplus_power > self.stability_tolerance:

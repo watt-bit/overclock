@@ -978,3 +978,30 @@ Key insights from implementing dual y-axes in the historian chart:
 - When a variable is used in multiple code paths, initialize it outside conditional blocks to ensure it's always available
 - Be especially careful with dictionaries or collections that are referenced in financial or revenue calculations
 - Proper initialization prevents "referenced before assignment" errors that can crash the application 
+
+## Grid Export Pricing Prioritization (2025-04-05)
+Key insights from implementing grid export prioritization:
+
+1. Export Priority Logic
+   - When multiple grid export components exist, they should be prioritized by price to maximize revenue
+   - Higher priced export options should receive surplus power first before lower priced options
+   - This follows economic principles of optimizing value from available resources
+   - The simulation engine's "Eighth Pass" handles surplus power after all other allocations are complete
+
+2. Component Sorting in Simulation
+   - List comprehensions efficiently collect components of a specific type from the scene
+   - Python's sort() method with a key function and reverse flag provides flexible sorting
+   - Prioritization uses bulk_ppa_price attribute in descending order (highest to lowest)
+   - This approach maintains the separation between component definition and simulation logic
+
+3. Dictionary Initialization Safety
+   - Dictionaries should be initialized before any conditional logic that might reference them
+   - The component_exports dictionary needs to exist even if there's no surplus power to export
+   - This prevents "referenced before assignment" errors when the code path changes
+   - Defensive programming helps prevent runtime errors in complex simulation logic
+
+4. Revenue Optimization
+   - Grid exports can be a significant revenue source in power systems
+   - Prioritizing exports by price directly impacts the financial performance of the system
+   - This approach simulates how real power systems prioritize sales to highest-paying markets first
+   - The system now correctly models economic dispatch principles for exports 

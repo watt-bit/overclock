@@ -314,9 +314,9 @@ class ComponentPropertiesManager:
         )
         ramp_rate_checkbox.setText("ON" if component.ramp_rate_enabled else "OFF")
         
-        # Ramp rate slider (10-20% per hour)
+        # Ramp rate slider (1-100% per hour)
         ramp_rate_slider = QSlider(Qt.Horizontal)
-        ramp_rate_slider.setMinimum(20)
+        ramp_rate_slider.setMinimum(1)
         ramp_rate_slider.setMaximum(100)
         ramp_rate_slider.setValue(int(component.ramp_rate_limit * 100))
         ramp_rate_slider.setStyleSheet(SLIDER_STYLE)
