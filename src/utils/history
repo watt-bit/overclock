@@ -1073,3 +1073,11 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Fixed a bug where component_exports was referenced before assignment in some cases
 - This change ensures that when multiple grid export components exist, exports (and revenue) will be 
   allocated to higher-priced components first to maximize revenue
+
+## 2024-07-10 - Added New Decorative Component: Traditional Data Center
+- Created new TraditionalDataCenterComponent class in src/components/traditional_data_center.py
+- Added "Add Traditional Data Center" option to the Add Props menu in main_window.py
+- Updated PropertyManager to handle the new decorative component
+- Updated ModelManager to save/load the new component
+- Enhanced visual variety with a new decorative option using the traddatacenter.png asset
+- Followed the standard decorative component workflow as documented in component_workflow.mdAdded panning functionality to src/ui/main_window.py

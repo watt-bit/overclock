@@ -26,6 +26,7 @@ from src.components.pond import PondComponent
 from src.components.house1 import House1Component
 from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
+from src.components.traditional_data_center import TraditionalDataCenterComponent
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
@@ -179,7 +180,7 @@ class TiledBackgroundWidget(QWidget):
 class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("OVERCLOCK | Watt-Bit Research | https://watt-bit.com | Augur VC | https://augurvc.com")
+        self.setWindowTitle("OVERCLOCK | Watt-Bit Research Canada | https://watt-bit.com | research preview supported by Augur VC | https://augurvc.com")
         self.resize(2400, 1200)
         
         # Initialize variables
@@ -413,7 +414,7 @@ class PowerSystemSimulator(QMainWindow):
         bus_btn = QPushButton("🔌 Electrical (B)us")
         bus_btn.setStyleSheet(opaque_button_style)
         bus_btn.clicked.connect(lambda: self.add_component("bus"))
-        
+
         load_btn = QPushButton("💡 Electrical (L)oad")
         load_btn.setStyleSheet(opaque_button_style)
         load_btn.clicked.connect(lambda: self.add_component("load"))
@@ -496,6 +497,9 @@ class PowerSystemSimulator(QMainWindow):
         
         factory_action = props_menu.addAction("Add Factory")
         factory_action.triggered.connect(lambda: self.add_component("factory"))
+        
+        trad_data_center_action = props_menu.addAction("Add Data Center")
+        trad_data_center_action.triggered.connect(lambda: self.add_component("traditional_data_center"))
         
         # Create the Add Props button with dropdown menu
         self.props_btn = QPushButton("🏡 Add Props")
@@ -753,7 +757,7 @@ class PowerSystemSimulator(QMainWindow):
         self.welcome_text.setFont(font)
         
         # Set text color to white with a semi-transparent look
-        self.welcome_text.setDefaultTextColor(QColor(255, 255, 255, 140))
+        self.welcome_text.setDefaultTextColor(QColor(255, 255, 255, 200))
         
         # Set text width and center-align the text
         self.welcome_text.setTextWidth(300)
@@ -838,8 +842,11 @@ class PowerSystemSimulator(QMainWindow):
         elif component_type == "factory":
             component = FactoryComponent(0, 0)
             self.scene.addItem(component)
-            # Do not add factory to the components list as it is decorative
-            # and should not affect network connectivity checks
+            # Do not add factories to the components list as they are decorative
+        elif component_type == "traditional_data_center":
+            component = TraditionalDataCenterComponent(0, 0)
+            self.scene.addItem(component)
+            # Do not add traditional data centers to the components list as they are decorative
         
         # Hide welcome text after adding the first component (if it's not decorative)
         if component_type in ["generator", "grid_import", "grid_export", "bus", "load", "battery", "cloud_workload", "solar_panel", "wind_turbine"]:

@@ -19,6 +19,7 @@ from src.components.pond import PondComponent
 from src.components.house1 import House1Component
 from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
+from src.components.traditional_data_center import TraditionalDataCenterComponent
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
@@ -165,6 +166,10 @@ class ComponentPropertiesManager:
             # Factories are decorative with no functional properties
             factory_info = QLabel("Factory Prop")
             left_column.addRow(factory_info)
+        elif isinstance(component, TraditionalDataCenterComponent):
+            # Traditional Data Centers are decorative with no functional properties
+            trad_dc_info = QLabel("Traditional Data Center Prop")
+            left_column.addRow(trad_dc_info)
         else:
             # Add default message
             default_info = QLabel("No specific properties available for this component type")
@@ -1053,7 +1058,7 @@ class ComponentPropertiesManager:
             self.main_window.scene.removeItem(component)
             
             # Only remove from components list if it's a functional component (not a decorative one)
-            if not isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent)):
+            if not isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent)):
                 self.main_window.components.remove(component)
             
             # Clear the properties panel
