@@ -86,6 +86,7 @@ class HistorianManager:
         # Create a widget to hold the chart
         self.chart_widget = QWidget()
         self.chart_layout = QVBoxLayout(self.chart_widget)
+        self.chart_layout.setContentsMargins(1, 1, 1, 1)
         
         # Add controls and chart widgets to the main layout
         self.main_layout.addWidget(self.controls_widget)
