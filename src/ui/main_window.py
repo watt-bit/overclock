@@ -705,7 +705,7 @@ class PowerSystemSimulator(QMainWindow):
         toolbar_style = "QToolBar { font-size: 14pt; } QToolButton { font-size: 14pt; }"
         toolbar.setStyleSheet(toolbar_style)
         
-        # Add actions to toolbar
+        # Create actions for model operations
         new_action = QAction("New", self)
         new_action.triggered.connect(self.new_scenario)
         
@@ -715,9 +715,18 @@ class PowerSystemSimulator(QMainWindow):
         load_action = QAction("Load", self)
         load_action.triggered.connect(self.load_scenario)
         
-        toolbar.addAction(new_action)
-        toolbar.addAction(save_action)
-        toolbar.addAction(load_action)
+        # Create Model menu and add actions
+        model_menu = QMenu("Model", self)
+        model_menu.addAction(new_action)
+        model_menu.addAction(save_action)
+        model_menu.addAction(load_action)
+        
+        # Use QToolButton for Model menu to make text clickable
+        model_button = QToolButton()
+        model_button.setText("Model")
+        model_button.setMenu(model_menu)
+        model_button.setPopupMode(QToolButton.InstantPopup)  # Show menu when clicking anywhere on button
+        toolbar.addWidget(model_button)
         
         # Add separator
         toolbar.addSeparator()

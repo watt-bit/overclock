@@ -1089,3 +1089,21 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated ModelManager to save/load the new component
 - Enhanced visual variety with a new decorative option using the distributionpole.png asset
 - Followed the standard decorative component workflow as documented in component_workflow.md
+
+## 2024-07-09: Combined Toolbar Actions into Model Menu
+- Modified the main window toolbar to combine New, Save, and Load actions under a "Model" menu
+- Created a dropdown menu triggered by a "Model" button in the toolbar
+- Maintained the same functionality of New, Save, and Load operations
+- Improved UI organization by grouping related actions
+
+## 2024-07-10: Fixed Historian Chart Secondary Axis Bug
+- Fixed a bug in the historian chart where the secondary Y-axis (revenue) didn't rescale when toggling visibility
+- Modified the toggle_line_visibility method in HistorianManager to recalculate Y-axis scale for newly visible lines
+- Enhanced axis rescaling to properly account for visible data series only
+- This ensures proper visualization of revenue data after autocompleting a simulation
+
+## 2024-07-10: Fixed Historian Chart Scaling Issue with Multiple Series
+- Fixed a bug where toggling on a data series with lower values would incorrectly rescale the axis
+- Modified toggle_line_visibility to consider ALL visible lines when calculating axis scales
+- Each axis now always scales to show the highest value among all visible data series
+- This ensures proper visualization when toggling between multiple data series with different scales

@@ -1005,3 +1005,47 @@ Key insights from implementing grid export prioritization:
    - Prioritizing exports by price directly impacts the financial performance of the system
    - This approach simulates how real power systems prioritize sales to highest-paying markets first
    - The system now correctly models economic dispatch principles for exports 
+
+## UI Menu Organization (2024-07-09)
+1. Menu Structuring Best Practices
+   - Related actions should be grouped under a common menu
+   - Actions like "New", "Save", and "Load" are naturally grouped under a "Model" or "File" menu
+   - Using QToolButton with a QMenu provides a clean, compact toolbar appearance
+   - QToolButton's InstantPopup mode improves usability by showing menu on button click
+
+2. PyQt Menu Implementation Pattern
+   - Create menu object (QMenu)
+   - Add actions to menu
+   - Create QToolButton to hold menu
+   - Set button text and menu
+   - Configure popup mode
+   - Add button to toolbar
+
+3. Menu Organization Benefits
+   - Reduces toolbar clutter by grouping related actions
+   - Creates a more standard application interface familiar to users
+   - Improves scalability - new related actions can be added to existing menus
+   - Provides clearer organization of application functions
+
+## 2024-07-10: Multi-Series Chart Scaling Best Practices
+When implementing charts with multiple data series that can be toggled on/off:
+
+1. Always scale axes based on ALL currently visible series, not just the most recently toggled series
+   - This prevents confusing rescaling when toggling between series with different value ranges
+   - Users expect the chart to show the full range of all visible data
+
+2. When toggling visibility:
+   - Recalculate maximum values across all visible series
+   - Apply scaling to show the highest values properly
+   - Consider all visible series on each axis independently
+
+3. For multi-axis charts:
+   - Each axis should scale independently based on its own visible series
+   - When a series is toggled on one axis, only that axis should be affected
+   - Maintain consistent behavior between manual toggling and programmatic updates
+
+4. Implementation approach:
+   - Maintain a dictionary tracking visibility state for all series
+   - When toggling, iterate through all series checking visibility
+   - Find maximum value across all visible series for each axis
+   - Apply appropriate scaling with headroom (e.g., max * 1.1)

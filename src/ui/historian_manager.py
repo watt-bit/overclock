@@ -222,11 +222,40 @@ class HistorianManager:
             self.lines[data_key].set_visible(not visible)
             self.line_visibility[data_key] = not visible
             
+            # If a line is toggled, recalculate both axis scales based on all visible lines
+            historian_data = self.parent.simulation_engine.historian
+            current_time = self.parent.simulation_engine.current_time_step
+            
+            if current_time > 0:
+                # Track maximum values for both axes
+                max_val_primary = 0
+                max_val_secondary = 0
+                
+                # Calculate max values considering all visible lines
+                for key, line in self.lines.items():
+                    if key in historian_data and self.line_visibility.get(key, False):
+                        y_values = historian_data[key][:current_time]
+                        if y_values and len(y_values) > 0:
+                            series_max = max(y_values)
+                            if key in self.secondary_axis_series:
+                                if series_max > max_val_secondary:
+                                    max_val_secondary = series_max
+                            else:
+                                if series_max > max_val_primary:
+                                    max_val_primary = series_max
+                
+                # Set axis scales based on all visible lines
+                if max_val_primary > 0:
+                    self.ax.set_ylim(0, max_val_primary * 1.1)  # 10% headroom
+                
+                if max_val_secondary > 0:
+                    self.ax2.set_ylim(0, max_val_secondary * 1.1)  # 10% headroom
+            
+            # Update axis visibility
+            self.update_axis_visibility()
+            
             # Redraw the canvas
             self.canvas.draw()
-            
-            # Update axis visibility if needed
-            self.update_axis_visibility()
     
     def update_axis_visibility(self):
         """Update the visibility of the secondary y-axis based on visible lines"""
