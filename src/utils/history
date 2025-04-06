@@ -1080,4 +1080,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated PropertyManager to handle the new decorative component
 - Updated ModelManager to save/load the new component
 - Enhanced visual variety with a new decorative option using the traddatacenter.png asset
-- Followed the standard decorative component workflow as documented in component_workflow.mdAdded panning functionality to src/ui/main_window.py
+- Followed the standard decorative component workflow as documented in component_workflow.md
+
+## 2024-07-10 - Added New Decorative Component: Distribution Pole
+- Created new DistributionPoleComponent class in src/components/distribution_pole.py
+- Added "Add Distribution Pole" option to the Add Props menu in main_window.py
+- Updated PropertyManager to handle the new decorative component
+- Updated ModelManager to save/load the new component
+- Enhanced visual variety with a new decorative option using the distributionpole.png asset
+- Followed the standard decorative component workflow as documented in component_workflow.md

@@ -19,6 +19,7 @@ from src.components.traditional_data_center import TraditionalDataCenterComponen
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
+from src.components.distribution_pole import DistributionPoleComponent
 
 class ModelManager:
     """
@@ -185,7 +186,7 @@ class ModelManager:
                     "capacity": item.capacity,
                     "operating_mode": item.operating_mode
                 })
-            elif isinstance(item, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent)):
+            elif isinstance(item, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent, DistributionPoleComponent)):
                 data["decorations"].append({
                     "type": item.__class__.__name__,
                     "x": item.x(),
@@ -392,6 +393,9 @@ class ModelManager:
                     self.main_window.scene.addItem(component)
                 elif decoration_type == "TraditionalDataCenterComponent":
                     component = TraditionalDataCenterComponent(x, y)
+                    self.main_window.scene.addItem(component)
+                elif decoration_type == "DistributionPoleComponent":
+                    component = DistributionPoleComponent(x, y)
                     self.main_window.scene.addItem(component)
                     
             # Second pass: restore connections using the exact same indices from the file

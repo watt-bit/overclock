@@ -23,6 +23,7 @@ from src.components.traditional_data_center import TraditionalDataCenterComponen
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
+from src.components.distribution_pole import DistributionPoleComponent
 
 # Define common styles
 COMMON_BUTTON_STYLE = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
@@ -170,6 +171,10 @@ class ComponentPropertiesManager:
             # Traditional Data Centers are decorative with no functional properties
             trad_dc_info = QLabel("Traditional Data Center Prop")
             left_column.addRow(trad_dc_info)
+        elif isinstance(component, DistributionPoleComponent):
+            # Distribution Poles are decorative with no functional properties
+            pole_info = QLabel("Distribution Pole Prop")
+            left_column.addRow(pole_info)
         else:
             # Add default message
             default_info = QLabel("No specific properties available for this component type")
@@ -1058,7 +1063,7 @@ class ComponentPropertiesManager:
             self.main_window.scene.removeItem(component)
             
             # Only remove from components list if it's a functional component (not a decorative one)
-            if not isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent)):
+            if not isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent, DistributionPoleComponent)):
                 self.main_window.components.remove(component)
             
             # Clear the properties panel

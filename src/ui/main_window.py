@@ -30,6 +30,7 @@ from src.components.traditional_data_center import TraditionalDataCenterComponen
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
+from src.components.distribution_pole import DistributionPoleComponent
 from src.simulation.engine import SimulationEngine
 from .analytics import AnalyticsPanel
 from .properties_manager import ComponentPropertiesManager
@@ -501,6 +502,9 @@ class PowerSystemSimulator(QMainWindow):
         trad_data_center_action = props_menu.addAction("Add Data Center")
         trad_data_center_action.triggered.connect(lambda: self.add_component("traditional_data_center"))
         
+        distribution_pole_action = props_menu.addAction("Add Distribution Pole")
+        distribution_pole_action.triggered.connect(lambda: self.add_component("distribution_pole"))
+        
         # Create the Add Props button with dropdown menu
         self.props_btn = QPushButton("🏡 Add Props")
         self.props_btn.setStyleSheet(opaque_button_style)
@@ -847,6 +851,10 @@ class PowerSystemSimulator(QMainWindow):
             component = TraditionalDataCenterComponent(0, 0)
             self.scene.addItem(component)
             # Do not add traditional data centers to the components list as they are decorative
+        elif component_type == "distribution_pole":
+            component = DistributionPoleComponent(0, 0)
+            self.scene.addItem(component)
+            # Do not add distribution poles to the components list as they are decorative
         
         # Hide welcome text after adding the first component (if it's not decorative)
         if component_type in ["generator", "grid_import", "grid_export", "bus", "load", "battery", "cloud_workload", "solar_panel", "wind_turbine"]:
