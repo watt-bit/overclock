@@ -402,23 +402,23 @@ class PowerSystemSimulator(QMainWindow):
         # Define a common button style with opaque background
         opaque_button_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
         
-        generator_btn = QPushButton("(G)as Generator")
+        generator_btn = QPushButton("🔥 (G)as Generator")
         generator_btn.setStyleSheet(opaque_button_style)
         generator_btn.clicked.connect(lambda: self.add_component("generator"))
         
-        battery_btn = QPushButton("Battery (S)torage")
+        battery_btn = QPushButton("🔋 Battery (S)torage")
         battery_btn.setStyleSheet(opaque_button_style)
         battery_btn.clicked.connect(lambda: self.add_component("battery"))
-        
-        load_btn = QPushButton("Electrical (L)oad")
-        load_btn.setStyleSheet(opaque_button_style)
-        load_btn.clicked.connect(lambda: self.add_component("load"))
-        
-        bus_btn = QPushButton("Power (B)us")
+                
+        bus_btn = QPushButton("🔌 Electrical (B)us")
         bus_btn.setStyleSheet(opaque_button_style)
         bus_btn.clicked.connect(lambda: self.add_component("bus"))
         
-        cloud_workload_btn = QPushButton("Cloud (W)orkload")
+        load_btn = QPushButton("💡 Electrical (L)oad")
+        load_btn.setStyleSheet(opaque_button_style)
+        load_btn.clicked.connect(lambda: self.add_component("load"))
+        
+        cloud_workload_btn = QPushButton("🌐 Cloud (W)orkload")
         cloud_workload_btn.setStyleSheet(opaque_button_style)
         cloud_workload_btn.clicked.connect(lambda: self.add_component("cloud_workload"))
         
@@ -428,11 +428,11 @@ class PowerSystemSimulator(QMainWindow):
         separator3.setFrameShadow(QFrame.Sunken)
         separator3.setLineWidth(1)
 
-        grid_import_btn = QPushButton("Grid (I)mport Pathway")
+        grid_import_btn = QPushButton("⬇ Grid (I)mport Pathway")
         grid_import_btn.setStyleSheet(opaque_button_style)
         grid_import_btn.clicked.connect(lambda: self.add_component("grid_import"))
         
-        grid_export_btn = QPushButton("Grid (E)xport Pathway")
+        grid_export_btn = QPushButton("⬆ Grid (E)xport Pathway")
         grid_export_btn.setStyleSheet(opaque_button_style)
         grid_export_btn.clicked.connect(lambda: self.add_component("grid_export"))
         
@@ -471,7 +471,7 @@ class PowerSystemSimulator(QMainWindow):
         wind_turbine_action.triggered.connect(lambda: self.add_component("wind_turbine"))
         
         # Create the Add Renewables button with dropdown menu
-        self.renewables_btn = QPushButton("Add Renewables")
+        self.renewables_btn = QPushButton("🌱 Add Renewables")
         self.renewables_btn.setStyleSheet(opaque_button_style)
         self.renewables_btn.clicked.connect(lambda: renewables_menu.exec_(self.renewables_btn.mapToGlobal(self.renewables_btn.rect().bottomLeft())))
 
@@ -498,14 +498,14 @@ class PowerSystemSimulator(QMainWindow):
         factory_action.triggered.connect(lambda: self.add_component("factory"))
         
         # Create the Add Props button with dropdown menu
-        self.props_btn = QPushButton("Add Props")
+        self.props_btn = QPushButton("🏡 Add Props")
         self.props_btn.setStyleSheet(opaque_button_style)
         self.props_btn.clicked.connect(lambda: props_menu.exec_(self.props_btn.mapToGlobal(self.props_btn.rect().bottomLeft())))
         
         component_layout.addWidget(generator_btn)
         component_layout.addWidget(battery_btn)
-        component_layout.addWidget(load_btn)
         component_layout.addWidget(bus_btn)
+        component_layout.addWidget(load_btn)
         component_layout.addWidget(cloud_workload_btn)
         component_layout.addWidget(separator3)
         component_layout.addWidget(grid_import_btn)

@@ -13,7 +13,7 @@ class GridImportComponent(ComponentBase):
         
         self.capacity = 2000  # kW - maximum import capacity
         self.operating_mode = "Last Resort Unit (Auto)"  # Only Auto mode for now
-        self.auto_charge_batteries = True  # Whether this component will charge batteries with grid power
+        self.auto_charge_batteries = False  # Whether this component will charge batteries with grid power
     
     def paint(self, painter, option, widget):
         # Save painter state
