@@ -463,8 +463,8 @@ class ComponentPropertiesManager:
         connected_to_cloud = self._is_connected_to_cloud_workload(component)
         
         profile_type = QComboBox()
-        profile_type.setStyleSheet(COMBOBOX_STYLE)
-        profile_type.addItems(["Data Center", "Sine Wave", "Custom", "Random 8760", "Constant"])
+        profile_type.setStyleSheet(COMBOBOX_STYLE + "QComboBox { width: 125px; }")
+        profile_type.addItems(["Data Center", "Sine Wave", "Custom", "Random 8760", "Constant", "Powerlandia 60CF"])
         profile_type.setCurrentText(component.profile_type)
         
         # Disable profile switching if connected to cloud workload
@@ -499,6 +499,8 @@ class ComponentPropertiesManager:
         # Add profile info label
         profile_info = QLabel()
         if component.profile_type == "Custom" and component.profile_name:
+            profile_info.setText(f"Loaded: {component.profile_name}")
+        elif component.profile_type == "Powerlandia 60CF" and component.profile_name:
             profile_info.setText(f"Loaded: {component.profile_name}")
         elif connected_to_cloud:
             profile_info.setText("<i>Cloud Workload connected</i>")
@@ -683,7 +685,7 @@ class ComponentPropertiesManager:
         frequency_widget.setVisible(component.profile_type == "Sine Wave")
         
         # Only show time offset for Sine Wave and Custom profiles
-        time_offset_widget.setVisible(component.profile_type in ["Sine Wave", "Custom"])
+        time_offset_widget.setVisible(component.profile_type in ["Sine Wave", "Custom", "Powerlandia 60CF"])
         
         def on_profile_changed(text):
             # If connected to a cloud workload, do not allow changing from Data Center
@@ -696,18 +698,27 @@ class ComponentPropertiesManager:
                 
             setattr(component, 'profile_type', text)
             load_profile_btn.setVisible(text == "Custom")
-            time_offset_widget.setVisible(text in ["Sine Wave", "Custom"])
+            time_offset_widget.setVisible(text in ["Sine Wave", "Custom", "Powerlandia 60CF"])
             frequency_widget.setVisible(text == "Sine Wave")
             random_profile_widget.setVisible(text == "Random 8760")
             ramp_rate_widget.setVisible(text == "Random 8760")
             data_center_widget.setVisible(text == "Data Center")
             dc_generate_widget.setVisible(text == "Data Center")
+            
+            # Handle special cases for different profile types
             if text == "Random 8760" and not component.random_profile:
                 # Auto-generate random profile when mode is selected
                 generate_random_data()
             elif text == "Data Center" and not component.random_profile:
                 # Auto-generate data center profile when mode is selected
                 generate_data_center_profile()
+            elif text == "Powerlandia 60CF":
+                # Load the Powerlandia profile
+                if not component.powerlandia_profile:
+                    component.load_powerlandia_profile()
+                    if component.profile_name:
+                        profile_info.setText(f"Loaded: {component.profile_name}")
+                    self.main_window.update_simulation()
             elif text != "Custom":
                 component.custom_profile = None
                 component.profile_name = None
@@ -845,7 +856,7 @@ class ComponentPropertiesManager:
         """Add properties for CloudWorkloadComponent"""
         # Add operating mode selector
         mode_selector = QComboBox()
-        mode_selector.setStyleSheet(COMBOBOX_STYLE)
+        mode_selector.setStyleSheet(COMBOBOX_STYLE + "QComboBox { width: 150px; }")
         mode_selector.addItems(["No Customer", "Multi-Cloud Spot"])
         mode_selector.setCurrentText(component.operating_mode)
         

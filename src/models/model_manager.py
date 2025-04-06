@@ -259,14 +259,7 @@ class ModelManager:
                     
                 elif component_type == "Load":
                     component = LoadComponent(x, y)
-                    # Handle both new (demand) and old (capacity) attribute names
-                    if "demand" in component_data:
-                        component.demand = component_data["demand"]
-                    elif "capacity" in component_data:
-                        component.demand = component_data["capacity"]
-                    else:
-                        component.demand = 100  # Default value
-                        
+                    component.demand = component_data.get("demand", 500)
                     # Handle both new (profile_type) and old (profile) attribute names
                     if "profile_type" in component_data:
                         component.profile_type = component_data["profile_type"]
@@ -277,6 +270,11 @@ class ModelManager:
                         
                     if "graphics_enabled" in component_data:
                         component.graphics_enabled = component_data["graphics_enabled"]
+                    
+                    # Handle Powerlandia profile if needed
+                    if component.profile_type == "Powerlandia 60CF":
+                        component.load_powerlandia_profile()
+                        
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
                     component_map.append(component)

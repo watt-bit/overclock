@@ -1,5 +1,7 @@
 import numpy as np
 import random
+import csv
+import os
 from PyQt5.QtGui import QBrush, QColor, QPen, QPainter, QFont, QPixmap
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
@@ -18,7 +20,7 @@ class LoadComponent(ComponentBase):
         self.price_per_kwh = 0.00  # Default price per kWh in dollars
         self.operating_mode = "Demand Droop (Auto)"  # Fixed operating mode
         self.accumulated_revenue = 0.00  # Track accumulated revenue in dollars
-        self.profile_type = "Data Center"  # Constant, Sine Wave, Custom, Random 8760, Data Center
+        self.profile_type = "Data Center"  # Constant, Sine Wave, Custom, Random 8760, Data Center, Powerlandia 60CF
         self.custom_profile = None
         self.profile_name = None
         self.time_offset = 0  # Hours to offset the time series
@@ -27,6 +29,7 @@ class LoadComponent(ComponentBase):
         self.max_ramp_rate = 0.25  # Maximum change in output per hour (25% default)
         self.data_center_type = "GPU Intensive"  # Traditional Cloud, GPU Intensive, Crypto ASIC
         self.graphics_enabled = True  # Flag to control whether graphics are shown
+        self.powerlandia_profile = None  # For Powerlandia 60CF profile
     
     def paint(self, painter, option, widget):
         # Get component dimensions
@@ -269,6 +272,40 @@ class LoadComponent(ComponentBase):
         self.random_profile = profile
         return profile
     
+    def load_powerlandia_profile(self):
+        """Load the Powerlandia 60CF profile from the CSV file"""
+        # Clear any existing profile data
+        self.powerlandia_profile = None
+        
+        try:
+            # Path to the CSV file
+            filepath = "src/data/Powerlandia-Load-60CF.csv"
+            
+            if not os.path.exists(filepath):
+                print(f"Error: Could not find Powerlandia profile file at {filepath}")
+                return None
+                
+            # Read the CSV file
+            data = []
+            with open(filepath, 'r') as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header row
+                for row in reader:
+                    if row and len(row) > 0:
+                        data.append(float(row[0]))  # Assume first column is load factor
+            
+            if len(data) > 0:
+                self.powerlandia_profile = data
+                self.profile_name = "Powerlandia-Load-60CF.csv"
+                return data
+            else:
+                print("Error: No data found in Powerlandia profile file")
+                return None
+                
+        except Exception as e:
+            print(f"Error loading Powerlandia profile: {str(e)}")
+            return None
+    
     def calculate_demand(self, time_step):
         # Check if connected to a bus
         bus = self.get_connected_bus()
@@ -279,7 +316,7 @@ class LoadComponent(ComponentBase):
         
         # Apply time offset if using Sine Wave or Custom profile
         adjusted_time_step = time_step
-        if self.profile_type in ["Sine Wave", "Custom"] and self.time_offset != 0:
+        if self.profile_type in ["Sine Wave", "Custom", "Powerlandia 60CF"] and self.time_offset != 0:
             adjusted_time_step = (time_step + self.time_offset) % 8760  # Wrap around at 8760 hours
         
         # Calculate normal demand based on profile
@@ -309,6 +346,14 @@ class LoadComponent(ComponentBase):
             if self.random_profile and time_step < len(self.random_profile):
                 return self.random_profile[time_step] * self.demand
             return self.demand
+        elif self.profile_type == "Powerlandia 60CF":
+            # Load Powerlandia profile if not already loaded
+            if not self.powerlandia_profile:
+                self.load_powerlandia_profile()
+            
+            if self.powerlandia_profile and adjusted_time_step < len(self.powerlandia_profile):
+                return self.powerlandia_profile[adjusted_time_step] * self.demand
+            return self.demand
         return self.demand
     
     def serialize(self):
@@ -329,5 +374,6 @@ class LoadComponent(ComponentBase):
             'max_ramp_rate': self.max_ramp_rate,
             'random_profile': self.random_profile,
             'data_center_type': self.data_center_type,
-            'graphics_enabled': self.graphics_enabled  # Save graphics state
+            'graphics_enabled': self.graphics_enabled,  # Save graphics state
+            'powerlandia_profile': self.powerlandia_profile  # Save Powerlandia profile
         } 

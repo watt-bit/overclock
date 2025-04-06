@@ -1049,3 +1049,22 @@ When implementing charts with multiple data series that can be toggled on/off:
    - When toggling, iterate through all series checking visibility
    - Find maximum value across all visible series for each axis
    - Apply appropriate scaling with headroom (e.g., max * 1.1)
+
+## PyQt Timer Implementation (2024-08-05)
+1. Qt Timer Usage
+   - QTimer provides a reliable way to implement timed events in PyQt applications
+   - Single-shot timers (setSingleShot(True)) are ideal for one-time transitions
+   - Connecting timer.timeout signal to a method provides clean event handling
+   - Timers can be safely started in the showEvent method to ensure proper initialization
+
+2. Modal Screen Sequencing
+   - Auto-transition timers enable smooth progression through splash/title screens
+   - Manual keyboard transitions can safely coexist with automatic timers
+   - Stopping timers on manual transitions prevents potential race conditions
+   - The signal/slot mechanism in Qt makes screen transitions clean and decoupled
+
+3. User Experience Improvements
+   - Auto-transitions provide fallback behavior for users who don't interact
+   - 3-second duration balances visibility needs with maintaining application flow
+   - Implementing both manual and automatic transitions improves accessibility
+   - Frameless windows with timed transitions create a professional splash screen experience

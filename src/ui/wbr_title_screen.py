@@ -37,6 +37,22 @@ class WBRTitleScreen(QWidget):
         
         # Center the window on the screen
         self.center_on_screen()
+        
+        # Setup auto-transition timer (3 seconds)
+        self.timer = QTimer(self)
+        self.timer.setSingleShot(True)
+        self.timer.setInterval(5000)  # 5 seconds
+        self.timer.timeout.connect(self.auto_transition)
+    
+    def showEvent(self, event):
+        """Start the timer when the widget is shown"""
+        super().showEvent(event)
+        self.timer.start()
+    
+    def auto_transition(self):
+        """Automatically transition to the next screen after timer expires"""
+        self.transition_to_next.emit()
+        self.close()
     
     def center_on_screen(self):
         """Center the window on the screen"""
@@ -53,11 +69,13 @@ class WBRTitleScreen(QWidget):
         # Transition to the next screen when Enter is pressed
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
             # Emit signal before closing
+            self.timer.stop()  # Stop the timer if a key is pressed
             self.transition_to_next.emit()
             self.close()
         # Also transition on Escape or Space for user convenience
         elif event.key() in (Qt.Key_Escape, Qt.Key_Space):
             # Emit signal before closing
+            self.timer.stop()  # Stop the timer if a key is pressed
             self.transition_to_next.emit()
             self.close()
         else:

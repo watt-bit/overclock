@@ -1107,3 +1107,19 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Modified toggle_line_visibility to consider ALL visible lines when calculating axis scales
 - Each axis now always scales to show the highest value among all visible data series
 - This ensures proper visualization when toggling between multiple data series with different scales
+
+## 2024-08-05: Added Auto-Transition Timers to Title Screens
+- Added 3-second auto-transition timers to both WBR and Augur title screens
+- Modified both src/ui/wbr_title_screen.py and src/ui/augur_title_screen.py
+- Implemented a QTimer that automatically triggers the transition_to_next signal after 3 seconds
+- Added the timer.stop() call when user manually triggers transitions with keypresses
+- Ensures screens will progress to the main title screen even without user input
+- Timer starts when the screen is shown via the showEvent method
+
+## 2024-07-07: Added Powerlandia 60CF Load Profile
+- Added new load profile type "Powerlandia 60CF" to LoadComponent
+- Implemented method to automatically load data from src/data/Powerlandia-Load-60CF.csv 
+- Updated the properties manager UI to include the new profile type in the dropdown
+- Added time offset support for the new profile type
+- Modified model manager to handle loading/saving of the new profile type
+- Profile provides a realistic highly autocorrelated load with 60% capacity factor
