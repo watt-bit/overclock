@@ -610,7 +610,7 @@ class PowerSystemSimulator(QMainWindow):
         # Style for default grey buttons
         default_button_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
         
-        self.play_btn = QPushButton("Play (Space)")
+        self.play_btn = QPushButton("Run (Space)")
         self.play_btn.clicked.connect(self.toggle_simulation)
         self.play_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }")
         
@@ -1028,14 +1028,14 @@ class PowerSystemSimulator(QMainWindow):
             self.disable_component_buttons(True)
         else:
             self.sim_timer.stop()
-            self.play_btn.setText("Play (Space)")
+            self.play_btn.setText("Run (Space)")
             self.disable_component_buttons(False)
     
     def step_simulation(self, steps):
         # Check if simulation was running but has been stopped (end of timeline)
         if not self.simulation_engine.simulation_running and self.play_btn.text() == "Pause (Space)":
             # Update UI to reflect that simulation has stopped
-            self.play_btn.setText("Play (Space)")
+            self.play_btn.setText("Run (Space)")
             self.sim_timer.stop()
             self.disable_component_buttons(False)
             return
@@ -1096,7 +1096,7 @@ class PowerSystemSimulator(QMainWindow):
                 item.accumulated_revenue = 0.0
                 item.update()  # Refresh the visual display
         
-        self.play_btn.setText("Play (Space)")
+        self.play_btn.setText("Run (Space)")
         self.time_slider.setValue(0)
         
         # Clear the analytics chart history

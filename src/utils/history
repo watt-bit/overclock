@@ -1123,3 +1123,10 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Added time offset support for the new profile type
 - Modified model manager to handle loading/saving of the new profile type
 - Profile provides a realistic highly autocorrelated load with 60% capacity factor
+
+## 2024-08-06: Updated Play Button Text
+- Changed all instances of "Play (Space)" to "Run (Space)" throughout the application
+- Updated text in several locations in main_window.py 
+- Updated text in model_manager.py
+- Maintained the same functionality while using more precise terminology
+- Provides a clearer description of the button's actual function
