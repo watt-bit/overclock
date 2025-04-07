@@ -202,8 +202,8 @@ class HistorianManager:
         # Make it checkable (toggle button)
         button.setCheckable(True)
         
-        # Set initial state - only total_generation is unchecked (visible) by default
-        button.setChecked(data_key != 'total_generation')
+        # Set initial state - total_generation and cumulative_revenue are unchecked (visible) by default
+        button.setChecked(data_key != 'total_generation' and data_key != 'cumulative_revenue')
         
         # Connect the clicked signal to update the chart
         button.clicked.connect(lambda checked, k=data_key: self.toggle_line_visibility(k, checked))
@@ -305,8 +305,8 @@ class HistorianManager:
         )
         
         # Initialize visibility state
-        # Only total_generation starts visible by default
-        initial_visible = data_key == 'total_generation'
+        # Both total_generation and cumulative_revenue start visible by default
+        initial_visible = data_key == 'total_generation' or data_key == 'cumulative_revenue'
         self.line_visibility[data_key] = initial_visible
         line.set_visible(initial_visible)
         
@@ -397,8 +397,11 @@ class HistorianManager:
                 if data_key not in self.toggle_buttons:
                     button = self.create_toggle_button(data_key)
                     self.toggle_buttons[data_key] = button
-                    # Set button to checked (off) by default for secondary axis
-                    button.setChecked(True)
+                    # Set button checked state based on specific series
+                    if data_key == 'cumulative_revenue':
+                        button.setChecked(False)  # Unchecked (visible) for cumulative_revenue
+                    else:
+                        button.setChecked(True)  # Checked (hidden) for other secondary axis series
                     # Add to secondary buttons list
                     self.secondary_buttons.append(button)
                     
@@ -448,8 +451,8 @@ class HistorianManager:
         
         # Reset all toggle buttons to their default states
         for key, button in self.toggle_buttons.items():
-            if key == 'total_generation':
-                # Only total_generation starts unchecked (on)
+            if key == 'total_generation' or key == 'cumulative_revenue':
+                # Both total_generation and cumulative_revenue start unchecked (on)
                 button.setChecked(False)
                 self.line_visibility[key] = True
                 self.lines[key].set_visible(True)

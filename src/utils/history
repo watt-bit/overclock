@@ -1136,3 +1136,11 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Added TraditionalDataCenterComponent and DistributionPoleComponent to the list of ignored components in connection management functions
 - Fixed bug where these decorative components could incorrectly form connections despite being decorative props
 - Ensured consistent behavior for all decorative components (trees, bushes, ponds, houses, factory, data center, poles)
+
+## 2024-08-09: Made Cumulative Revenue Chart Line Visible by Default
+- Modified the HistorianManager to display the cumulative revenue line chart by default
+- Updated the create_line_for_data method to initialize cumulative_revenue as visible
+- Updated the create_toggle_button method to set the cumulative_revenue button as unchecked (visible) by default
+- Modified the update_chart method to ensure correct visibility state when creating buttons
+- Updated the clear_chart method to reset cumulative_revenue to visible when clearing the chart
+- This change allows users to see financial metrics without having to manually enable them
