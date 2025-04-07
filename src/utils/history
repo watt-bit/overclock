@@ -1130,3 +1130,9 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated text in model_manager.py
 - Maintained the same functionality while using more precise terminology
 - Provides a clearer description of the button's actual function
+
+## 2024-07-15: Fixed Decorative Component Connection Issues
+- Updated ConnectionManager in src/ui/connection_manager.py to properly handle all decorative components
+- Added TraditionalDataCenterComponent and DistributionPoleComponent to the list of ignored components in connection management functions
+- Fixed bug where these decorative components could incorrectly form connections despite being decorative props
+- Ensured consistent behavior for all decorative components (trees, bushes, ponds, houses, factory, data center, poles)

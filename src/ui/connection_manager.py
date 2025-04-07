@@ -16,6 +16,8 @@ from src.components.house1 import House1Component
 from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
 from src.components.cloud_workload import CloudWorkloadComponent
+from src.components.traditional_data_center import TraditionalDataCenterComponent
+from src.components.distribution_pole import DistributionPoleComponent
 
 class ConnectionManager:
     def __init__(self, main_window):
@@ -115,7 +117,7 @@ class ConnectionManager:
     def handle_connection_click(self, component):
         """Handle clicks on components for connection creation"""
         # Ignore decorative components
-        if isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent)):
+        if isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent, DistributionPoleComponent)):
             return
             
         if not self.connection_source:
@@ -528,7 +530,7 @@ class ConnectionManager:
     def handle_sever_connection(self, component):
         """Handle clicks on components for connection severing"""
         # Ignore decorative components
-        if isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent)):
+        if isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent, DistributionPoleComponent)):
             return
             
         # Find all connections associated with this component

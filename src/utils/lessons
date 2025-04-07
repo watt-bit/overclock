@@ -1068,3 +1068,26 @@ When implementing charts with multiple data series that can be toggled on/off:
    - 3-second duration balances visibility needs with maintaining application flow
    - Implementing both manual and automatic transitions improves accessibility
    - Frameless windows with timed transitions create a professional splash screen experience
+
+## Decorative Component Consistency (2024-07-15)
+1. Complete Validation Chain
+   - Decorative components need to be consistently handled at all connection points
+   - Both local component click handlers and central connection manager must enforce the same rules
+   - All decorative components should be treated identically in connection operations
+   - Adding new decorative components requires updating all relevant validation points
+
+2. Connection Validation Layers
+   - The system has multiple layers of connection validation:
+     * Component-level mousePressEvent handlers can prevent click signals
+     * ConnectionManager.handle_connection_click filters components by type
+     * ConnectionManager.handle_sever_connection filters components by type
+     * Connection validation rules check compatibility of connected components
+   - All layers must be kept in sync when adding new component types
+   - Each validation layer serves a different purpose and should be comprehensive
+
+3. Component Type Consistency
+   - Decorative components (like Bush, Tree, Pond, Houses, Factory, TraditionalDataCenter, DistributionPole)
+     should be handled consistently throughout the codebase
+   - When adding new decorative components, all connection handling code must be updated
+   - Type checking in instanceof statements needs to include all relevant component types
+   - Special handling for component types should be centralized when possible
