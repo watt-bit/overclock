@@ -407,16 +407,16 @@ class UIInitializer:
         main_window.play_btn.clicked.connect(main_window.toggle_simulation)
         main_window.play_btn.setStyleSheet(common_button_style + """
             QPushButton { 
-                background-color: #2196F3; 
+                background-color: #0D47A1; 
                 color: white; 
                 font-weight: bold; 
                 font-size: 16px; 
             }
             QPushButton:hover { 
-                background-color: #42A5F5; 
+                background-color: #1565C0; 
             }
             QPushButton:pressed { 
-                background-color: #1E88E5; 
+                background-color: #0A367B; 
             }
         """)
         
@@ -424,16 +424,16 @@ class UIInitializer:
         main_window.reset_btn.clicked.connect(main_window.reset_simulation)
         main_window.reset_btn.setStyleSheet(common_button_style + """
             QPushButton { 
-                background-color: #f44336; 
+                background-color: #B71C1C; 
                 color: white; 
                 font-weight: bold; 
                 font-size: 14px; 
             }
             QPushButton:hover { 
-                background-color: #ef5350; 
+                background-color: #C62828; 
             }
             QPushButton:pressed { 
-                background-color: #e53935; 
+                background-color: #9B1818; 
             }
         """)
         
@@ -483,16 +483,16 @@ class UIInitializer:
         main_window.autocomplete_btn.clicked.connect(main_window.run_autocomplete)
         main_window.autocomplete_btn.setStyleSheet(common_button_style + """
             QPushButton { 
-                background-color: #4CAF50; 
+                background-color: #1B5E20; 
                 color: white; 
                 font-weight: bold; 
                 font-size: 16px; 
             }
             QPushButton:hover { 
-                background-color: #66BB6A; 
+                background-color: #2E7D32; 
             }
             QPushButton:pressed { 
-                background-color: #43A047; 
+                background-color: #154919; 
             }
         """)
         

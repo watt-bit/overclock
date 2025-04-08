@@ -1281,3 +1281,13 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Used multi-line string literals for improved readability of complex styles
 - Adjusted padding in pressed state to compensate for thicker borders
 - Improved user experience with consistent and responsive UI feedback
+
+## 2024-07-08: Darkened Control Button Color Palette
+- Updated the color palette for the main control buttons to better match the dark theme:
+  * Run button: Changed from #2196F3 (bright blue) to #0D47A1 (dark blue)
+  * Reset button: Changed from #f44336 (bright red) to #B71C1C (dark red)
+  * Autocomplete button: Changed from #4CAF50 (bright green) to #1B5E20 (dark green)
+- Updated hover and pressed states with corresponding darker shades
+- Maintained the blue/red/green color distinction for button functions
+- Improved visual consistency with the application's dark mode theme
+- Enhanced UI aesthetics with a more cohesive color scheme
