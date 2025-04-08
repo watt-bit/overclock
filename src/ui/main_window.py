@@ -514,9 +514,47 @@ class PowerSystemSimulator(QMainWindow):
                 self.autocomplete_timer.stop()
             self.is_autocompleting = False
             
-            # Define original styles for buttons
-            play_btn_style = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; } QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }"
-            speed_selector_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
+            # Define original styles for buttons with hover and pressed states
+            play_btn_style = """
+                QPushButton { 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                    background-color: #0D47A1; 
+                    color: white; 
+                    font-weight: bold; 
+                    font-size: 16px; 
+                }
+                QPushButton:hover { 
+                    background-color: #1565C0; 
+                }
+                QPushButton:pressed { 
+                    background-color: #0A367B; 
+                    border: 2px solid #777777;
+                    padding: 4px; 
+                }
+            """
+            
+            speed_selector_style = """
+                QPushButton { 
+                    background-color: #3D3D3D; 
+                    color: white; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 4px; 
+                    font-weight: bold; 
+                    font-size: 14px;
+                }
+                QPushButton:hover { 
+                    background-color: #4D4D4D; 
+                    border: 1px solid #666666;
+                }
+                QPushButton:pressed { 
+                    background-color: #2D2D2D; 
+                    border: 2px solid #777777;
+                    padding: 3px; 
+                }
+            """
             
             # Re-enable controls that were disabled by autocomplete
             self.play_btn.setEnabled(True)
@@ -549,6 +587,10 @@ class PowerSystemSimulator(QMainWindow):
             # Reset accumulated revenue for Cloud Workload components as well
             elif isinstance(item, CloudWorkloadComponent):
                 item.accumulated_revenue = 0.0
+                item.update()  # Refresh the visual display
+            # Reset all batteries to 100% charge
+            elif isinstance(item, BatteryComponent):
+                item.current_charge = item.energy_capacity  # Set to 100% charge
                 item.update()  # Refresh the visual display
         
         self.play_btn.setText("Run (Space)")
@@ -589,9 +631,47 @@ class PowerSystemSimulator(QMainWindow):
                 self.autocomplete_timer.stop()
             self.is_autocompleting = False
             
-            # Define original styles for buttons
-            play_btn_style = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; } QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }"
-            speed_selector_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
+            # Define original styles for buttons with hover and pressed states
+            play_btn_style = """
+                QPushButton { 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                    background-color: #0D47A1; 
+                    color: white; 
+                    font-weight: bold; 
+                    font-size: 16px; 
+                }
+                QPushButton:hover { 
+                    background-color: #1565C0; 
+                }
+                QPushButton:pressed { 
+                    background-color: #0A367B; 
+                    border: 2px solid #777777;
+                    padding: 4px; 
+                }
+            """
+            
+            speed_selector_style = """
+                QPushButton { 
+                    background-color: #3D3D3D; 
+                    color: white; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 4px; 
+                    font-weight: bold; 
+                    font-size: 14px;
+                }
+                QPushButton:hover { 
+                    background-color: #4D4D4D; 
+                    border: 1px solid #666666;
+                }
+                QPushButton:pressed { 
+                    background-color: #2D2D2D; 
+                    border: 2px solid #777777;
+                    padding: 3px; 
+                }
+            """
             
             # Reset the button styles
             self.play_btn.setStyleSheet(play_btn_style)
@@ -637,8 +717,26 @@ class PowerSystemSimulator(QMainWindow):
         """Disable or enable all component and connection manipulation buttons"""
         # Define disabled button style with grey text
         disabled_button_style = "QPushButton { background-color: #3D3D3D; color: #999999; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
-        # Original button style with white text
-        enabled_button_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
+        
+        # Full enabled button style with hover and pressed states
+        enabled_button_style = """
+            QPushButton { 
+                background-color: #3D3D3D; 
+                color: white; 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 5px; 
+            }
+            QPushButton:hover { 
+                background-color: #4D4D4D; 
+                border: 1px solid #666666;
+            }
+            QPushButton:pressed { 
+                background-color: #2D2D2D; 
+                border: 2px solid #777777;
+                padding: 4px; 
+            }
+        """
         
         # Use stored references
         for button in self.component_buttons:
@@ -1010,9 +1108,47 @@ class PowerSystemSimulator(QMainWindow):
             if not self.is_model_view:
                 self.historian_manager.update_chart()
             
-            # Define original styles for buttons
-            play_btn_style = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; } QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }"
-            speed_selector_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
+            # Define original styles for buttons with hover and pressed states
+            play_btn_style = """
+                QPushButton { 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                    background-color: #0D47A1; 
+                    color: white; 
+                    font-weight: bold; 
+                    font-size: 16px; 
+                }
+                QPushButton:hover { 
+                    background-color: #1565C0; 
+                }
+                QPushButton:pressed { 
+                    background-color: #0A367B; 
+                    border: 2px solid #777777;
+                    padding: 4px; 
+                }
+            """
+            
+            speed_selector_style = """
+                QPushButton { 
+                    background-color: #3D3D3D; 
+                    color: white; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 4px; 
+                    font-weight: bold; 
+                    font-size: 14px;
+                }
+                QPushButton:hover { 
+                    background-color: #4D4D4D; 
+                    border: 1px solid #666666;
+                }
+                QPushButton:pressed { 
+                    background-color: #2D2D2D; 
+                    border: 2px solid #777777;
+                    padding: 3px; 
+                }
+            """
             
             # Re-enable controls
             self.play_btn.setEnabled(True)

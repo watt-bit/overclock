@@ -121,14 +121,14 @@ class BatteryComponent(ComponentBase):
         
         # Determine fill color based on charge level
         if charge_percent < 0.25:
-            # Red when near empty (0-25%)
-            fill_color = QColor(255, 60, 60)
+            # Dark red for low charge (0-25%)
+            fill_color = QColor("#B71C1C")
         elif charge_percent < 0.5:
-            # Yellow in the middle (25-50%)
-            fill_color = QColor(255, 204, 0)
+            # Gold/amber for medium charge (25-50%)
+            fill_color = QColor("#FFC107")
         else:
-            # Green when more than 50% full (50-100%)
-            fill_color = QColor(50, 205, 50)
+            # Dark green for high charge (50-100%)
+            fill_color = QColor("#1B5E20")
         
         # Draw filled portion representing current charge
         painter.setPen(Qt.NoPen)

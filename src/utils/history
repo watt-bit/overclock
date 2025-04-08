@@ -1291,3 +1291,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Maintained the blue/red/green color distinction for button functions
 - Improved visual consistency with the application's dark mode theme
 - Enhanced UI aesthetics with a more cohesive color scheme
+
+## 2024-07-08: Fixed Button Hover Effects After Simulation
+- Fixed a bug where component button hover and pressed effects stopped working after running and pausing the simulation
+- Updated the disable_component_buttons method to use the full opaque_button_style with hover and pressed states when re-enabling buttons
+- Modified the _step_autocomplete, reset_simulation, and load_scenario methods to use complete styled versions of buttons
+- Updated all button style definitions to use multi-line strings for better readability
+- Fixed inconsistent button color references to match the dark theme color scheme
+- Ensured proper styling for Run and Reset buttons after autocomplete runs
+- This ensures consistent button behavior throughout the application lifecycle
