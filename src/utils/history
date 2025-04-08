@@ -1160,3 +1160,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Fixed bug with transparent pen creation using QPen(Qt.transparent) instead of Qt.NoPen
 - Enhanced visual feedback when creating components
 - Added proper integration with all component types
+
+## 2025-04-07 19:15 - Refactored Particle System into Separate Module
+- Extracted the Particle and ParticleSystem classes from main_window.py to a new file src/ui/particle_system.py
+- Maintained exact implementation details and behavior
+- Updated imports in main_window.py to use the new module
+- Removed redundant QGraphicsEllipseItem import from main_window.py
+- Ensured complete compatibility with the existing application
+- Reduced size and complexity of main_window.py
+- Improved modularity of the codebase
