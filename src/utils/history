@@ -1144,3 +1144,19 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Modified the update_chart method to ensure correct visibility state when creating buttons
 - Updated the clear_chart method to reset cumulative_revenue to visible when clearing the chart
 - This change allows users to see financial metrics without having to manually enable them
+
+## 2025-04-07 18:38 - Added Component Creation Particle Effect
+- Implemented a smoke puff particle effect that appears when adding new components
+- Created Particle class that generates individual smoke particles with:
+  * Random movement with upward bias
+  * Gradual fading (alpha reduction)
+  * Size changes for natural effect
+  * Radial gradient fill for soft appearance
+- Created ParticleSystem class to manage collections of particles:
+  * ~30fps animation using QTimer
+  * Automatic cleanup of faded particles
+  * Creates puffs of multiple particles at component centers
+- The effect only appears when simulation is paused
+- Fixed bug with transparent pen creation using QPen(Qt.transparent) instead of Qt.NoPen
+- Enhanced visual feedback when creating components
+- Added proper integration with all component types

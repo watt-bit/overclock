@@ -1,15 +1,16 @@
 import sys
 import json
 import re
+import random
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
                             QLabel, QPushButton, QSlider, QFileDialog, 
                             QGraphicsView, QGraphicsScene, QDockWidget, 
                             QFormLayout, QLineEdit, QComboBox, QToolBar, 
                             QAction, QMessageBox, QSplitter, QGraphicsLineItem,
                             QApplication, QSpacerItem, QMenu, QShortcut, QFrame,
-                            QToolButton, QSizePolicy)
+                            QToolButton, QSizePolicy, QGraphicsItem, QGraphicsEllipseItem)
 from PyQt5.QtCore import Qt, QPointF, QRectF, QTimer, pyqtSignal, QObject, QSize
-from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor, QDoubleValidator, QIntValidator, QBrush, QKeySequence, QIcon
+from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor, QDoubleValidator, QIntValidator, QBrush, QKeySequence, QIcon, QRadialGradient
 import math
 
 from src.components.base import ComponentBase
@@ -178,6 +179,118 @@ class TiledBackgroundWidget(QWidget):
             for y in range(top, int(rect.bottom()) + self.tile_size, self.tile_size):
                 painter.drawPixmap(x, y, self.tile_size, self.tile_size, scaled_image)
 
+# Particle system classes for smoke puff effect
+class Particle(QGraphicsEllipseItem):
+    """Individual particle for visual effects"""
+    
+    def __init__(self, x, y, size=10, parent=None):
+        super().__init__(0, 0, size, size, parent)
+        self.setPos(x - size/2, y - size/2)
+        
+        # Random velocity for natural movement
+        self.dx = random.uniform(-1.5, 1.5)
+        self.dy = random.uniform(-2.0, -0.5)  # Upward bias
+        
+        # Random alpha fade rate
+        self.fade_rate = random.uniform(0.05, 0.1)
+        self.alpha = random.uniform(0.7, 1.0)
+        
+        # Random growth/shrink
+        self.size_change = random.uniform(-0.1, 0.2)
+        self.current_size = size
+        
+        # Set initial appearance
+        self.updateAppearance()
+    
+    def updateAppearance(self):
+        """Update the particle's visual appearance"""
+        # Create a radial gradient for a soft, smoke-like appearance
+        gradient = QRadialGradient(self.current_size/2, self.current_size/2, self.current_size/2)
+        
+        # Semi-transparent white/gray color
+        color = QColor(200, 200, 200, int(self.alpha * 255))
+        
+        gradient.setColorAt(0, color)
+        gradient.setColorAt(1, QColor(200, 200, 200, 0))  # Transparent at edges
+        
+        self.setBrush(QBrush(gradient))
+        # Create a transparent pen (using QPen) instead of Qt.NoPen
+        self.setPen(QPen(Qt.transparent))
+    
+    def update_particle(self):
+        """Update particle position, size and opacity for animation"""
+        # Move the particle
+        self.setPos(self.x() + self.dx, self.y() + self.dy)
+        
+        # Fade the particle
+        self.alpha -= self.fade_rate
+        
+        # Update size (expand or contract)
+        self.current_size += self.size_change
+        if self.current_size <= 0:
+            self.current_size = 0.1  # Prevent negative size
+        
+        # Update the ellipse size
+        self.setRect(0, 0, self.current_size, self.current_size)
+        
+        # Update appearance
+        self.updateAppearance()
+        
+        # Return whether the particle is still visible
+        return self.alpha > 0.1
+
+class ParticleSystem:
+    """Manages a set of particles for visual effects"""
+    
+    def __init__(self, scene):
+        self.scene = scene
+        self.particles = []
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_particles)
+        self.timer.setInterval(33)  # ~30 fps
+    
+    def create_puff(self, x, y, num_particles=12):
+        """Create a puff of smoke particles at the given coordinates"""
+        # Create particles
+        for _ in range(num_particles):
+            # Add random offset to create wider origin area
+            offset_x = random.uniform(-50, 50)  # +/- 50px horizontal spread
+            offset_y = random.uniform(-30, 30)  # +/- 30px vertical spread
+            
+            # Calculate particle position with offset
+            particle_x = x + offset_x
+            particle_y = y + offset_y
+            
+            # Create particle with random size
+            size = random.uniform(8, 20)
+            particle = Particle(particle_x, particle_y, size)
+            self.scene.addItem(particle)
+            self.particles.append(particle)
+        
+        # Start the animation timer if not already running
+        if not self.timer.isActive():
+            self.timer.start()
+    
+    def update_particles(self):
+        """Update all particles and remove those that are no longer visible"""
+        if not self.particles:
+            self.timer.stop()
+            return
+            
+        # Update each particle and keep only those that are still visible
+        remaining_particles = []
+        for particle in self.particles:
+            if particle.update_particle():
+                remaining_particles.append(particle)
+            else:
+                self.scene.removeItem(particle)
+        
+        self.particles = remaining_particles
+        
+        # Stop the timer if all particles are gone
+        if not self.particles:
+            self.timer.stop()
+
 class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -193,6 +306,9 @@ class PowerSystemSimulator(QMainWindow):
         self.cursor_phase = 0
         self.is_scrubbing = False
         self.scrub_timer = None
+        
+        # Create particle system for visual effects
+        self.particle_system = None  # Will initialize after scene is created
         
         # Autocomplete state
         self.is_autocompleting = False
@@ -227,6 +343,9 @@ class PowerSystemSimulator(QMainWindow):
         self.scene.parent = lambda: self
         self.scene.component_clicked.connect(self.properties_manager.show_component_properties)
         
+        # Initialize particle system now that scene exists
+        self.particle_system = ParticleSystem(self.scene)
+        
         # Set the initial background mode to solid color
         self.scene.set_background(self.background_mode)
         
@@ -249,7 +368,7 @@ class PowerSystemSimulator(QMainWindow):
         # Welcome text for new users
         self.welcome_text = None
         self.add_welcome_text()
-        
+         
         # Center the window on the screen
         self.center_on_screen()
     
@@ -791,84 +910,114 @@ class PowerSystemSimulator(QMainWindow):
             self.welcome_text.setPos(view_center.x() - text_width/2, view_center.y() - text_height/2)
     
     def add_component(self, component_type):
+        position = None  # Store position for particle effect
+        
         if component_type == "generator":
             component = GeneratorComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "grid_import":
             component = GridImportComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "grid_export":
             component = GridExportComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "bus":
             component = BusComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "load":
             component = LoadComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "battery":
             component = BatteryComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "cloud_workload":
             component = CloudWorkloadComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "solar_panel":
             component = SolarPanelComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "wind_turbine":
             component = WindTurbineComponent(0, 0)
             self.scene.addItem(component)
             self.components.append(component)
+            position = component.pos()
         elif component_type == "tree":
             component = TreeComponent(0, 0)
             self.scene.addItem(component)
+            position = component.pos()
             # Do not add trees to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "bush":
             component = BushComponent(0, 0)
             self.scene.addItem(component)
+            position = component.pos()
             # Do not add bushes to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "pond":
             component = PondComponent(0, 0)
             self.scene.addItem(component)
+            position = component.pos()
             # Do not add ponds to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "house1":
             component = House1Component(0, 0)
             self.scene.addItem(component)
+            position = component.pos()
             # Do not add houses to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "house2":
             component = House2Component(0, 0)
             self.scene.addItem(component)
+            position = component.pos()
             # Do not add houses to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "factory":
             component = FactoryComponent(0, 0)
             self.scene.addItem(component)
+            position = component.pos()
             # Do not add factories to the components list as they are decorative
         elif component_type == "traditional_data_center":
             component = TraditionalDataCenterComponent(0, 0)
             self.scene.addItem(component)
+            position = component.pos()
             # Do not add traditional data centers to the components list as they are decorative
         elif component_type == "distribution_pole":
             component = DistributionPoleComponent(0, 0)
             self.scene.addItem(component)
+            position = component.pos()
             # Do not add distribution poles to the components list as they are decorative
         
         # Hide welcome text after adding the first component (if it's not decorative)
         if component_type in ["generator", "grid_import", "grid_export", "bus", "load", "battery", "cloud_workload", "solar_panel", "wind_turbine"]:
             if self.welcome_text and self.welcome_text.isVisible():
                 self.welcome_text.setVisible(False)
+        
+        # Create particle effect at the component's position
+        if position is not None and not self.simulation_engine.simulation_running:
+            # Get the center of the component
+            component_width = 300  # Approximate width for most components
+            component_height = 200  # Approximate height for most components
+            center_x = position.x() + component_width / 2
+            center_y = position.y() + component_height / 2
+            
+            # Create particle effect
+            self.particle_system.create_puff(center_x, center_y, num_particles=150)
     
     def start_connection(self):
         self.connection_manager.start_connection()
