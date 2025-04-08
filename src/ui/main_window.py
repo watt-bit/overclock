@@ -36,6 +36,7 @@ from src.simulation.engine import SimulationEngine
 from .analytics import AnalyticsPanel
 from .properties_manager import ComponentPropertiesManager
 from .connection_manager import ConnectionManager
+from .component_adder import ComponentAdder
 from src.models.model_manager import ModelManager
 from .historian_manager import HistorianManager
 from .particle_system import ParticleSystem
@@ -236,6 +237,9 @@ class PowerSystemSimulator(QMainWindow):
         # Initialize particle system now that scene exists
         self.particle_system = ParticleSystem(self.scene)
         
+        # Initialize the component adder
+        self.component_adder = ComponentAdder(self)
+        
         # Set the initial background mode to solid color
         self.scene.set_background(self.background_mode)
         
@@ -314,114 +318,8 @@ class PowerSystemSimulator(QMainWindow):
             self.welcome_text.setPos(view_center.x() - text_width/2, view_center.y() - text_height/2)
     
     def add_component(self, component_type):
-        position = None  # Store position for particle effect
-        
-        if component_type == "generator":
-            component = GeneratorComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "grid_import":
-            component = GridImportComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "grid_export":
-            component = GridExportComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "bus":
-            component = BusComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "load":
-            component = LoadComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "battery":
-            component = BatteryComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "cloud_workload":
-            component = CloudWorkloadComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "solar_panel":
-            component = SolarPanelComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "wind_turbine":
-            component = WindTurbineComponent(0, 0)
-            self.scene.addItem(component)
-            self.components.append(component)
-            position = component.pos()
-        elif component_type == "tree":
-            component = TreeComponent(0, 0)
-            self.scene.addItem(component)
-            position = component.pos()
-            # Do not add trees to the components list as they are decorative
-            # and should not affect network connectivity checks
-        elif component_type == "bush":
-            component = BushComponent(0, 0)
-            self.scene.addItem(component)
-            position = component.pos()
-            # Do not add bushes to the components list as they are decorative
-            # and should not affect network connectivity checks
-        elif component_type == "pond":
-            component = PondComponent(0, 0)
-            self.scene.addItem(component)
-            position = component.pos()
-            # Do not add ponds to the components list as they are decorative
-            # and should not affect network connectivity checks
-        elif component_type == "house1":
-            component = House1Component(0, 0)
-            self.scene.addItem(component)
-            position = component.pos()
-            # Do not add houses to the components list as they are decorative
-            # and should not affect network connectivity checks
-        elif component_type == "house2":
-            component = House2Component(0, 0)
-            self.scene.addItem(component)
-            position = component.pos()
-            # Do not add houses to the components list as they are decorative
-            # and should not affect network connectivity checks
-        elif component_type == "factory":
-            component = FactoryComponent(0, 0)
-            self.scene.addItem(component)
-            position = component.pos()
-            # Do not add factories to the components list as they are decorative
-        elif component_type == "traditional_data_center":
-            component = TraditionalDataCenterComponent(0, 0)
-            self.scene.addItem(component)
-            position = component.pos()
-            # Do not add traditional data centers to the components list as they are decorative
-        elif component_type == "distribution_pole":
-            component = DistributionPoleComponent(0, 0)
-            self.scene.addItem(component)
-            position = component.pos()
-            # Do not add distribution poles to the components list as they are decorative
-        
-        # Hide welcome text after adding the first component (if it's not decorative)
-        if component_type in ["generator", "grid_import", "grid_export", "bus", "load", "battery", "cloud_workload", "solar_panel", "wind_turbine"]:
-            if self.welcome_text and self.welcome_text.isVisible():
-                self.welcome_text.setVisible(False)
-        
-        # Create particle effect at the component's position
-        if position is not None and not self.simulation_engine.simulation_running:
-            # Get the center of the component
-            component_width = 300  # Approximate width for most components
-            component_height = 200  # Approximate height for most components
-            center_x = position.x() + component_width / 2
-            center_y = position.y() + component_height / 2
-            
-            # Create particle effect
-            self.particle_system.create_puff(center_x, center_y, num_particles=150)
+        """Delegate to the ComponentAdder to handle component creation and addition"""
+        self.component_adder.add_component(component_type)
     
     def start_connection(self):
         self.connection_manager.start_connection()

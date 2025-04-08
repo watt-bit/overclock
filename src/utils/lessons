@@ -1138,3 +1138,20 @@ Key insights from extracting UI initialization code:
      provides the cleanest separation while avoiding circular imports
    - For more complex dependencies like AnalyticsPanel, direct imports are preferable
    - Proper dependency management is crucial for successful UI code extraction
+
+## Component Creation Extraction (2024-07-08)
+
+### Key Insights
+1. **Separation of Creation Logic**: Extracting component creation into a dedicated class improves code organization and maintainability by separating the "what" (UI commands) from the "how" (component instantiation).
+
+2. **Dependency Injection Pattern**: Using the main window as a constructor parameter allows the ComponentAdder to access all necessary resources (scene, components list, particle system) without duplicating logic.
+
+3. **Invisible Refactoring**: The extraction was performed in a way that's completely invisible to the rest of the application - the behavior is identical before and after the change.
+
+4. **Self-Contained Logic**: The component adder encapsulates all logic related to component creation, including special handling for decorative vs. functional components and welcome text visibility.
+
+5. **Delegator Pattern**: The main window now acts as a delegator, forwarding component creation requests to the specialized ComponentAdder class while maintaining the same method signature.
+
+6. **Code Organization**: Moving the substantial component creation logic (17 component types) out of the main window significantly reduces its complexity and improves readability.
+
+7. **Modular Architecture**: This extraction follows the pattern established with previous extractions (SimulationEngine, ConnectionManager, etc.) to create a more modular and maintainable architecture.

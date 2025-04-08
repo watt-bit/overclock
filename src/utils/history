@@ -1192,3 +1192,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Successfully tested the application with the extracted UI initialization code
 - Maintained identical UI appearance and functionality after the refactoring
 - This completes the UI initialization extraction with full backward compatibility
+
+## 2024-07-08: Extracted Component Adder Logic
+- Created new ComponentAdder class in src/ui/component_adder.py
+- Moved all component creation logic from main_window.py to the new class
+- Preserved exact component creation behavior for all component types
+- Updated main_window.py to delegate component addition to ComponentAdder
+- Maintained complete compatibility with the existing UI and component system
+- This extraction improves code modularity by separating component creation from UI management
+- No changes to behavior, just better organized code structure
