@@ -480,6 +480,9 @@ class SimulationEngine(QObject):
                         item.update()
                     elif isinstance(item, GeneratorComponent):
                         item.update()
+                        # Trigger smoke emission from generators, but only when simulation is running
+                        if self.simulation_running and hasattr(item, 'emit_smoke'):
+                            item.emit_smoke()
                     elif isinstance(item, CloudWorkloadComponent):
                         item.update()
             

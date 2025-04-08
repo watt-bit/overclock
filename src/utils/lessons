@@ -1262,3 +1262,5 @@ Key insights from implementing the same feature across multiple component types:
      * Files with different number of entries (fewer or more than 8760)
      * Invalid data values
      * Mode switching with and without loaded profiles
+
+2023-04-08: The particle system in the UI is a versatile component that can be used for multiple different visual effects. It can handle both temporary effects (component placement) and continuous effects (generator smoke during simulation). The ParticleSystem class can be easily extended to support different types of particles with custom behaviors by adding parameters to the Particle class constructor and implementing specialized particle creation methods.

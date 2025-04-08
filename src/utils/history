@@ -1255,3 +1255,7 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Modified capacity calculations and power generation logic in the simulation engine for custom wind profiles
 - Created a consistent implementation across both renewable generation types (solar and wind)
 - Enhanced wind turbine flexibility by allowing users to load their own generation profiles
+
+## 2023-04-08: Added a new smoke effect feature for generator components. The generators now emit varying amounts of smoke based on their power output level when the simulation is running. Modified the particle system to support generator-specific smoke particles that last longer and rise upward. The amount of smoke varies with the generator's output percentage.
+
+## 2023-04-08: Added a visual battery level indicator to the BatteryComponent. The indicator appears as a small graphical bar in the top right corner of the battery image that shows the current charge level. The color changes based on the charge percentage - red when near empty (0-25%), yellow in the middle (25-50%), and green when more than 50% full. This provides a quick visual reference for battery status.

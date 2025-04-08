@@ -97,6 +97,41 @@ class BatteryComponent(ComponentBase):
                 QRectF(0, 0, self.image.width(), self.image.height())
             )
         
+        # Draw battery level indicator in top right corner
+        # Calculate charge percentage
+        charge_percent = self.current_charge / self.energy_capacity if self.energy_capacity > 0 else 0
+        
+        # Set indicator size relative to image size
+        indicator_width = image_size * 0.15
+        indicator_height = image_size * 0.05
+        indicator_padding = image_size * 0.03
+        
+        # Position indicator in top right corner with padding
+        indicator_x = image_rect.x() + image_rect.width() - indicator_width - indicator_padding
+        indicator_y = image_rect.y() + indicator_padding
+        
+        # Draw battery level frame (outline)
+        painter.setPen(QPen(Qt.white, 1.5))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRect(indicator_x, indicator_y, indicator_width, indicator_height)
+        
+        # Determine fill color based on charge level
+        if charge_percent < 0.25:
+            # Red when near empty (0-25%)
+            fill_color = QColor(255, 60, 60)
+        elif charge_percent < 0.5:
+            # Yellow in the middle (25-50%)
+            fill_color = QColor(255, 204, 0)
+        else:
+            # Green when more than 50% full (50-100%)
+            fill_color = QColor(50, 205, 50)
+        
+        # Draw filled portion representing current charge
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QBrush(fill_color))
+        fill_width = indicator_width * charge_percent
+        painter.drawRect(indicator_x, indicator_y, fill_width, indicator_height)
+        
         # Calculate text area (remaining space below the image)
         text_rect = QRectF(
             rect.x(),
@@ -121,12 +156,12 @@ class BatteryComponent(ComponentBase):
         
         # Calculate charge percentage
         if self.energy_capacity > 0:
-            charge_percent = int((self.current_charge / self.energy_capacity) * 100)
+            charge_percent_display = int((self.current_charge / self.energy_capacity) * 100)
         else:
-            charge_percent = 0  # Default to 0% if energy capacity is zero
+            charge_percent_display = 0  # Default to 0% if energy capacity is zero
         
         # Draw the battery information
-        battery_text = f"{self.power_capacity} kW (battery) | {charge_percent}% charge"
+        battery_text = f"{self.power_capacity} kW (battery) | {charge_percent_display}% charge"
         painter.drawText(text_rect, Qt.AlignCenter, battery_text)
     
     def has_energy(self):

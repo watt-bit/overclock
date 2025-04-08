@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QBrush, QColor, QPen, QPainter, QFont, QPixmap
-from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtCore import Qt, QRectF, QPointF
 from .base import ComponentBase
 
 class GeneratorComponent(ComponentBase):
@@ -18,6 +18,11 @@ class GeneratorComponent(ComponentBase):
         self.ramp_rate_limit = 0.2  # Maximum change in output per hour (20% - slowest)
         self.last_output = 0  # Track the last output for ramp rate limiting
         self.auto_charging = True  # Whether this generator can be used to charge batteries
+        
+        # Smoke emission point (will be calculated in paint)
+        self.smoke_point = QPointF(0, 0)
+        # Timer for smoke emission
+        self.smoke_timer = None
     
     def paint(self, painter, option, widget):
         # Call base class paint to handle the selection highlight
@@ -95,6 +100,36 @@ class GeneratorComponent(ComponentBase):
         # Draw the capacity, generation level and type text centered below the image
         capacity_text = f"{self.capacity} kW (gas) | {output_percentage}%"
         painter.drawText(text_rect, Qt.AlignCenter, capacity_text)
+        
+        # Calculate and store the smoke emission point (top-center of the image)
+        self.smoke_point = QPointF(
+            self.x() + rect.width() / 2 - 25,  # Center X with offset
+            self.y() + rect.y() + (rect.height() * 0.05) + image_size * 0.2 - 25  # Near top of image with offset
+        )
+    
+    def emit_smoke(self):
+        """Emit smoke particles based on current generation level"""
+        if not self.scene() or not hasattr(self.scene(), 'parent'):
+            return
+        
+        # Get the parent window to access particle system
+        parent = self.scene().parent()
+        if not hasattr(parent, 'particle_system') or not parent.particle_system:
+            return
+            
+        # Only emit smoke if generator is actually producing power
+        if self.capacity <= 0 or self.last_output <= 0:
+            return
+            
+        # Calculate intensity based on generation percentage (0.0 to 1.0)
+        intensity = self.last_output / self.capacity
+        
+        # Create smoke particles at the emission point with calculated intensity
+        parent.particle_system.create_generator_smoke(
+            self.smoke_point.x(), 
+            self.smoke_point.y(), 
+            intensity
+        )
     
     def calculate_output(self, total_load):
         # Calculate target output based on operating mode
