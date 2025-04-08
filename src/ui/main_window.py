@@ -588,6 +588,11 @@ class PowerSystemSimulator(QMainWindow):
             elif isinstance(item, CloudWorkloadComponent):
                 item.accumulated_revenue = 0.0
                 item.update()  # Refresh the visual display
+            # Reset accumulated revenue for Grid Export components
+            elif isinstance(item, GridExportComponent):
+                item.accumulated_revenue = 0.0
+                item.previous_revenue = 0.0
+                item.update()  # Refresh the visual display
             # Reset all batteries to 100% charge
             elif isinstance(item, BatteryComponent):
                 item.current_charge = item.energy_capacity  # Set to 100% charge

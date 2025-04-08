@@ -53,6 +53,52 @@ class SolarPanelComponent(ComponentBase):
                 self.image,
                 QRectF(0, 0, self.image.width(), self.image.height())
             )
+            
+            # Calculate output percentage
+            if self.capacity > 0:
+                output_percentage = self.last_output / self.capacity
+            else:
+                output_percentage = 0
+            
+            # Draw vertical output indicator in top right corner
+            # Set indicator size relative to image size
+            indicator_width = image_size * 0.08
+            indicator_height = image_size * 0.45
+            indicator_padding = image_size * 0.04
+            
+            # Position indicator in top right corner with padding
+            indicator_x = image_rect.x() + image_rect.width() - indicator_width - indicator_padding
+            indicator_y = image_rect.y() + indicator_padding
+            
+            # Draw output indicator frame (outline)
+            painter.setPen(QPen(Qt.white, 1.5))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawRect(indicator_x, indicator_y, indicator_width, indicator_height)
+            
+            # Determine fill color based on output percentage - use green with varying brightness
+            # Darker green for lower output, brighter green for higher output
+            if output_percentage < 0.25:
+                # Dark green for low output (0-25%)
+                fill_color = QColor("#006400")  # Dark green
+            elif output_percentage < 0.5:
+                # Medium-dark green for medium-low output (25-50%)
+                fill_color = QColor("#228B22")  # Forest green
+            elif output_percentage < 0.75:
+                # Medium green for medium-high output (50-75%)
+                fill_color = QColor("#32CD32")  # Lime green
+            else:
+                # Bright green for maximum output (75-100%)
+                fill_color = QColor("#7CFC00")  # Lawn green
+            
+            # Draw filled portion representing current output percentage (from bottom to top)
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QBrush(fill_color))
+            
+            fill_height = indicator_height * output_percentage
+            # Calculate y-position for fill (starting from bottom of indicator)
+            fill_y = indicator_y + (indicator_height - fill_height)
+            
+            painter.drawRect(indicator_x, fill_y, indicator_width, fill_height)
         
         # Calculate text area (remaining space below the image)
         text_rect = QRectF(

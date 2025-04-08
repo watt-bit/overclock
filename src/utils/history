@@ -1325,3 +1325,15 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Added update method to both components to call the milestone check
 - Enhanced serialization to preserve previous_revenue state when saving/loading scenarios
 - Now all revenue-generating components display "+$1,000" popups when earning revenue milestones
+
+## 2024-04-08 05:00 - Added Output Indicators to Renewable Components
+- Added vertical status bars to both SolarPanelComponent and WindTurbineComponent
+- Status bars show current output as a percentage of capacity
+- Used green color scale (dark to bright) for different output levels
+- Positioned in the top-right corner of each component
+- Provides visual feedback of renewable generation levels during simulation
+- Matches the style of status indicators on load and battery components
+- Different color schemes help distinguish component types (gold for load, green for generation)
+- Enhances the visual feedback of renewable components during simulation
+
+## 2024-07-07: Fixed bug where GridExportComponent revenue wasn't being reset when pressing the Reset button by adding code to reset both accumulated_revenue and previous_revenue properties in the reset_simulation method.
