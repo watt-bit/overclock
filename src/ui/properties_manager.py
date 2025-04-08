@@ -909,19 +909,50 @@ class ComponentPropertiesManager:
         # Add operating mode selector
         mode_selector = QComboBox()
         mode_selector.setStyleSheet(COMBOBOX_STYLE)
-        mode_selector.addItems(["Disabled", "Powerlandia 8760 - Midwest 1"])
+        mode_selector.addItems(["Disabled", "Powerlandia 8760 - Midwest 1", "Custom"])
         mode_selector.setCurrentText(component.operating_mode)
+        
+        # Create a horizontal layout for profile selection and load button
+        profile_layout = QHBoxLayout()
+        profile_layout.setContentsMargins(0, 0, 0, 0)
+        profile_layout.addWidget(mode_selector)
+        
+        # Add load profile button (only visible for Custom type)
+        load_profile_btn = QPushButton("Load Profile")
+        load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+        load_profile_btn.setVisible(component.operating_mode == "Custom")
+        load_profile_btn.clicked.connect(lambda: self._load_custom_profile(component))
+        profile_layout.addWidget(load_profile_btn)
+        
+        # Create a widget to hold the profile layout
+        profile_widget = QWidget()
+        profile_widget.setLayout(profile_layout)
+        
+        # Add profile info label
+        profile_info = QLabel()
+        if component.operating_mode == "Custom" and component.profile_name:
+            profile_info.setText(f"Loaded: {component.profile_name}")
+        else:
+            profile_info.setText("")
         
         def on_mode_changed(text):
             component.operating_mode = text
             # If switching to Powerlandia mode, load capacity factors
             if text == "Powerlandia 8760 - Midwest 1":
                 component.load_capacity_factors()
+            # Show/hide load profile button based on mode
+            load_profile_btn.setVisible(text == "Custom")
+            # Update profile info text
+            if text == "Custom" and component.profile_name:
+                profile_info.setText(f"Loaded: {component.profile_name}")
+            else:
+                profile_info.setText("")
             component.update()  # Refresh the component display
             self.main_window.update_simulation()  # Update simulation to reflect the change
         
         mode_selector.currentTextChanged.connect(on_mode_changed)
-        layout.addRow("Operating Mode:", mode_selector)
+        layout.addRow("Operating Mode:", profile_widget)
+        layout.addRow("", profile_info)
         
         # Add capacity field
         capacity_field = QLineEdit(str(component.capacity))
@@ -945,19 +976,50 @@ class ComponentPropertiesManager:
         # Add operating mode selector
         mode_selector = QComboBox()
         mode_selector.setStyleSheet(COMBOBOX_STYLE)
-        mode_selector.addItems(["Disabled", "Powerlandia 8760 - Midwest 1"])
+        mode_selector.addItems(["Disabled", "Powerlandia 8760 - Midwest 1", "Custom"])
         mode_selector.setCurrentText(component.operating_mode)
+        
+        # Create a horizontal layout for profile selection and load button
+        profile_layout = QHBoxLayout()
+        profile_layout.setContentsMargins(0, 0, 0, 0)
+        profile_layout.addWidget(mode_selector)
+        
+        # Add load profile button (only visible for Custom type)
+        load_profile_btn = QPushButton("Load Profile")
+        load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+        load_profile_btn.setVisible(component.operating_mode == "Custom")
+        load_profile_btn.clicked.connect(lambda: self._load_custom_profile(component))
+        profile_layout.addWidget(load_profile_btn)
+        
+        # Create a widget to hold the profile layout
+        profile_widget = QWidget()
+        profile_widget.setLayout(profile_layout)
+        
+        # Add profile info label
+        profile_info = QLabel()
+        if component.operating_mode == "Custom" and component.profile_name:
+            profile_info.setText(f"Loaded: {component.profile_name}")
+        else:
+            profile_info.setText("")
         
         def on_mode_changed(text):
             component.operating_mode = text
             # If switching to Powerlandia mode, load capacity factors
             if text == "Powerlandia 8760 - Midwest 1":
                 component.load_capacity_factors()
+            # Show/hide load profile button based on mode
+            load_profile_btn.setVisible(text == "Custom")
+            # Update profile info text
+            if text == "Custom" and component.profile_name:
+                profile_info.setText(f"Loaded: {component.profile_name}")
+            else:
+                profile_info.setText("")
             component.update()  # Refresh the component display
             self.main_window.update_simulation()  # Update simulation to reflect the change
         
         mode_selector.currentTextChanged.connect(on_mode_changed)
-        layout.addRow("Operating Mode:", mode_selector)
+        layout.addRow("Operating Mode:", profile_widget)
+        layout.addRow("", profile_info)
         
         # Add capacity field
         capacity_field = QLineEdit(str(component.capacity))
@@ -991,10 +1053,6 @@ class ComponentPropertiesManager:
                 # Store the profile data
                 component.custom_profile = data
                 component.profile_name = filename.split('/')[-1]
-                
-                # Update maximum time steps if needed
-                if len(data) > self.main_window.time_slider.maximum():
-                    self.main_window.time_slider.setMaximum(len(data) - 1)
                 
                 # Refresh properties panel to show loaded profile name
                 self.show_component_properties(component)

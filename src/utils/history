@@ -1211,3 +1211,47 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Reduced complexity of the main_window.py file
 - No changes to UI appearance or behavior
 - No changes to hotkey functionality or component code
+
+## 2024-07-12: Enhanced Particle System with Random Gray Shades
+- Modified the Particle class in src/ui/particle_system.py to generate particles with random shades of gray
+- Added a gray_value property to each Particle ranging from 100-230
+- Updated the updateAppearance method to use the random gray value instead of a fixed color (200,200,200)
+- Enhanced visual variety in particle effects while maintaining the smoke-like appearance
+
+## 2024-04-08 01:55 - Added Custom Operating Mode for Solar Panels
+- Added a new "Custom" operating mode to the SolarPanelComponent
+- Implemented ability to load custom CSV files with hourly capacity factors
+- Added custom_profile and profile_name attributes to store loaded data
+- Updated calculate_output method to use custom profile data when in Custom mode
+- Modified PropertiesManager to support the new mode:
+  * Added "Custom" option to operating mode selector
+  * Added "Load Profile" button that appears when Custom mode is selected
+  * Implemented load button functionality to import CSV files
+  * Added display of loaded profile name
+- Updated ModelManager to save and load custom profile data
+- Maintained consistent behavior with the LoadComponent's Custom profile functionality
+- Enhanced solar panel flexibility by allowing users to load their own generation profiles
+
+## 2024-04-08 02:05 - Updated Simulation Engine for Custom Solar Panel Mode
+- Modified SimulationEngine to recognize solar panels in "Custom" operating mode
+- Updated the first pass to include custom-mode solar panels in total capacity calculations
+- Modified the second pass to process custom-mode solar panels when calculating generation
+- Ensured custom profiles contribute to power generation just like the Powerlandia profiles
+- Maintained the same priority order with solar generation considered before other sources
+- This change complements the Custom operating mode implementation to ensure custom profiles are properly utilized in the simulation
+
+## 2024-04-08 02:15 - Added Custom Operating Mode for Wind Turbines
+- Added a new "Custom" operating mode to the WindTurbineComponent
+- Implemented ability to load custom CSV files with hourly capacity factors
+- Added custom_profile and profile_name attributes to store loaded data
+- Updated calculate_output method to use custom profile data when in Custom mode
+- Modified PropertiesManager to support the new mode:
+  * Added "Custom" option to operating mode selector
+  * Added "Load Profile" button that appears when Custom mode is selected
+  * Implemented load button functionality to import CSV files
+  * Added display of loaded profile name
+- Updated ModelManager to save and load custom profile data
+- Updated SimulationEngine to recognize wind turbines in "Custom" operating mode
+- Modified capacity calculations and power generation logic in the simulation engine for custom wind profiles
+- Created a consistent implementation across both renewable generation types (solar and wind)
+- Enhanced wind turbine flexibility by allowing users to load their own generation profiles

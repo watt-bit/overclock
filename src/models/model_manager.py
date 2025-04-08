@@ -347,6 +347,10 @@ class ModelManager:
                     component = SolarPanelComponent(x, y)
                     component.capacity = component_data.get("capacity", 500)
                     component.operating_mode = component_data.get("operating_mode", "Disabled")
+                    # Load custom profile data if available
+                    if "custom_profile" in component_data and "profile_name" in component_data:
+                        component.custom_profile = component_data["custom_profile"]
+                        component.profile_name = component_data["profile_name"]
                     # Load capacity factors if in active mode
                     if component.operating_mode == "Powerlandia 8760 - Midwest 1":
                         component.load_capacity_factors()
@@ -358,6 +362,10 @@ class ModelManager:
                     component = WindTurbineComponent(x, y)
                     component.capacity = component_data.get("capacity", 500)
                     component.operating_mode = component_data.get("operating_mode", "Disabled")
+                    # Load custom profile data if available
+                    if "custom_profile" in component_data and "profile_name" in component_data:
+                        component.custom_profile = component_data["custom_profile"]
+                        component.profile_name = component_data["profile_name"]
                     # Load capacity factors if in active mode
                     if component.operating_mode == "Powerlandia 8760 - Midwest 1":
                         component.load_capacity_factors()

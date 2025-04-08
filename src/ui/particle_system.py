@@ -23,6 +23,9 @@ class Particle(QGraphicsEllipseItem):
         self.size_change = random.uniform(-0.1, 0.2)
         self.current_size = size
         
+        # Random gray value (from dark to light gray)
+        self.gray_value = random.randint(40, 250)
+        
         # Set initial appearance
         self.updateAppearance()
     
@@ -31,11 +34,11 @@ class Particle(QGraphicsEllipseItem):
         # Create a radial gradient for a soft, smoke-like appearance
         gradient = QRadialGradient(self.current_size/2, self.current_size/2, self.current_size/2)
         
-        # Semi-transparent white/gray color
-        color = QColor(200, 200, 200, int(self.alpha * 255))
+        # Semi-transparent gray color with random shade
+        color = QColor(self.gray_value, self.gray_value, self.gray_value, int(self.alpha * 255))
         
         gradient.setColorAt(0, color)
-        gradient.setColorAt(1, QColor(200, 200, 200, 0))  # Transparent at edges
+        gradient.setColorAt(1, QColor(self.gray_value, self.gray_value, self.gray_value, 0))  # Transparent at edges
         
         self.setBrush(QBrush(gradient))
         # Create a transparent pen (using QPen) instead of Qt.NoPen

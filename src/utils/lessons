@@ -1188,3 +1188,77 @@ Key insights from extracting the keyboard event handling:
    - Mode awareness is maintained (e.g., different actions based on connection mode)
    - The handler correctly respects the state of UI controls (enabled/disabled)
    - This demonstrates that complex conditional logic can be extracted without simplification
+
+## Custom Profile Implementation (2024-04-08)
+Key insights from implementing custom profiles for solar panels:
+
+1. Consistent Feature Implementation
+   - When implementing similar features across different component types, maintaining consistent interfaces and behavior is crucial
+   - Custom profiles in solar panels follow the same pattern as in load components
+   - This includes CSV loading, profile display, and time-based data handling
+   - Users benefit from consistent mental models when similar features work the same way
+
+2. Component State Serialization
+   - For features like custom profiles, both the data and metadata need to be serialized
+   - Saving both `custom_profile` (the data array) and `profile_name` (visual identification)
+   - ModelManager needs to handle loading these properties with backward compatibility
+   - Including profile data in component.serialize() ensures the data persists across save/load cycles
+
+3. UI Property Management
+   - Dynamic UI elements (like the "Load Profile" button) should appear/disappear based on the selected mode
+   - Providing visual feedback of loaded profiles through an info label improves user experience
+   - Complex properties benefit from composite UI components (mode selector + load button in a horizontal layout)
+   - Maintaining UI state across component selection/deselection cycles ensures consistent user experience
+
+4. Calculation Logic Patterns
+   - Renewable components (like solar panels) use capacity factors to calculate actual output
+   - Time-based simulation requires handling wrap-around for profiles shorter than the simulation period
+   - Current time step needs to be obtained from the simulation engine in a consistent way
+   - Cached output values (last_output) help with debugging and visual display
+
+5. Consolidated Profile Loading Logic
+   - Both load components and solar panels use the same _load_custom_profile method in PropertiesManager
+   - This promotes code reuse and ensures consistent handling of CSV files
+   - New component types that need profile loading can leverage the same infrastructure
+   - Future improvements to profile loading will automatically benefit all components
+
+## Component Feature Replication (2024-04-08)
+Key insights from implementing the same feature across multiple component types:
+
+1. Code Duplication vs. Inheritance
+   - When implementing identical features in similar components, consider inheritance or composition
+   - For WindTurbineComponent and SolarPanelComponent, we duplicated the custom profile functionality
+   - A future refactoring could extract this to a shared base class or mixin
+   - The current approach provides flexibility at the cost of some duplication
+
+2. Consistent Implementation Pattern
+   - Following the same implementation pattern across component types:
+     * Same attribute names (custom_profile, profile_name)
+     * Same UI elements (mode selector, load button, profile info label)
+     * Same serialization approach
+     * Same engine integration points
+   - This consistency makes the codebase more maintainable and predictable
+
+3. UI Behavior Standardization
+   - Users expect the same UI behavior across similar components
+   - Maintaining identical interaction patterns reinforces usability
+   - Consistent property panel layouts across similar component types
+   - Standardized button behavior and naming conventions
+
+4. System-Wide Integration
+   - Multiple systems must be updated for each feature addition:
+     * Component class (attributes and methods)
+     * Properties manager (UI elements and event handlers)
+     * Model manager (serialization and deserialization)
+     * Simulation engine (integration with calculation logic)
+     * Documentation (history and lessons)
+   - Checklist-based approach ensures complete implementation across all systems
+
+5. Validation and Testing
+   - Similar features should be tested in a similar way
+   - Testing one component can guide testing of the second implementation
+   - Complex features like custom profiles need testing for various edge cases:
+     * Empty files
+     * Files with different number of entries (fewer or more than 8760)
+     * Invalid data values
+     * Mode switching with and without loaded profiles

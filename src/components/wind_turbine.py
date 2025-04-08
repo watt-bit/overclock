@@ -18,6 +18,8 @@ class WindTurbineComponent(ComponentBase):
         self.operating_mode = "Disabled"  # Start in disabled mode
         self.capacity_factors = None  # Will hold data from CSV file
         self.last_output = 0  # Track the last output for display
+        self.custom_profile = None  # Will hold custom profile data
+        self.profile_name = None  # Will store the name of the loaded profile
     
     def paint(self, painter, option, widget):
         # Call base class paint to handle the selection highlight
@@ -138,7 +140,28 @@ class WindTurbineComponent(ComponentBase):
             
             # Get capacity factor for current hour (wrap around if beyond 8760)
             hour_index = current_time % len(self.capacity_factors)
-            capacity_factor = self.capacity_factors[hour_index] / 10 # divide by 10 to scale down to 0-1, temporary fix because data file is 0-10 not 0-1
+            capacity_factor = self.capacity_factors[hour_index] / 10 # divide by 10 to scale down to 0-1, fix because data file is 0-10 not 0-1
+            
+            # Calculate output based on capacity and capacity factor
+            self.last_output = self.capacity * capacity_factor
+            return self.last_output
+        
+        # If in Custom mode, use custom profile data    
+        if self.operating_mode == "Custom" and self.custom_profile is not None:
+            # Get current time step from the simulation engine
+            current_time = 0
+            if self.scene() and hasattr(self.scene(), 'parent'):
+                parent = self.scene().parent()
+                if hasattr(parent, 'simulation_engine') and hasattr(parent.simulation_engine, 'current_time_step'):
+                    current_time = parent.simulation_engine.current_time_step
+            
+            # Get capacity factor for current hour (wrap around if beyond profile length)
+            if current_time < len(self.custom_profile):
+                capacity_factor = self.custom_profile[current_time]
+            else:
+                # Wrap around if needed
+                hour_index = current_time % len(self.custom_profile)
+                capacity_factor = self.custom_profile[hour_index]
             
             # Calculate output based on capacity and capacity factor
             self.last_output = self.capacity * capacity_factor
@@ -153,5 +176,7 @@ class WindTurbineComponent(ComponentBase):
             'x': self.x(),
             'y': self.y(),
             'capacity': self.capacity,
-            'operating_mode': self.operating_mode
+            'operating_mode': self.operating_mode,
+            'custom_profile': self.custom_profile,
+            'profile_name': self.profile_name
         } 

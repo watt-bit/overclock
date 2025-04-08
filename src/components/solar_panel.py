@@ -18,6 +18,8 @@ class SolarPanelComponent(ComponentBase):
         self.operating_mode = "Disabled"  # Start in disabled mode
         self.capacity_factors = None  # Will hold data from CSV file
         self.last_output = 0  # Track the last output for display
+        self.custom_profile = None  # Will hold custom profile data
+        self.profile_name = None  # Will store the name of the loaded profile
     
     def paint(self, painter, option, widget):
         # Call base class paint to handle the selection highlight
@@ -143,6 +145,27 @@ class SolarPanelComponent(ComponentBase):
             # Calculate output based on capacity and capacity factor
             self.last_output = self.capacity * capacity_factor
             return self.last_output
+        
+        # If in Custom mode, use custom profile data    
+        if self.operating_mode == "Custom" and self.custom_profile is not None:
+            # Get current time step from the simulation engine
+            current_time = 0
+            if self.scene() and hasattr(self.scene(), 'parent'):
+                parent = self.scene().parent()
+                if hasattr(parent, 'simulation_engine') and hasattr(parent.simulation_engine, 'current_time_step'):
+                    current_time = parent.simulation_engine.current_time_step
+            
+            # Get capacity factor for current hour (wrap around if beyond profile length)
+            if current_time < len(self.custom_profile):
+                capacity_factor = self.custom_profile[current_time]
+            else:
+                # Wrap around if needed
+                hour_index = current_time % len(self.custom_profile)
+                capacity_factor = self.custom_profile[hour_index]
+            
+            # Calculate output based on capacity and capacity factor
+            self.last_output = self.capacity * capacity_factor
+            return self.last_output
             
         # Default case (should not reach here)
         return 0
@@ -153,5 +176,7 @@ class SolarPanelComponent(ComponentBase):
             'x': self.x(),
             'y': self.y(),
             'capacity': self.capacity,
-            'operating_mode': self.operating_mode
+            'operating_mode': self.operating_mode,
+            'custom_profile': self.custom_profile,
+            'profile_name': self.profile_name
         } 
