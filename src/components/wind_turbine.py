@@ -14,7 +14,7 @@ class WindTurbineComponent(ComponentBase):
         self.image = QPixmap("src/ui/assets/windturbine.png")
         
         # Wind turbine properties
-        self.capacity = 500  # kW - default capacity
+        self.capacity = 5000  # kW - default capacity
         self.operating_mode = "Disabled"  # Start in disabled mode
         self.capacity_factors = None  # Will hold data from CSV file
         self.last_output = 0  # Track the last output for display

@@ -14,7 +14,7 @@ class SolarPanelComponent(ComponentBase):
         self.image = QPixmap("src/ui/assets/solarpanel.png")
         
         # Solar panel properties
-        self.capacity = 500  # kW - default capacity
+        self.capacity = 1000  # kW - default capacity
         self.operating_mode = "Disabled"  # Start in disabled mode
         self.capacity_factors = None  # Will hold data from CSV file
         self.last_output = 0  # Track the last output for display

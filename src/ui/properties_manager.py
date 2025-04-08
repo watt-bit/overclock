@@ -762,57 +762,10 @@ class ComponentPropertiesManager:
             if component.current_charge > component.energy_capacity:
                 component.current_charge = component.energy_capacity
                 
-                # Update the current charge field and slider to reflect the change
-                current_charge_edit.blockSignals(True)
-                current_charge_edit.setText(str(component.current_charge))
-                current_charge_edit.blockSignals(False)
-                
-                # Update charge slider
-                charge_percent = 100  # Will be 100% since charge = capacity
-                charge_bar.blockSignals(True)
-                charge_bar.setValue(charge_percent)
-                charge_bar.blockSignals(False)
-                charge_label.setText(f"{charge_percent}%")
-            
             component.update()
             self.main_window.update_simulation()
         
         self._set_up_numeric_field(energy_capacity_edit, update_energy_capacity, min_value=1)
-        
-        # Current charge field (limited by energy capacity)
-        current_charge_edit = QLineEdit(str(component.current_charge))
-        current_charge_edit.setStyleSheet(INPUT_STYLE)
-        
-        def update_current_charge(value):
-            # Skip if already updating to prevent recursive updates
-            if self.main_window.simulation_engine.updating_simulation:
-                return
-                
-            # Limit current charge to energy capacity
-            setattr(component, 'current_charge', min(value, component.energy_capacity))
-            
-            # Block signals temporarily to avoid recursive calls
-            current_charge_edit.blockSignals(True)
-            current_charge_edit.setText(str(component.current_charge))
-            current_charge_edit.blockSignals(False)
-            
-            # Update charge slider to match
-            if component.energy_capacity > 0:
-                charge_percent = int((component.current_charge / component.energy_capacity) * 100)
-            else:
-                charge_percent = 0
-            
-            # Block signals temporarily to avoid recursive calls
-            charge_bar.blockSignals(True)
-            charge_bar.setValue(charge_percent)
-            charge_bar.blockSignals(False)
-            
-            charge_label.setText(f"{charge_percent}%")
-            
-            component.update()
-            self.main_window.update_simulation()
-        
-        self._set_up_numeric_field(current_charge_edit, update_current_charge, min_value=0)
         
         # Operating mode selector
         mode_selector = QComboBox()
@@ -828,54 +781,19 @@ class ComponentPropertiesManager:
         
         mode_selector.currentTextChanged.connect(change_mode)
         
-        # Add charge percentage progress bar
+        # Display charge percentage as read-only label
         if component.energy_capacity > 0:
             charge_percent = int((component.current_charge / component.energy_capacity) * 100)
         else:
             charge_percent = 0
             
-        charge_bar = QSlider(Qt.Horizontal)
-        charge_bar.setMinimum(0)
-        charge_bar.setMaximum(100)
-        charge_bar.setValue(charge_percent)
-        charge_bar.setEnabled(True)  # Enable the slider
-        charge_bar.setStyleSheet(SLIDER_STYLE)
-        
         charge_label = QLabel(f"{charge_percent}%")
-        
-        # Connect the slider to update the charge
-        def update_charge_from_slider(value):
-            # Skip if already updating to prevent recursive updates
-            if self.main_window.simulation_engine.updating_simulation:
-                return
-                
-            new_charge = (value / 100.0) * component.energy_capacity
-            component.current_charge = new_charge
-            
-            # Block signals temporarily to avoid recursive calls
-            current_charge_edit.blockSignals(True)
-            current_charge_edit.setText(str(int(new_charge)))
-            current_charge_edit.blockSignals(False)
-            
-            charge_label.setText(f"{value}%")
-            component.update()
-            self.main_window.update_simulation()
-        
-        charge_bar.valueChanged.connect(update_charge_from_slider)
-        
-        charge_layout = QHBoxLayout()
-        charge_layout.setContentsMargins(0, 0, 0, 0)
-        charge_layout.addWidget(charge_bar, 7)
-        charge_layout.addWidget(charge_label, 1)
-        
-        charge_widget = QWidget()
-        charge_widget.setLayout(charge_layout)
+        charge_label.setStyleSheet("color: white; font-weight: bold;")
         
         # Add controls to layout
         layout.addRow("Power Capacity (kW):", power_capacity_edit)
         layout.addRow("Energy Capacity (kWh):", energy_capacity_edit)
-        layout.addRow("Current Charge (kWh):", current_charge_edit)
-        layout.addRow("Charge Level:", charge_widget)
+        layout.addRow("Charge Level:", charge_label)
         layout.addRow("Operating Mode:", mode_selector)
     
     def _add_cloud_workload_properties(self, component, layout):

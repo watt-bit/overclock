@@ -12,9 +12,9 @@ class BatteryComponent(ComponentBase):
         self.image = QPixmap("src/ui/assets/battery.png")
         
         # Battery properties
-        self.power_capacity = 500  # kW - maximum charge/discharge rate
-        self.energy_capacity = 2000  # kWh - total storage capacity
-        self.current_charge = 1000  # kWh - default to 50% charge
+        self.power_capacity = 1000  # kW - maximum charge/discharge rate
+        self.energy_capacity = 4000  # kWh - total storage capacity
+        self.current_charge = self.energy_capacity  # Start at 100% charge
         self.operating_mode = "BTF Basic Unit (Auto)"  # "Off" or "BTF Basic Unit (Auto)"
         
     def paint(self, painter, option, widget):
