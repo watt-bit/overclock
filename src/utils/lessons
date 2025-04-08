@@ -1264,3 +1264,17 @@ Key insights from implementing the same feature across multiple component types:
      * Mode switching with and without loaded profiles
 
 2023-04-08: The particle system in the UI is a versatile component that can be used for multiple different visual effects. It can handle both temporary effects (component placement) and continuous effects (generator smoke during simulation). The ParticleSystem class can be easily extended to support different types of particles with custom behaviors by adding parameters to the Particle class constructor and implementing specialized particle creation methods.
+
+## 2024-07-08: Button Styling in PyQt5
+- You can add interactive states (hover, pressed) to buttons using QPushButton's CSS pseudo-selectors
+- The main states that can be styled are:
+  * Default state: `QPushButton { ... }`
+  * Hover state: `QPushButton:hover { ... }`
+  * Pressed state: `QPushButton:pressed { ... }`
+- When using the pressed state, it's helpful to adjust padding to compensate for border width changes
+  * For example, if border width increases from 1px to 2px, reduce padding by 1px
+  * This prevents the button content from appearing to "jump" when pressed
+- Multi-line string literals (""" """) are helpful for complex CSS styling with multiple selectors
+- A common pattern for good visual feedback:
+  * Make buttons slightly lighter on hover
+  * Make buttons slightly darker with a thicker border when pressed

@@ -1261,3 +1261,23 @@ Modified historian_manager.py to make only the total_generation series visible b
 ## 2023-04-08: Added a visual battery level indicator to the BatteryComponent. The indicator appears as a small graphical bar in the top right corner of the battery image that shows the current charge level. The color changes based on the charge percentage - red when near empty (0-25%), yellow in the middle (25-50%), and green when more than 50% full. This provides a quick visual reference for battery status.
 
 ## 2023-04-08: Fixed a bug in the battery level indicator where the bar could extend beyond its boundary when the energy capacity was set lower than the current charge. Modified the BatteryComponent paint method to cap current charge at energy capacity, and updated the properties manager to maintain this constraint when users modify the energy capacity value.
+
+## 2024-07-08: Added Button Hover and Pressed Effects
+- Enhanced the component buttons with hover and pressed state visual feedback
+- Updated the opaque_button_style in UIInitializer class to include hover and pressed states
+- Made buttons lighter when hovered (background-color: #4D4D4D)
+- Made buttons darker with thicker border when pressed (background-color: #2D2D2D)
+- Improved user experience by providing clear visual feedback during interaction
+- Maintained consistent styling across all component buttons
+
+## 2024-07-08: Added Button Hover and Pressed Effects for Simulation Controls
+- Enhanced all simulation control panel buttons with hover and pressed state visual feedback
+- Updated common_button_style and default_button_style in UIInitializer
+- Implemented custom hover/pressed states for special buttons:
+  * Play button: Lighter blue on hover (#42A5F5), darker blue when pressed (#1E88E5)
+  * Reset button: Lighter red on hover (#ef5350), darker red when pressed (#e53935)
+  * Autocomplete button: Lighter green on hover (#66BB6A), darker green when pressed (#43A047)
+  * Speed selector: Same hover/pressed patterns as standard buttons
+- Used multi-line string literals for improved readability of complex styles
+- Adjusted padding in pressed state to compensate for thicker borders
+- Improved user experience with consistent and responsive UI feedback

@@ -146,7 +146,24 @@ class UIInitializer:
             # Will position after top_image_label is sized
 
         # Define a common button style with opaque background
-        opaque_button_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
+        opaque_button_style = """
+            QPushButton { 
+                background-color: #3D3D3D; 
+                color: white; 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 5px; 
+            }
+            QPushButton:hover { 
+                background-color: #4D4D4D; 
+                border: 1px solid #666666;
+            }
+            QPushButton:pressed { 
+                background-color: #2D2D2D; 
+                border: 2px solid #777777;
+                padding: 4px; 
+            }
+        """
         
         generator_btn = QPushButton("🔥 (G)as Generator")
         generator_btn.setStyleSheet(opaque_button_style)
@@ -350,23 +367,100 @@ class UIInitializer:
         time_controls = QHBoxLayout()
         
         # Define common button style
-        common_button_style = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
+        common_button_style = """
+            QPushButton { 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 5px; 
+            }
+            QPushButton:hover { 
+                border: 1px solid #666666;
+                background-color: rgba(255, 255, 255, 0.1); 
+            }
+            QPushButton:pressed { 
+                border: 2px solid #777777;
+                padding: 4px; 
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        """
         # Style for default grey buttons
-        default_button_style = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
+        default_button_style = """
+            QPushButton { 
+                background-color: #3D3D3D; 
+                color: white; 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 5px; 
+            }
+            QPushButton:hover { 
+                background-color: #4D4D4D; 
+                border: 1px solid #666666;
+            }
+            QPushButton:pressed { 
+                background-color: #2D2D2D; 
+                border: 2px solid #777777;
+                padding: 4px; 
+            }
+        """
         
         main_window.play_btn = QPushButton("Run (Space)")
         main_window.play_btn.clicked.connect(main_window.toggle_simulation)
-        main_window.play_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #2196F3; color: white; font-weight: bold; font-size: 16px; }")
+        main_window.play_btn.setStyleSheet(common_button_style + """
+            QPushButton { 
+                background-color: #2196F3; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 16px; 
+            }
+            QPushButton:hover { 
+                background-color: #42A5F5; 
+            }
+            QPushButton:pressed { 
+                background-color: #1E88E5; 
+            }
+        """)
         
         main_window.reset_btn = QPushButton("⟲ (R)eset")
         main_window.reset_btn.clicked.connect(main_window.reset_simulation)
-        main_window.reset_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #f44336; color: white; font-weight: bold; font-size: 14px; }")
+        main_window.reset_btn.setStyleSheet(common_button_style + """
+            QPushButton { 
+                background-color: #f44336; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #ef5350; 
+            }
+            QPushButton:pressed { 
+                background-color: #e53935; 
+            }
+        """)
         
         # Add speed control
         speed_label = QLabel("⏩ Speed:")
         main_window.speed_selector = QPushButton("▶▷▷")
         main_window.speed_selector.clicked.connect(main_window.cycle_simulation_speed)
-        main_window.speed_selector.setStyleSheet("QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}")
+        main_window.speed_selector.setStyleSheet("""
+            QPushButton { 
+                background-color: #3D3D3D; 
+                color: white; 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 4px; 
+                font-weight: bold; 
+                font-size: 14px;
+            }
+            QPushButton:hover { 
+                background-color: #4D4D4D; 
+                border: 1px solid #666666;
+            }
+            QPushButton:pressed { 
+                background-color: #2D2D2D; 
+                border: 2px solid #777777;
+                padding: 3px; 
+            }
+        """)
         main_window.speed_selector.setMinimumWidth(90)  # Set minimum width to prevent text cutoff
         
         # Add zoom control to time controls (moved from toolbar)
@@ -387,7 +481,20 @@ class UIInitializer:
         # Add Autocomplete button
         main_window.autocomplete_btn = QPushButton("🚀 Autocomplete (Enter)")
         main_window.autocomplete_btn.clicked.connect(main_window.run_autocomplete)
-        main_window.autocomplete_btn.setStyleSheet(common_button_style + "QPushButton { background-color: #4CAF50; color: white; font-weight: bold; font-size: 16px; }")
+        main_window.autocomplete_btn.setStyleSheet(common_button_style + """
+            QPushButton { 
+                background-color: #4CAF50; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 16px; 
+            }
+            QPushButton:hover { 
+                background-color: #66BB6A; 
+            }
+            QPushButton:pressed { 
+                background-color: #43A047; 
+            }
+        """)
         
         # Add background toggle button
         main_window.background_toggle_btn = QPushButton("🌄 Background Off")
