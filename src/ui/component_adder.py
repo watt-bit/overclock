@@ -130,4 +130,4 @@ class ComponentAdder:
             center_y = position.y() + component_height / 2
             
             # Create particle effect
-            self.main_window.particle_system.create_puff(center_x, center_y, num_particles=150) 
+            self.main_window.particle_system.create_puff(center_x, center_y, num_particles=200) 
