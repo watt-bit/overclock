@@ -20,6 +20,7 @@ class LoadComponent(ComponentBase):
         self.price_per_kwh = 0.00  # Default price per kWh in dollars
         self.operating_mode = "Demand Droop (Auto)"  # Fixed operating mode
         self.accumulated_revenue = 0.00  # Track accumulated revenue in dollars
+        self.previous_revenue = 0.00  # Track previous revenue for milestone detection
         self.profile_type = "Data Center"  # Constant, Sine Wave, Custom, Random 8760, Data Center, Powerlandia 60CF
         self.custom_profile = None
         self.profile_name = None
@@ -65,6 +66,57 @@ class LoadComponent(ComponentBase):
                     self.image,
                     QRectF(0, 0, self.image.width(), self.image.height())
                 )
+                
+            # Get current time step and calculate load factor (percent of demand)
+            current_time = 0
+            if self.scene() and hasattr(self.scene(), 'parent'):
+                parent = self.scene().parent()
+                if hasattr(parent, 'simulation_engine') and hasattr(parent.simulation_engine, 'current_time_step'):
+                    current_time = parent.simulation_engine.current_time_step
+            
+            current_demand = self.calculate_demand(current_time)
+            load_factor = current_demand / self.demand if self.demand > 0 else 0
+            
+            # Draw vertical load factor indicator in top right corner
+            # Set indicator size relative to image size (smaller than before)
+            indicator_width = image_size * 0.08
+            indicator_height = image_size * 0.45
+            indicator_padding = image_size * 0.04
+            
+            # Position indicator in top right corner with padding
+            indicator_x = image_rect.x() + image_rect.width() - indicator_width - indicator_padding
+            indicator_y = image_rect.y() + indicator_padding
+            
+            # Draw load factor frame (outline)
+            painter.setPen(QPen(Qt.white, 1.5))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawRect(indicator_x, indicator_y, indicator_width, indicator_height)
+            
+            # Determine fill color based on load factor - use gold with varying brightness
+            # Darker gold for lower load, brighter gold for higher load
+            if load_factor < 0.25:
+                # Dark gold for low load (0-25%)
+                fill_color = QColor("#8B6914")  # Dark gold
+            elif load_factor < 0.5:
+                # Medium gold for medium load (25-50%)
+                fill_color = QColor("#B8860B")  # Medium gold
+            elif load_factor < 0.75:
+                # Regular gold for high load (50-75%)
+                fill_color = QColor("#DAA520")  # Standard gold
+            else:
+                # Bright gold for maximum load (75-100%)
+                fill_color = QColor("#FFD700")  # Bright gold
+            
+            # Draw filled portion representing current load factor (from bottom to top)
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QBrush(fill_color))
+            
+            fill_height = indicator_height * load_factor
+            # Calculate y-position for fill (starting from bottom of indicator)
+            fill_y = indicator_y + (indicator_height - fill_height)
+            
+            painter.drawRect(indicator_x, fill_y, indicator_width, fill_height)
+            
         else:
             # When graphics are disabled, still handle selection highlight but not shadow
             painter.save()
@@ -141,6 +193,56 @@ class LoadComponent(ComponentBase):
         # Draw the revenue text
         revenue_text = f"Revenue: ${self.accumulated_revenue:.2f}"
         painter.drawText(revenue_rect, Qt.AlignCenter, revenue_text)
+    
+    def update(self):
+        """Called when the component needs to be updated"""
+        # Call the parent's update method
+        super().update()
+        
+        # Check for revenue milestones
+        self.check_revenue_milestone()
+    
+    def check_revenue_milestone(self):
+        """Check if revenue has crossed a $1000 milestone and create a particle if needed"""
+        # Skip if simulation isn't running or if we're not in a scene
+        scene = self.scene()
+        if not scene or not hasattr(scene, 'parent'):
+            return
+        
+        parent = scene.parent()
+        if not parent or not hasattr(parent, 'simulation_engine'):
+            return
+            
+        # Only create popups if simulation is running or autocompleting
+        is_running = parent.simulation_engine.simulation_running
+        is_autocompleting = False
+        if hasattr(parent, 'is_autocompleting'):
+            is_autocompleting = parent.is_autocompleting
+            
+        if not (is_running or is_autocompleting):
+            # Store current revenue as previous and exit
+            self.previous_revenue = self.accumulated_revenue
+            return
+        
+        # Calculate how many $1000 increments we've crossed
+        previous_thousands = int(self.previous_revenue / 1000)
+        current_thousands = int(self.accumulated_revenue / 1000)
+        
+        if current_thousands > previous_thousands:
+            # We've crossed at least one $1000 milestone
+            # Get the center point of the component for particle origin
+            rect = self.boundingRect()
+            center_x = self.x() + rect.width() / 2
+            center_y = self.y() + rect.height() / 3  # Position near the top of the component
+            
+            # Get the particle system
+            if hasattr(parent, 'particle_system'):
+                # Create a popup for each $1000 increment (in case we earned multiple $1000 in one step)
+                for _ in range(current_thousands - previous_thousands):
+                    parent.particle_system.create_revenue_popup(center_x, center_y, 1000)
+        
+        # Store current revenue for next check
+        self.previous_revenue = self.accumulated_revenue
     
     def get_connected_bus(self):
         """Find the bus this load is connected to"""
@@ -358,7 +460,7 @@ class LoadComponent(ComponentBase):
     
     def serialize(self):
         """Serialize the component data for saving"""
-        return {
+        data = {
             'type': 'load',
             'x': self.x(),
             'y': self.y(),
@@ -366,6 +468,7 @@ class LoadComponent(ComponentBase):
             'price_per_kwh': self.price_per_kwh,
             'operating_mode': self.operating_mode,
             'accumulated_revenue': self.accumulated_revenue,
+            'previous_revenue': self.previous_revenue,  # Save previous revenue state
             'profile_type': self.profile_type,
             'custom_profile': self.custom_profile,
             'profile_name': self.profile_name,
@@ -377,3 +480,4 @@ class LoadComponent(ComponentBase):
             'graphics_enabled': self.graphics_enabled,  # Save graphics state
             'powerlandia_profile': self.powerlandia_profile  # Save Powerlandia profile
         } 
+        return data 

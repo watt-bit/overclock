@@ -1278,3 +1278,35 @@ Key insights from implementing the same feature across multiple component types:
 - A common pattern for good visual feedback:
   * Make buttons slightly lighter on hover
   * Make buttons slightly darker with a thicker border when pressed
+
+## Revenue Popup System Implementation (2024-07-07)
+Key insights from implementing the revenue popup visual feedback:
+
+1. **Extending the Particle System**
+   - The existing ParticleSystem provides a robust foundation for visual effects
+   - Adding a new RevenueParticle class leverages the existing animation infrastructure
+   - Using QGraphicsTextItem instead of QGraphicsEllipseItem allows for text-based particles
+   - HTML formatting in particles enables rich styling (background, text color, padding)
+
+2. **Revenue Milestone Detection**
+   - Tracking previous_revenue allows components to detect threshold crossings
+   - Integer division (dividing by 1000) efficiently detects $1,000 increments
+   - Comparing previous and current "thousands" detects multiple increments in one step
+   - This approach works properly even with large revenue jumps during autocomplete
+
+3. **Visual Feedback Timing**
+   - The update() method provides a consistent hook for milestone checks
+   - Revenue popups appear only during active simulation or autocomplete
+   - Checking simulation state prevents unwanted popups during scrubbing or editing
+   - Creating multiple popups when multiple milestones are crossed provides accurate feedback
+
+4. **Component-Scene-Application Integration**
+   - Components can access the parent window through the scene() → parent() chain
+   - This provides access to shared systems like the particle_system
+   - Clean architectural boundaries are maintained despite the cross-layer communication
+   - Multiple safety checks prevent errors when components are not properly in a scene
+
+5. **Serialization Considerations**
+   - Adding previous_revenue to the serialized state preserves milestone tracking between sessions
+   - This prevents duplicate popups when loading a saved scenario
+   - The serialization process adapts automatically to new component properties

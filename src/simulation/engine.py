@@ -485,6 +485,8 @@ class SimulationEngine(QObject):
                             item.emit_smoke()
                     elif isinstance(item, CloudWorkloadComponent):
                         item.update()
+                    elif isinstance(item, GridExportComponent):
+                        item.update()
             
             # Update historian chart if in historian view (conditionally)
             if not skip_ui_updates and hasattr(self.main_window, 'is_model_view') and not self.main_window.is_model_view:

@@ -99,7 +99,27 @@ class UIInitializer:
         
         # Create Model/Historian toggle button in top-left corner
         main_window.mode_toggle_btn = QPushButton("🧩 Model (TAB)", main_window.view)
-        main_window.mode_toggle_btn.setStyleSheet("QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; width: 125px; font-weight: bold; font-size: 14px; }")
+        main_window.mode_toggle_btn.setStyleSheet("""
+            QPushButton { 
+                background-color: #3D3D3D; 
+                color: white; 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 5px; 
+                width: 125px; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #4D4D4D; 
+                border: 1px solid #666666;
+            }
+            QPushButton:pressed { 
+                background-color: #2D2D2D; 
+                border: 2px solid #777777;
+                padding: 4px; 
+            }
+        """)
         main_window.mode_toggle_btn.clicked.connect(main_window.toggle_mode_button)
         # Position in top left corner with padding
         main_window.mode_toggle_btn.move(10, 10)

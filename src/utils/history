@@ -1300,3 +1300,28 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Fixed inconsistent button color references to match the dark theme color scheme
 - Ensured proper styling for Run and Reset buttons after autocomplete runs
 - This ensures consistent button behavior throughout the application lifecycle
+
+## 2024-04-08 04:25 - Added Vertical Load Factor Indicator
+- Added a vertical status bar to LoadComponent showing the current load factor
+- Implemented with gold color scale (dark to bright) for different load levels
+- Positioned in the top-right corner of the component
+- Shows visual feedback on current load as a percentage of capacity
+- Used same style consistency as battery's charge indicator
+- Enhanced the visual feedback of load components during simulation
+
+## 2024-07-07: Added Revenue Popup Effect to Load Components
+- Enhanced LoadComponent with visual revenue milestone tracking
+- Created RevenueParticle class in src/ui/particle_system.py for text-based particles
+- Added method to ParticleSystem to create revenue popups
+- Modified LoadComponent to track revenue increases and display "+$1,000" popups
+- Added check_revenue_milestone method to display popups when revenue crosses $1,000 increments
+- Integrated with existing update system to work during normal simulation and autocomplete
+- Added previous_revenue tracking to LoadComponent to detect milestone crossings
+- Updated serialization to preserve previous_revenue state when saving/loading scenarios
+
+## 2024-07-07: Extended Revenue Popup Effect to CloudWorkload and GridExport Components
+- Added revenue milestone tracking to CloudWorkloadComponent and GridExportComponent
+- Implemented check_revenue_milestone method in both component classes
+- Added update method to both components to call the milestone check
+- Enhanced serialization to preserve previous_revenue state when saving/loading scenarios
+- Now all revenue-generating components display "+$1,000" popups when earning revenue milestones
