@@ -748,9 +748,6 @@ To add a new component:
 2. Import the component in main_window.py
 3. Add a button to place the component
 4. Add handling in add_component method
-5. Update model_manager.py for saving/loading
-6. Add property display in properties_manager.py
-7. Update connection_manager.py if needed
 
 ## UI System
 - Uses PyQt5 for UI components
@@ -1091,3 +1088,53 @@ When implementing charts with multiple data series that can be toggled on/off:
    - When adding new decorative components, all connection handling code must be updated
    - Type checking in instanceof statements needs to include all relevant component types
    - Special handling for component types should be centralized when possible
+
+## Adding New Components
+To add a new component:
+1. Create a new class file in src/components/
+2. Import the component in main_window.py
+3. Add a button to place the component
+4. Add handling in add_component method
+
+## UI Initialization Extraction (2024-07-10)
+Key insights from extracting UI initialization code:
+
+1. **Static Initialization Pattern**
+   - Using a static method for UI initialization provides a clean way to extract initialization logic
+   - The static method takes the main window instance as a parameter and initializes its UI elements
+   - This approach maintains full compatibility with existing code without changing method signatures
+   - No state needs to be maintained in the initializer class, making it stateless and simpler
+
+2. **Reference Management**
+   - All UI element references (buttons, sliders, panels) must still be assigned to the main window instance
+   - Instead of using `self.button = ...`, we use `main_window.button = ...` in the static method
+   - This ensures that the main window can still access all UI elements after initialization
+   - Component event handlers still reference the main window instance for callbacks
+
+3. **Dependency Handling**
+   - The UI initializer requires access to several classes defined in the main window:
+     * TiledBackgroundWidget
+     * AnalyticsPanel
+   - Either these classes must be accessible in the initializer's scope or explicitly passed in
+
+4. **Import Considerations**
+   - The UI initializer imports the same UI-related modules as the main window
+   - This creates some duplication but is cleaner than trying to share imports
+   - The initializer only imports what it needs for UI creation, not for simulation logic
+
+5. **Refactoring Strategy**
+   - Extracted the complete method without changing any functionality
+   - Replaced all references to `self` with references to the passed main window parameter
+   - Updated the main window to import and use the new initializer
+   - This minimal-change approach ensures behavioral consistency before and after refactoring
+
+6. **Dependency Handling Strategies**
+   - When extracting UI code, be aware of dependencies on custom widget classes
+   - Three options for handling dependencies:
+     * Import the dependent classes directly (if they're in separate modules)
+     * Re-implement the dependent classes in the extracted module (for simple widgets)
+     * Access the classes through the main_window parameter (less ideal, creates tight coupling)
+   - Re-implementing simple widget classes (like TiledBackgroundWidget) in the extracted module 
+     provides the cleanest separation while avoiding circular imports
+   - For more complex dependencies like AnalyticsPanel, direct imports are preferable
+   - Proper dependency management is crucial for successful UI code extraction
