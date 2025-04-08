@@ -142,7 +142,7 @@ class ParticleSystem:
         # Create particles
         for _ in range(num_particles):
             # Add random offset to create wider origin area
-            offset_x = random.uniform(-50, 50)  # +/- 50px horizontal spread
+            offset_x = random.uniform(-75, 75)  # +/- 50px horizontal spread
             offset_y = random.uniform(-30, 30)  # +/- 30px vertical spread
             
             # Calculate particle position with offset
