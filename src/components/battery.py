@@ -98,13 +98,17 @@ class BatteryComponent(ComponentBase):
             )
         
         # Draw battery level indicator in top right corner
+        # Ensure current charge never exceeds energy capacity
+        if self.current_charge > self.energy_capacity:
+            self.current_charge = self.energy_capacity
+            
         # Calculate charge percentage
         charge_percent = self.current_charge / self.energy_capacity if self.energy_capacity > 0 else 0
         
         # Set indicator size relative to image size
-        indicator_width = image_size * 0.15
-        indicator_height = image_size * 0.05
-        indicator_padding = image_size * 0.03
+        indicator_width = image_size * 0.3
+        indicator_height = image_size * 0.1
+        indicator_padding = image_size * 0.04
         
         # Position indicator in top right corner with padding
         indicator_x = image_rect.x() + image_rect.width() - indicator_width - indicator_padding

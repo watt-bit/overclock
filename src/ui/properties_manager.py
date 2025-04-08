@@ -749,9 +749,35 @@ class ComponentPropertiesManager:
         # Energy capacity field
         energy_capacity_edit = QLineEdit(str(component.energy_capacity))
         energy_capacity_edit.setStyleSheet(INPUT_STYLE)
-        self._set_up_numeric_field(energy_capacity_edit, 
-                                 lambda value: setattr(component, 'energy_capacity', value),
-                                 min_value=1)
+        
+        def update_energy_capacity(value):
+            # Skip if already updating to prevent recursive updates
+            if self.main_window.simulation_engine.updating_simulation:
+                return
+                
+            # Set the new energy capacity
+            component.energy_capacity = value
+            
+            # Cap current charge at the new energy capacity if needed
+            if component.current_charge > component.energy_capacity:
+                component.current_charge = component.energy_capacity
+                
+                # Update the current charge field and slider to reflect the change
+                current_charge_edit.blockSignals(True)
+                current_charge_edit.setText(str(component.current_charge))
+                current_charge_edit.blockSignals(False)
+                
+                # Update charge slider
+                charge_percent = 100  # Will be 100% since charge = capacity
+                charge_bar.blockSignals(True)
+                charge_bar.setValue(charge_percent)
+                charge_bar.blockSignals(False)
+                charge_label.setText(f"{charge_percent}%")
+            
+            component.update()
+            self.main_window.update_simulation()
+        
+        self._set_up_numeric_field(energy_capacity_edit, update_energy_capacity, min_value=1)
         
         # Current charge field (limited by energy capacity)
         current_charge_edit = QLineEdit(str(component.current_charge))
