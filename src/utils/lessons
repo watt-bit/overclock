@@ -1155,3 +1155,36 @@ Key insights from extracting UI initialization code:
 6. **Code Organization**: Moving the substantial component creation logic (17 component types) out of the main window significantly reduces its complexity and improves readability.
 
 7. **Modular Architecture**: This extraction follows the pattern established with previous extractions (SimulationEngine, ConnectionManager, etc.) to create a more modular and maintainable architecture.
+
+## KeyHandler Implementation (2024-07-07)
+Key insights from extracting the keyboard event handling:
+
+1. Delegation Pattern
+   - Main window can delegate key events to a specialized handler class
+   - The handler class can maintain its own logic while still accessing main window state
+   - This creates cleaner separation of concerns without disrupting API compatibility
+   - Event handling becomes more maintainable when isolated from UI rendering
+
+2. Event Flow Control
+   - The handler returns boolean values to indicate whether events were handled
+   - This allows the main window to decide whether to pass events to the parent class
+   - Preserves the exact same event propagation behavior as the original implementation
+   - Maintains complete backward compatibility with existing key handling
+
+3. State Access
+   - KeyHandler needs access to main window state but doesn't need to modify the main window class
+   - This is achieved by passing a reference to the main window in the constructor
+   - The handler can then access all necessary properties and methods via this reference
+   - No changes to method signatures or state management are required
+
+4. Focused Responsibility
+   - KeyHandler has a single, clear responsibility: processing keyboard input
+   - This makes the code easier to understand, test, and maintain
+   - Future key binding changes can be made in one place without affecting the main window
+   - The main_window.py file becomes less cluttered and more focused on UI management
+
+5. Conditional Event Processing
+   - The handler preserves all context-specific logic (e.g., ignoring keys when editing text)
+   - Mode awareness is maintained (e.g., different actions based on connection mode)
+   - The handler correctly respects the state of UI controls (enabled/disabled)
+   - This demonstrates that complex conditional logic can be extracted without simplification

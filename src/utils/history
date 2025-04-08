@@ -1201,3 +1201,13 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Maintained complete compatibility with the existing UI and component system
 - This extraction improves code modularity by separating component creation from UI management
 - No changes to behavior, just better organized code structure
+
+## 2024-07-07: Extracted KeyHandler Class
+- Created new KeyHandler class in src/ui/key_handler.py
+- Extracted the keyPressEvent logic from PowerSystemSimulator class to KeyHandler
+- Modified main_window.py to use the KeyHandler class for processing key events
+- Maintained identical behavior for all keyboard shortcuts
+- Improved code organization by separating concerns
+- Reduced complexity of the main_window.py file
+- No changes to UI appearance or behavior
+- No changes to hotkey functionality or component code

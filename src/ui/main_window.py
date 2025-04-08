@@ -41,6 +41,7 @@ from src.models.model_manager import ModelManager
 from .historian_manager import HistorianManager
 from .particle_system import ParticleSystem
 from .ui_initializer import UIInitializer
+from .key_handler import KeyHandler
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -266,6 +267,9 @@ class PowerSystemSimulator(QMainWindow):
          
         # Center the window on the screen
         self.center_on_screen()
+        
+        # Create KeyHandler instance
+        self.key_handler = KeyHandler(self)
     
     def center_on_screen(self):
         """Center the window on the screen"""
@@ -624,103 +628,10 @@ class PowerSystemSimulator(QMainWindow):
 
     def keyPressEvent(self, event):
         """Handle key press events for hotkeys"""
-        # Skip if we're typing in a text field
-        if isinstance(self.focusWidget(), QLineEdit):
-            super().keyPressEvent(event)
-            return
-            
-        key = event.key()
-        
-        # Space for play/pause - always active regardless of mode
-        if key == Qt.Key_Space:
-            self.toggle_simulation()
-            return
-            
-        # Tab is now handled by QShortcut for better reliability
-        
-        # Enter key for autocomplete - active unless simulation is running
-        if key == Qt.Key_Return and not self.simulation_engine.simulation_running:
-            self.run_autocomplete()
-            return
-            
-        # Delete key for deleting selected component - active regardless of mode
-        if key == Qt.Key_Delete:
-            # Check if any components are selected in the scene
-            selected_items = [item for item in self.scene.selectedItems() if hasattr(item, 'connections')]
-            
-            if selected_items:
-                # Delete all selected components
-                for component in selected_items:
-                    # Find and remove all connections associated with this component
-                    connections_to_remove = [conn for conn in self.connections 
-                                    if conn.source == component or conn.target == component]
-                    
-                    for connection in connections_to_remove:
-                        connection.cleanup()
-                        self.scene.removeItem(connection)
-                        if connection in self.connections:
-                            self.connections.remove(connection)
-                    
-                    # Remove the component from the scene
-                    self.scene.removeItem(component)
-                    
-                    # Only remove from components list if it's a functional component and in the list
-                    if (not isinstance(component, (TreeComponent, BushComponent, PondComponent, 
-                                                  House1Component, House2Component, FactoryComponent)) and 
-                        component in self.components):
-                        self.components.remove(component)
-                
-                # Clear the properties panel
-                self.properties_dock.setVisible(False)
-                
-                # Update simulation state
-                self.update_simulation()
-                return
-            # If no scene items are selected, check if properties manager has a current component
-            elif hasattr(self.properties_manager, 'current_component') and self.properties_manager.current_component:
-                self.properties_manager.delete_component()
-                self.properties_dock.setVisible(False)
-                return
-                
-        # R key for reset simulation - always active regardless of mode
-        if key == Qt.Key_R:
-            self.reset_simulation()
-            return
-        
-        # Only process if not in connection mode, sever mode, and simulation is not running
-        if (not self.creating_connection and 
-            self.connection_btn.isEnabled() and 
-            self.sever_connection_btn.isEnabled() and
-            not self.simulation_engine.simulation_running):
-            # G for generator
-            if key == Qt.Key_G:
-                self.add_component("generator")
-            # B for bus
-            elif key == Qt.Key_B:
-                self.add_component("bus")
-            # L for load
-            elif key == Qt.Key_L:
-                self.add_component("load")
-            # I for grid import
-            elif key == Qt.Key_I:
-                self.add_component("grid_import")
-            # E for grid export
-            elif key == Qt.Key_E:
-                self.add_component("grid_export")
-            # S for battery storage
-            elif key == Qt.Key_S:
-                self.add_component("battery")
-            # W for cloud workload
-            elif key == Qt.Key_W:
-                self.add_component("cloud_workload")
-            # C for create connection
-            elif key == Qt.Key_C:
-                self.start_connection()
-            # A for autoconnect
-            elif key == Qt.Key_A:
-                self.autoconnect_all_components()
-        
-        super().keyPressEvent(event) 
+        # Use the KeyHandler class to process the event
+        if not self.key_handler.handle_key_press(event):
+            # If the event wasn't handled by our key handler, pass it to the parent class
+            super().keyPressEvent(event) 
 
     def disable_component_buttons(self, disabled):
         """Disable or enable all component and connection manipulation buttons"""
