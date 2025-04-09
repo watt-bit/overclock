@@ -855,6 +855,7 @@ class ComponentPropertiesManager:
         mode_selector.setStyleSheet(COMBOBOX_STYLE)
         mode_selector.addItems(["Disabled", "Powerlandia 8760 - Midwest 1", "Custom"])
         mode_selector.setCurrentText(component.operating_mode)
+        mode_selector.setMinimumWidth(250)
         
         # Create a horizontal layout for profile selection and load button
         profile_layout = QHBoxLayout()
@@ -922,7 +923,7 @@ class ComponentPropertiesManager:
         mode_selector.setStyleSheet(COMBOBOX_STYLE)
         mode_selector.addItems(["Disabled", "Powerlandia 8760 - Midwest 1", "Custom"])
         mode_selector.setCurrentText(component.operating_mode)
-        
+        mode_selector.setMinimumWidth(250)
         # Create a horizontal layout for profile selection and load button
         profile_layout = QHBoxLayout()
         profile_layout.setContentsMargins(0, 0, 0, 0)
