@@ -410,7 +410,8 @@ class UIInitializer:
                 color: white; 
                 border: 1px solid #555555; 
                 border-radius: 3px; 
-                padding: 5px; 
+                padding: 5px;
+                font-size: 14px;
             }
             QPushButton:hover { 
                 background-color: #4D4D4D; 
@@ -439,8 +440,9 @@ class UIInitializer:
                 background-color: #0A367B; 
             }
         """)
+        main_window.play_btn.setFixedWidth(140)
         
-        main_window.reset_btn = QPushButton("⟲ (R)eset")
+        main_window.reset_btn = QPushButton("🔴 (R)eset")
         main_window.reset_btn.clicked.connect(main_window.reset_simulation)
         main_window.reset_btn.setStyleSheet(common_button_style + """
             QPushButton { 
@@ -456,7 +458,8 @@ class UIInitializer:
                 background-color: #9B1818; 
             }
         """)
-        
+        main_window.reset_btn.setFixedWidth(90)
+
         # Add speed control
         speed_label = QLabel("⏩ Speed:")
         main_window.speed_selector = QPushButton("▶▷▷")
@@ -469,7 +472,7 @@ class UIInitializer:
                 border-radius: 3px; 
                 padding: 4px; 
                 font-weight: bold; 
-                font-size: 14px;
+                font-size: 16px;
             }
             QPushButton:hover { 
                 background-color: #4D4D4D; 
@@ -481,7 +484,7 @@ class UIInitializer:
                 padding: 3px; 
             }
         """)
-        main_window.speed_selector.setMinimumWidth(90)  # Set minimum width to prevent text cutoff
+        main_window.speed_selector.setFixedWidth(90)  # Set minimum width to prevent text cutoff
         
         # Add zoom control to time controls (moved from toolbar)
         zoom_label = QLabel("🔭")
@@ -497,7 +500,8 @@ class UIInitializer:
         main_window.screenshot_btn = QPushButton("📷 Screenshot")
         main_window.screenshot_btn.clicked.connect(main_window.take_screenshot)
         main_window.screenshot_btn.setStyleSheet(default_button_style)
-        
+        main_window.screenshot_btn.setFixedWidth(150)
+
         # Add Autocomplete button
         main_window.autocomplete_btn = QPushButton("🚀 Autocomplete (Enter)")
         main_window.autocomplete_btn.clicked.connect(main_window.run_autocomplete)
@@ -515,11 +519,13 @@ class UIInitializer:
                 background-color: #154919; 
             }
         """)
-        
+        main_window.autocomplete_btn.setFixedWidth(250)
+
         # Add background toggle button
         main_window.background_toggle_btn = QPushButton("🌄 Background Off")
         main_window.background_toggle_btn.clicked.connect(main_window.toggle_background)
         main_window.background_toggle_btn.setStyleSheet(default_button_style)
+        main_window.background_toggle_btn.setFixedWidth(150)
         
         # Create time slider
         main_window.time_slider = QSlider(Qt.Horizontal)
