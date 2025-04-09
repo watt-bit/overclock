@@ -1409,3 +1409,15 @@ Key insights from implementing cost particle effects alongside revenue particles
    - Upward floating movement keeps the UI clean and prevents overlap with other elements
    - Fading effect ensures temporary feedback doesn't permanently clutter the interface
    - Emoji usage (💸) adds visual interest and reinforces the financial nature of the feedback
+
+## Historian Chart Visualization Customization
+- The HistorianManager class handles all chart visualization for historical data
+- Data series are displayed with specific colors defined in the self.colors dictionary
+- The visibility of data series is controlled by toggle buttons in the control panel
+- Default visibility can be set by checking/unchecking buttons in multiple places:
+  * create_toggle_button method sets initial toggle button state
+  * create_line_for_data method sets initial line visibility
+  * clear_chart method resets toggle buttons to their default states
+- When customizing defaults, ensure all three locations are updated consistently
+- Some series use the primary y-axis, while financial series use the secondary y-axis
+- The update_axis_visibility method ensures the secondary axis only appears when needed

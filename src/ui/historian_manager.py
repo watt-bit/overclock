@@ -31,7 +31,7 @@ class HistorianManager:
             'grid_import': '#9C27B0',  # Purple
             'grid_export': '#FFC107',  # Amber
             'cumulative_revenue': '#FF4081',  # Pink for revenue on second axis
-            'cumulative_cost': '#f44336'  # Red
+            'cumulative_cost': '#8B0000'  # Dark red
         }
         
         # Define which series use secondary y-axis
@@ -203,8 +203,8 @@ class HistorianManager:
         # Make it checkable (toggle button)
         button.setCheckable(True)
         
-        # Set initial state - total_generation, cumulative_revenue, and cumulative_cost are unchecked (visible) by default
-        button.setChecked(data_key != 'total_generation' and data_key != 'cumulative_revenue' and data_key != 'cumulative_cost')
+        # Set initial state - total_generation and cumulative_revenue are unchecked (visible) by default
+        button.setChecked(data_key != 'total_generation' and data_key != 'cumulative_revenue')
         
         # Connect the clicked signal to update the chart
         button.clicked.connect(lambda checked, k=data_key: self.toggle_line_visibility(k, checked))
@@ -306,8 +306,8 @@ class HistorianManager:
         )
         
         # Initialize visibility state
-        # total_generation, cumulative_revenue, and cumulative_cost start visible by default
-        initial_visible = data_key == 'total_generation' or data_key == 'cumulative_revenue' or data_key == 'cumulative_cost'
+        # total_generation and cumulative_revenue start visible by default
+        initial_visible = data_key == 'total_generation' or data_key == 'cumulative_revenue'
         self.line_visibility[data_key] = initial_visible
         line.set_visible(initial_visible)
         
@@ -399,8 +399,8 @@ class HistorianManager:
                     button = self.create_toggle_button(data_key)
                     self.toggle_buttons[data_key] = button
                     # Set button checked state based on specific series
-                    if data_key == 'cumulative_revenue' or data_key == 'cumulative_cost':
-                        button.setChecked(False)  # Unchecked (visible) for financial series
+                    if data_key == 'cumulative_revenue':
+                        button.setChecked(False)  # Unchecked (visible) for revenue series
                     else:
                         button.setChecked(True)  # Checked (hidden) for other secondary axis series
                     # Add to secondary buttons list
@@ -452,8 +452,8 @@ class HistorianManager:
         
         # Reset all toggle buttons to their default states
         for key, button in self.toggle_buttons.items():
-            if key == 'total_generation' or key == 'cumulative_revenue' or key == 'cumulative_cost':
-                # Financial series and total_generation start unchecked (on)
+            if key == 'total_generation' or key == 'cumulative_revenue':
+                # These series start unchecked (on)
                 button.setChecked(False)
                 self.line_visibility[key] = True
                 self.lines[key].set_visible(True)

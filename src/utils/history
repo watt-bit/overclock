@@ -1384,3 +1384,10 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Set accumulated_cost and previous_cost to 0.0 for all grid import components when resetting
 - Fixed bug where costs would accumulate across multiple simulation runs
 - Ensures GridImportComponent cost state is reset just like the revenue state of other components
+
+## 2024-07-06: Modified Historian Chart Default Settings
+- Changed the default color for cumulative_cost from red (#f44336) to dark red (#8B0000)
+- Modified cumulative_cost to be hidden by default (previously was visible by default)
+- Updated the visibility logic across multiple functions in historian_manager.py
+- Ensures cumulative_cost toggle button starts in the "checked" (hidden) state
+- Maintained the default visibility for total_generation and cumulative_revenue
