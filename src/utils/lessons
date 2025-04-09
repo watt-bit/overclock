@@ -1349,3 +1349,63 @@ Key insights from implementing the cost tracking system for grid import componen
    - The historian manager's toggle buttons follow the same color scheme as the charts
 
 These patterns establish a framework for tracking any financial or cumulative metric across the simulation timeline.
+
+## Economic Dispatching in Power System Simulation (2024-07-07)
+Key insights from implementing economic dispatching for grid imports:
+
+1. Consistent Economic Optimization Pattern
+   - Both grid imports and exports now follow the same pattern of economic optimization
+   - Imports use ascending cost sorting (cheapest first) while exports use descending price sorting (highest price first)
+   - This creates a symmetrical approach to buying and selling power in the simulation
+   - The pattern matches real-world energy market optimization strategies
+
+2. Collection and Sorting Implementation
+   - Collecting all components of a specific type using list comprehension: `[item for item in scene.items() if isinstance(item, SpecificType)]`
+   - Sorting based on a property using lambda function: `components.sort(key=lambda x: x.property_name, [reverse=True/False])`
+   - Allows for clean, readable code that's easy to maintain and extend
+   - Pattern can be applied to any component type that needs prioritization by a numeric property
+
+3. Decoupling Component Collection from Processing
+   - Previous implementation interleaved collection and processing of grid import components
+   - New approach separates component collection, sorting, and processing into distinct steps
+   - This separation improves code clarity and maintainability
+   - Makes it easier to implement additional sorting criteria in the future
+
+4. Simulation Pass Structure
+   - Each simulation pass handles a specific aspect of the power system
+   - Pass ordering creates a clear priority sequence (local generation → batteries → imports → exports)
+   - Within each pass, further prioritization can be implemented (e.g., cost-based ordering)
+   - This hierarchical approach mirrors real-world power system operations
+
+5. User Interface Implications
+   - The cost per kWh setting in grid import properties now has direct impact on dispatch order
+   - Multiple grid import components with different costs can be used to model tiered pricing
+   - Users can now experiment with different cost structures to optimize system economics
+   - Visual feedback through the accumulated cost display shows the impact of dispatch decisions
+
+## Visual Feedback for Financial Transactions (2024-07-10)
+Key insights from implementing cost particle effects alongside revenue particles:
+
+1. Symmetrical User Experience
+   - Applying consistent visual patterns for opposite actions (earning vs. spending) creates intuitive user experience
+   - Using color coding (green for revenue, red for cost) follows established financial conventions
+   - Maintaining the same animation style but with different colors/signs creates recognizable patterns
+   - User can immediately understand the meaning without additional explanations
+
+2. Particle System Extensibility
+   - The particle system's design makes it easy to add new particle types
+   - Similar behaviors (movement, fading) can be reused while changing only the visual aspects
+   - Specialized particle creation methods provide a clean interface for the rest of the application
+   - New particle types can be added with minimal changes to the core animation system
+
+3. Component State Tracking
+   - Milestone detection requires components to track both current and previous values
+   - Integer division provides an efficient way to detect threshold crossings (e.g., $1000 intervals)
+   - Storing previous_cost alongside accumulated_cost enables change detection between updates
+   - Visual feedback is triggered by state changes rather than absolute values
+
+4. Visual Hierarchy Considerations
+   - Financial feedback appears above the component, drawing attention without obscuring the component itself
+   - Upward floating movement keeps the UI clean and prevents overlap with other elements
+   - Fading effect ensures temporary feedback doesn't permanently clutter the interface
+   - Emoji usage (💸) adds visual interest and reinforces the financial nature of the feedback

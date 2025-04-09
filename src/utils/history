@@ -1360,3 +1360,27 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated HistorianManager to support the new cumulative_cost data
 - Changed secondary axis label from "Revenue ($)" to "Amount ($)" to accommodate both revenue and cost
 - Implemented parallel tracking of costs similar to revenue system
+
+## 2024-07-07: Implemented Price-Based Grid Import Dispatching
+- Updated the simulation engine to dispatch grid import connections based on cost
+- Modified the fourth pass of the simulation to sort grid import components by cost_per_kwh
+- Implemented ascending order sorting (lowest cost first) for grid imports
+- This mirrors the existing eighth pass logic for grid exports (which uses highest price first)
+- The simulation now economically optimizes both import and export decisions
+- Users can now see the direct impact of different cost settings for grid import components
+
+## 2024-07-10: Added Cost Particle Effect to Grid Import Component
+- Created CostParticle class in src/ui/particle_system.py to display "-$1,000" in red text
+- Added create_cost_popup method to ParticleSystem to create cost particles
+- Implemented check_cost_milestone method in GridImportComponent
+- Modified GridImportComponent.update method to call check_cost_milestone
+- Cost particles appear when the accumulated cost crosses $1,000 increments
+- Visual effect mirrors the revenue popup effect but with red text and negative sign
+- Provides immediate visual feedback for costs in the same style as revenue
+
+## 2024-07-12: Fixed Grid Import Cost Reset Bug
+- Modified reset_simulation method in main_window.py to properly reset accumulated_cost and previous_cost for GridImportComponent
+- Added logic to check for GridImportComponent instances when iterating through scene items during reset
+- Set accumulated_cost and previous_cost to 0.0 for all grid import components when resetting
+- Fixed bug where costs would accumulate across multiple simulation runs
+- Ensures GridImportComponent cost state is reset just like the revenue state of other components

@@ -231,14 +231,20 @@ class SimulationEngine(QObject):
             component_imports = {}
             
             if remaining_load > 0:
-                for item in self.main_window.scene.items():
-                    if isinstance(item, GridImportComponent):
-                        import_amount = item.calculate_output(remaining_load)
-                        grid_import += import_amount
-                        remaining_load = max(0, remaining_load - import_amount)
-                        
-                        # Store this component's import amount
-                        component_imports[item] = import_amount
+                # Get all GridImportComponent instances and sort by cost_per_kwh in ascending order
+                grid_import_components = [item for item in self.main_window.scene.items() 
+                                          if isinstance(item, GridImportComponent)]
+                
+                # Sort by cost_per_kwh in ascending order (lowest cost first)
+                grid_import_components.sort(key=lambda x: x.cost_per_kwh)
+                
+                for item in grid_import_components:
+                    import_amount = item.calculate_output(remaining_load)
+                    grid_import += import_amount
+                    remaining_load = max(0, remaining_load - import_amount)
+                    
+                    # Store this component's import amount
+                    component_imports[item] = import_amount
                 
                 # Only mark as unstable if remaining load exceeds the tolerance
                 if remaining_load > self.stability_tolerance:

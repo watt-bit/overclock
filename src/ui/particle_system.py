@@ -127,6 +127,54 @@ class RevenueParticle(QGraphicsTextItem):
         # Return whether the particle is still visible
         return self.alpha > 0.1
 
+class CostParticle(QGraphicsTextItem):
+    """Text particle for displaying cost increments"""
+    
+    def __init__(self, x, y, amount=1000, parent=None):
+        super().__init__(f"-${amount:,}", parent)
+        self.setPos(x, y)
+        
+        # Set a nice font
+        font = QFont("Arial", 26)
+        font.setBold(True)
+        self.setFont(font)
+        
+        # Random velocity for natural movement (with upward bias)
+        self.dx = random.uniform(-1.0, 1.0)
+        self.dy = random.uniform(-7.5, -4.5)  # Always float upward
+        
+        # Random fade rate
+        self.fade_rate = random.uniform(0.02, 0.04)
+        self.alpha = 1.0
+        
+        # Set initial appearance
+        self.updateAppearance()
+    
+    def updateAppearance(self):
+        """Update the particle's visual appearance"""
+        # Create HTML with a semi-transparent gray background and red text
+        bg_alpha = int(self.alpha * 150)  # More transparent background
+        text_alpha = int(self.alpha * 255)
+        
+        html = f'<span style="background-color: rgba(80, 80, 80, {bg_alpha}); padding: 2px 6px; border-radius: 4px; color: rgba(210, 0, 0, {text_alpha});">-$1,000 💸</span>'
+        
+        # Set the HTML content
+        self.setHtml(html)
+    
+    def update_particle(self):
+        """Update particle position and opacity for animation"""
+        # Move the particle
+        self.setPos(self.x() + self.dx, self.y() + self.dy)
+        
+        # Fade the particle
+        self.alpha -= self.fade_rate
+        
+        # Update appearance
+        self.updateAppearance()
+        
+        # Return whether the particle is still visible
+        return self.alpha > 0.1
+
 class ParticleSystem:
     """Manages a set of particles for visual effects"""
     
@@ -202,6 +250,17 @@ class ParticleSystem:
         """Create a revenue popup at the given coordinates"""
         # Create the revenue particle
         particle = RevenueParticle(x, y, amount)
+        self.scene.addItem(particle)
+        self.particles.append(particle)
+        
+        # Start the animation timer if not already running
+        if not self.timer.isActive():
+            self.timer.start()
+    
+    def create_cost_popup(self, x, y, amount=1000):
+        """Create a cost popup at the given coordinates"""
+        # Create the cost particle
+        particle = CostParticle(x, y, amount)
         self.scene.addItem(particle)
         self.particles.append(particle)
         

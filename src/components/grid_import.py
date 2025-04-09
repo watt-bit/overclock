@@ -30,8 +30,8 @@ class GridImportComponent(ComponentBase):
         rect = self.boundingRect()
         
         # Calculate image area with 1:1 aspect ratio (square)
-        # Using 80% of height for the image
-        image_height = rect.height() * 0.8
+        # Using 100% of height for the image
+        image_height = rect.height() * 1.0
         image_size = min(rect.width(), image_height)
         
         # Center the image horizontally
@@ -102,9 +102,9 @@ class GridImportComponent(ComponentBase):
         # Calculate text area (remaining space below the image)
         text_rect = QRectF(
             rect.x(),
-            rect.y() + image_size + (rect.height() * 0.05),  # Position below image with margin
+            rect.y() + image_size + (rect.height() * 0.05) - 40,  # Position below image with margin
             rect.width(),
-            rect.height() - image_size - (rect.height() * 0.05)
+            rect.height() - image_size - (rect.height() * 0.05) + 40
         )
         
         # Split the text area into two parts for capacity and cost
@@ -159,6 +159,51 @@ class GridImportComponent(ComponentBase):
         """Called when the component needs to be updated"""
         # Call the parent's update method
         super().update()
+        
+        # Check for cost milestones
+        self.check_cost_milestone()
+    
+    def check_cost_milestone(self):
+        """Check if cost has crossed a $1000 milestone and create a particle if needed"""
+        # Skip if simulation isn't running or if we're not in a scene
+        scene = self.scene()
+        if not scene or not hasattr(scene, 'parent'):
+            return
+        
+        parent = scene.parent()
+        if not parent or not hasattr(parent, 'simulation_engine'):
+            return
+            
+        # Only create popups if simulation is running or autocompleting
+        is_running = parent.simulation_engine.simulation_running
+        is_autocompleting = False
+        if hasattr(parent, 'is_autocompleting'):
+            is_autocompleting = parent.is_autocompleting
+            
+        if not (is_running or is_autocompleting):
+            # Store current cost as previous and exit
+            self.previous_cost = self.accumulated_cost
+            return
+        
+        # Calculate how many $1000 increments we've crossed
+        previous_thousands = int(self.previous_cost / 1000)
+        current_thousands = int(self.accumulated_cost / 1000)
+        
+        if current_thousands > previous_thousands:
+            # We've crossed at least one $1000 milestone
+            # Get the center point of the component for particle origin
+            rect = self.boundingRect()
+            center_x = self.x() + rect.width() / 2
+            center_y = self.y() + rect.height() / 3  # Position near the top of the component
+            
+            # Get the particle system
+            if hasattr(parent, 'particle_system'):
+                # Create a popup for each $1000 increment (in case we spent multiple $1000 in one step)
+                for _ in range(current_thousands - previous_thousands):
+                    parent.particle_system.create_cost_popup(center_x, center_y-75, 1000)
+        
+        # Store current cost for next check
+        self.previous_cost = self.accumulated_cost
     
     def serialize(self):
         return {

@@ -414,7 +414,7 @@ class ComponentPropertiesManager:
         auto_charging_btn.clicked.connect(toggle_auto_charging)
         
         layout.addRow("Max Capacity (kW):", capacity_edit)
-        layout.addRow("Cost per kWh ($):", cost_edit)
+        layout.addRow("Bulk Import PPA ($/kWh):", cost_edit)
         layout.addRow("Operating Mode:", QLabel("Last Resort Unit (Auto)"))
         layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
     
