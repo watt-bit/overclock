@@ -1337,3 +1337,15 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Enhances the visual feedback of renewable components during simulation
 
 ## 2024-07-07: Fixed bug where GridExportComponent revenue wasn't being reset when pressing the Reset button by adding code to reset both accumulated_revenue and previous_revenue properties in the reset_simulation method.
+
+## 2024-04-08 05:30 - Added Status Indicators to Grid Components
+- Added vertical status bars to both GridExportComponent and GridImportComponent
+- GridExportComponent uses a red color scale (dark to bright) based on export level
+- GridImportComponent uses a blue color scale (dark to bright) based on import level
+- Status bars show current usage as a percentage of capacity
+- Positioned in the top-right corner of each component
+- Provides visual feedback of grid power flow during simulation
+- Added last_export and last_import tracking to store current usage levels
+- Updated serialization to preserve these values when saving/loading scenarios
+- Completes the visual status indicator system across all major component types
+- Each component type now has a distinctive color scheme (gold for load, green for renewable generation, red for grid export, blue for grid import)

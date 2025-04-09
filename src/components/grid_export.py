@@ -16,6 +16,7 @@ class GridExportComponent(ComponentBase):
         self.bulk_ppa_price = 0.00  # $/kWh - price received for exported power
         self.accumulated_revenue = 0.00  # Track accumulated revenue in dollars
         self.previous_revenue = 0.00  # Track previous revenue for milestone detection
+        self.last_export = 0  # Track the last export amount for display
     
     def paint(self, painter, option, widget):
         # Save painter state
@@ -50,6 +51,52 @@ class GridExportComponent(ComponentBase):
                 self.image,
                 QRectF(0, 0, self.image.width(), self.image.height())
             )
+            
+            # Calculate export percentage
+            if self.capacity > 0:
+                export_percentage = self.last_export / self.capacity
+            else:
+                export_percentage = 0
+            
+            # Draw vertical export indicator in top right corner
+            # Set indicator size relative to image size
+            indicator_width = image_size * 0.08
+            indicator_height = image_size * 0.45
+            indicator_padding = image_size * 0.04
+            
+            # Position indicator in top right corner with padding
+            indicator_x = image_rect.x() + image_rect.width() - indicator_width - indicator_padding
+            indicator_y = image_rect.y() + indicator_padding
+            
+            # Draw export indicator frame (outline)
+            painter.setPen(QPen(Qt.white, 1.5))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawRect(indicator_x, indicator_y, indicator_width, indicator_height)
+            
+            # Determine fill color based on export percentage - use red with varying brightness
+            # Darker red for lower export, brighter red for higher export
+            if export_percentage < 0.25:
+                # Dark red for low export (0-25%)
+                fill_color = QColor("#8B0000")  # Dark red
+            elif export_percentage < 0.5:
+                # Medium-dark red for medium-low export (25-50%)
+                fill_color = QColor("#B22222")  # Firebrick
+            elif export_percentage < 0.75:
+                # Medium red for medium-high export (50-75%)
+                fill_color = QColor("#DC143C")  # Crimson
+            else:
+                # Bright red for maximum export (75-100%)
+                fill_color = QColor("#FF0000")  # Red
+            
+            # Draw filled portion representing current export percentage (from bottom to top)
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QBrush(fill_color))
+            
+            fill_height = indicator_height * export_percentage
+            # Calculate y-position for fill (starting from bottom of indicator)
+            fill_y = indicator_y + (indicator_height - fill_height)
+            
+            painter.drawRect(indicator_x, fill_y, indicator_width, fill_height)
         
         # Calculate text area (remaining space below the image)
         text_rect = QRectF(
@@ -103,7 +150,9 @@ class GridExportComponent(ComponentBase):
     def calculate_export(self, surplus):
         """Calculate how much surplus power can be exported"""
         # Export as much surplus as possible up to capacity
-        return min(surplus, self.capacity)
+        export_amount = min(surplus, self.capacity)
+        self.last_export = export_amount  # Track the last export amount
+        return export_amount
     
     def update(self):
         """Called when the component needs to be updated"""
@@ -164,5 +213,6 @@ class GridExportComponent(ComponentBase):
             'operating_mode': self.operating_mode,
             'bulk_ppa_price': self.bulk_ppa_price,
             'accumulated_revenue': self.accumulated_revenue,
-            'previous_revenue': self.previous_revenue
+            'previous_revenue': self.previous_revenue,
+            'last_export': self.last_export
         } 

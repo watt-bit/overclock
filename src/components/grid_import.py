@@ -14,6 +14,7 @@ class GridImportComponent(ComponentBase):
         self.capacity = 2000  # kW - maximum import capacity
         self.operating_mode = "Last Resort Unit (Auto)"  # Only Auto mode for now
         self.auto_charge_batteries = False  # Whether this component will charge batteries with grid power
+        self.last_import = 0  # Track the last import amount for display
     
     def paint(self, painter, option, widget):
         # Save painter state
@@ -48,6 +49,52 @@ class GridImportComponent(ComponentBase):
                 self.image,
                 QRectF(0, 0, self.image.width(), self.image.height())
             )
+            
+            # Calculate import percentage
+            if self.capacity > 0:
+                import_percentage = self.last_import / self.capacity
+            else:
+                import_percentage = 0
+            
+            # Draw vertical import indicator in top right corner
+            # Set indicator size relative to image size
+            indicator_width = image_size * 0.08
+            indicator_height = image_size * 0.45
+            indicator_padding = image_size * 0.04
+            
+            # Position indicator in top right corner with padding
+            indicator_x = image_rect.x() + image_rect.width() - indicator_width - indicator_padding
+            indicator_y = image_rect.y() + indicator_padding
+            
+            # Draw import indicator frame (outline)
+            painter.setPen(QPen(Qt.white, 1.5))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawRect(indicator_x, indicator_y, indicator_width, indicator_height)
+            
+            # Determine fill color based on import percentage - use blue with varying brightness
+            # Darker blue for lower import, brighter blue for higher import
+            if import_percentage < 0.25:
+                # Dark blue for low import (0-25%)
+                fill_color = QColor("#00008B")  # Dark blue
+            elif import_percentage < 0.5:
+                # Medium-dark blue for medium-low import (25-50%)
+                fill_color = QColor("#0000CD")  # Medium blue
+            elif import_percentage < 0.75:
+                # Medium blue for medium-high import (50-75%)
+                fill_color = QColor("#0000FF")  # Blue
+            else:
+                # Bright blue for maximum import (75-100%)
+                fill_color = QColor("#1E90FF")  # Dodger blue
+            
+            # Draw filled portion representing current import percentage (from bottom to top)
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QBrush(fill_color))
+            
+            fill_height = indicator_height * import_percentage
+            # Calculate y-position for fill (starting from bottom of indicator)
+            fill_y = indicator_y + (indicator_height - fill_height)
+            
+            painter.drawRect(indicator_x, fill_y, indicator_width, fill_height)
         
         # Calculate text area (remaining space below the image)
         text_rect = QRectF(
@@ -81,7 +128,9 @@ class GridImportComponent(ComponentBase):
     def calculate_output(self, deficit):
         """Calculate grid import based on system deficit"""
         # Provide power up to capacity to meet deficit
-        return min(deficit, self.capacity)
+        import_amount = min(deficit, self.capacity)
+        self.last_import = import_amount  # Track the last import amount
+        return import_amount
     
     def serialize(self):
         return {
@@ -90,5 +139,6 @@ class GridImportComponent(ComponentBase):
             'y': self.y(),
             'capacity': self.capacity,
             'operating_mode': self.operating_mode,
-            'auto_charge_batteries': self.auto_charge_batteries
+            'auto_charge_batteries': self.auto_charge_batteries,
+            'last_import': self.last_import
         } 
