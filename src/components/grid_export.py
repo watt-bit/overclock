@@ -193,7 +193,7 @@ class GridExportComponent(ComponentBase):
             # Get the center point of the component for particle origin
             rect = self.boundingRect()
             center_x = self.x() + rect.width() / 2
-            center_y = self.y() + rect.height() / 3  # Position near the top of the component
+            center_y = self.y() + rect.height() / 3-50  # Position near the top of the component
             
             # Get the particle system
             if hasattr(parent, 'particle_system'):
