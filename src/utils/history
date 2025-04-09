@@ -1349,3 +1349,14 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated serialization to preserve these values when saving/loading scenarios
 - Completes the visual status indicator system across all major component types
 - Each component type now has a distinctive color scheme (gold for load, green for renewable generation, red for grid export, blue for grid import)
+
+## 2024-07-07: Implemented Cost System for Grid Import
+- Added cost_per_kwh property to GridImportComponent for tracking energy import costs
+- Added accumulated_cost property to track total cost across time
+- Updated GridImportComponent UI to display accumulated cost
+- Modified SimulationEngine to calculate and track import costs
+- Added cost tracking to the historian with cumulative_cost data series
+- Updated AnalyticsPanel to display cumulative cost alongside revenue in the chart
+- Updated HistorianManager to support the new cumulative_cost data
+- Changed secondary axis label from "Revenue ($)" to "Amount ($)" to accommodate both revenue and cost
+- Implemented parallel tracking of costs similar to revenue system

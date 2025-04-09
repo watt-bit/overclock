@@ -14,6 +14,9 @@ class GridImportComponent(ComponentBase):
         self.capacity = 2000  # kW - maximum import capacity
         self.operating_mode = "Last Resort Unit (Auto)"  # Only Auto mode for now
         self.auto_charge_batteries = False  # Whether this component will charge batteries with grid power
+        self.cost_per_kwh = 0.00  # $/kWh - cost paid for imported power
+        self.accumulated_cost = 0.00  # Track accumulated cost in dollars
+        self.previous_cost = 0.00  # Track previous cost for milestone detection
         self.last_import = 0  # Track the last import amount for display
     
     def paint(self, painter, option, widget):
@@ -27,8 +30,8 @@ class GridImportComponent(ComponentBase):
         rect = self.boundingRect()
         
         # Calculate image area with 1:1 aspect ratio (square)
-        # Using 100% of height for the image
-        image_height = rect.height() * 1.0
+        # Using 80% of height for the image
+        image_height = rect.height() * 0.8
         image_size = min(rect.width(), image_height)
         
         # Center the image horizontally
@@ -104,6 +107,21 @@ class GridImportComponent(ComponentBase):
             rect.height() - image_size - (rect.height() * 0.05)
         )
         
+        # Split the text area into two parts for capacity and cost
+        capacity_rect = QRectF(
+            text_rect.x(),
+            text_rect.y(),
+            text_rect.width(),
+            text_rect.height() * 0.5
+        )
+        
+        cost_rect = QRectF(
+            text_rect.x(),
+            text_rect.y() + text_rect.height() * 0.5 + 20,
+            text_rect.width(), 
+            text_rect.height() * 0.5
+        )
+        
         # Set text color to white
         painter.setPen(QPen(Qt.white))
         
@@ -120,7 +138,12 @@ class GridImportComponent(ComponentBase):
         
         # Draw the capacity text
         capacity_text = f"{self.capacity} kW (import)"
-        painter.drawText(text_rect, Qt.AlignCenter, capacity_text)
+        painter.drawText(capacity_rect, Qt.AlignCenter, capacity_text)
+        
+        # Draw the cost text if price is set
+        if self.cost_per_kwh > 0:
+            cost_text = f"Cost: ${self.accumulated_cost:.2f}"
+            painter.drawText(cost_rect, Qt.AlignCenter, cost_text)
         
         # Restore painter state
         painter.restore()
@@ -132,6 +155,11 @@ class GridImportComponent(ComponentBase):
         self.last_import = import_amount  # Track the last import amount
         return import_amount
     
+    def update(self):
+        """Called when the component needs to be updated"""
+        # Call the parent's update method
+        super().update()
+    
     def serialize(self):
         return {
             'type': 'grid_import',
@@ -140,5 +168,8 @@ class GridImportComponent(ComponentBase):
             'capacity': self.capacity,
             'operating_mode': self.operating_mode,
             'auto_charge_batteries': self.auto_charge_batteries,
+            'cost_per_kwh': self.cost_per_kwh,
+            'accumulated_cost': self.accumulated_cost,
+            'previous_cost': self.previous_cost,
             'last_import': self.last_import
         } 

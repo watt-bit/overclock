@@ -276,19 +276,25 @@ class AnalyticsPanel(QWidget):
         self.revenue_figure.subplots_adjust(left=0.15, right=0.98, bottom=0.18, top=0.95)
         self.revenue_canvas = FigureCanvas(self.revenue_figure)
         
-        # Initialize revenue data
+        # Initialize revenue and cost data
         self.gross_revenue_data = [0.0] * 8761  # Initialize with 0s (hours 0-8760)
+        self.gross_cost_data = [0.0] * 8761  # Initialize with 0s (hours 0-8760)
         
         # Set up the plot
         self.revenue_ax.set_xlabel('Time Step (hour)', color='white')
-        self.revenue_ax.set_ylabel('Revenue ($)', color='white')
+        self.revenue_ax.set_ylabel('Amount ($)', color='white')
         self.revenue_ax.tick_params(colors='white')  # Make tick labels white
         self.revenue_ax.grid(True, color='#555555')  # Lighter gray grid
         
         # Create empty line for gross revenue
-        self.gross_revenue_line, = self.revenue_ax.plot([], [], '-', color='#FFC107', linewidth=2, label='Gross Revenue', alpha=0.9,
+        self.gross_revenue_line, = self.revenue_ax.plot([], [], '-', color='#FFC107', linewidth=2, label='Cumulative Revenue', alpha=0.9,
                                                       path_effects=[path_effects.SimpleLineShadow(shadow_color='#FFC107', alpha=0.2, offset=(0,0), linewidth=7),
                                                                   path_effects.Normal()])
+        
+        # Create empty line for gross cost
+        self.gross_cost_line, = self.revenue_ax.plot([], [], '-', color='#f44336', linewidth=2, label='Cumulative Op Cost', alpha=0.9,
+                                                   path_effects=[path_effects.SimpleLineShadow(shadow_color='#f44336', alpha=0.2, offset=(0,0), linewidth=7),
+                                                               path_effects.Normal()])
         
         # Update legend with dark mode styling
         revenue_legend = self.revenue_ax.legend(framealpha=0.8)
@@ -318,7 +324,7 @@ class AnalyticsPanel(QWidget):
     def update_analytics(self, power_produced, power_consumed, current_time,
                          total_capacity=0, is_scrubbing=False, grid_import=0, grid_export=0,
                          total_imported=0, total_exported=0, system_stable=True, battery_power=0, 
-                         total_battery_charge=0, gross_revenue_data=None, power_surplus=0):
+                         total_battery_charge=0, gross_revenue_data=None, gross_cost_data=None, power_surplus=0):
         # Protect against re-entrance
         if self.is_drawing:
             return
@@ -541,10 +547,35 @@ class AnalyticsPanel(QWidget):
             # Update line data with cumulative revenue instead of hourly revenue
             self.gross_revenue_line.set_data(x_values, cumulative_revenue)
             
-            # Auto-adjust y scale based on cumulative values
-            max_revenue = max(cumulative_revenue) if cumulative_revenue else 100
-            if max_revenue > 0:
-                self.revenue_ax.set_ylim(0, max_revenue * 1.1)  # 10% headroom
+            # Update the cost chart if gross_cost_data is provided
+            if gross_cost_data is not None:
+                # Update our stored copy of the data
+                self.gross_cost_data = gross_cost_data
+                
+                # Calculate cumulative cost
+                cumulative_cost = []
+                total_cost = 0.0
+                for i, cost in enumerate(self.gross_cost_data):
+                    if i > current_time:
+                        break
+                    total_cost += cost
+                    cumulative_cost.append(total_cost)
+                
+                # Update line data with cumulative cost
+                self.gross_cost_line.set_data(x_values, cumulative_cost)
+                
+                # Auto-adjust y scale based on maximum of cumulative values
+                max_revenue = max(cumulative_revenue) if cumulative_revenue else 100
+                max_cost = max(cumulative_cost) if cumulative_cost else 100
+                y_max = max(max_revenue, max_cost)
+                
+                if y_max > 0:
+                    self.revenue_ax.set_ylim(0, y_max * 1.1)  # 10% headroom
+            else:
+                # Auto-adjust y scale based on cumulative revenue only
+                max_revenue = max(cumulative_revenue) if cumulative_revenue else 100
+                if max_revenue > 0:
+                    self.revenue_ax.set_ylim(0, max_revenue * 1.1)  # 10% headroom
             
             # Draw the revenue canvas
             try:
@@ -575,8 +606,9 @@ class AnalyticsPanel(QWidget):
         self.surplus_data.clear()
         self.unused_capacity_data.clear()
         
-        # Reset revenue data
+        # Reset revenue and cost data
         self.gross_revenue_data = [0.0] * 8761
+        self.gross_cost_data = [0.0] * 8761
         
         # Clear plot lines
         self.generation_line.set_data([], [])
@@ -587,6 +619,7 @@ class AnalyticsPanel(QWidget):
         self.surplus_line.set_data([], [])
         self.unused_capacity_line.set_data([], [])
         self.gross_revenue_line.set_data([], [])
+        self.gross_cost_line.set_data([], [])
         
         # Reset view limits (adjusted for 8760-hour scale)
         self.ax.set_xlim(0, 168)  # Show first week (168 hours)

@@ -1310,3 +1310,42 @@ Key insights from implementing the revenue popup visual feedback:
    - Adding previous_revenue to the serialized state preserves milestone tracking between sessions
    - This prevents duplicate popups when loading a saved scenario
    - The serialization process adapts automatically to new component properties
+
+## Financial Data Tracking System (2024-07-07)
+Key insights from implementing the cost tracking system for grid import components:
+
+1. Parallel Data Structures
+   - Revenue and cost tracking follow identical patterns in component properties, simulation engine, and historian
+   - Using parallel attributes (accumulated_revenue/accumulated_cost, gross_revenue_data/gross_cost_data) maintains code symmetry
+   - This pattern allows easy addition of new financial metrics in the future
+   - Consistent naming conventions make code more readable and predictable
+
+2. Time Series Data Management
+   - The historian object stores time series data for multiple metrics
+   - Adding a new metric requires updates in multiple places:
+     * Initialize arrays in the SimulationEngine constructor
+     * Add to reset_historian method
+     * Update the time-based calculations in update_simulation
+     * Add to appropriate chart rendering in the UI
+
+3. UI Integration Points
+   - The AnalyticsPanel uses a secondary Y-axis for financial metrics
+   - When adding a new financial metric:
+     * Update the chart axis labels to be inclusive of all metrics (e.g., "Amount ($)" instead of "Revenue ($)")
+     * Add a new line with distinctive color in the chart
+     * Update the legend to include the new metric
+     * Handle auto-scaling to accommodate both metrics
+
+4. Component-Level Accounting
+   - Tracking accumulated_cost at the component level enables component-specific financial analysis
+   - The same metric is aggregated at the system level for overall financial tracking
+   - This multi-level approach provides both detailed and system-level insights
+   - The component's paint method can display its own accumulated cost for user visibility
+
+5. Consistent Visual Representation
+   - Financial data is represented in the UI with consistent formatting
+   - Dollar amounts use the same precision (2 decimal places)
+   - Charts use distinctive colors to differentiate between revenue and cost
+   - The historian manager's toggle buttons follow the same color scheme as the charts
+
+These patterns establish a framework for tracking any financial or cumulative metric across the simulation timeline.

@@ -29,8 +29,8 @@ class GridExportComponent(ComponentBase):
         rect = self.boundingRect()
         
         # Calculate image area with 1:1 aspect ratio (square)
-        # Using 100% of height for the image
-        image_height = rect.height() * 1.0
+        # Using 80% of height for the image
+        image_height = rect.height() * 0.8
         image_size = min(rect.width(), image_height)
         
         # Center the image horizontally

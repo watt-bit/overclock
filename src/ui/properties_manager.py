@@ -389,6 +389,11 @@ class ComponentPropertiesManager:
         capacity_edit.setStyleSheet(INPUT_STYLE)
         self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value))
         
+        # Add cost per kWh field
+        cost_edit = QLineEdit(str(component.cost_per_kwh))
+        cost_edit.setStyleSheet(INPUT_STYLE)
+        self._set_up_numeric_field(cost_edit, lambda value: setattr(component, 'cost_per_kwh', value), min_value=0.00)
+        
         # Add auto-charging toggle button
         auto_charging_btn = QPushButton("ON" if component.auto_charge_batteries else "OFF")
         auto_charging_btn.setStyleSheet(
@@ -409,6 +414,7 @@ class ComponentPropertiesManager:
         auto_charging_btn.clicked.connect(toggle_auto_charging)
         
         layout.addRow("Max Capacity (kW):", capacity_edit)
+        layout.addRow("Cost per kWh ($):", cost_edit)
         layout.addRow("Operating Mode:", QLabel("Last Resort Unit (Auto)"))
         layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
     

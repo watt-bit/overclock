@@ -36,13 +36,17 @@ class SimulationEngine(QObject):
         # Add array to track gross revenue
         self.gross_revenue_data = [0.0] * 8761  # Initialize with 8761 entries (0-8760 hours)
         
+        # Add array to track gross cost
+        self.gross_cost_data = [0.0] * 8761  # Initialize with 8761 entries (0-8760 hours)
+        
         # Create Historian data object to record simulation history
         self.historian = {
             'total_generation': [0.0] * 8761,  # Initialize with 8761 entries (0-8760 hours)
             'total_load': [0.0] * 8761,  # Add total_load tracking to historian
             'grid_import': [0.0] * 8761,  # Add grid_import tracking to historian
             'grid_export': [0.0] * 8761,   # Add grid_export tracking to historian
-            'cumulative_revenue': [0.0] * 8761  # Add cumulative revenue tracking to historian
+            'cumulative_revenue': [0.0] * 8761,  # Add cumulative revenue tracking to historian
+            'cumulative_cost': [0.0] * 8761  # Add cumulative cost tracking to historian
         }
         
     def reset_historian(self):
@@ -223,12 +227,18 @@ class SimulationEngine(QObject):
                         break
             
             # Fourth pass: if there's still remaining load, use grid import (third priority)
+            # Initialize component_imports dictionary
+            component_imports = {}
+            
             if remaining_load > 0:
                 for item in self.main_window.scene.items():
                     if isinstance(item, GridImportComponent):
                         import_amount = item.calculate_output(remaining_load)
                         grid_import += import_amount
                         remaining_load = max(0, remaining_load - import_amount)
+                        
+                        # Store this component's import amount
+                        component_imports[item] = import_amount
                 
                 # Only mark as unstable if remaining load exceeds the tolerance
                 if remaining_load > self.stability_tolerance:
@@ -314,6 +324,11 @@ class SimulationEngine(QObject):
                             battery_power -= power_charged
                             remaining_import_capacity = max(0, remaining_import_capacity - power_charged)
                             
+                            # Update component imports for cost calculation
+                            for item in grid_import_components:
+                                component_share = item.capacity / max_import_capacity
+                                component_imports[item] = component_imports.get(item, 0) + (additional_grid_import * component_share)
+                            
                             battery.update()
             
             # Eighth Pass: if there's still surplus power, use grid export
@@ -349,6 +364,7 @@ class SimulationEngine(QObject):
                     
                     # Calculate revenue for each load component based on energy consumption
                     current_hourly_revenue = 0.0
+                    current_hourly_cost = 0.0
                     
                     # Calculate the actual percentage of load satisfied
                     # If there's remaining_load > tolerance, then some load wasn't satisfied
@@ -413,18 +429,38 @@ class SimulationEngine(QObject):
                             # Add to current hour's gross revenue
                             current_hourly_revenue += export_revenue
                     
-                    # Store the hourly gross revenue
+                    # Calculate cost from imports
+                    for item in self.main_window.scene.items():
+                        if isinstance(item, GridImportComponent) and item.cost_per_kwh > 0:
+                            # Get this component's specific import amount
+                            component_import = component_imports.get(item, 0)
+                            
+                            # Calculate the import cost for this time step
+                            import_energy = component_import * steps_moved  # kWh imported
+                            import_cost = import_energy * item.cost_per_kwh
+                            
+                            # Add to accumulated cost for this import component
+                            item.accumulated_cost += import_cost
+                            # Add to current hour's gross cost
+                            current_hourly_cost += import_cost
+                    
+                    # Store the hourly gross revenue and cost
                     for hour in range(self.last_time_step, current_time):
                         if 0 <= hour < len(self.gross_revenue_data):
                             # Distribute revenue evenly across all hours if we jumped multiple steps
                             hourly_revenue = current_hourly_revenue / steps_moved
+                            hourly_cost = current_hourly_cost / steps_moved
+                            
                             self.gross_revenue_data[hour] = hourly_revenue
+                            self.gross_cost_data[hour] = hourly_cost
                             
                             # Update cumulative revenue in historian
                             if hour > 0:
                                 self.historian['cumulative_revenue'][hour] = self.historian['cumulative_revenue'][hour-1] + hourly_revenue
+                                self.historian['cumulative_cost'][hour] = self.historian['cumulative_cost'][hour-1] + hourly_cost
                             else:
                                 self.historian['cumulative_revenue'][hour] = hourly_revenue
+                                self.historian['cumulative_cost'][hour] = hourly_cost
                 
                 self.last_time_step = current_time
             
@@ -470,6 +506,7 @@ class SimulationEngine(QObject):
                     battery_power=battery_power,
                     total_battery_charge=total_battery_charge,
                     gross_revenue_data=self.gross_revenue_data,
+                    gross_cost_data=self.gross_cost_data,
                     power_surplus=power_surplus  # Pass power surplus to analytics panel
                 )
             
@@ -486,6 +523,8 @@ class SimulationEngine(QObject):
                     elif isinstance(item, CloudWorkloadComponent):
                         item.update()
                     elif isinstance(item, GridExportComponent):
+                        item.update()
+                    elif isinstance(item, GridImportComponent):
                         item.update()
             
             # Update historian chart if in historian view (conditionally)
