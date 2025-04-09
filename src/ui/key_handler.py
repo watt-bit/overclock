@@ -41,8 +41,8 @@ class KeyHandler:
             
         key = event.key()
         
-        # Space for play/pause - always active regardless of mode
-        if key == Qt.Key_Space:
+        # Space for play/pause - active unless in autocomplete mode
+        if key == Qt.Key_Space and not self.main_window.is_autocompleting:
             self.main_window.toggle_simulation()
             return True
             

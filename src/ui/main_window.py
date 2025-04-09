@@ -481,10 +481,46 @@ class PowerSystemSimulator(QMainWindow):
             self.sim_timer.start(interval)
             self.play_btn.setText("Pause (Space)")
             self.disable_component_buttons(True)
+            
+            # Disable autocomplete button during simulation and gray out text
+            self.autocomplete_btn.setEnabled(False)
+            self.autocomplete_btn.setStyleSheet("""
+                QPushButton { 
+                    background-color: #1B5E20; 
+                    color: #99CCAA; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                    font-weight: bold; 
+                    font-size: 16px; 
+                }
+            """)
         else:
             self.sim_timer.stop()
             self.play_btn.setText("Run (Space)")
             self.disable_component_buttons(False)
+            
+            # Re-enable autocomplete button when simulation is paused and restore style
+            self.autocomplete_btn.setEnabled(True)
+            self.autocomplete_btn.setStyleSheet("""
+                QPushButton { 
+                    background-color: #1B5E20; 
+                    color: white; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                    font-weight: bold; 
+                    font-size: 16px; 
+                }
+                QPushButton:hover { 
+                    background-color: #2E7D32; 
+                }
+                QPushButton:pressed { 
+                    background-color: #154919; 
+                    border: 2px solid #777777;
+                    padding: 4px; 
+                }
+            """)
     
     def step_simulation(self, steps):
         # Check if simulation was running but has been stopped (end of timeline)
@@ -493,6 +529,28 @@ class PowerSystemSimulator(QMainWindow):
             self.play_btn.setText("Run (Space)")
             self.sim_timer.stop()
             self.disable_component_buttons(False)
+            
+            # Re-enable autocomplete button when simulation ends and restore style
+            self.autocomplete_btn.setEnabled(True)
+            self.autocomplete_btn.setStyleSheet("""
+                QPushButton { 
+                    background-color: #1B5E20; 
+                    color: white; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                    font-weight: bold; 
+                    font-size: 16px; 
+                }
+                QPushButton:hover { 
+                    background-color: #2E7D32; 
+                }
+                QPushButton:pressed { 
+                    background-color: #154919; 
+                    border: 2px solid #777777;
+                    padding: 4px; 
+                }
+            """)
             return
             
         # First, process the current time step (time t)
@@ -508,6 +566,13 @@ class PowerSystemSimulator(QMainWindow):
         self.simulation_engine.update_simulation()
     
     def reset_simulation(self):
+        # Check if simulation was running and stop it
+        was_running = self.simulation_engine.simulation_running
+        
+        if was_running:
+            # Stop the timer if running
+            self.sim_timer.stop()
+        
         # Stop autocomplete if it's running
         if self.is_autocompleting:
             if self.autocomplete_timer:
@@ -570,6 +635,7 @@ class PowerSystemSimulator(QMainWindow):
             self.disable_component_buttons(False)
             print("Autocomplete interrupted by reset.")
         
+        # Set simulation state variables
         self.simulation_engine.current_time_step = 0
         self.simulation_engine.simulation_running = False
         self.simulation_engine.total_energy_imported = 0
@@ -598,8 +664,13 @@ class PowerSystemSimulator(QMainWindow):
                 item.current_charge = item.energy_capacity  # Set to 100% charge
                 item.update()  # Refresh the visual display
         
+        # Update UI to match paused state
         self.play_btn.setText("Run (Space)")
         self.time_slider.setValue(0)
+        
+        # Re-enable component buttons if they were disabled
+        if was_running:
+            self.disable_component_buttons(False)
         
         # Clear the analytics chart history
         self.analytics_panel.clear_chart_history()
@@ -607,6 +678,28 @@ class PowerSystemSimulator(QMainWindow):
         # Reset Historian data and clear its chart
         self.simulation_engine.reset_historian()
         self.historian_manager.clear_chart()
+        
+        # Always ensure autocomplete button is re-enabled and properly styled after reset
+        self.autocomplete_btn.setEnabled(True)
+        self.autocomplete_btn.setStyleSheet("""
+            QPushButton { 
+                background-color: #1B5E20; 
+                color: white; 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 5px; 
+                font-weight: bold; 
+                font-size: 16px; 
+            }
+            QPushButton:hover { 
+                background-color: #2E7D32; 
+            }
+            QPushButton:pressed { 
+                background-color: #154919; 
+                border: 2px solid #777777;
+                padding: 4px; 
+            }
+        """)
         
         self.update_simulation()
     
@@ -967,6 +1060,18 @@ class PowerSystemSimulator(QMainWindow):
             # Disable all component buttons
             self.disable_component_buttons(True)
             
+            # Disable background toggle button in historian view and apply disabled style
+            self.background_toggle_btn.setEnabled(False)
+            self.background_toggle_btn.setStyleSheet("""
+                QPushButton { 
+                    background-color: #3D3D3D; 
+                    color: #999999; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                }
+            """)
+            
             # Switch to the historian view
             self.switch_to_historian_view()
         else:
@@ -979,6 +1084,27 @@ class PowerSystemSimulator(QMainWindow):
             
             # Re-enable all component buttons
             self.disable_component_buttons(False)
+            
+            # Re-enable background toggle button in model view with original style
+            self.background_toggle_btn.setEnabled(True)
+            self.background_toggle_btn.setStyleSheet("""
+                QPushButton { 
+                    background-color: #3D3D3D; 
+                    color: white; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                }
+                QPushButton:hover { 
+                    background-color: #4D4D4D; 
+                    border: 1px solid #666666;
+                }
+                QPushButton:pressed { 
+                    background-color: #2D2D2D; 
+                    border: 2px solid #777777;
+                    padding: 4px; 
+                }
+            """)
             
             # Switch back to the model view
             self.switch_to_model_view()
@@ -1006,6 +1132,18 @@ class PowerSystemSimulator(QMainWindow):
             self.zoom_slider.setValue(100)  # Set slider to 1.0x
             self.zoom_slider.setEnabled(False)
             
+            # Ensure background toggle is disabled with gray text
+            self.background_toggle_btn.setEnabled(False)
+            self.background_toggle_btn.setStyleSheet("""
+                QPushButton { 
+                    background-color: #3D3D3D; 
+                    color: #999999; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                }
+            """)
+            
             # Note: Setting the slider value automatically triggers zoom_changed,
             # which applies the transform and updates the view.
 
@@ -1022,6 +1160,27 @@ class PowerSystemSimulator(QMainWindow):
             self.zoom_slider.setEnabled(True)
             if self.previous_zoom_value is not None:
                 self.zoom_slider.setValue(self.previous_zoom_value)
+            
+            # Re-enable background toggle button with original style
+            self.background_toggle_btn.setEnabled(True)
+            self.background_toggle_btn.setStyleSheet("""
+                QPushButton { 
+                    background-color: #3D3D3D; 
+                    color: white; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                }
+                QPushButton:hover { 
+                    background-color: #4D4D4D; 
+                    border: 1px solid #666666;
+                }
+                QPushButton:pressed { 
+                    background-color: #2D2D2D; 
+                    border: 2px solid #777777;
+                    padding: 4px; 
+                }
+            """)
             
             # Reset the stored previous value
             self.previous_zoom_value = None
