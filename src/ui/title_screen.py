@@ -64,13 +64,11 @@ class TitleScreen(QWidget):
         exit_btn.setStyleSheet("""
             QPushButton {
                 background-color: transparent;
-                border: 1px solid #CCCCCC;
                 border-radius: 3px;
                 color: #CCCCCC;
             }
             QPushButton:hover {
                 background-color: rgba(200, 240, 255, 20);
-                border: 1px solid #D8F0FF;
                 color: #D8F0FF;
             }
         """)
