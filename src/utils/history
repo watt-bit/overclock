@@ -1448,3 +1448,10 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Properties panel can still be toggled programmatically and via component selection
 - Simplified UI by removing redundant menu option since properties panel auto-shows when clicking components
 - Analytics panel option remains in the View menu
+
+## 2024-07-18: Added P Hotkey for Analytics Panel
+- Implemented 'P' key shortcut to toggle the analytics panel visibility
+- Added handling in key_handler.py to process the 'P' key press
+- Made the hotkey only active in model view (disabled in historian view)
+- Enhanced user experience by providing quick keyboard access to the analytics panel
+- Follows the same pattern as other keyboard shortcuts in the application

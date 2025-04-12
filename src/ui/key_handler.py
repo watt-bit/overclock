@@ -97,6 +97,13 @@ class KeyHandler:
             self.main_window.reset_simulation()
             return True
         
+        # P key for toggling analytics panel - active only in model view
+        if key == Qt.Key_P:
+            # Only process if in model view (not in historian view)
+            if self.main_window.is_model_view:
+                self.main_window.toggle_analytics_panel()
+                return True
+        
         # Only process if not in connection mode, sever mode, and simulation is not running
         if (not self.main_window.creating_connection and 
             self.main_window.connection_btn.isEnabled() and 

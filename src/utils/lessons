@@ -402,7 +402,9 @@ This milestone represents the successful application of SRP (Single Responsibili
 
 8. **Visual Indicators**: Including the keyboard shortcut in the button text (e.g., "Reset (R)") makes shortcuts discoverable without requiring separate documentation.
 
-9. **Consistent Mapping**: Following established patterns (R for Reset, Space for Play/Pause) makes shortcuts intuitive and easier to remember. 
+9. **Consistent Mapping**: Following established patterns (R for Reset, Space for Play/Pause, P for Panels) makes shortcuts intuitive and easier to remember.
+
+10. **Modal Constraints**: Limiting shortcuts based on the current application mode (e.g., disabling 'P' in historian view) prevents conflicts and confusion when features aren't available.
 
 ## Parameter Management in Method Calls (2024-03-27)
 

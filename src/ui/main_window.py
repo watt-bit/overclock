@@ -1005,9 +1005,9 @@ class PowerSystemSimulator(QMainWindow):
     def update_analytics_menu_text(self, visible):
         """Update the analytics panel menu text based on visibility"""
         if visible:
-            self.analytics_action.setText("Hide Analytics Panel")
+            self.analytics_action.setText("Hide Analytics (P)anel")
         else:
-            self.analytics_action.setText("Show Analytics Panel")
+            self.analytics_action.setText("Show Analytics (P)anel")
 
     def show_properties_panel(self):
         """Show the properties panel if it's hidden"""

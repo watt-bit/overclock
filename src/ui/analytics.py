@@ -96,6 +96,7 @@ class AnalyticsPanel(QWidget):
         
         # Create container for current values with columns
         bars_group = QGroupBox()
+        bars_group.setFixedHeight(200)
         bars_container_layout = QHBoxLayout()
         
         # Left column for most common bars
