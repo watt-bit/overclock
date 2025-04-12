@@ -131,7 +131,7 @@ class TitleScreen(QWidget):
         window_width = self.width()
         window_height = self.height()
         btn_x = (window_width - new_project_btn.width()) // 2 - 90
-        btn_y = (window_height - new_project_btn.height()) // 2 + 75 
+        btn_y = (window_height - new_project_btn.height()) // 2 + 70 
         new_project_btn.move(btn_x, btn_y)
         
         # Connect button click to transition
@@ -189,7 +189,7 @@ class TitleScreen(QWidget):
         window_width = self.width()
         window_height = self.height()
         btn_x = (window_width - load_project_btn.width()) // 2 + 50
-        btn_y = (window_height - load_project_btn.height()) // 2 + 75
+        btn_y = (window_height - load_project_btn.height()) // 2 + 70
         load_project_btn.move(btn_x, btn_y)
         
         # Connect button click to load handler

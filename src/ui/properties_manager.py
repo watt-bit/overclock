@@ -410,7 +410,7 @@ class ComponentPropertiesManager:
         layout.addRow("Ramp Rate Limiter:", ramp_rate_widget)
         layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
         layout.addRow("Efficiency:", efficiency_widget)
-        layout.addRow("Cost per GJ ($):", cost_edit)
+        layout.addRow("Gas Cost per GJ ($):", cost_edit)
     
     def _add_grid_import_properties(self, component, layout):
         capacity_edit = QLineEdit(str(component.capacity))

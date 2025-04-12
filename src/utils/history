@@ -1479,3 +1479,11 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Removed the conditional check that only showed cost when accumulated_cost > 0
 - Updated cost text positioning to ensure proper alignment at the bottom of the component
 - Provides consistent visibility of cost information throughout the simulation
+
+## 2024-07-06: Implemented Economic Dispatch for BTF Unit Commitment Generators
+- Modified the simulation engine to prioritize generators based on their cost_per_gj
+- Added sorting mechanism to dispatch generators in "BTF Unit Commitment (Auto)" mode in order of increasing cost
+- Created a two-step process: first collect and sort generators, then dispatch them
+- This ensures the most cost-effective generators are used first before more expensive units
+- Similar to the existing price-based dispatching for grid import/export components
+- Optimizes overall system cost by utilizing least-cost resources first

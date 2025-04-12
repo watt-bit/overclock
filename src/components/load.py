@@ -16,7 +16,7 @@ class LoadComponent(ComponentBase):
         # Load the image
         self.image = QPixmap("src/ui/assets/load.png")
         
-        self.demand = 2500  # kW
+        self.demand = 2000  # kW
         self.price_per_kwh = 0.00  # Default price per kWh in dollars
         self.operating_mode = "Demand Droop (Auto)"  # Fixed operating mode
         self.accumulated_revenue = 0.00  # Track accumulated revenue in dollars

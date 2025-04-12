@@ -22,7 +22,7 @@ class GeneratorComponent(ComponentBase):
         # Gas consumption and cost properties
         self.conversion_constant = 277.78  # 1 GJ of gas = 277.78 kWh of electricity
         self.efficiency = 0.40  # 40% efficiency by default
-        self.cost_per_gj = 2.00  # $2.00 per GJ by default
+        self.cost_per_gj = 3.00  # $3.00 per GJ by default
         self.accumulated_cost = 0.00  # Track accumulated cost in dollars
         self.previous_cost = 0.00  # Track previous cost for milestone detection
         
@@ -112,7 +112,7 @@ class GeneratorComponent(ComponentBase):
         cost_text = f"Cost: ${self.accumulated_cost:.2f}"
         cost_rect = QRectF(
             rect.x(),
-            rect.y() + rect.height(),  # Position at bottom with margin
+            rect.y() + rect.height() + 5,  # Position at bottom with margin
             rect.width(),
             25
         )

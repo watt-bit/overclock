@@ -151,13 +151,21 @@ class SimulationEngine(QObject):
                     remaining_load = max(0, remaining_load - output)
             
             # Next get generation from BTF Unit Commitment (Auto) generators
-            for item in self.main_window.scene.items():
-                if isinstance(item, GeneratorComponent) and item.operating_mode == "BTF Unit Commitment (Auto)":
-                    # Only pass the remaining load to each generator
-                    # This ensures generators don't all try to satisfy the full load
-                    output = item.calculate_output(remaining_load)
-                    local_generation += output
-                    remaining_load = max(0, remaining_load - output)
+            # Get all BTF Unit Commitment generators and sort by cost_per_gj in ascending order (lowest cost first)
+            unit_commitment_generators = [item for item in self.main_window.scene.items() 
+                                         if isinstance(item, GeneratorComponent) and 
+                                         item.operating_mode == "BTF Unit Commitment (Auto)"]
+            
+            # Sort generators by cost_per_gj (lowest cost first)
+            unit_commitment_generators.sort(key=lambda x: x.cost_per_gj)
+            
+            # Process generators in order of increasing cost
+            for item in unit_commitment_generators:
+                # Only pass the remaining load to each generator
+                # This ensures generators don't all try to satisfy the full load
+                output = item.calculate_output(remaining_load)
+                local_generation += output
+                remaining_load = max(0, remaining_load - output)
             
             # Last, get generation from BTF Droop (Auto) generators, sharing load equally
             droop_generators = [item for item in self.main_window.scene.items() 
