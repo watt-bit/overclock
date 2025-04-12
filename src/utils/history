@@ -1423,3 +1423,28 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Connected click event to QApplication.quit() to properly exit the application
 - Added cursor change to pointing hand when hovering for better user feedback
 - Provides a clear and intuitive way for users to exit the application from the title screen
+
+## 2025-03-28 22:30 - UI Enhancements
+- Modified properties panel to be floating and hidden by default
+- Added automatic positioning of properties panel at 300px up and right from screen center
+- Added 'P' hotkey to toggle properties panel visibility
+- Made properties panel auto-open when selecting a component
+- Made analytics panel hidden by default
+- Enhanced dock widget title bars with darker background and centered text
+
+## 2024-07-07 - Added Analytics Toggle Button
+- Added a new analytics toggle button in the top right corner of the modeling view
+- Used three image assets for different button states (default, hover, clicked)
+- Set the button to 40px by 40px size
+- Positioned button in the top right corner with 10px padding
+- Connected button to toggle the analytics panel visibility
+- Made the button automatically reposition when the view is resized
+- Added logic to hide the button when in historian view and show it when switching back to model view
+- Improved implementation using a custom QLabel class with properly scaled images using Qt.KeepAspectRatio and Qt.SmoothTransformation
+
+## 2024-07-18: Removed Properties Panel Button from View Menu
+- Removed the "Show Properties Panel" button from the View menu
+- Kept all related functionality intact, including the toggle_properties_panel method
+- Properties panel can still be toggled programmatically and via component selection
+- Simplified UI by removing redundant menu option since properties panel auto-shows when clicking components
+- Analytics panel option remains in the View menu

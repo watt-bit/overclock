@@ -992,6 +992,8 @@ class PowerSystemSimulator(QMainWindow):
     def toggle_analytics_panel(self):
         """Toggle the analytics panel visibility"""
         self.analytics_dock.setVisible(not self.analytics_dock.isVisible())
+        if self.analytics_dock.isVisible():
+            self.position_properties_panel_if_needed()
 
     def update_properties_menu_text(self, visible):
         """Update the properties panel menu text based on visibility"""
@@ -1031,6 +1033,10 @@ class PowerSystemSimulator(QMainWindow):
         # Reposition mode toggle button in top left corner
         if hasattr(self, 'mode_toggle_btn'):
             self.mode_toggle_btn.move(10, 10)
+            
+        # Reposition analytics toggle button in top right corner
+        if hasattr(self, 'analytics_toggle_btn'):
+            self.analytics_toggle_btn.move(self.view.width() - 85, 0)
         
         # Resize historian chart if in historian view
         if not self.is_model_view and hasattr(self, 'historian_manager'):
@@ -1058,6 +1064,10 @@ class PowerSystemSimulator(QMainWindow):
             if self.analytics_dock.isVisible():
                 self.analytics_dock.setVisible(False)
             
+            # Hide the analytics toggle button in historian view
+            if hasattr(self, 'analytics_toggle_btn'):
+                self.analytics_toggle_btn.hide()
+            
             # Disable the toolbar menu buttons for properties and analytics
             self.properties_action.setEnabled(False)
             self.analytics_action.setEnabled(False)
@@ -1082,6 +1092,10 @@ class PowerSystemSimulator(QMainWindow):
         else:
             # Switching back to Model mode
             self.mode_toggle_btn.setText("🧩 Model (TAB)")
+            
+            # Show the analytics toggle button when returning to model view
+            if hasattr(self, 'analytics_toggle_btn'):
+                self.analytics_toggle_btn.show()
             
             # Re-enable the toolbar menu buttons
             self.properties_action.setEnabled(True)

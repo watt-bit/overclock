@@ -97,7 +97,7 @@ class UIInitializer:
             # Make the logo visible
             main_window.logo_overlay.show()
         
-        # Create Model/Historian toggle button in top-left corner
+        # Create Mode/Historian toggle button in top-left corner
         main_window.mode_toggle_btn = QPushButton("🧩 Model (TAB)", main_window.view)
         main_window.mode_toggle_btn.setStyleSheet("""
             QPushButton { 
@@ -125,6 +125,56 @@ class UIInitializer:
         main_window.mode_toggle_btn.move(10, 10)
         # Make the button visible
         main_window.mode_toggle_btn.show()
+        
+        # Create a custom class for the analytics toggle button
+        class AnalyticsToggleButton(QLabel):
+            def __init__(self, parent=None):
+                super().__init__(parent)
+                self.normal_pixmap = QPixmap("src/ui/assets/analyticsbutton.png")
+                self.hover_pixmap = QPixmap("src/ui/assets/analyticsbuttonhover.png")
+                self.clicked_pixmap = QPixmap("src/ui/assets/analyticsbuttonclick.png")
+                
+                # Scale pixmaps to 40x40 while maintaining aspect ratio
+                self.normal_pixmap = self.normal_pixmap.scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                self.hover_pixmap = self.hover_pixmap.scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                self.clicked_pixmap = self.clicked_pixmap.scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                
+                # Set the default pixmap
+                self.setPixmap(self.normal_pixmap)
+                self.setFixedSize(80, 80)
+                self.is_pressed = False
+                
+            def mousePressEvent(self, event):
+                self.is_pressed = True
+                self.setPixmap(self.clicked_pixmap)
+                super().mousePressEvent(event)
+                
+            def mouseReleaseEvent(self, event):
+                self.is_pressed = False
+                self.setPixmap(self.hover_pixmap if self.underMouse() else self.normal_pixmap)
+                # Emit a fake click signal
+                if self.underMouse() and hasattr(self, 'on_click') and callable(self.on_click):
+                    self.on_click()
+                super().mouseReleaseEvent(event)
+                
+            def enterEvent(self, event):
+                if not self.is_pressed:
+                    self.setPixmap(self.hover_pixmap)
+                super().enterEvent(event)
+                
+            def leaveEvent(self, event):
+                if not self.is_pressed:
+                    self.setPixmap(self.normal_pixmap)
+                super().leaveEvent(event)
+        
+        # Create Analytics toggle button in top-right corner
+        main_window.analytics_toggle_btn = AnalyticsToggleButton(main_window.view)
+        # Set the click handler
+        main_window.analytics_toggle_btn.on_click = main_window.toggle_analytics_panel
+        # Position in top right corner with padding
+        main_window.analytics_toggle_btn.move(main_window.view.width() - 85, 0)
+        # Make the button visible
+        main_window.analytics_toggle_btn.show()
         
         # Component palette
         main_window.component_dock = QDockWidget("Components", main_window)
@@ -614,7 +664,6 @@ class UIInitializer:
         # Create actions for toggling panel visibility - store references for later updates
         main_window.properties_action = QAction("Show Properties Panel", main_window)
         main_window.properties_action.triggered.connect(main_window.toggle_properties_panel)
-        view_menu.addAction(main_window.properties_action)
 
         main_window.analytics_action = QAction("Show Analytics Panel", main_window)
         main_window.analytics_action.triggered.connect(main_window.toggle_analytics_panel)

@@ -749,6 +749,35 @@ To add a new component:
 3. Add a button to place the component
 4. Add handling in add_component method
 
+## Floating UI Elements in Qt (2024-07-07)
+1. **Parent-Child Relationship**: When creating floating elements like buttons on a QGraphicsView:
+   - The view, not the scene, should be the parent for buttons or overlays
+   - This ensures the elements stay positioned relative to the view regardless of scene content
+   - Example: `button = QPushButton("Text", view)` sets the view as the parent
+
+2. **Responsive Positioning**: For elements that need to reposition on window resize:
+   - Override the view's resizeEvent method to reposition elements
+   - Store references to UI elements as instance variables for access in the resize handler
+   - Recalculate positions based on new dimensions (e.g., view.width() - button_width - padding)
+
+3. **Visibility State Management**: For elements that need to change visibility in different modes:
+   - Keep visibility state tied to the application's mode state (model view vs historian view)
+   - Use hide() and show() methods rather than setting visibility properties
+   - Check for element existence with hasattr() before attempting to show/hide to prevent errors
+
+4. **Image-Based Button States**: For visually appealing buttons with different states:
+   - Use CSS background-image in stylesheets rather than setting icons
+   - Define hover and pressed states with different images for better visual feedback
+   - Set background-color to transparent with no borders for a clean floating appearance
+   - Keep images in a consistent location (e.g., src/ui/assets) for organized asset management
+
+5. **Proper Image Scaling in Qt**:
+   - QPixmap.scaled() with Qt.KeepAspectRatio and Qt.SmoothTransformation provides best quality scaling
+   - Creating a custom class based on QLabel offers more control over image presentation than stylesheets
+   - Implementing mousePressEvent, mouseReleaseEvent, enterEvent, and leaveEvent allows full control over state changes
+   - This approach is better than CSS background-image for maintaining image proportions
+   - Using scaled QPixmaps guarantees the images will display at exactly the intended size
+
 ## UI System
 - Uses PyQt5 for UI components
 - Main window organizes dockable panels
@@ -1507,3 +1536,28 @@ Key insights from implementing the exit button on the title screen:
    - Fixed elements like close buttons benefit from consistent positioning rather than layout managers
    - For frameless windows, custom window controls need to be manually implemented and positioned
    - Consistent positioning across screens (e.g., always top-left) creates predictable user experience
+
+## UI Simplification (2024-07-18)
+1. UI Decluttering
+   - Removing redundant UI elements improves focus and reduces cognitive load
+   - When a feature is accessible in multiple ways, consider keeping only the most intuitive path
+   - Auto-showing panels (like properties panel on component selection) reduces the need for manual toggling
+   - Menu items should be reserved for features not easily accessible through the main interface
+
+2. Functionality Preservation
+   - When removing UI elements, ensure all underlying functionality is preserved
+   - Keep methods and signals that implement the feature even if one access point is removed
+   - This maintains the API for programmatic access and potential future UI enhancements
+   - Maintain support for keyboard shortcuts even when removing menu items
+
+3. Progressive Disclosure
+   - Features should be revealed progressively as needed rather than all at once
+   - Properties panel appearing only when relevant (component selected) is a good example
+   - This approach reduces interface complexity while maintaining full functionality
+   - Users benefit from a cleaner interface with contextually appropriate controls
+
+4. Documentation Importance
+   - Document UI simplifications to track the rationale behind changes
+   - This helps prevent reintroduction of unnecessary UI elements in the future
+   - Use the history log to record what was changed and why
+   - Update lessons with insights about the UI design philosophy
