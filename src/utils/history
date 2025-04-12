@@ -1473,3 +1473,9 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Fixed bug where generator accumulated costs weren't reset when clicking the Reset button
 - Updated reset_simulation method in main_window.py to reset accumulated_cost and previous_cost for generator components
 - Ensures consistent behavior with other cost-tracking components like GridImportComponent
+
+## 2024-07-06: Enhanced Generator Component Cost Display
+- Modified the GeneratorComponent to always display the cost text, even when the accumulated cost is $0.00
+- Removed the conditional check that only showed cost when accumulated_cost > 0
+- Updated cost text positioning to ensure proper alignment at the bottom of the component
+- Provides consistent visibility of cost information throughout the simulation

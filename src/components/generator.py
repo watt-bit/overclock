@@ -108,16 +108,15 @@ class GeneratorComponent(ComponentBase):
         capacity_text = f"{self.capacity} kW (gas) | {output_percentage}%"
         painter.drawText(text_rect, Qt.AlignCenter, capacity_text)
         
-        # Add cost display if there's accumulated cost
-        if self.accumulated_cost > 0:
-            cost_text = f"Cost: ${self.accumulated_cost:.2f}"
-            cost_rect = QRectF(
-                rect.x(),
-                rect.y() + rect.height(),  # Position at bottom with margin
-                rect.width(),
-                25
-            )
-            painter.drawText(cost_rect, Qt.AlignCenter, cost_text)
+        # Add cost display (always visible, even when cost is 0)
+        cost_text = f"Cost: ${self.accumulated_cost:.2f}"
+        cost_rect = QRectF(
+            rect.x(),
+            rect.y() + rect.height() - 25,  # Position at bottom with margin
+            rect.width(),
+            25
+        )
+        painter.drawText(cost_rect, Qt.AlignCenter, cost_text)
         
         # Calculate and store the smoke emission point (top-center of the image)
         self.smoke_point = QPointF(
