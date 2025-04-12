@@ -121,7 +121,7 @@ class GeneratorComponent(ComponentBase):
         # Calculate and store the smoke emission point (top-center of the image)
         self.smoke_point = QPointF(
             self.x() + rect.width() / 2 - 25,  # Center X with offset
-            self.y() + rect.y() + (rect.height() * 0.05) + image_size * 0.2 - 25  # Near top of image with offset
+            self.y() + rect.y() + (rect.height() * 0.05) + image_size * 0.2  # Near top of image with offset
         )
     
     def emit_smoke(self):
