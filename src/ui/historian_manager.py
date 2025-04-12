@@ -25,14 +25,14 @@ class HistorianManager:
         self.lines = {}  # Dictionary to store line objects by data key
         self.line_visibility = {}  # Track visibility state of each line
         self.toggle_buttons = {}  # Dictionary to store toggle buttons by data key
-        self.colors = {  # Default colors for known data types
-            'total_generation': '#4CAF50',  # Green
-            'total_load': '#FF5722',  # Orange
-            'battery_soc': '#2196F3',  # Blue
-            'grid_import': '#9C27B0',  # Purple
-            'grid_export': '#FFC107',  # Amber
-            'cumulative_revenue': '#FF4081',  # Pink for revenue on second axis
-            'cumulative_cost': '#8B0000'  # Dark red
+        self.colors = {  # Default colors for known data types - dark-mode friendly colors
+            'total_generation': '#66BB6A',  # Soft green
+            'total_load': '#FF7043',  # Soft orange
+            'battery_soc': '#42A5F5',  # Soft blue
+            'grid_import': '#AB47BC',  # Soft purple
+            'grid_export': '#FFCA28',  # Soft amber
+            'cumulative_revenue': '#EC407A',  # Soft pink for revenue
+            'cumulative_cost': '#D32F2F'   # Soft red for cost
         }
         
         # Define which series use secondary y-axis
@@ -105,7 +105,7 @@ class HistorianManager:
         # Create secondary y-axis
         self.ax2 = self.ax.twinx()
         self.ax2.set_facecolor('#1E1E1E')  # Dark background for plot area
-        self.ax2.tick_params(colors='#FF4081')  # Pink ticks for revenue axis
+        self.ax2.tick_params(colors='#EC407A')  # Soft pink ticks to match cumulative_revenue color
         
         # Adjust subplot parameters to give specified padding
         self.figure.subplots_adjust(left=0.05, right=0.95, bottom=0.09, top=0.96)
@@ -130,7 +130,11 @@ class HistorianManager:
         self.ax2.set_ylim(0, 1000)  # Initial y scale, will auto-adjust
         
         # Remove scientific notation from top of secondary axis
+        # This must be done before setting a custom formatter
         self.ax2.ticklabel_format(useOffset=False)
+        
+        # Initialize the secondary axis formatting with default values
+        self.update_secondary_axis_formatting(1000)
         
         # Add the main widget to the scene
         self.chart_proxy = self.historian_scene.addWidget(self.main_widget)
@@ -141,7 +145,7 @@ class HistorianManager:
     def get_color_for_data(self, data_key):
         """
         Get a color for a data series. Uses predefined colors if available,
-        otherwise generates a random color.
+        otherwise generates a random color suitable for dark backgrounds.
         
         Args:
             data_key: Key name for the data series
@@ -153,11 +157,36 @@ class HistorianManager:
             return self.colors[data_key]
         
         # Generate a new color for unknown keys
-        # Use golden ratio to get diverse colors
+        # Use golden ratio to get diverse colors, but ensure they are suitable for dark backgrounds
         golden_ratio_conjugate = 0.618033988749895
         h = hash(data_key) * golden_ratio_conjugate % 1
-        rgba = plt.cm.hsv(h)  # This returns 4 values (r, g, b, a)
-        r, g, b, _ = rgba  # Unpack and ignore alpha
+        
+        # For dark backgrounds we want:
+        # - High enough saturation to be distinct (0.6-0.8)
+        # - High enough value/brightness to be visible (0.7-0.9)
+        s = 0.7  # Fixed saturation - more vivid but not too harsh
+        v = 0.85  # Fixed brightness - visible on dark but not eye-straining
+        
+        # Convert HSV to RGB
+        # This is a simplified implementation of hsv_to_rgb
+        h_i = int(h * 6)
+        f = h * 6 - h_i
+        p = v * (1 - s)
+        q = v * (1 - f * s)
+        t = v * (1 - (1 - f) * s)
+        
+        if h_i == 0:
+            r, g, b = v, t, p
+        elif h_i == 1:
+            r, g, b = q, v, p
+        elif h_i == 2:
+            r, g, b = p, v, t
+        elif h_i == 3:
+            r, g, b = p, q, v
+        elif h_i == 4:
+            r, g, b = t, p, v
+        else:
+            r, g, b = v, p, q
         
         # Convert to hex
         hex_color = "#{:02x}{:02x}{:02x}".format(
@@ -190,9 +219,9 @@ class HistorianManager:
         # Set button appearance
         button.setStyleSheet(f"""
             QPushButton {{
-                background-color: {color};
-                color: black;
-                border: none;
+                background-color: #1E1E1E;
+                color: white;
+                border: 2px solid {color};
                 padding: 5px;
                 border-radius: 3px;
                 text-align: left;
@@ -201,6 +230,7 @@ class HistorianManager:
             QPushButton:checked {{
                 background-color: #444444;
                 color: #888888;
+                border: 1px solid #888888;
             }}
         """)
         
@@ -526,6 +556,9 @@ class HistorianManager:
         self.ax.set_xlim(0, 8760)
         self.ax.set_ylim(0, 1000)
         self.ax2.set_ylim(0, 1000)
+        
+        # Reset the secondary axis formatting
+        self.update_secondary_axis_formatting(1000)
         
         # Reset all toggle buttons to their default states
         for key, button in self.toggle_buttons.items():

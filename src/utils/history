@@ -1503,3 +1503,14 @@ Modified historian_manager.py to make only the total_generation series visible b
 - The error message was "AttributeError: This method only works with the ScalarFormatter"
 - Resolved the conflict between the custom formatters and the ScalarFormatter-specific method
 - The custom formatters already handle all necessary formatting without needing the additional call
+
+## 2023-11-18: Modified the button appearance in historian_manager.py to use dark grey backgrounds with colored borders that match the respective line colors, rather than fully colored backgrounds.
+
+## 2024-07-18: Updated Historian Chart Colors for Dark Mode
+- Modified the default colors in HistorianManager to be more dark-mode friendly
+- Updated all predefined colors to softer variants with better visibility on dark backgrounds
+- Implemented custom HSV to RGB color generation for dynamic series colors
+- Fixed saturation (0.7) and brightness (0.85) values to ensure all generated colors work well on dark backgrounds
+- Updated secondary axis color to match the new cumulative_revenue color
+- Enhanced visual coherence and readability of all chart elements
+- Reduced eye strain when viewing charts for extended periods
