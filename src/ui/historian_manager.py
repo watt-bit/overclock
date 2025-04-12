@@ -325,118 +325,151 @@ class HistorianManager:
         """
         Update the histogram chart with current data from the simulation engine
         """
-        # Get the historian data from the simulation engine
         historian_data = self.parent.simulation_engine.historian
-        current_time = self.parent.simulation_engine.current_time_step
-        
+        current_time = self.parent.simulation_engine.current_time_step # Next step to be simulated (e.g., 6 if hour 5 just finished)
+
         if current_time <= 0:
+            # Handle the case where simulation hasn't started or is reset
+            self.clear_chart() # Ensure chart is empty if time is 0
             return
-        
-        # Common x values for all data series
-        x_values = list(range(current_time))
-        
+
         # Track maximum values for both axes
         max_val_primary = 0
         max_val_secondary = 0
-        
-        # First, handle primary axis data
-        primary_data_keys = [k for k in historian_data.keys() if k not in self.secondary_axis_series]
-        
-        # Create/update lines for each data series in the historian - Primary axis first
-        for data_key in primary_data_keys:
-            data_values = historian_data[data_key]
-            
-            # Skip if not enough data
-            if len(data_values) < current_time:
-                continue
-                
-            # Get y values up to current time
-            y_values = data_values[:current_time]
-            
-            # Create a new line if this data series doesn't have one yet
-            if data_key not in self.lines:
-                self.lines[data_key] = self.create_line_for_data(data_key)
-                
-                # Create a button for this line if it doesn't exist yet
-                if data_key not in self.toggle_buttons:
-                    button = self.create_toggle_button(data_key)
-                    self.toggle_buttons[data_key] = button
-                    # Add to primary buttons list
-                    self.primary_buttons.append(button)
-                    # Add to layout
-                    self.buttons_layout.addWidget(button)
-            
-            # Update the line data
-            self.lines[data_key].set_data(x_values, y_values)
-            
-            # Update max value (only consider visible lines for scaling)
-            if y_values and self.line_visibility.get(data_key, True):
-                series_max = max(y_values)
-                if series_max > max_val_primary:
-                    max_val_primary = series_max
-        
-        # Then handle secondary axis data (always after primary)
-        for data_key in self.secondary_axis_series:
-            # Skip if not in historian data
+
+        # --- Update Existing Lines ---
+        # Iterate through a copy of keys in case dictionary changes during iteration (though unlikely here)
+        existing_lines_keys = list(self.lines.keys())
+        for data_key in existing_lines_keys:
             if data_key not in historian_data:
+                # Data key might exist from a previous run but not current one
+                self.lines[data_key].set_data([], []) # Clear data
                 continue
-                
+
             data_values = historian_data[data_key]
-            
-            # Skip if not enough data
-            if len(data_values) < current_time:
-                continue
-                
-            # Get y values up to current time
-            y_values = data_values[:current_time]
-            
-            # Create a new line if this data series doesn't have one yet
+            is_cumulative = data_key in self.secondary_axis_series
+
+            # Determine the number of points to plot and the slice index
+            if is_cumulative:
+                # Cumulative data index T contains value at *end* of hour T.
+                # Last calculated index is current_time - 2 (e.g., index 4 if current_time=6).
+                # We need to plot points up to and including this last index.
+                # Number of points = (last index) + 1 = (current_time - 2) + 1 = current_time - 1.
+                # Slice index = number of points = current_time - 1.
+                num_points = max(0, current_time - 1)
+                slice_index = num_points
+            else:
+                # Instantaneous data index T contains value *during* hour T.
+                # Last calculated index is current_time - 1 (e.g., index 5 if current_time=6).
+                # Number of points = (last index) + 1 = (current_time - 1) + 1 = current_time.
+                # Slice index = number of points = current_time.
+                num_points = current_time
+                slice_index = num_points
+
+            # Generate x_values for the determined range
+            current_x_values = list(range(num_points))
+
+            # Slice y_values safely based on the required range end index
+            if len(data_values) >= slice_index:
+                y_values = data_values[:slice_index]
+            else:
+                # Fallback if data is shorter than expected (e.g., beginning of sim)
+                y_values = data_values[:min(len(data_values), slice_index)]
+
+            # Ensure x and y have the same length (adjust x if y was truncated)
+            if len(current_x_values) != len(y_values):
+                current_x_values = list(range(len(y_values)))
+
+            # Update the line data
+            if data_key in self.lines: # Ensure line exists
+                self.lines[data_key].set_data(current_x_values, y_values)
+
+                # Update max value calculation (only consider visible lines for scaling)
+                if y_values and self.line_visibility.get(data_key, True):
+                    series_max = max(y_values) # y_values confirmed non-empty
+                    if is_cumulative:
+                        if series_max > max_val_secondary: max_val_secondary = series_max
+                    else:
+                        if series_max > max_val_primary: max_val_primary = series_max
+
+        # --- Add New Lines (if any new keys appear in historian_data) ---
+        for data_key in historian_data.keys():
             if data_key not in self.lines:
+                # New data series encountered
+                data_values = historian_data[data_key]
+                is_cumulative = data_key in self.secondary_axis_series
+
+                # Determine plot range and slice index for the new line
+                if is_cumulative:
+                    num_points = max(0, current_time - 1)
+                    slice_index = num_points
+                else:
+                    num_points = current_time
+                    slice_index = num_points
+
+                current_x_values = list(range(num_points))
+
+                if len(data_values) >= slice_index:
+                    y_values = data_values[:slice_index]
+                else:
+                    y_values = data_values[:min(len(data_values), slice_index)]
+
+                if len(current_x_values) != len(y_values):
+                    current_x_values = list(range(len(y_values)))
+
+                # Create line and button objects
                 self.lines[data_key] = self.create_line_for_data(data_key)
-                
-                # Create a button for this line if it doesn't exist yet
+                self.lines[data_key].set_data(current_x_values, y_values) # Set initial data
+
                 if data_key not in self.toggle_buttons:
                     button = self.create_toggle_button(data_key)
                     self.toggle_buttons[data_key] = button
-                    # Set button checked state based on specific series
-                    if data_key == 'cumulative_revenue':
-                        button.setChecked(False)  # Unchecked (visible) for revenue series
+                    # Add button to layout in correct section
+                    if is_cumulative:
+                        self.secondary_buttons.append(button)
+                        # Add separator only if this is the first secondary button being added
+                        if len(self.secondary_buttons) == 1:
+                            separator = QFrame()
+                            separator.setFrameShape(QFrame.HLine)
+                            separator.setFrameShadow(QFrame.Sunken)
+                            separator.setStyleSheet("background-color: #555555;")
+                            self.buttons_layout.addWidget(separator)
+                        self.buttons_layout.addWidget(button) # Add to the end
                     else:
-                        button.setChecked(True)  # Checked (hidden) for other secondary axis series
-                    # Add to secondary buttons list
-                    self.secondary_buttons.append(button)
-                    
-                    # Add a separator before the first secondary axis button
-                    if len(self.secondary_buttons) == 1:
-                        separator = QFrame()
-                        separator.setFrameShape(QFrame.HLine)
-                        separator.setFrameShadow(QFrame.Sunken)
-                        separator.setStyleSheet("background-color: #555555;")
-                        self.buttons_layout.addWidget(separator)
-                    
-                    # Always add the button at the very bottom
-                    self.buttons_layout.addWidget(button)
-            
-            # Update the line data
-            self.lines[data_key].set_data(x_values, y_values)
-            
-            # Update max value (only consider visible lines for scaling)
-            if y_values and self.line_visibility.get(data_key, True):
-                series_max = max(y_values)
-                if series_max > max_val_secondary:
-                    max_val_secondary = series_max
-        
-        # Auto-adjust y scales based on the max values
+                        self.primary_buttons.append(button)
+                        # Insert primary buttons before the separator/secondary buttons
+                        insert_index = self.buttons_layout.count() - len(self.secondary_buttons)
+                        if self.secondary_buttons: # If secondary buttons exist, account for the separator
+                             insert_index -= 1
+                        # Insert at calculated index, ensuring it's not negative
+                        self.buttons_layout.insertWidget(max(0, insert_index), button)
+
+                # Update max value if this new line is visible
+                if y_values and self.line_visibility.get(data_key, True):
+                    series_max = max(y_values)
+                    if is_cumulative:
+                        if series_max > max_val_secondary: max_val_secondary = series_max
+                    else:
+                        if series_max > max_val_primary: max_val_primary = series_max
+
+
+        # --- Final Steps ---
+        # Auto-adjust y scales based on the max values found across all visible lines
         if max_val_primary > 0:
             self.ax.set_ylim(0, max_val_primary * 1.1)  # 10% headroom
-            
+        # else: # Optional: Reset ylim if no visible primary lines
+        #     self.ax.set_ylim(0, 1000)
+
         if max_val_secondary > 0:
             self.ax2.set_ylim(0, max_val_secondary * 1.1)  # 10% headroom
-        
-        # Update axis visibility
-        self.update_axis_visibility()
-        
-        # Redraw the canvas
+        # else: # Optional: Reset ylim if no visible secondary lines
+        #     self.ax2.set_ylim(0, 1000)
+
+
+        # Update axis visibility based on *currently* visible lines
+        self.update_axis_visibility() # This already checks visibility state and redraws
+
+        # Explicitly redraw the canvas (update_axis_visibility might already do this, but ensures it happens)
         self.canvas.draw()
 
     def clear_chart(self):
