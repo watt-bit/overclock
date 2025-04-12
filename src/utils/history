@@ -1514,3 +1514,51 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated secondary axis color to match the new cumulative_revenue color
 - Enhanced visual coherence and readability of all chart elements
 - Reduced eye strain when viewing charts for extended periods
+
+## 2024-08-01 - Added Custom Border with Image to Main Layout
+- Created a new BorderedMainWidget class in src/ui/ui_initializer.py
+- Implemented a 2px border around the main layout using innertitlebarlight.png
+- Added rounded corners with 10px radius for a modern look
+- Used QPainterPath and clipping to create a clean border effect
+- Added error handling for cases where the image might not load
+- Made the border transparent for mouse events to avoid interfering with UI
+- Added fallback border in case the image is not available
+- Configured the main_layout with 2px margins to accommodate the border
+- Enhanced the visual appeal of the modeling canvas with a defined border
+
+## 2024-08-01 - Fixed Border Rendering Type Error
+- Fixed a TypeError crash in the BorderedMainWidget's paintEvent method
+- Converted QRect to QRectF when calling path.addRoundedRect()
+- QPainterPath.addRoundedRect() requires a QRectF but self.rect() returns a QRect
+- Used explicit conversion with QRectF(self.rect()) to fix the type mismatch
+- The fix ensures proper rendering of the rounded border without crashes
+
+## 2024-08-01 - Fixed QRectF Parameter Type in drawPixmap
+- Fixed a TypeError in BorderedMainWidget's paintEvent method
+- Changed outer_rect from QRectF to QRect for the drawPixmap method
+- Used int() on rect.width() and rect.height() to ensure integer dimensions for scaling
+- Used QRect(0, 0, self.width(), self.height()) instead of rect.adjusted(0, 0, 0, 0)
+- The fix ensures the pixmap is properly drawn with the correct parameter types
+
+## 2024-08-01 - Added Missing QRect Import
+- Fixed a NameError by adding QRect to the imports in ui_initializer.py
+- Added QRect to the PyQt5.QtCore imports list
+- Ensures the QRect class is available for creating rectangle objects
+- This completes the fixes required for the custom image border implementation
+
+## 2024-08-01 - Added White Background to Border Margin Area
+- Modified BorderedMainWidget's paintEvent to add a white background (#FFFFFF)
+- Added a fillRect call to fill the entire widget area with white before drawing the border
+- This ensures the areas visible through the rounded corners have a consistent white background
+- Maintains the existing image-based border appearance while improving the look of the margins
+- The white background complements the dark border for better contrast
+
+## 2024-08-01 - Customized Screenshot Button with Background Image
+- Created new ImageBackgroundButton class for buttons with image backgrounds
+- Implemented custom paintEvent to draw the image background behind button text
+- Applied innertitlebardark.png as the background for the screenshot button
+- Added proper image scaling to fit button width while maintaining aspect ratio
+- Implemented center positioning of the image within the button
+- Added clipping to respect the button's rounded corners
+- Enhanced the visual appeal of the simulation controls with image-based button styling
+- Maintained hover and pressed state effects for the button

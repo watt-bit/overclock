@@ -31,7 +31,7 @@ class HistorianManager:
             'battery_soc': '#42A5F5',  # Soft blue
             'grid_import': '#AB47BC',  # Soft purple
             'grid_export': '#FFCA28',  # Soft amber
-            'cumulative_revenue': '#EC407A',  # Soft pink for revenue
+            'cumulative_revenue': '#4FC3F7',  # Bright sky blue for revenue
             'cumulative_cost': '#D32F2F'   # Soft red for cost
         }
         
@@ -50,23 +50,25 @@ class HistorianManager:
         """
         self.historian_scene = QGraphicsScene()
         
-        # Set dark grey background
-        background_color = QColor("#1E1E1E")
+        # Set dark navy-blue background
+        background_color = QColor("#0A0E22")
         self.historian_scene.setBackgroundBrush(QBrush(background_color))
         
         # Create a widget to hold the chart and controls
         self.main_widget = QWidget()
         self.main_layout = QHBoxLayout(self.main_widget)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)
         
         # Create left panel for toggle buttons
         self.controls_widget = QWidget()
+        self.controls_widget.setStyleSheet("background-color: #0A0E22;")
         self.controls_layout = QVBoxLayout(self.controls_widget)
         self.controls_layout.setAlignment(Qt.AlignTop)
         
         # Add a label for the controls section
         controls_label = QLabel("\n\n\nData Series")
-        controls_label.setStyleSheet("color: white; font-weight: bold;")
+        controls_label.setStyleSheet("color: #E1E6F9; font-weight: bold;")
         self.controls_layout.addWidget(controls_label)
         
         # Create a scroll area for the buttons (in case there are many)
@@ -74,9 +76,11 @@ class HistorianManager:
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.scroll_area.setMinimumWidth(150)  # Set a minimum width
+        self.scroll_area.setStyleSheet("background-color: #0A0E22; border: none;")
         
         # Create a widget to hold the buttons
         self.buttons_widget = QWidget()
+        self.buttons_widget.setStyleSheet("background-color: #0A0E22;")
         self.buttons_layout = QVBoxLayout(self.buttons_widget)
         self.buttons_layout.setAlignment(Qt.AlignTop)
         self.buttons_layout.setContentsMargins(0, 0, 0, 0)
@@ -87,6 +91,7 @@ class HistorianManager:
         
         # Create a widget to hold the chart
         self.chart_widget = QWidget()
+        self.chart_widget.setStyleSheet("background-color: #0A0E22;")
         self.chart_layout = QVBoxLayout(self.chart_widget)
         self.chart_layout.setContentsMargins(1, 1, 1, 1)
         
@@ -98,13 +103,13 @@ class HistorianManager:
         
         # Create matplotlib figure for the generation chart
         self.figure = plt.figure(figsize=(12, 6))
-        self.figure.patch.set_facecolor('#1E1E1E')  # Dark background for figure
+        self.figure.patch.set_facecolor('#0A0E22')  # Dark navy-blue background
         self.ax = self.figure.add_subplot(111)
-        self.ax.set_facecolor('#1E1E1E')  # Dark background for plot area
+        self.ax.set_facecolor('#11182F')  # Low-glow twilight tone for plot area
         
         # Create secondary y-axis
         self.ax2 = self.ax.twinx()
-        self.ax2.set_facecolor('#1E1E1E')  # Dark background for plot area
+        self.ax2.set_facecolor('#11182F')  # Low-glow twilight tone for plot area
         self.ax2.tick_params(colors='#EC407A')  # Soft pink ticks to match cumulative_revenue color
         
         # Adjust subplot parameters to give specified padding
@@ -115,14 +120,23 @@ class HistorianManager:
         self.chart_layout.addWidget(self.canvas)
         
         # Set up the plot - primary axis
-        self.ax.set_xlabel('Time Step (hour)', color='white')
-        self.ax.set_ylabel('Power (kW)', color='white')
-        self.ax.tick_params(colors='white')  # Make tick labels white
-        self.ax.grid(True, color='#555555')  # Lighter gray grid
+        self.ax.set_xlabel('Time Step (hour)', color='#B5BEDF')
+        self.ax.set_ylabel('Power (kW)', color='#B5BEDF')
+        self.ax.tick_params(colors='#B5BEDF')  # Soft powdery blue-lavender for tick labels
+        self.ax.grid(True, color='#3B4766', linestyle='-')  # Major gridlines
+        self.ax.grid(True, which='minor', color='#2A334F', linestyle='--', alpha=0.5)  # Minor gridlines
+        
+        # Set spines (borders) color
+        for spine in self.ax.spines.values():
+            spine.set_color('#29304D')
         
         # Set up the plot - secondary axis
-        self.ax2.set_ylabel('Amount ($)', color='white')
-        self.ax2.tick_params(axis='y', colors='white')
+        self.ax2.set_ylabel('Amount ($)', color='#B5BEDF')
+        self.ax2.tick_params(axis='y', colors='#B5BEDF')
+        
+        # Set spines (borders) color for secondary axis
+        for spine in self.ax2.spines.values():
+            spine.set_color('#29304D')
         
         # Set fixed horizontal scale for all 8760 hours
         self.ax.set_xlim(0, 8760)
@@ -219,8 +233,8 @@ class HistorianManager:
         # Set button appearance
         button.setStyleSheet(f"""
             QPushButton {{
-                background-color: #1E1E1E;
-                color: white;
+                background-color: #0A0E22;
+                color: #E1E6F9;
                 border: 2px solid {color};
                 padding: 5px;
                 border-radius: 3px;
@@ -228,7 +242,7 @@ class HistorianManager:
                 font-weight: bold;
             }}
             QPushButton:checked {{
-                background-color: #444444;
+                background-color: #1C223F;
                 color: #888888;
                 border: 1px solid #888888;
             }}
@@ -329,12 +343,12 @@ class HistorianManager:
         line, = ax.plot(
             [], [], '-', 
             color=color, 
-            linewidth=0.5,
-            alpha=0.8,
+            linewidth=0.75,
+            alpha=0.9,
             path_effects=[
                 path_effects.SimpleLineShadow(
-                    shadow_color=color, alpha=0.2, 
-                    offset=(0,0), linewidth=10
+                    shadow_color=color, alpha=0.25, 
+                    offset=(0,0), linewidth=12
                 ),
                 path_effects.Normal()
             ]
@@ -376,7 +390,7 @@ class HistorianManager:
                 return f"{x_in_millions:.1f}"
             
             self.ax2.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
-            self.ax2.set_ylabel('Amount ($1,000,000s)', color='white')
+            self.ax2.set_ylabel('Amount ($1,000,000s)', color='#B5BEDF')
             
         elif max_value >= 1_000_000:  # Greater than $1M
             # Format in millions
@@ -384,7 +398,7 @@ class HistorianManager:
                 return f"{x/1_000_000:.1f}"
             
             self.ax2.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
-            self.ax2.set_ylabel('Amount ($1,000,000s)', color='white')
+            self.ax2.set_ylabel('Amount ($1,000,000s)', color='#B5BEDF')
             
         else:  # Less than $1M
             # Format in thousands
@@ -392,7 +406,7 @@ class HistorianManager:
                 return f"{x/1_000:.1f}"
             
             self.ax2.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
-            self.ax2.set_ylabel('Amount ($ 1,000s)', color='white')
+            self.ax2.set_ylabel('Amount ($ 1,000s)', color='#B5BEDF')
     
     def update_chart(self):
         """

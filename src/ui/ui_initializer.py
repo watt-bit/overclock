@@ -5,20 +5,164 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
                             QAction, QMessageBox, QSplitter, QGraphicsLineItem,
                             QApplication, QSpacerItem, QMenu, QShortcut, QFrame,
                             QToolButton, QSizePolicy, QGraphicsItem)
-from PyQt5.QtCore import Qt, QPointF, QRectF, QTimer, pyqtSignal, QObject, QSize
-from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor, QDoubleValidator, QIntValidator, QBrush, QKeySequence, QIcon, QRadialGradient
+from PyQt5.QtCore import Qt, QPointF, QRectF, QTimer, pyqtSignal, QObject, QSize, QRect
+from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor, QDoubleValidator, QIntValidator, QBrush, QKeySequence, QIcon, QRadialGradient, QPainterPath
 
 # Import or reference modules and classes needed from main_window
 from .analytics import AnalyticsPanel
+
+# Custom Button with Image Background
+class ImageBackgroundButton(QPushButton):
+    def __init__(self, text, image_path, parent=None):
+        super().__init__(text, parent)
+        try:
+            self.bg_image = QPixmap(image_path)
+            if self.bg_image.isNull():
+                print(f"Warning: Could not load {image_path} - using default button style")
+                self.bg_image = None
+        except Exception as e:
+            print(f"Error loading button background image: {e}")
+            self.bg_image = None
+            
+        # Set transparent background to let our custom painting show through
+        self.setStyleSheet("""
+            QPushButton { 
+                color: white; 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 5px;
+                background-color: transparent;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            QPushButton:hover { 
+                border: 1px solid #666666;
+                background-color: rgba(255, 255, 255, 0.1); 
+            }
+            QPushButton:pressed { 
+                border: 2px solid #777777;
+                padding: 4px; 
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        """)
+        
+    def paintEvent(self, event):
+        if self.bg_image and not self.bg_image.isNull():
+            # Paint the background image first
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.SmoothPixmapTransform)
+            
+            # Create a rounded rect path for clipping
+            rect = QRectF(self.rect())
+            path = QPainterPath()
+            path.addRoundedRect(rect, 3, 3)  # Match the 3px border-radius from CSS
+            
+            # Apply clipping to respect rounded corners
+            painter.setClipPath(path)
+            
+            # Scale the image to fit the button width
+            scaled_image = self.bg_image.scaled(
+                self.width(), 
+                self.height(),
+                Qt.KeepAspectRatioByExpanding, 
+                Qt.SmoothTransformation
+            )
+            
+            # Center the image if it's taller than the button
+            y_offset = 0
+            if scaled_image.height() > self.height():
+                y_offset = (scaled_image.height() - self.height()) / 2
+                
+            # Center the image if it's wider than the button
+            x_offset = 0
+            if scaled_image.width() > self.width():
+                x_offset = (scaled_image.width() - self.width()) / 2
+                
+            # Draw the image centered and clipped to button shape
+            painter.drawPixmap(
+                QRect(0, 0, self.width(), self.height()),
+                scaled_image,
+                QRect(x_offset, y_offset, self.width(), self.height())
+            )
+            
+        # Call the parent class paintEvent to draw the button content (text, etc.)
+        super().paintEvent(event)
+
+# Custom Widget for Main Layout with Image Border
+class BorderedMainWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        try:
+            self.border_image = QPixmap("src/ui/assets/innertitlebardark.png")
+            if self.border_image.isNull():
+                print("Warning: Could not load innertitlebardark.png - using default border")
+                self.border_image = None
+        except Exception as e:
+            print(f"Error loading border image: {e}")
+            self.border_image = None
+            
+        self.border_width = 10
+        self.corner_radius = 10
+        # Make the widget's border transparent to mouse events
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        # Set style to ensure proper appearance
+        self.setStyleSheet("background: transparent;")
+        
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        if not hasattr(self, 'border_image') or self.border_image is None or self.border_image.isNull():
+            # Draw a fallback border if the image isn't available
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.Antialiasing)
+            pen = QPen(QColor(100, 100, 100), self.border_width)
+            painter.setPen(pen)
+            painter.drawRoundedRect(self.rect(), self.corner_radius, self.corner_radius)
+            return
+            
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        
+        # First, fill the entire widget with black background
+        painter.fillRect(self.rect(), QColor("#000000"))
+        
+        # Draw the border path
+        rect = QRectF(self.rect())  # Convert QRect to QRectF
+        path = QPainterPath()
+        path.addRoundedRect(rect, self.corner_radius, self.corner_radius)
+        
+        # Scale the border image to fit the widget while maintaining aspect ratio
+        scaled_image = self.border_image.scaled(int(rect.width()), int(rect.height()), 
+                                              Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        
+        # Create the 2px border
+        painter.save()
+        painter.setClipPath(path)
+        
+        # Draw outer frame - using QRect instead of QRectF
+        outer_rect = QRect(0, 0, self.width(), self.height())
+        painter.drawPixmap(outer_rect, scaled_image)
+        
+        # Draw inner frame (creating a border effect)
+        inner_rect = rect.adjusted(self.border_width, self.border_width, -self.border_width, -self.border_width)
+        inner_path = QPainterPath()
+        inner_path.addRoundedRect(inner_rect, self.corner_radius-self.border_width, self.corner_radius-self.border_width)
+        
+        # Set clipping to the inside area to create the border
+        painter.setClipPath(inner_path, Qt.IntersectClip)
+        painter.fillRect(rect, Qt.transparent)  # Clear the inner area
+        painter.restore()
 
 class UIInitializer:
     @staticmethod
     def initialize_ui(main_window):
         """Initialize the UI components for the PowerSystemSimulator"""
         # Main layout
-        main_widget = QWidget()
+        main_widget = BorderedMainWidget()  # Use our custom widget with border
         main_window.setCentralWidget(main_widget)
         main_layout = QHBoxLayout(main_widget)
+        main_layout.setContentsMargins(10, 10, 10, 10)  # Use 10px margins to account for the border
         
         # Set the corners to give priority to left and right dock areas
         main_window.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
@@ -547,9 +691,8 @@ class UIInitializer:
         main_window.zoom_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
         # Add screenshot button
-        main_window.screenshot_btn = QPushButton("📷 Screenshot")
+        main_window.screenshot_btn = ImageBackgroundButton("📷 Screenshot", "src/ui/assets/innertitlebardark.png")
         main_window.screenshot_btn.clicked.connect(main_window.take_screenshot)
-        main_window.screenshot_btn.setStyleSheet(default_button_style)
         main_window.screenshot_btn.setFixedWidth(150)
 
         # Add Autocomplete button

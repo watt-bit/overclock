@@ -15,16 +15,19 @@ class AnalyticsPanel(QWidget):
     def init_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)  # Remove spacing between main elements
         
         # Create matplotlib figure and canvas for time series
         chart_group = QGroupBox()
+        chart_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 1px solid #29304D; border-radius: 5px; }")
         chart_layout = QVBoxLayout()
+        chart_layout.setContentsMargins(0, 0, 0, 0)
         
         # Create figure with adjusted size and margins for power chart
         self.figure = plt.figure(figsize=(6, 4))
-        self.figure.patch.set_facecolor('#1E1E1E')  # Dark background for figure
+        self.figure.patch.set_facecolor('#0A0E22')  # Dark navy-blue background
         self.ax = self.figure.add_subplot(111)
-        self.ax.set_facecolor('#1E1E1E')  # Dark background for plot area
+        self.ax.set_facecolor('#11182F')  # Low-glow twilight tone for plot area
         # Adjust subplot parameters to give specified padding
         self.figure.subplots_adjust(left=0.15, right=0.98, bottom=0.12, top=0.97)
         self.canvas = FigureCanvas(self.figure)
@@ -40,49 +43,54 @@ class AnalyticsPanel(QWidget):
         self.unused_capacity_data = []
         
         # Set up the plot
-        self.ax.set_xlabel('Time Step (hour)', color='white')
-        self.ax.set_ylabel('Power (kW)', color='white')
-        self.ax.tick_params(colors='white')  # Make tick labels white
-        self.ax.grid(True, color='#555555')  # Lighter gray grid
+        self.ax.set_xlabel('Time Step (hour)', color='#B5BEDF')
+        self.ax.set_ylabel('Power (kW)', color='#B5BEDF')
+        self.ax.tick_params(colors='#B5BEDF')  # Soft powdery blue-lavender for tick labels
+        self.ax.grid(True, color='#3B4766', linestyle='-')  # Major gridlines
+        self.ax.grid(True, which='minor', color='#2A334F', linestyle='--', alpha=0.5)  # Minor gridlines
+        
+        # Set spines (borders) color
+        for spine in self.ax.spines.values():
+            spine.set_color('#29304D')
         
         # Create empty lines with labels - matching progress bar colors
-        self.generation_line, = self.ax.plot([], [], '-', color='#4CAF50', linewidth=2, label='Local Generation', alpha=0.9,
-                                            path_effects=[path_effects.SimpleLineShadow(shadow_color='#4CAF50', alpha=0.2, offset=(0,0), linewidth=7),
+        self.generation_line, = self.ax.plot([], [], '-', color='#66BB6A', linewidth=2, label='Local Generation', alpha=0.9,
+                                            path_effects=[path_effects.SimpleLineShadow(shadow_color='#66BB6A', alpha=0.2, offset=(0,0), linewidth=7),
                                                         path_effects.Normal()])
                                                         
-        self.battery_line, = self.ax.plot([], [], '-', color='#9c27b0', linewidth=2, label='Net Battery Power', alpha=0.9,
-                                         path_effects=[path_effects.SimpleLineShadow(shadow_color='#9c27b0', alpha=0.2, offset=(0,0), linewidth=7),
-                                                     path_effects.Normal()])  # Purple for battery
+        self.battery_line, = self.ax.plot([], [], '-', color='#42A5F5', linewidth=2, label='Net Battery Power', alpha=0.9,
+                                         path_effects=[path_effects.SimpleLineShadow(shadow_color='#42A5F5', alpha=0.2, offset=(0,0), linewidth=7),
+                                                     path_effects.Normal()])  # Blue for battery
                                                      
-        self.grid_line, = self.ax.plot([], [], '-', color='#2196F3', linewidth=2, label='Grid Import', alpha=0.9,
-                                      path_effects=[path_effects.SimpleLineShadow(shadow_color='#2196F3', alpha=0.2, offset=(0,0), linewidth=7),
+        self.grid_line, = self.ax.plot([], [], '-', color='#AB47BC', linewidth=2, label='Grid Import', alpha=0.9,
+                                      path_effects=[path_effects.SimpleLineShadow(shadow_color='#AB47BC', alpha=0.2, offset=(0,0), linewidth=7),
                                                   path_effects.Normal()])
                                                   
-        self.grid_export_line, = self.ax.plot([], [], '-', color='#00bcd4', linewidth=2, label='Grid Export', alpha=0.9,
-                                             path_effects=[path_effects.SimpleLineShadow(shadow_color='#00bcd4', alpha=0.2, offset=(0,0), linewidth=7),
+        self.grid_export_line, = self.ax.plot([], [], '-', color='#FFCA28', linewidth=2, label='Grid Export', alpha=0.9,
+                                             path_effects=[path_effects.SimpleLineShadow(shadow_color='#FFCA28', alpha=0.2, offset=(0,0), linewidth=7),
                                                          path_effects.Normal()])
                                                          
-        self.load_line, = self.ax.plot([], [], '-', color='#FFA500', linewidth=2, label='Load', alpha=0.9,
-                                      path_effects=[path_effects.SimpleLineShadow(shadow_color='#FFA500', alpha=0.2, offset=(0,0), linewidth=7),
+        self.load_line, = self.ax.plot([], [], '-', color='#FF7043', linewidth=2, label='Load', alpha=0.9,
+                                      path_effects=[path_effects.SimpleLineShadow(shadow_color='#FF7043', alpha=0.2, offset=(0,0), linewidth=7),
                                                   path_effects.Normal()])
                                                   
-        self.surplus_line, = self.ax.plot([], [], ':', color='#f44336', linewidth=2, label='Surplus/Deficit', alpha=0.9,
-                                         path_effects=[path_effects.SimpleLineShadow(shadow_color='#f44336', alpha=0.2, offset=(0,0), linewidth=7),
+        self.surplus_line, = self.ax.plot([], [], ':', color='#BA68C8', linewidth=2, label='Surplus/Deficit', alpha=0.9,
+                                         path_effects=[path_effects.SimpleLineShadow(shadow_color='#BA68C8', alpha=0.2, offset=(0,0), linewidth=7),
                                                      path_effects.Normal()])
                                                      
-        self.unused_capacity_line, = self.ax.plot([], [], ':', color='#4CAF50', linewidth=2, label='Unused Capacity', alpha=0.7,
-                                                 path_effects=[path_effects.SimpleLineShadow(shadow_color='#FFC107', alpha=0.2, offset=(0,0), linewidth=7),
+        self.unused_capacity_line, = self.ax.plot([], [], ':', color='#7986CB', linewidth=2, label='Unused Capacity', alpha=0.7,
+                                                 path_effects=[path_effects.SimpleLineShadow(shadow_color='#7986CB', alpha=0.2, offset=(0,0), linewidth=7),
                                                              path_effects.Normal()])
         
         # Update legend with dark mode styling
         legend = self.ax.legend(framealpha=0.8)
-        legend.get_frame().set_facecolor('#2D2D2D')
+        legend.get_frame().set_facecolor('#1C223F')  # Secondary background
         for text in legend.get_texts():
-            text.set_color('white')
+            text.set_color('#E1E6F9')  # Legend text font color
             text.set_fontsize(9)  # Reduce font size for legend text
         
         # Add zero line for surplus/deficit reference
-        self.ax.axhline(y=0, color='#888888', linestyle='-', alpha=0.5)
+        self.ax.axhline(y=0, color='#29304D', linestyle='-', alpha=0.7)
         
         # Set initial view limits (modified for 8760-hour view)
         self.ax.set_xlim(0, 96)  # Show first 96 hours by default
@@ -97,6 +105,7 @@ class AnalyticsPanel(QWidget):
         # Create container for current values with columns
         bars_group = QGroupBox()
         bars_group.setFixedHeight(200)
+        bars_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 1px solid #29304D; border-radius: 5px; }")
         bars_container_layout = QHBoxLayout()
         
         # Left column for most common bars
@@ -120,7 +129,7 @@ class AnalyticsPanel(QWidget):
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #4CAF50;
+                background-color: #66BB6A;
             }
         """)
         left_column.addRow("Generation:", self.generation_bar)
@@ -137,7 +146,7 @@ class AnalyticsPanel(QWidget):
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #9c27b0;
+                background-color: #42A5F5;
             }
         """)
         left_column.addRow("Net Battery:", self.battery_bar)
@@ -154,7 +163,7 @@ class AnalyticsPanel(QWidget):
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #2196F3;
+                background-color: #AB47BC;
             }
         """)
         left_column.addRow("Grid Import:", self.grid_import_bar)
@@ -171,7 +180,7 @@ class AnalyticsPanel(QWidget):
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #00bcd4;
+                background-color: #FFCA28;
             }
         """)
         left_column.addRow("Grid Export:", self.grid_export_bar)
@@ -188,7 +197,7 @@ class AnalyticsPanel(QWidget):
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #f44336;
+                background-color: #FF7043;
             }
         """)
         left_column.addRow("Load:", self.load_bar)
@@ -208,7 +217,7 @@ class AnalyticsPanel(QWidget):
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #2196F3;
+                background-color: #BA68C8;
             }
         """)
         right_column.addRow("Surplus/Deficit:", self.surplus_bar)
@@ -225,7 +234,7 @@ class AnalyticsPanel(QWidget):
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #FFC107;
+                background-color: #7986CB;
             }
         """)
         right_column.addRow("Unused Capacity:", self.unused_capacity_bar)
@@ -266,13 +275,15 @@ class AnalyticsPanel(QWidget):
         
         # Create new revenue chart figure - now positioned below the bars
         revenue_group = QGroupBox()
+        revenue_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 1px solid #29304D; border-radius: 5px; }")
         revenue_layout = QVBoxLayout()
+        revenue_layout.setContentsMargins(0, 0, 0, 0)
         
         # Create figure with adjusted size and margins for revenue chart
         self.revenue_figure = plt.figure(figsize=(6, 3))
-        self.revenue_figure.patch.set_facecolor('#1E1E1E')  # Dark background for figure
+        self.revenue_figure.patch.set_facecolor('#0A0E22')  # Dark navy-blue background
         self.revenue_ax = self.revenue_figure.add_subplot(111)
-        self.revenue_ax.set_facecolor('#1E1E1E')  # Dark background for plot area
+        self.revenue_ax.set_facecolor('#11182F')  # Low-glow twilight tone for plot area
         # Adjust subplot parameters to give specified padding
         self.revenue_figure.subplots_adjust(left=0.15, right=0.98, bottom=0.18, top=0.95)
         self.revenue_canvas = FigureCanvas(self.revenue_figure)
@@ -282,26 +293,31 @@ class AnalyticsPanel(QWidget):
         self.gross_cost_data = [0.0] * 8761  # Initialize with 0s (hours 0-8760)
         
         # Set up the plot
-        self.revenue_ax.set_xlabel('Time Step (hour)', color='white')
-        self.revenue_ax.set_ylabel('Amount ($)', color='white')
-        self.revenue_ax.tick_params(colors='white')  # Make tick labels white
-        self.revenue_ax.grid(True, color='#555555')  # Lighter gray grid
+        self.revenue_ax.set_xlabel('Time Step (hour)', color='#B5BEDF')
+        self.revenue_ax.set_ylabel('Amount ($)', color='#B5BEDF')
+        self.revenue_ax.tick_params(colors='#B5BEDF')  # Soft powdery blue-lavender for tick labels
+        self.revenue_ax.grid(True, color='#3B4766', linestyle='-')  # Major gridlines
+        self.revenue_ax.grid(True, which='minor', color='#2A334F', linestyle='--', alpha=0.5)  # Minor gridlines
+        
+        # Set spines (borders) color
+        for spine in self.revenue_ax.spines.values():
+            spine.set_color('#29304D')
         
         # Create empty line for gross revenue
-        self.gross_revenue_line, = self.revenue_ax.plot([], [], '-', color='#FFC107', linewidth=2, label='Cumulative Revenue', alpha=0.9,
-                                                      path_effects=[path_effects.SimpleLineShadow(shadow_color='#FFC107', alpha=0.2, offset=(0,0), linewidth=7),
+        self.gross_revenue_line, = self.revenue_ax.plot([], [], '-', color='#4FC3F7', linewidth=2, label='Cumulative Revenue', alpha=0.9,
+                                                      path_effects=[path_effects.SimpleLineShadow(shadow_color='#4FC3F7', alpha=0.2, offset=(0,0), linewidth=7),
                                                                   path_effects.Normal()])
         
         # Create empty line for gross cost
-        self.gross_cost_line, = self.revenue_ax.plot([], [], '-', color='#f44336', linewidth=2, label='Cumulative Op Cost', alpha=0.9,
-                                                   path_effects=[path_effects.SimpleLineShadow(shadow_color='#f44336', alpha=0.2, offset=(0,0), linewidth=7),
+        self.gross_cost_line, = self.revenue_ax.plot([], [], '-', color='#D32F2F', linewidth=2, label='Cumulative Op Cost', alpha=0.9,
+                                                   path_effects=[path_effects.SimpleLineShadow(shadow_color='#D32F2F', alpha=0.2, offset=(0,0), linewidth=7),
                                                                path_effects.Normal()])
         
         # Update legend with dark mode styling
         revenue_legend = self.revenue_ax.legend(framealpha=0.8)
-        revenue_legend.get_frame().set_facecolor('#2D2D2D')
+        revenue_legend.get_frame().set_facecolor('#1C223F')  # Secondary background
         for text in revenue_legend.get_texts():
-            text.set_color('white')
+            text.set_color('#E1E6F9')  # Legend text font color
             text.set_fontsize(9)  # Reduce font size for legend text
         
         # Set fixed horizontal scale for all 8760 hours
@@ -630,10 +646,10 @@ class AnalyticsPanel(QWidget):
         
         # Apply dark mode styling to spine lines
         for spine in self.ax.spines.values():
-            spine.set_color('#888888')
+            spine.set_color('#29304D')
         
         for spine in self.revenue_ax.spines.values():
-            spine.set_color('#888888')
+            spine.set_color('#29304D')
         
         # Redraw canvas with protection
         try:

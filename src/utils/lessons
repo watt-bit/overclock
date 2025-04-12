@@ -1612,3 +1612,24 @@ Key insights from adding gas consumption and cost tracking to generators:
 4. Custom formatters must handle all formatting needs through their callback functions.
 5. Remove any calls to `ticklabel_format()` after setting a custom formatter.
 6. For complex number formatting scenarios, it's better to use a custom `FuncFormatter` than relying on `ScalarFormatter` with `ticklabel_format()`.
+
+## Custom Image Borders in Qt (2024-08-01)
+
+### Key Insights
+1. **Custom Widget Approach**: For complex UI elements like image-based borders, subclassing QWidget and overriding paintEvent provides the most flexibility.
+
+2. **QPainterPath for Rounded Corners**: Using QPainterPath.addRoundedRect creates smooth, anti-aliased rounded corners that look more polished than simple rectangles.
+
+3. **Clipping Regions for Complex Effects**: Using setClipPath with QPainterPath objects allows creation of sophisticated effects like image-based borders with inner cutouts.
+
+4. **Error Handling for Resources**: Always include robust error handling when loading external resources like images, with sensible fallbacks when resources aren't available.
+
+5. **Mouse Event Transparency**: Use Qt.WA_TransparentForMouseEvents when needed to ensure decorative elements don't interfere with interactive elements beneath them.
+
+6. **Scale-Aware Rendering**: When working with images in paintEvent, use Qt.KeepAspectRatioByExpanding and Qt.SmoothTransformation to ensure high-quality scaling.
+
+7. **Widget vs. Layout Borders**: While layouts themselves don't support image-based borders, a custom widget with its own paintEvent can serve as a container for layouts and implement custom borders.
+
+8. **Type Compatibility in QPainterPath**: QPainterPath.addRoundedRect() requires QRectF (float-based rectangle), not QRect (integer-based rectangle). Always convert QRect to QRectF using QRectF(rect) when working with QPainterPath methods to avoid type errors.
+
+9. **Method Parameter Specificity in Qt**: Different Qt methods have strict requirements about parameter types. For example, QPainter.drawPixmap() with a rect parameter requires QRect (not QRectF), while QPainterPath.addRoundedRect() requires QRectF (not QRect). Always check method signatures and use the correct type conversions when necessary.
