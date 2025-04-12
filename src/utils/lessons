@@ -1597,3 +1597,18 @@ Key insights from adding gas consumption and cost tracking to generators:
    - Backward compatibility requires default values for loading older save files
    - The model manager should handle both saving and loading these properties consistently
    - Cost accumulation values should persist across save/load operations to maintain simulation continuity
+
+[2023-06-14] Matplotlib axis formatting lessons:
+1. To remove scientific notation and order of magnitude labels at the top of an axis, use `ax.ticklabel_format(useOffset=False, style='plain')`.
+2. Custom tick formatting can be achieved using `matplotlib.ticker.FuncFormatter` with a callback function that receives the tick value and position.
+3. For dynamic scaling (e.g., showing values in thousands or millions), define formatter functions that divide values by the appropriate factor (1000, 1000000) before displaying.
+4. When working with twin axes, each axis needs to be formatted independently.
+5. Matplotlib provides different formatter types (ScalarFormatter, FormatStrFormatter, etc.) for different formatting needs.
+
+[2023-06-18] Matplotlib formatter incompatibility:
+1. The `ticklabel_format()` method only works with the built-in `ScalarFormatter` class.
+2. Once you set a custom formatter with `set_major_formatter(ticker.FuncFormatter())`, you cannot use `ticklabel_format()` on that axis.
+3. Error message "AttributeError: This method only works with the ScalarFormatter" indicates you're trying to use `ticklabel_format()` on an axis with a custom formatter.
+4. Custom formatters must handle all formatting needs through their callback functions.
+5. Remove any calls to `ticklabel_format()` after setting a custom formatter.
+6. For complex number formatting scenarios, it's better to use a custom `FuncFormatter` than relying on `ScalarFormatter` with `ticklabel_format()`.

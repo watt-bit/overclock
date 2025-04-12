@@ -1487,3 +1487,19 @@ Modified historian_manager.py to make only the total_generation series visible b
 - This ensures the most cost-effective generators are used first before more expensive units
 - Similar to the existing price-based dispatching for grid import/export components
 - Optimizes overall system cost by utilizing least-cost resources first
+
+## 2023-05-17: Modified switch_to_historian_view and switch_to_model_view methods to disable scrolling and movement when in historian view. Added setDragMode(QGraphicsView.NoDrag) and set both horizontal and vertical scroll bar policies to ScrollBarAlwaysOff in historian view. Re-enabled these features when switching back to model view.
+
+## 2023-06-14: Added dynamic scaling and formatting to the secondary y-axis in the historian chart:
+- Implemented scaling to display values in thousands when below $1M with label "Amount ($ 1,000s)"
+- Implemented scaling to display values in millions when above $1M with label "Amount ($1,000,000s)"
+- Added comma formatting for values above $1B
+- Removed the scientific notation/order of magnitude label at the top of the axis
+- Created a new method update_secondary_axis_formatting() to handle the dynamic formatting logic
+
+## 2023-06-18: Fixed Historian Chart Formatter Bug
+- Removed incompatible call to ticklabel_format() in the update_secondary_axis_formatting method
+- Fixed an AttributeError that occurred when using custom FuncFormatter and then trying to use ticklabel_format
+- The error message was "AttributeError: This method only works with the ScalarFormatter"
+- Resolved the conflict between the custom formatters and the ScalarFormatter-specific method
+- The custom formatters already handle all necessary formatting without needing the additional call

@@ -1148,6 +1148,11 @@ class PowerSystemSimulator(QMainWindow):
             # Change the view to show the historian scene
             self.view.setScene(self.historian_manager.historian_scene)
             
+            # Disable scrolling and movement in historian view
+            self.view.setDragMode(QGraphicsView.NoDrag)
+            self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            
             # Resize the chart widget to fit the current view size
             view_size = self.view.viewport().size()
             self.historian_manager.resize_chart_widget(view_size.width(), view_size.height())
@@ -1179,6 +1184,11 @@ class PowerSystemSimulator(QMainWindow):
             
             # Change the view back to show the model scene
             self.view.setScene(self.scene)
+            
+            # Re-enable scrolling and movement in model view
+            self.view.setDragMode(QGraphicsView.RubberBandDrag)
+            self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
             
             # Re-enable zoom slider and restore previous value
             self.zoom_slider.setEnabled(True)

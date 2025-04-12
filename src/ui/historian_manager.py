@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.patheffects as path_effects
+import matplotlib.ticker as ticker
 import numpy as np
 
 class HistorianManager:
@@ -127,6 +128,9 @@ class HistorianManager:
         self.ax.set_xlim(0, 8760)
         self.ax.set_ylim(0, 1000)  # Initial y scale, will auto-adjust
         self.ax2.set_ylim(0, 1000)  # Initial y scale, will auto-adjust
+        
+        # Remove scientific notation from top of secondary axis
+        self.ax2.ticklabel_format(useOffset=False)
         
         # Add the main widget to the scene
         self.chart_proxy = self.historian_scene.addWidget(self.main_widget)
@@ -252,6 +256,7 @@ class HistorianManager:
                 
                 if max_val_secondary > 0:
                     self.ax2.set_ylim(0, max_val_secondary * 1.1)  # 10% headroom
+                    self.update_secondary_axis_formatting(max_val_secondary * 1.1)
             
             # Update axis visibility
             self.update_axis_visibility()
@@ -320,6 +325,44 @@ class HistorianManager:
             self.main_widget.resize(width, height)
             # Optionally, force the layout to update immediately
             self.main_layout.activate()
+    
+    def update_secondary_axis_formatting(self, max_value):
+        """
+        Update the secondary axis formatting based on the maximum value
+        
+        Args:
+            max_value: The maximum value on the secondary axis
+        """
+        # Remove the current formatter if it exists
+        self.ax2.yaxis.set_major_formatter(ticker.ScalarFormatter())
+        
+        if max_value >= 1_000_000_000:  # Greater than $1B
+            # Format in millions with commas
+            def format_func(x, pos):
+                # Convert to millions and add commas
+                x_in_millions = x / 1_000_000
+                if x_in_millions >= 1000:
+                    return f"{x_in_millions:,.0f}"
+                return f"{x_in_millions:.1f}"
+            
+            self.ax2.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
+            self.ax2.set_ylabel('Amount ($1,000,000s)', color='white')
+            
+        elif max_value >= 1_000_000:  # Greater than $1M
+            # Format in millions
+            def format_func(x, pos):
+                return f"{x/1_000_000:.1f}"
+            
+            self.ax2.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
+            self.ax2.set_ylabel('Amount ($1,000,000s)', color='white')
+            
+        else:  # Less than $1M
+            # Format in thousands
+            def format_func(x, pos):
+                return f"{x/1_000:.1f}"
+            
+            self.ax2.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
+            self.ax2.set_ylabel('Amount ($ 1,000s)', color='white')
     
     def update_chart(self):
         """
@@ -462,6 +505,7 @@ class HistorianManager:
 
         if max_val_secondary > 0:
             self.ax2.set_ylim(0, max_val_secondary * 1.1)  # 10% headroom
+            self.update_secondary_axis_formatting(max_val_secondary * 1.1)
         # else: # Optional: Reset ylim if no visible secondary lines
         #     self.ax2.set_ylim(0, 1000)
 
