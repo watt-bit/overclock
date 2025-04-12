@@ -1468,3 +1468,8 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated serialization/deserialization to handle the new properties
 - Added cost milestone detection for gas generators (similar to grid import)
 - Gas costs are now included in the system-wide cost tracking
+
+## 2024-07-06: Fixed Generator Cost Reset Bug
+- Fixed bug where generator accumulated costs weren't reset when clicking the Reset button
+- Updated reset_simulation method in main_window.py to reset accumulated_cost and previous_cost for generator components
+- Ensures consistent behavior with other cost-tracking components like GridImportComponent

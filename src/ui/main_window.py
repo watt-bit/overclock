@@ -664,6 +664,11 @@ class PowerSystemSimulator(QMainWindow):
                 item.accumulated_cost = 0.0
                 item.previous_cost = 0.0
                 item.update()  # Refresh the visual display
+            # Reset accumulated cost for Generator components
+            elif isinstance(item, GeneratorComponent):
+                item.accumulated_cost = 0.0
+                item.previous_cost = 0.0
+                item.update()  # Refresh the visual display
             # Reset all batteries to 100% charge
             elif isinstance(item, BatteryComponent):
                 item.current_charge = item.energy_capacity  # Set to 100% charge
