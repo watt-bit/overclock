@@ -112,7 +112,7 @@ class GeneratorComponent(ComponentBase):
         cost_text = f"Cost: ${self.accumulated_cost:.2f}"
         cost_rect = QRectF(
             rect.x(),
-            rect.y() + rect.height() - 25,  # Position at bottom with margin
+            rect.y() + rect.height(),  # Position at bottom with margin
             rect.width(),
             25
         )
@@ -121,7 +121,7 @@ class GeneratorComponent(ComponentBase):
         # Calculate and store the smoke emission point (top-center of the image)
         self.smoke_point = QPointF(
             self.x() + rect.width() / 2 - 25,  # Center X with offset
-            self.y() + rect.y() + (rect.height() * 0.05) + image_size * 0.2  # Near top of image with offset
+            self.y() + rect.y() + (rect.height() * 0.05) + image_size * 0.2 - 25  # Near top of image with offset
         )
     
     def emit_smoke(self):
