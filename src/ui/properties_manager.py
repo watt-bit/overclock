@@ -377,12 +377,40 @@ class ComponentPropertiesManager:
         
         auto_charging_btn.clicked.connect(toggle_auto_charging)
         
+        # Add efficiency field
+        efficiency_layout = QHBoxLayout()
+        efficiency_layout.setContentsMargins(0, 0, 0, 0)
+        efficiency_slider = QSlider(Qt.Horizontal)
+        efficiency_slider.setMinimum(10)  # 10% minimum
+        efficiency_slider.setMaximum(95)  # 95% maximum (practical limit)
+        efficiency_slider.setValue(int(component.efficiency * 100))
+        efficiency_slider.setStyleSheet(SLIDER_STYLE)
+        efficiency_label = QLabel(f"{int(component.efficiency * 100)}%")
+        
+        def update_efficiency(value):
+            component.efficiency = value / 100
+            efficiency_label.setText(f"{value}%")
+        
+        efficiency_slider.valueChanged.connect(update_efficiency)
+        efficiency_layout.addWidget(efficiency_slider)
+        efficiency_layout.addWidget(efficiency_label)
+        
+        efficiency_widget = QWidget()
+        efficiency_widget.setLayout(efficiency_layout)
+        
+        # Add cost per GJ field
+        cost_edit = QLineEdit(str(component.cost_per_gj))
+        cost_edit.setStyleSheet(INPUT_STYLE)
+        self._set_up_numeric_field(cost_edit, lambda value: setattr(component, 'cost_per_gj', value), min_value=0.00)
+        
         # Add all controls to properties layout
         layout.addRow("Capacity (kW):", capacity_edit)
         layout.addRow("Operating Mode:", mode_selector)
         layout.addRow("Output Level:", output_level_widget)
         layout.addRow("Ramp Rate Limiter:", ramp_rate_widget)
         layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
+        layout.addRow("Efficiency:", efficiency_widget)
+        layout.addRow("Cost per GJ ($):", cost_edit)
     
     def _add_grid_import_properties(self, component, layout):
         capacity_edit = QLineEdit(str(component.capacity))

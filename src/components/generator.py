@@ -19,6 +19,13 @@ class GeneratorComponent(ComponentBase):
         self.last_output = 0  # Track the last output for ramp rate limiting
         self.auto_charging = True  # Whether this generator can be used to charge batteries
         
+        # Gas consumption and cost properties
+        self.conversion_constant = 277.78  # 1 GJ of gas = 277.78 kWh of electricity
+        self.efficiency = 0.40  # 40% efficiency by default
+        self.cost_per_gj = 2.00  # $2.00 per GJ by default
+        self.accumulated_cost = 0.00  # Track accumulated cost in dollars
+        self.previous_cost = 0.00  # Track previous cost for milestone detection
+        
         # Smoke emission point (will be calculated in paint)
         self.smoke_point = QPointF(0, 0)
         # Timer for smoke emission
@@ -101,6 +108,17 @@ class GeneratorComponent(ComponentBase):
         capacity_text = f"{self.capacity} kW (gas) | {output_percentage}%"
         painter.drawText(text_rect, Qt.AlignCenter, capacity_text)
         
+        # Add cost display if there's accumulated cost
+        if self.accumulated_cost > 0:
+            cost_text = f"Cost: ${self.accumulated_cost:.2f}"
+            cost_rect = QRectF(
+                rect.x(),
+                rect.y() + rect.height(),  # Position at bottom with margin
+                rect.width(),
+                25
+            )
+            painter.drawText(cost_rect, Qt.AlignCenter, cost_text)
+        
         # Calculate and store the smoke emission point (top-center of the image)
         self.smoke_point = QPointF(
             self.x() + rect.width() / 2 - 25,  # Center X with offset
@@ -167,6 +185,71 @@ class GeneratorComponent(ComponentBase):
         self.last_output = actual_output
         return actual_output
     
+    def calculate_gas_consumption(self, electricity_kwh):
+        """Calculate gas consumption in GJ based on electricity generated"""
+        if self.efficiency <= 0:
+            return 0
+        
+        # Convert kWh of electricity to GJ of gas considering efficiency
+        # 1 GJ = 277.78 kWh at 100% efficiency
+        # At lower efficiency, more gas is needed
+        gas_gj = electricity_kwh / (self.conversion_constant * self.efficiency)
+        return gas_gj
+    
+    def calculate_gas_cost(self, gas_gj):
+        """Calculate cost of gas consumption"""
+        return gas_gj * self.cost_per_gj
+    
+    def update(self):
+        """Called when the component needs to be updated"""
+        # Call the parent's update method
+        super().update()
+        
+        # Check for cost milestones
+        self.check_cost_milestone()
+    
+    def check_cost_milestone(self):
+        """Check if cost has crossed a $1000 milestone and create a particle if needed"""
+        # Skip if simulation isn't running or if we're not in a scene
+        scene = self.scene()
+        if not scene or not hasattr(scene, 'parent'):
+            return
+        
+        parent = scene.parent()
+        if not parent or not hasattr(parent, 'simulation_engine'):
+            return
+            
+        # Only create popups if simulation is running or autocompleting
+        is_running = parent.simulation_engine.simulation_running
+        is_autocompleting = False
+        if hasattr(parent, 'is_autocompleting'):
+            is_autocompleting = parent.is_autocompleting
+            
+        if not (is_running or is_autocompleting):
+            # Store current cost as previous and exit
+            self.previous_cost = self.accumulated_cost
+            return
+        
+        # Calculate how many $1000 increments we've crossed
+        previous_thousands = int(self.previous_cost / 1000)
+        current_thousands = int(self.accumulated_cost / 1000)
+        
+        if current_thousands > previous_thousands:
+            # We've crossed at least one $1000 milestone
+            # Get the center point of the component for particle origin
+            rect = self.boundingRect()
+            center_x = self.x() + rect.width() / 2
+            center_y = self.y() + rect.height() / 3  # Position near the top of the component
+            
+            # Get the particle system
+            if hasattr(parent, 'particle_system'):
+                # Create a popup for each $1000 increment (in case we spent multiple $1000 in one step)
+                for _ in range(current_thousands - previous_thousands):
+                    parent.particle_system.create_cost_popup(center_x, center_y, 1000)
+        
+        # Store current cost for next check
+        self.previous_cost = self.accumulated_cost
+    
     def serialize(self):
         return {
             'type': 'generator',
@@ -177,5 +260,8 @@ class GeneratorComponent(ComponentBase):
             'output_level': self.output_level,
             'ramp_rate_enabled': self.ramp_rate_enabled,
             'ramp_rate_limit': self.ramp_rate_limit,
-            'auto_charging': self.auto_charging
+            'auto_charging': self.auto_charging,
+            'efficiency': self.efficiency,
+            'cost_per_gj': self.cost_per_gj,
+            'accumulated_cost': self.accumulated_cost
         } 

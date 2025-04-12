@@ -1455,3 +1455,16 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Made the hotkey only active in model view (disabled in historian view)
 - Enhanced user experience by providing quick keyboard access to the analytics panel
 - Follows the same pattern as other keyboard shortcuts in the application
+
+## 2024-07-06: Added Gas Consumption and Cost Tracking for Generators
+- Added three new properties to the GeneratorComponent class:
+  * conversion_constant (1 GJ = 277.78 kWh)
+  * efficiency (default 40%)
+  * cost_per_gj (default $2.00 per GJ)
+- Implemented gas consumption calculation based on electricity generated
+- Added accumulated cost tracking for gas generators
+- Added UI controls in the properties panel to adjust efficiency and cost per GJ
+- Integrated with the existing cost tracking system in the simulation engine
+- Updated serialization/deserialization to handle the new properties
+- Added cost milestone detection for gas generators (similar to grid import)
+- Gas costs are now included in the system-wide cost tracking

@@ -1563,3 +1563,37 @@ Key insights from implementing the exit button on the title screen:
    - This helps prevent reintroduction of unnecessary UI elements in the future
    - Use the history log to record what was changed and why
    - Update lessons with insights about the UI design philosophy
+
+# Gas Generator Cost Implementation (2024-07-06)
+Key insights from adding gas consumption and cost tracking to generators:
+
+1. **Energy Conversion Principles**
+   - The conversion constant (1 GJ = 277.78 kWh) represents the theoretical maximum energy conversion at 100% efficiency
+   - Actual conversion is affected by the efficiency property (default 40%)
+   - Higher efficiency means less gas is needed to produce the same electricity
+   - This models real-world engineering constraints of gas-powered generators
+
+2. **Cost Tracking Integration**
+   - Similar patterns should be applied across different cost sources (grid import, gas generation)
+   - Accumulated costs should be tracked at the component level for individual cost reporting
+   - System-wide costs should aggregate from all components for overall financial analysis
+   - System-level historians need to incorporate all cost sources to provide complete financial analytics
+
+3. **User Interface Considerations**
+   - Properties panels should provide intuitive controls for key parameters
+   - Efficiency is best represented as a percentage slider with appropriate minimum and maximum values
+   - Cost per unit should be directly editable via numeric input
+   - Current accumulated cost should be displayed but not directly editable
+   - Component visualization should include cost information when relevant
+
+4. **Calculation Timing**
+   - Gas consumption calculations should occur only when actual generation happens
+   - Cost updates should be applied only during actual simulation steps, not during scrubbing
+   - Multi-step jumps need to properly account for total energy generated across all skipped steps
+   - Maintaining consistent calculation timing with the rest of the simulation engine is critical
+
+5. **Serialization Requirements**
+   - New properties need to be added to both serialization and deserialization methods
+   - Backward compatibility requires default values for loading older save files
+   - The model manager should handle both saving and loading these properties consistently
+   - Cost accumulation values should persist across save/load operations to maintain simulation continuity

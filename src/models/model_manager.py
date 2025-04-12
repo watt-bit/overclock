@@ -104,7 +104,10 @@ class ModelManager:
                     "y": item.y(),
                     "capacity": item.capacity,
                     "operating_mode": item.operating_mode,
-                    "auto_charging": item.auto_charging
+                    "auto_charging": item.auto_charging,
+                    "efficiency": item.efficiency,
+                    "cost_per_gj": item.cost_per_gj,
+                    "accumulated_cost": item.accumulated_cost
                 })
             elif isinstance(item, LoadComponent):
                 component_index_map[item] = index
@@ -256,7 +259,25 @@ class ModelManager:
                         component.auto_charging = component_data["auto_charging"]
                     else:
                         component.auto_charging = True  # Default value
+                    
+                    # Set efficiency parameter if available, otherwise default to 0.40 (40%)
+                    if "efficiency" in component_data:
+                        component.efficiency = component_data["efficiency"]
+                    else:
+                        component.efficiency = 0.40  # Default value
                         
+                    # Set cost_per_gj parameter if available, otherwise default to 2.00
+                    if "cost_per_gj" in component_data:
+                        component.cost_per_gj = component_data["cost_per_gj"]
+                    else:
+                        component.cost_per_gj = 2.00  # Default value
+                        
+                    # Set accumulated_cost if available, otherwise default to 0.00
+                    if "accumulated_cost" in component_data:
+                        component.accumulated_cost = component_data["accumulated_cost"]
+                    else:
+                        component.accumulated_cost = 0.00
+                    
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
                     component_map.append(component)

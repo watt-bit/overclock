@@ -435,6 +435,24 @@ class SimulationEngine(QObject):
                             # Add to current hour's gross revenue
                             current_hourly_revenue += export_revenue
                     
+                    # Calculate cost of gas for generators
+                    for item in self.main_window.scene.items():
+                        if isinstance(item, GeneratorComponent) and item.last_output > 0:
+                            # Calculate energy generated in kWh
+                            energy_generated = item.last_output * steps_moved
+                            
+                            # Calculate gas consumption in GJ
+                            gas_consumption = item.calculate_gas_consumption(energy_generated)
+                            
+                            # Calculate gas cost
+                            gas_cost = item.calculate_gas_cost(gas_consumption)
+                            
+                            # Add to accumulated cost for this generator
+                            item.accumulated_cost += gas_cost
+                            
+                            # Add to current hour's gross cost
+                            current_hourly_cost += gas_cost
+                    
                     # Calculate cost from imports
                     for item in self.main_window.scene.items():
                         if isinstance(item, GridImportComponent) and item.cost_per_kwh > 0:
