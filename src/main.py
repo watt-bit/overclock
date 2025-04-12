@@ -31,6 +31,13 @@ def main():
     # Connect the title screen's transition signal to show the main window
     title_screen.transition_to_main.connect(main_window.show)
     
+    # Connect the title screen's transition signal with file to load and show the main window
+    def handle_load_transition(filename):
+        main_window.show()
+        main_window.model_manager.load_scenario_from_file(filename)
+    
+    title_screen.transition_to_main_with_file.connect(handle_load_transition)
+    
     # Create the Augur title screen but don't show it yet
     augur_title_screen = AugurTitleScreen()
     

@@ -220,6 +220,10 @@ class ModelManager:
         if not filename:
             return
             
+        self.load_scenario_from_file(filename)
+
+    def load_scenario_from_file(self, filename):
+        """Load a scenario from a specific file path without showing a dialog"""
         # Clear existing scenario
         self.new_scenario()
         

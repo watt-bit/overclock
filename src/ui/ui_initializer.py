@@ -193,7 +193,7 @@ class UIInitializer:
         battery_btn.setStyleSheet(opaque_button_style)
         battery_btn.clicked.connect(lambda: main_window.add_component("battery"))
                 
-        bus_btn = QPushButton("🔌 Electrical (B)us")
+        bus_btn = QPushButton("⚡ Electrical (B)us")
         bus_btn.setStyleSheet(opaque_button_style)
         bus_btn.clicked.connect(lambda: main_window.add_component("bus"))
 
@@ -204,6 +204,21 @@ class UIInitializer:
         cloud_workload_btn = QPushButton("🌐 Cloud (W)orkload")
         cloud_workload_btn.setStyleSheet(opaque_button_style)
         cloud_workload_btn.clicked.connect(lambda: main_window.add_component("cloud_workload"))
+
+        # Create a popup menu for renewables
+        renewables_menu = QMenu(main_window)
+        
+        # Add actions for each renewable type
+        solar_panel_action = renewables_menu.addAction("Add Solar Array")
+        solar_panel_action.triggered.connect(lambda: main_window.add_component("solar_panel"))
+        
+        wind_turbine_action = renewables_menu.addAction("Add Wind Turbine")
+        wind_turbine_action.triggered.connect(lambda: main_window.add_component("wind_turbine"))
+        
+        # Create the Add Renewables button with dropdown menu
+        main_window.renewables_btn = QPushButton("🌱 Renewables")
+        main_window.renewables_btn.setStyleSheet(opaque_button_style)
+        main_window.renewables_btn.clicked.connect(lambda: renewables_menu.exec_(main_window.renewables_btn.mapToGlobal(main_window.renewables_btn.rect().bottomLeft())))
         
         # Add a third horizontal line separator
         separator3 = QFrame()
@@ -243,21 +258,6 @@ class UIInitializer:
         separator2.setFrameShadow(QFrame.Sunken)
         separator2.setLineWidth(1)
 
-        # Create a popup menu for renewables
-        renewables_menu = QMenu(main_window)
-        
-        # Add actions for each renewable type
-        solar_panel_action = renewables_menu.addAction("Add Solar Array")
-        solar_panel_action.triggered.connect(lambda: main_window.add_component("solar_panel"))
-        
-        wind_turbine_action = renewables_menu.addAction("Add Wind Turbine")
-        wind_turbine_action.triggered.connect(lambda: main_window.add_component("wind_turbine"))
-        
-        # Create the Add Renewables button with dropdown menu
-        main_window.renewables_btn = QPushButton("🌱 Add Renewables")
-        main_window.renewables_btn.setStyleSheet(opaque_button_style)
-        main_window.renewables_btn.clicked.connect(lambda: renewables_menu.exec_(main_window.renewables_btn.mapToGlobal(main_window.renewables_btn.rect().bottomLeft())))
-
         # Create a popup menu for props
         props_menu = QMenu(main_window)
         
@@ -296,6 +296,7 @@ class UIInitializer:
         component_layout.addWidget(bus_btn)
         component_layout.addWidget(load_btn)
         component_layout.addWidget(cloud_workload_btn)
+        component_layout.addWidget(main_window.renewables_btn)
         component_layout.addWidget(separator3)
         component_layout.addWidget(grid_import_btn)
         component_layout.addWidget(grid_export_btn)
@@ -304,7 +305,6 @@ class UIInitializer:
         component_layout.addWidget(autoconnect_btn)
         component_layout.addWidget(main_window.sever_connection_btn)
         component_layout.addWidget(separator2)
-        component_layout.addWidget(main_window.renewables_btn)
         component_layout.addWidget(main_window.props_btn)
         component_layout.addStretch()
         

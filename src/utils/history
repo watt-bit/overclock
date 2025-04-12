@@ -1391,3 +1391,35 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated the visibility logic across multiple functions in historian_manager.py
 - Ensures cumulative_cost toggle button starts in the "checked" (hidden) state
 - Maintained the default visibility for total_generation and cumulative_revenue
+
+## 2024-07-15: Added New Project Button to Title Screen
+- Added a "New Project" button to the title screen
+- Implemented as a transparent square button with a light border
+- Included the newproject.png image (30x30px) from the assets folder
+- Added "New Project" text to the right of the image with matching color to border
+- Implemented hover effect that lightens the button and text towards icy light blue
+- Positioned the button near the middle of the screen
+- Connected button click functionality to same behavior as pressing space (transition to main window)
+- Enhanced title screen to provide clearer action for users
+
+## 2024-07-15: Added Load Project Button to Title Screen
+- Added a "Load Project" button to the title screen
+- Implemented with the same style as the New Project button 
+- Used loadproject.png image from the assets folder
+- Positioned at the same vertical position as New Project but to the right
+- Added load dialog functionality that opens a file picker 
+- Implemented conditional behavior: if user cancels, stay on title screen
+- Added transition to main window with pre-loaded scenario if user selects a file
+- Created new signal from title screen for transitioning with a loaded file
+- Modified main.py to handle the new signal
+- Added direct file loading capability to ModelManager
+
+## 2024-07-15: Added Exit Button to Title Screen
+- Added an exit button to the top-left corner of the title screen
+- Implemented as a small 30x30 square button with transparent background and light border
+- Used the "❌" symbol with 18pt font as the button content
+- Positioned at coordinates (5,5) in the top left corner
+- Styled consistently with other title screen buttons (same border and hover effects)
+- Connected click event to QApplication.quit() to properly exit the application
+- Added cursor change to pointing hand when hovering for better user feedback
+- Provides a clear and intuitive way for users to exit the application from the title screen

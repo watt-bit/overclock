@@ -186,7 +186,7 @@ class TiledBackgroundWidget(QWidget):
 class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("OVERCLOCK | Watt-Bit Research Canada | https://watt-bit.com | research preview presented by Augur VC | https://augurvc.com")
+        self.setWindowTitle("OVERCLOCK | Watt-Bit Research | https://watt-bit.com | research preview presented by Augur VC | https://augurvc.com")
         self.resize(2400, 1200)
         
         # Initialize variables

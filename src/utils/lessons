@@ -1421,3 +1421,89 @@ Key insights from implementing cost particle effects alongside revenue particles
 - When customizing defaults, ensure all three locations are updated consistently
 - Some series use the primary y-axis, while financial series use the secondary y-axis
 - The update_axis_visibility method ensures the secondary axis only appears when needed
+
+## Button Implementation in Title Screen (2024-07-15)
+Key insights from implementing the New Project button on the title screen:
+
+1. Layout within Buttons
+   - Using QHBoxLayout within a QPushButton creates a rich button with both icon and text
+   - Content margins and spacing can be adjusted to fine-tune the appearance
+   - Images can be properly scaled using Qt.KeepAspectRatio for consistent appearance
+   - Alignment settings (Qt.AlignLeft | Qt.AlignVCenter) control content positioning
+
+2. Button Styling with QSS
+   - QPushButton styling with QSS (Qt Style Sheets) allows for complete visual customization
+   - Transparent backgrounds with borders create a modern, clean button appearance
+   - Hover states can be defined with the :hover pseudo-selector in stylesheets
+   - Child elements (like QLabel) can be styled within parent hover states
+
+3. Interactive Feedback
+   - Setting the cursor to PointingHandCursor provides immediate visual feedback for interactive elements
+   - Subtle color shifts on hover (towards icy blue) create an engaging but not distracting effect
+   - Consistent styling between border and text creates visual harmony
+   - Button click should be connected to the same functionality as keyboard shortcuts for consistency
+
+4. Manual Positioning
+   - Buttons can be precisely positioned using move() with calculated coordinates
+   - Window dimensions can be used to position elements relative to the center or edges
+   - This approach works well for specialized UI screens like title screens
+   - For more complex interfaces, layout managers would be preferred over manual positioning
+
+5. Connection to Existing Functionality
+   - Reusing the same transition signal (transition_to_main) ensures consistent behavior
+   - Creating a dedicated handler method (handle_new_project_click) makes the intent clear
+   - This method can be expanded in the future if more specific "new project" logic is needed
+
+## Advanced Button Signal Handling (2024-07-15)
+Key insights from implementing the Load Project button functionality:
+
+1. Conditional Navigation Patterns
+   - The Load Project button demonstrates a conditional navigation pattern where the next screen depends on user action
+   - If the user selects a file, transition to main window with the loaded file
+   - If the user cancels the dialog, stay on the current screen
+   - This pattern is common in many applications with "new vs. open" functionality
+
+2. Custom Signals for Data Transfer
+   - Using custom signals with parameters (transition_to_main_with_file) allows passing data between windows
+   - The signal carries not just the transition event but also the specific file to load
+   - This pattern enables clean separation between UI layers while still transferring necessary context
+   - The receiving component (main window) can react appropriately to both the transition and the data
+
+3. Dialog Integration in Navigation Flow
+   - File dialogs integrate naturally into navigation flows with their built-in modality
+   - QFileDialog.getOpenFileName is modal, so the code naturally waits for user selection
+   - This allows for simple conditional logic based on the dialog result
+   - No complex state tracking is needed to manage the navigation flow
+
+4. Direct Methods vs. Dialog Methods
+   - Creating both dialog-based methods (load_scenario) and direct methods (load_scenario_from_file) provides flexibility
+   - The same core loading logic can be used in different contexts by different callers
+   - Dialog methods handle user interaction, while direct methods bypass UI for programmatic use
+   - This pattern promotes code reuse and maintainability
+
+## Application Exit Patterns (2024-07-15)
+Key insights from implementing the exit button on the title screen:
+
+1. Direct Application Control
+   - QApplication.quit() provides a clean way to exit the entire application
+   - This method properly closes all windows and terminates the event loop
+   - Unlike close() which only affects the current window, quit() shuts down the entire application
+   - It's the preferred method for explicit user-initiated application exit
+
+2. Minimalist UI Elements
+   - Simple, universally recognized symbols (❌) can effectively communicate function without text
+   - Small, well-positioned controls don't distract from the main content but remain accessible
+   - Top corners are standard locations for window control buttons across platforms
+   - Consistent styling maintains visual harmony while serving a distinct function
+
+3. Font Customization
+   - Qt provides flexible font control through QFont
+   - Setting font size for specific elements helps with visual hierarchy and readability
+   - Font.setPointSize() is preferable to using CSS for reliable cross-platform text sizing
+   - Embedding font settings in the button creation code keeps related properties together
+
+4. Positioning Techniques
+   - Absolute positioning (button.move(x, y)) is appropriate for standard UI elements
+   - Fixed elements like close buttons benefit from consistent positioning rather than layout managers
+   - For frameless windows, custom window controls need to be manually implemented and positioned
+   - Consistent positioning across screens (e.g., always top-left) creates predictable user experience
