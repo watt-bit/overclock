@@ -93,7 +93,7 @@ class AnalyticsPanel(QWidget):
         self.ax.axhline(y=0, color='#29304D', linestyle='-', alpha=0.7)
         
         # Set initial view limits (modified for 8760-hour view)
-        self.ax.set_xlim(0, 96)  # Show first 96 hours by default
+        self.ax.set_xlim(0, 168)  # Show first 168 hours by default
         self.ax.set_ylim(-1000, 1000)
         
         # Add matplotlib canvas to layout

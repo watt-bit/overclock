@@ -1236,6 +1236,11 @@ class PowerSystemSimulator(QMainWindow):
                               "Please ensure all generators and loads are connected before starting.")
             return
         
+        # Switch to historian view if currently in model view
+        if self.is_model_view:
+            self.switch_to_historian_view()
+            self.mode_toggle_btn.setText("💾 Historian (TAB)")
+        
         # Ensure we're not in scrub mode
         self.simulation_engine.is_scrubbing = False
         
