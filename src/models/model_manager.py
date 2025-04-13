@@ -70,6 +70,9 @@ class ModelManager:
         # Reset fractional step counter
         self.main_window.simulation_engine.fractional_step = 0
         
+        # Reset the view center position
+        self.main_window.view.centerOn(0, 0)
+        
         self.main_window.update_simulation()
     
     def save_scenario(self):

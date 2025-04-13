@@ -1571,3 +1571,18 @@ Modified historian_manager.py to make only the total_generation series visible b
 - This provides a more intuitive navigation experience similar to modern design tools
 - Improved usability for larger models that extend beyond the visible area
 - Clean, minimal UI with no scrollbars for a more immersive experience
+
+## 2024-07-07: Fixed Welcome Text Positioning Bug
+- Fixed issue where welcome text could appear off-center after pressing the New button
+- Modified new_scenario method in ModelManager to center the view on (0,0) before displaying welcome text
+- Updated new_scenario method in main_window.py to explicitly center welcome text after creating a new scenario
+- Added a longer timer delay (150ms instead of 100ms) to ensure view is fully reset before positioning text
+- Enhanced the center_welcome_text method to use the current viewport center coordinates
+- This ensures the welcome text always appears centered relative to the user's current view
+
+## 2024-07-07: Fixed Welcome Text Positioning During Zoom
+- Fixed issue where welcome text wouldn't stay centered when zooming after creating a new scenario
+- Modified zoom_changed method in main_window.py to call center_welcome_text when zoom level changes
+- Added safety check to ensure welcome_text exists before trying to center it
+- Ensures welcome text stays centered relative to the viewport regardless of zoom level
+- This complements the previous fix that centered text after view position changes

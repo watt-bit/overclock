@@ -313,7 +313,7 @@ class PowerSystemSimulator(QMainWindow):
     def center_welcome_text(self):
         """Center the welcome text in the view after the view is shown"""
         if self.welcome_text:
-            # Get scene rect to center the text
+            # Get the center of the current viewport in scene coordinates
             view_center = self.view.mapToScene(self.view.viewport().rect().center())
             text_width = self.welcome_text.boundingRect().width()
             text_height = self.welcome_text.boundingRect().height()
@@ -726,6 +726,9 @@ class PowerSystemSimulator(QMainWindow):
         
         # Add new welcome text after the scene has been cleared
         self.add_welcome_text()
+        
+        # Explicitly center the welcome text to ensure it's properly positioned
+        QTimer.singleShot(150, self.center_welcome_text)
     
     def save_scenario(self):
         """Save the current scenario to a file"""
@@ -908,7 +911,11 @@ class PowerSystemSimulator(QMainWindow):
         self.view.setTransform(transform)
         
         # Update the scene
-        self.view.update() 
+        self.view.update()
+        
+        # Re-center welcome text if it exists
+        if hasattr(self, 'welcome_text') and self.welcome_text:
+            self.center_welcome_text()
 
     def take_screenshot(self):
         """Take a screenshot of the modeling view area and copy to clipboard"""
