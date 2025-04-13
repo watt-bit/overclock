@@ -567,9 +567,11 @@ class HistorianManager:
                 if data_key not in self.toggle_buttons:
                     button = self.create_toggle_button(data_key)
                     self.toggle_buttons[data_key] = button
+                    
                     # Add button to layout in correct section
                     if is_cumulative:
                         self.secondary_buttons.append(button)
+                        
                         # Add separator only if this is the first secondary button being added
                         if len(self.secondary_buttons) == 1:
                             separator = QFrame()
@@ -578,36 +580,82 @@ class HistorianManager:
                             separator.setStyleSheet("background-color: #555555;")
                             self.buttons_layout.addWidget(separator)
                         
-                        # For component-specific revenue and cost, add at the end
-                        if data_key.startswith('Rev_') or data_key.startswith('Cost_'):
-                            self.buttons_layout.addWidget(button)  # Add to the very end
-                        else:
-                            # For system-wide metrics (cumulative_revenue, cumulative_cost), 
-                            # add before any component-specific revenues and costs
-                            # Find the position of the first component-specific button, if any
-                            insert_index = self.buttons_layout.count()
-                            for i, other_button in enumerate(self.secondary_buttons):
-                                other_key = next((k for k, v in self.toggle_buttons.items() if v == other_button), "")
-                                if other_key.startswith('Rev_') or other_key.startswith('Cost_'):
-                                    insert_index = self.buttons_layout.indexOf(other_button)
+                        # Determine if this is a default button or component-specific button
+                        is_component_specific = data_key.startswith('Rev_') or data_key.startswith('Cost_')
+                        
+                        # Default secondary buttons go before component-specific ones
+                        if not is_component_specific:
+                            # Find the position right before the first component-specific secondary button
+                            insert_index = None
+                            for i, btn in enumerate(self.secondary_buttons):
+                                btn_key = next((k for k, v in self.toggle_buttons.items() if v == btn), "")
+                                if btn_key.startswith('Rev_') or btn_key.startswith('Cost_'):
+                                    # Get the actual widget index
+                                    for j in range(self.buttons_layout.count()):
+                                        if self.buttons_layout.itemAt(j).widget() == btn:
+                                            insert_index = j
+                                            break
                                     break
-                            self.buttons_layout.insertWidget(insert_index, button)
+                            
+                            if insert_index is not None:
+                                self.buttons_layout.insertWidget(insert_index, button)
+                            else:
+                                # No component-specific buttons yet, add at the end
+                                self.buttons_layout.addWidget(button)
+                        else:
+                            # Component-specific secondary buttons always go at the end
+                            self.buttons_layout.addWidget(button)
                     else:
                         self.primary_buttons.append(button)
-                        # Insert primary buttons before the separator/secondary buttons
-                        insert_index = self.buttons_layout.count() - len(self.secondary_buttons)
-                        if self.secondary_buttons: # If secondary buttons exist, account for the separator
-                             insert_index -= 1
-                        # Insert at calculated index, ensuring it's not negative
-                        self.buttons_layout.insertWidget(max(0, insert_index), button)
+                        
+                        # Determine if this is a default button or component-specific button
+                        # Default buttons are pre-defined ones like total_generation, total_load, etc.
+                        default_primary = ['total_generation', 'total_load', 'grid_import', 'grid_export', 
+                                          'battery_charge', 'system_instability', 'satisfied_load']
+                        is_component_specific = data_key not in default_primary
+                        
+                        if not is_component_specific:
+                            # Default primary buttons go at the top of the primary section
+                            # Find the index after the last default primary button
+                            insert_index = 0
+                            for i, btn in enumerate(self.primary_buttons):
+                                if btn == button:  # Skip the current button we're adding
+                                    continue
+                                btn_key = next((k for k, v in self.toggle_buttons.items() if v == btn), "")
+                                if btn_key in default_primary:
+                                    # Get the actual widget index
+                                    for j in range(self.buttons_layout.count()):
+                                        if self.buttons_layout.itemAt(j).widget() == btn:
+                                            insert_index = j + 1  # After this default button
+                            
+                            # Insert at the calculated position
+                            self.buttons_layout.insertWidget(insert_index, button)
+                        else:
+                            # Component-specific primary buttons go after all default primary buttons
+                            # but before the separator and secondary buttons
+                            
+                            # Find the separator or first secondary button
+                            separator_index = None
+                            for i in range(self.buttons_layout.count()):
+                                widget = self.buttons_layout.itemAt(i).widget()
+                                if isinstance(widget, QFrame) or widget in self.secondary_buttons:
+                                    separator_index = i
+                                    break
+                            
+                            # If no separator found, add at the end
+                            if separator_index is None:
+                                self.buttons_layout.addWidget(button)
+                            else:
+                                # Insert before separator/secondary buttons
+                                self.buttons_layout.insertWidget(separator_index, button)
 
-                # Update max value if this new line is visible
-                if y_values and self.line_visibility.get(data_key, True):
-                    series_max = max(y_values)
-                    if is_cumulative:
-                        if series_max > max_val_secondary: max_val_secondary = series_max
-                    else:
-                        if series_max > max_val_primary: max_val_primary = series_max
+                    # Update max value if this new line is visible
+                    if y_values and self.line_visibility.get(data_key, True):
+                        series_max = max(y_values)
+                        if is_cumulative:
+                            if series_max > max_val_secondary: max_val_secondary = series_max
+                        else:
+                            if series_max > max_val_primary: max_val_primary = series_max
 
 
         # --- Final Steps ---

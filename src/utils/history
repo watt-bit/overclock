@@ -1624,3 +1624,19 @@ Modified historian_manager.py to make only the total_generation series visible b
 ## 2023-11-08: Enhanced the ModelManager's new_scenario method to remove all component-specific keys from the historian dictionary when creating a new scenario. This ensures that when a user creates a new scenario, the historian is completely reset to only contain default system-wide metrics (like total_generation, total_load, grid_import, etc.). Component-specific historian entries are removed both from the data dictionary and from the chart display, providing a clean slate for the new scenario.
 
 ## 2023-11-09: Implemented automatic removal of component-specific historian keys when a component is deleted. Added a new method to SimulationEngine to identify and remove historian keys associated with a deleted component based on its type and ID. Updated both the properties manager and key handler to call this method when deleting components. This ensures the historian stays in sync with the current model state and prevents orphaned data from deleted components from cluttering the historian chart.
+
+## 2025-03-28 22:30 - UI Enhancements
+- Modified properties panel to be floating and hidden by default
+- Added automatic positioning of properties panel at 300px up and right from screen center
+- Added 'P' hotkey to toggle properties panel visibility
+- Made properties panel auto-open when selecting a component
+- Made analytics panel hidden by default
+- Enhanced dock widget title bars with darker background and centered text
+
+## 2024-07-10 - Fixed Component Button Ordering in Historian Manager
+- Fixed an issue where component-specific buttons were being placed inconsistently in the historian panel
+- Modified the button placement logic in historian_manager.py to ensure consistent organization
+- Primary axis component buttons now consistently appear at the bottom of the primary axis list
+- Secondary axis component buttons now consistently appear at the bottom of the secondary axis list
+- Improved distinction between default system-wide metrics and component-specific metrics
+- Enhanced user experience with more logical and predictable button organization

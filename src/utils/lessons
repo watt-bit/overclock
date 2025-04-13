@@ -1692,3 +1692,32 @@ Key insights from implementing vertical spacers in UI layouts:
    - Consider the spacer's placement in relation to other UI elements
 
 2023-11-09: When implementing component-specific tracking in data structures like the historian, it's important to properly handle cleanup when components are deleted. Without explicit cleanup, deleted components can leave orphaned entries in the tracking system, leading to confusion, UI clutter, and potential memory leaks. The pattern implemented in the historian system identifies all data keys associated with a component using its type and unique ID, then removes those keys when the component is deleted. This ensures the historian always reflects the current state of the model without accumulating stale data. Always remember to clean up associated data structures when implementing component deletion in a complex system.
+
+## UI Button Organization and Categorization (2024-07-10)
+When organizing buttons for toggling data series visibility in visualization panels:
+
+1. Logical Grouping 
+   - Group buttons by their data category (primary vs. secondary axis)
+   - Within each category, separate default system metrics from component-specific ones
+   - Place component-specific buttons consistently at the end of their respective sections
+
+2. Visual Hierarchy
+   - Use separators (QFrame with HLine) to create visual distinction between groups
+   - Maintain consistent ordering when adding new buttons dynamically
+   - Consider using section headers or labels to identify different groups
+
+3. Insertion Order Management
+   - When dynamically adding new buttons, carefully track insertion indices
+   - Maintain separate lists for different button categories (e.g., primary_buttons, secondary_buttons)
+   - Use explicit widget positioning in layouts rather than relying on append order
+   - Update insertion indices when the layout changes (e.g., when buttons are added or removed)
+
+4. Component Classification
+   - Clearly define what makes a button "component-specific" vs. a "default system metric"
+   - Use consistent criteria for classification across the application
+   - Document the classification criteria for future reference
+
+5. Button Creation
+   - Ensure buttons have consistent styling within their category
+   - Provide clear visual indication of which section a button belongs to
+   - Keep button creation logic modular to facilitate future changes
