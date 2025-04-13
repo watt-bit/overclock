@@ -73,6 +73,30 @@ class ModelManager:
         # Reset the view center position
         self.main_window.view.centerOn(0, 0)
         
+        # Remove all individual component keys from the historian dictionary
+        default_keys = [
+            'total_generation', 'total_load', 'grid_import', 'grid_export',
+            'cumulative_revenue', 'cumulative_cost', 'battery_charge', 'system_instability',
+            'satisfied_load'
+        ]
+        
+        # Identify keys to remove (non-default keys)
+        keys_to_remove = []
+        for key in self.main_window.simulation_engine.historian.keys():
+            if key not in default_keys:
+                keys_to_remove.append(key)
+        
+        # Remove non-default keys from the historian
+        for key in keys_to_remove:
+            del self.main_window.simulation_engine.historian[key]
+        
+        # Reset the historian data for default keys
+        self.main_window.simulation_engine.reset_historian()
+        
+        # Reset the historian chart to remove component buttons
+        if hasattr(self.main_window, 'historian_manager'):
+            self.main_window.historian_manager.clear_chart()
+        
         self.main_window.update_simulation()
     
     def save_scenario(self):

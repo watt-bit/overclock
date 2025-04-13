@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsScene, QHBoxLayout, QPushButton, QLabel, QScrollArea, QFrame
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsScene, QHBoxLayout, QPushButton, QLabel, QScrollArea, QFrame, QSpacerItem, QSizePolicy
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtCore import Qt
 import matplotlib.pyplot as plt
@@ -33,7 +33,8 @@ class HistorianManager:
             'cumulative_revenue': '#4FC3F7',  # Bright sky blue for revenue
             'cumulative_cost': '#D32F2F',   # Soft red for cost
             'battery_charge': '#42A5F5',  # Bright blue for battery charge
-            'system_instability': '#F06292'  # Pink for system instability
+            'system_instability': '#F06292',  # Pink for system instability
+            'satisfied_load': '#8BC34A'   # Light green for satisfied load
         }
         
         # Define which series use secondary y-axis
@@ -79,7 +80,7 @@ class HistorianManager:
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.scroll_area.setMinimumWidth(150)  # Set a minimum width
+        self.scroll_area.setMinimumWidth(175)  # Set a minimum width
         self.scroll_area.setStyleSheet("background-color: #0A0E22; border: none;")
         
         # Create a widget to hold the buttons
@@ -92,6 +93,10 @@ class HistorianManager:
         
         # Add the scroll area to the controls layout
         self.controls_layout.addWidget(self.scroll_area)
+        
+        # Add a 100px transparent vertical spacer
+        spacer = QSpacerItem(20, 125, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.controls_layout.addItem(spacer)
         
         # Create a widget to hold the chart
         self.chart_widget = QWidget()
@@ -271,6 +276,7 @@ class HistorianManager:
         
         # Create button with the data key as text
         button = QPushButton(label)
+        button.setFixedWidth(150)
         
         # Set button appearance
         button.setStyleSheet(f"""
@@ -294,7 +300,7 @@ class HistorianManager:
         button.setCheckable(True)
         
         # Set initial state - only specific buttons are unchecked (visible) by default
-        button.setChecked(not (data_key == 'total_generation' or 
+        button.setChecked(not (data_key == 'satisfied_load' or 
                              data_key == 'cumulative_revenue' or 
                              data_key == 'cumulative_cost' or 
                              data_key == 'system_instability'))
@@ -401,9 +407,9 @@ class HistorianManager:
         )
         
         # Initialize visibility state
-        # total_generation, cumulative_revenue, and cumulative_cost start visible by default
+        # satisfied_load, cumulative_revenue, and cumulative_cost start visible by default
         # Rev_* and Cost_* start hidden by default
-        initial_visible = (data_key == 'total_generation' or 
+        initial_visible = (data_key == 'satisfied_load' or 
                           data_key == 'cumulative_revenue' or 
                           data_key == 'cumulative_cost' or 
                           data_key == 'system_instability')
@@ -638,9 +644,52 @@ class HistorianManager:
         # Reset the secondary axis formatting
         self.update_secondary_axis_formatting(1000)
         
-        # Reset all toggle buttons to their default states
+        # Get list of default buttons to keep
+        default_primary = ['total_generation', 'total_load', 'grid_import', 'grid_export', 
+                          'battery_charge', 'system_instability', 'satisfied_load']
+        default_secondary = ['cumulative_revenue', 'cumulative_cost']
+        default_keys = default_primary + default_secondary
+        
+        # Identify component-specific buttons to remove
+        component_keys = []
+        for key in list(self.toggle_buttons.keys()):
+            if key not in default_keys:
+                component_keys.append(key)
+        
+        # Remove component-specific buttons and lines
+        for key in component_keys:
+            if key in self.toggle_buttons:
+                # Remove button from layout
+                button = self.toggle_buttons[key]
+                self.buttons_layout.removeWidget(button)
+                button.deleteLater()  # Schedule for deletion
+                
+                # Remove from tracking dictionaries
+                del self.toggle_buttons[key]
+                
+                # Remove from appropriate button list
+                if key in self.primary_buttons:
+                    self.primary_buttons.remove(key)
+                elif key in self.secondary_buttons:
+                    self.secondary_buttons.remove(key)
+                
+                # Remove line from chart (keep in self.lines for now to avoid keys changing during iteration)
+                if key in self.lines:
+                    self.lines[key].set_visible(False)
+        
+        # Now remove the corresponding lines from our tracking
+        for key in component_keys:
+            if key in self.lines:
+                # Hide the line but don't try to remove it from the axes
+                self.lines[key].set_visible(False)
+                # Remove from our tracking dictionaries
+                del self.lines[key]
+                if key in self.line_visibility:
+                    del self.line_visibility[key]
+        
+        # Reset all default toggle buttons to their default states
         for key, button in self.toggle_buttons.items():
-            if (key == 'total_generation' or key == 'cumulative_revenue' or 
+            if (key == 'satisfied_load' or key == 'cumulative_revenue' or 
                 key == 'cumulative_cost' or key == 'system_instability'):
                 # These series start unchecked (on)
                 button.setChecked(False)
@@ -666,7 +715,7 @@ class HistorianManager:
         """
         # Default primary series
         default_primary = ['total_generation', 'total_load', 'grid_import', 'grid_export', 
-                          'battery_charge', 'system_instability']
+                          'battery_charge', 'system_instability', 'satisfied_load']
         
         # Default secondary series
         default_secondary = ['cumulative_revenue', 'cumulative_cost']

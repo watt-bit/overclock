@@ -48,7 +48,8 @@ class SimulationEngine(QObject):
             'cumulative_revenue': [0.0] * 8761,  # Add cumulative revenue tracking to historian
             'cumulative_cost': [0.0] * 8761,  # Add cumulative cost tracking to historian
             'battery_charge': [0.0] * 8761,  # Add battery charge tracking to historian
-            'system_instability': [0.0] * 8761  # Add system instability tracking to historian
+            'system_instability': [0.0] * 8761,  # Add system instability tracking to historian
+            'satisfied_load': [0.0] * 8761   # Add satisfied load tracking to historian
         }
         
         # The component-specific historian entries will be added dynamically
@@ -62,6 +63,60 @@ class SimulationEngine(QObject):
                 # Re-initialize the list with zeros
                 self.historian[key] = [0.0] * len(self.historian[key])
         print("Historian data reset.")
+        
+    def remove_component_historian_keys(self, component):
+        """
+        Remove historian keys associated with a deleted component.
+        
+        Args:
+            component: The component being deleted
+        """
+        # Get component type and unique ID
+        component_id = str(id(component))[-6:]  # Use last 6 digits of the ID
+        
+        # Determine the keys to remove based on component type
+        keys_to_remove = []
+        
+        from src.components.generator import GeneratorComponent
+        from src.components.load import LoadComponent
+        from src.components.solar_panel import SolarPanelComponent
+        from src.components.wind_turbine import WindTurbineComponent
+        from src.components.grid_import import GridImportComponent
+        from src.components.grid_export import GridExportComponent
+        from src.components.cloud_workload import CloudWorkloadComponent
+        
+        # Check generation data
+        if isinstance(component, GeneratorComponent):
+            keys_to_remove.append(f"Generator_{component_id}")
+            keys_to_remove.append(f"Cost_Gen_{component_id}")
+        elif isinstance(component, SolarPanelComponent):
+            keys_to_remove.append(f"Solar_{component_id}")
+        elif isinstance(component, WindTurbineComponent):
+            keys_to_remove.append(f"Wind_{component_id}")
+        
+        # Check load data
+        elif isinstance(component, LoadComponent):
+            keys_to_remove.append(f"Load_{component_id}")
+            keys_to_remove.append(f"Rev_Load_{component_id}")
+        
+        # Check grid components
+        elif isinstance(component, GridImportComponent):
+            keys_to_remove.append(f"Cost_Import_{component_id}")
+        elif isinstance(component, GridExportComponent):
+            keys_to_remove.append(f"Rev_Export_{component_id}")
+        
+        # Check cloud workload
+        elif isinstance(component, CloudWorkloadComponent):
+            keys_to_remove.append(f"Rev_Cloud_{component_id}")
+        
+        # Remove the identified keys from the historian
+        for key in keys_to_remove:
+            if key in self.historian:
+                del self.historian[key]
+                
+        # If we're in historian view, update the chart to reflect the changes
+        if hasattr(self.main_window, 'is_model_view') and not self.main_window.is_model_view:
+            self.main_window.historian_manager.update_chart()
         
     def step_simulation(self, steps):
         # Check network connectivity before stepping
@@ -108,6 +163,9 @@ class SimulationEngine(QObject):
             
             # Reset stability flag for this update
             self.system_stable = True
+            
+            # Initialize load_satisfaction_ratio with default value
+            load_satisfaction_ratio = 1.0
             
             # Initialize calculation variables exactly as before
             total_load = 0
@@ -418,7 +476,6 @@ class SimulationEngine(QObject):
                     
                     # Calculate the actual percentage of load satisfied
                     # If there's remaining_load > tolerance, then some load wasn't satisfied
-                    load_satisfaction_ratio = 1.0
                     if not self.system_stable and remaining_load > self.stability_tolerance:
                         # Calculate what percentage of the total load was actually met
                         met_load = total_load - remaining_load
@@ -559,6 +616,8 @@ class SimulationEngine(QObject):
                 self.historian['grid_export'][current_time] = grid_export  # Record grid export in historian
                 self.historian['battery_charge'][current_time] = total_battery_charge * 1000  # Record total battery charge in kWh  
                 self.historian['system_instability'][current_time] = abs(power_surplus)  # Record absolute value of power surplus/deficit
+                # Record satisfied load which is the product of total load and load satisfaction ratio
+                self.historian['satisfied_load'][current_time] = total_load * load_satisfaction_ratio  # Record satisfied load in historian
                 
                 # Record individual component data in the historian
                 # For generation components

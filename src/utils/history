@@ -1606,3 +1606,21 @@ Modified historian_manager.py to make only the total_generation series visible b
 ## 2023-11-05: Added component-specific revenue and cost tracking to the historian. For revenue-generating components (loads, grid exports, cloud workloads), the system now tracks cumulative revenue earned by each component. For cost-incurring components (gas generators, grid imports), the system tracks cumulative cost incurred by each component. These are displayed as secondary axis lines in the historian chart with buttons positioned below the system-wide revenue and cost buttons. Component-specific revenue and cost lines are hidden by default but can be toggled on by the user. Button labels are formatted concisely to fit the fixed-width buttons.
 
 ## 2023-11-06: Enhanced color assignment for component-specific revenue and cost lines in the historian chart. Revenue components (Rev_*) now use a teal/cyan color family, while cost components (Cost_*) use a red color family. This ensures clear visual distinction between different financial metrics and makes the chart easier to read when multiple financial series are displayed simultaneously.
+
+## 2024-07-15: Added "satisfied_load" data series to the historian, which tracks the actual load that was satisfied by the system (total_load * load_satisfaction_ratio). Added it to the default visible chart lines in the historian view.
+
+## 2024-07-15: Fixed satisfied load crash bug in SimulationEngine - The load_satisfaction_ratio variable was being initialized inside a conditional block but used outside of it when recording satisfied_load to the historian. Fixed by initializing the variable at the beginning of the update_simulation method with a default value of 1.0 to ensure it's always defined.
+
+## 2024-07-15: Modified the historian chart display defaults - Changed 'satisfied_load' to be visible by default and 'total_generation' to be hidden by default. This helps users immediately focus on the satisfied portion of the load rather than the generation data.
+
+## 2024-07-07: Added Vertical Spacer to Historian Controls Panel
+- Added a 100px transparent vertical spacer below the buttons area in HistorianManager's controls_widget
+- Used PyQt5's QSpacerItem with QSizePolicy.Fixed to create the fixed-height spacer
+- Added the spacer directly to the controls_layout after the scroll area
+- Improved interface appearance by adding spacing between button list and bottom of panel
+
+## 2023-11-07: Enhanced the clear_chart method in HistorianManager to remove all component-specific buttons and lines when the chart is cleared. Only default system-wide data series (like total_generation, total_load, etc.) are preserved. This keeps the control panel cleaner when starting a new simulation after viewing detailed component data, and ensures only system-level metrics appear in the button panel until individual component data is generated in the new simulation run.
+
+## 2023-11-08: Enhanced the ModelManager's new_scenario method to remove all component-specific keys from the historian dictionary when creating a new scenario. This ensures that when a user creates a new scenario, the historian is completely reset to only contain default system-wide metrics (like total_generation, total_load, grid_import, etc.). Component-specific historian entries are removed both from the data dictionary and from the chart display, providing a clean slate for the new scenario.
+
+## 2023-11-09: Implemented automatic removal of component-specific historian keys when a component is deleted. Added a new method to SimulationEngine to identify and remove historian keys associated with a deleted component based on its type and ID. Updated both the properties manager and key handler to call this method when deleting components. This ensures the historian stays in sync with the current model state and prevents orphaned data from deleted components from cluttering the historian chart.

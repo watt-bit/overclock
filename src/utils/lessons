@@ -1661,3 +1661,34 @@ When creating a UI that displays data, it's important to initialize all essentia
 2023-11-01: The system now tracks energy storage and system stability metrics in the historian. Battery charge shows the overall energy storage status across all batteries in the system, providing visibility into storage reserves. System instability, calculated as the absolute value of power surplus/deficit, quantifies how balanced the system is at each time step. When system_instability is near zero, the system is well-balanced with supply closely matching demand. Higher values indicate either excess generation or insufficient supply. These metrics are essential for analyzing the overall health and performance of the power system.
 
 2023-11-05: The historian's financial tracking capabilities have been significantly enhanced with component-level detail. Each revenue-generating component (load, grid export, cloud workload) and cost-incurring component (gas generator, grid import) now has its own financial time series in the historian. This granular tracking allows users to analyze the financial performance of individual components over time. The historian manager automatically handles these new data series, placing them on the secondary Y-axis and organizing the toggle buttons logically in the control panel. This enables detailed financial analysis at both the system and component levels.
+
+## 2024-07-15: The SimulationEngine calculates a "load_satisfaction_ratio" which represents what percentage of the total load was actually satisfied. This is used to adjust revenue from loads when the system is unstable and can't meet demand. We've now added this as a permanent historian data series called "satisfied_load" which makes it visible how much of the total load demand was actually served by the system.
+
+## UI Layout Spacing with QSpacerItem (2024-07-07)
+Key insights from implementing vertical spacers in UI layouts:
+
+1. **Element Spacing in Qt Layouts**:
+   - QSpacerItem provides a flexible way to add empty space in layouts
+   - Vertical spacers create breathing room between UI components
+   - Horizontal spacers help with alignment and distribution of elements
+   - Spacers improve visual hierarchy and reduce crowding in the interface
+
+2. **Size Policy Options**:
+   - QSizePolicy.Fixed creates non-resizable space with exact dimensions
+   - QSizePolicy.Minimum ensures at least the specified amount of space
+   - QSizePolicy.Expanding allows the spacer to grow and fill available space
+   - Combining width and height policies allows for different behaviors in each dimension
+
+3. **Transparent Spacing Benefits**:
+   - Transparent spacers preserve the background appearance of the parent widget
+   - They integrate seamlessly with the existing UI style
+   - No additional styling or color matching is needed
+   - The visual effect is subtle but improves overall UI readability
+
+4. **Implementation Approach**:
+   - Import QSpacerItem and QSizePolicy from PyQt5.QtWidgets
+   - Create a spacer with specified width, height and policies
+   - Add the spacer to the layout using addItem() method
+   - Consider the spacer's placement in relation to other UI elements
+
+2023-11-09: When implementing component-specific tracking in data structures like the historian, it's important to properly handle cleanup when components are deleted. Without explicit cleanup, deleted components can leave orphaned entries in the tracking system, leading to confusion, UI clutter, and potential memory leaks. The pattern implemented in the historian system identifies all data keys associated with a component using its type and unique ID, then removes those keys when the component is deleted. This ensures the historian always reflects the current state of the model without accumulating stale data. Always remember to clean up associated data structures when implementing component deletion in a complex system.

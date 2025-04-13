@@ -1107,6 +1107,9 @@ class ComponentPropertiesManager:
                 self.main_window.scene.removeItem(connection)
                 self.main_window.connections.remove(connection)
             
+            # Remove component's historian keys
+            self.main_window.simulation_engine.remove_component_historian_keys(component)
+            
             # Remove the component from the scene and list
             self.main_window.scene.removeItem(component)
             
