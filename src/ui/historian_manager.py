@@ -28,7 +28,6 @@ class HistorianManager:
         self.colors = {  # Default colors for known data types - dark-mode friendly colors
             'total_generation': '#66BB6A',  # Soft green
             'total_load': '#FF7043',  # Soft orange
-            'battery_soc': '#42A5F5',  # Soft blue
             'grid_import': '#AB47BC',  # Soft purple
             'grid_export': '#FFCA28',  # Soft amber
             'cumulative_revenue': '#4FC3F7',  # Bright sky blue for revenue
@@ -43,6 +42,9 @@ class HistorianManager:
         self.secondary_buttons = []
         
         self.initialize_historian_scene()
+        
+        # Initialize default data series buttons
+        self.initialize_default_data_series()
     
     def initialize_historian_scene(self):
         """
@@ -592,4 +594,55 @@ class HistorianManager:
         
         # Redraw canvas
         self.canvas.draw()
-        print("Historian chart cleared.") 
+        print("Historian chart cleared.")
+
+    def initialize_default_data_series(self):
+        """
+        Initialize the default data series buttons and lines
+        even before simulation data is available
+        """
+        # Default primary series
+        default_primary = ['total_generation', 'total_load', 'grid_import', 'grid_export']
+        
+        # Default secondary series
+        default_secondary = ['cumulative_revenue', 'cumulative_cost']
+        
+        # Create buttons and empty lines for all default series
+        for data_key in default_primary:
+            # Create line with empty data
+            self.lines[data_key] = self.create_line_for_data(data_key)
+            self.lines[data_key].set_data([], [])
+            
+            # Create button
+            if data_key not in self.toggle_buttons:
+                button = self.create_toggle_button(data_key)
+                self.toggle_buttons[data_key] = button
+                self.primary_buttons.append(button)
+                self.buttons_layout.addWidget(button)
+        
+        # Add separator before secondary buttons
+        if default_secondary:
+            separator = QFrame()
+            separator.setFrameShape(QFrame.HLine)
+            separator.setFrameShadow(QFrame.Sunken)
+            separator.setStyleSheet("background-color: #555555;")
+            self.buttons_layout.addWidget(separator)
+        
+        # Create secondary series
+        for data_key in default_secondary:
+            # Create line with empty data
+            self.lines[data_key] = self.create_line_for_data(data_key)
+            self.lines[data_key].set_data([], [])
+            
+            # Create button
+            if data_key not in self.toggle_buttons:
+                button = self.create_toggle_button(data_key)
+                self.toggle_buttons[data_key] = button
+                self.secondary_buttons.append(button)
+                self.buttons_layout.addWidget(button)
+        
+        # Update axis visibility based on default visibility settings
+        self.update_axis_visibility()
+        
+        # Draw the canvas with the empty lines
+        self.canvas.draw() 

@@ -19,7 +19,7 @@ class AnalyticsPanel(QWidget):
         
         # Create matplotlib figure and canvas for time series
         chart_group = QGroupBox()
-        chart_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 1px solid #29304D; border-radius: 5px; }")
+        chart_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 0px solid #29304D; border-radius: 5px; }")
         chart_layout = QVBoxLayout()
         chart_layout.setContentsMargins(0, 0, 0, 0)
         
@@ -105,7 +105,7 @@ class AnalyticsPanel(QWidget):
         # Create container for current values with columns
         bars_group = QGroupBox()
         bars_group.setFixedHeight(200)
-        bars_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 1px solid #29304D; border-radius: 5px; }")
+        bars_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 0px solid #29304D; border-radius: 5px; }")
         bars_container_layout = QHBoxLayout()
         
         # Left column for most common bars
@@ -275,7 +275,7 @@ class AnalyticsPanel(QWidget):
         
         # Create new revenue chart figure - now positioned below the bars
         revenue_group = QGroupBox()
-        revenue_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 1px solid #29304D; border-radius: 5px; }")
+        revenue_group.setStyleSheet("QGroupBox { background-color: #0A0E22; border: 0px solid #29304D; border-radius: 5px; }")
         revenue_layout = QVBoxLayout()
         revenue_layout.setContentsMargins(0, 0, 0, 0)
         

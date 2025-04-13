@@ -1586,3 +1586,5 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Added safety check to ensure welcome_text exists before trying to center it
 - Ensures welcome text stays centered relative to the viewport regardless of zoom level
 - This complements the previous fix that centered text after view position changes
+
+## 2023-11-16: Fixed a bug in the historian chart where default data series buttons and lines weren't showing up when the application opened. Added initialize_default_data_series() method to create these UI elements at startup, before any simulation data is available.

@@ -1652,3 +1652,6 @@ Key insights from adding gas consumption and cost tracking to generators:
 6. **User Feedback**: The hand cursor that appears during ScrollHandDrag mode provides clear visual feedback to users that they can drag the canvas.
 
 7. **Modern Interface Patterns**: This change aligns with user expectations from modern design tools and map applications where direct manipulation of the viewport is standard.
+
+## Always initialize essential UI elements at application startup
+When creating a UI that displays data, it's important to initialize all essential UI elements at application startup, even if there's no data to display yet. In the case of the historian chart, the buttons and empty lines for default data series should be created when the application loads, rather than waiting for data to become available. This ensures the UI is consistent and functional from the moment the application opens.
