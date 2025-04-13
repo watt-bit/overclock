@@ -31,7 +31,9 @@ class HistorianManager:
             'grid_import': '#AB47BC',  # Soft purple
             'grid_export': '#FFCA28',  # Soft amber
             'cumulative_revenue': '#4FC3F7',  # Bright sky blue for revenue
-            'cumulative_cost': '#D32F2F'   # Soft red for cost
+            'cumulative_cost': '#D32F2F',   # Soft red for cost
+            'battery_charge': '#42A5F5',  # Bright blue for battery charge
+            'system_instability': '#F06292'  # Pink for system instability
         }
         
         # Define which series use secondary y-axis
@@ -173,9 +175,37 @@ class HistorianManager:
             return self.colors[data_key]
         
         # Generate a new color for unknown keys
-        # Use golden ratio to get diverse colors, but ensure they are suitable for dark backgrounds
+        # Use component type prefix to ensure different component types get different color families
+        component_prefix = data_key.split('_')[0] if '_' in data_key else data_key
+        
+        # Use a consistent hash seed based on component type
+        if component_prefix == "Generator":
+            base_hue = 0.1  # Orange-red family
+        elif component_prefix == "Solar":
+            base_hue = 0.3  # Green family
+        elif component_prefix == "Wind":
+            base_hue = 0.6  # Blue family
+        elif component_prefix == "Load":
+            base_hue = 0.9  # Purple family
+        elif component_prefix == "Rev":
+            base_hue = 0.45  # Teal/cyan family for revenue
+        elif component_prefix == "Cost":
+            base_hue = 0.0  # Red family for cost
+        else:
+            base_hue = 0.5  # Default cyan
+        
+        # Use the unique ID part for small variations within the color family
+        # Extract the unique ID part from the data_key
+        if '_' in data_key:
+            unique_part = data_key.split('_')[-1]
+            # Convert unique part to a number between 0 and 1
+            unique_value = sum(ord(c) for c in unique_part) % 100 / 100.0
+        else:
+            unique_value = hash(data_key) % 100 / 100.0
+            
+        # Apply golden ratio for good distribution but keep within color family
         golden_ratio_conjugate = 0.618033988749895
-        h = hash(data_key) * golden_ratio_conjugate % 1
+        h = (base_hue + unique_value * 0.2) % 1.0  # Stay within ±0.1 of base hue
         
         # For dark backgrounds we want:
         # - High enough saturation to be distinct (0.6-0.8)
@@ -226,6 +256,16 @@ class HistorianManager:
         # Format the label (replace underscores with spaces and capitalize words)
         label = ' '.join(word.capitalize() for word in data_key.split('_'))
         
+        # For component-specific revenue and cost, use a shorter label format
+        if data_key.startswith('Rev_'):
+            component_type = data_key.split('_')[1]
+            component_id = data_key.split('_')[-1]
+            label = f"Rev {component_type} {component_id}"
+        elif data_key.startswith('Cost_'):
+            component_type = data_key.split('_')[1]
+            component_id = data_key.split('_')[-1]
+            label = f"Cost {component_type} {component_id}"
+        
         # Get color for this data series
         color = self.get_color_for_data(data_key)
         
@@ -253,8 +293,11 @@ class HistorianManager:
         # Make it checkable (toggle button)
         button.setCheckable(True)
         
-        # Set initial state - total_generation and cumulative_revenue are unchecked (visible) by default
-        button.setChecked(data_key != 'total_generation' and data_key != 'cumulative_revenue')
+        # Set initial state - only specific buttons are unchecked (visible) by default
+        button.setChecked(not (data_key == 'total_generation' or 
+                             data_key == 'cumulative_revenue' or 
+                             data_key == 'cumulative_cost' or 
+                             data_key == 'system_instability'))
         
         # Connect the clicked signal to update the chart
         button.clicked.connect(lambda checked, k=data_key: self.toggle_line_visibility(k, checked))
@@ -289,7 +332,7 @@ class HistorianManager:
                         y_values = historian_data[key][:current_time]
                         if y_values and len(y_values) > 0:
                             series_max = max(y_values)
-                            if key in self.secondary_axis_series:
+                            if key in self.secondary_axis_series or key.startswith('Rev_') or key.startswith('Cost_'):
                                 if series_max > max_val_secondary:
                                     max_val_secondary = series_max
                             else:
@@ -314,8 +357,8 @@ class HistorianManager:
         """Update the visibility of the secondary y-axis based on visible lines"""
         # Check if any secondary axis series are visible
         any_secondary_visible = False
-        for key in self.secondary_axis_series:
-            if key in self.lines and self.line_visibility.get(key, True):
+        for key in self.lines:
+            if (key in self.secondary_axis_series or key.startswith('Rev_') or key.startswith('Cost_')) and self.line_visibility.get(key, True):
                 any_secondary_visible = True
                 break
         
@@ -339,7 +382,8 @@ class HistorianManager:
         color = self.get_color_for_data(data_key)
         
         # Determine which axis to use
-        ax = self.ax2 if data_key in self.secondary_axis_series else self.ax
+        is_secondary = data_key in self.secondary_axis_series or data_key.startswith('Rev_') or data_key.startswith('Cost_')
+        ax = self.ax2 if is_secondary else self.ax
         
         # Create the line with appropriate styling
         line, = ax.plot(
@@ -357,8 +401,12 @@ class HistorianManager:
         )
         
         # Initialize visibility state
-        # total_generation and cumulative_revenue start visible by default
-        initial_visible = data_key == 'total_generation' or data_key == 'cumulative_revenue'
+        # total_generation, cumulative_revenue, and cumulative_cost start visible by default
+        # Rev_* and Cost_* start hidden by default
+        initial_visible = (data_key == 'total_generation' or 
+                          data_key == 'cumulative_revenue' or 
+                          data_key == 'cumulative_cost' or 
+                          data_key == 'system_instability')
         self.line_visibility[data_key] = initial_visible
         line.set_visible(initial_visible)
         
@@ -436,7 +484,7 @@ class HistorianManager:
                 continue
 
             data_values = historian_data[data_key]
-            is_cumulative = data_key in self.secondary_axis_series
+            is_cumulative = data_key in self.secondary_axis_series or data_key.startswith('Rev_') or data_key.startswith('Cost_')
 
             # Determine the number of points to plot and the slice index
             if is_cumulative:
@@ -486,7 +534,7 @@ class HistorianManager:
             if data_key not in self.lines:
                 # New data series encountered
                 data_values = historian_data[data_key]
-                is_cumulative = data_key in self.secondary_axis_series
+                is_cumulative = data_key in self.secondary_axis_series or data_key.startswith('Rev_') or data_key.startswith('Cost_')
 
                 # Determine plot range and slice index for the new line
                 if is_cumulative:
@@ -523,7 +571,21 @@ class HistorianManager:
                             separator.setFrameShadow(QFrame.Sunken)
                             separator.setStyleSheet("background-color: #555555;")
                             self.buttons_layout.addWidget(separator)
-                        self.buttons_layout.addWidget(button) # Add to the end
+                        
+                        # For component-specific revenue and cost, add at the end
+                        if data_key.startswith('Rev_') or data_key.startswith('Cost_'):
+                            self.buttons_layout.addWidget(button)  # Add to the very end
+                        else:
+                            # For system-wide metrics (cumulative_revenue, cumulative_cost), 
+                            # add before any component-specific revenues and costs
+                            # Find the position of the first component-specific button, if any
+                            insert_index = self.buttons_layout.count()
+                            for i, other_button in enumerate(self.secondary_buttons):
+                                other_key = next((k for k, v in self.toggle_buttons.items() if v == other_button), "")
+                                if other_key.startswith('Rev_') or other_key.startswith('Cost_'):
+                                    insert_index = self.buttons_layout.indexOf(other_button)
+                                    break
+                            self.buttons_layout.insertWidget(insert_index, button)
                     else:
                         self.primary_buttons.append(button)
                         # Insert primary buttons before the separator/secondary buttons
@@ -578,7 +640,8 @@ class HistorianManager:
         
         # Reset all toggle buttons to their default states
         for key, button in self.toggle_buttons.items():
-            if key == 'total_generation' or key == 'cumulative_revenue':
+            if (key == 'total_generation' or key == 'cumulative_revenue' or 
+                key == 'cumulative_cost' or key == 'system_instability'):
                 # These series start unchecked (on)
                 button.setChecked(False)
                 self.line_visibility[key] = True
@@ -602,7 +665,8 @@ class HistorianManager:
         even before simulation data is available
         """
         # Default primary series
-        default_primary = ['total_generation', 'total_load', 'grid_import', 'grid_export']
+        default_primary = ['total_generation', 'total_load', 'grid_import', 'grid_export', 
+                          'battery_charge', 'system_instability']
         
         # Default secondary series
         default_secondary = ['cumulative_revenue', 'cumulative_cost']

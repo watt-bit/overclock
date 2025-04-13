@@ -1588,3 +1588,21 @@ Modified historian_manager.py to make only the total_generation series visible b
 - This complements the previous fix that centered text after view position changes
 
 ## 2023-11-16: Fixed a bug in the historian chart where default data series buttons and lines weren't showing up when the application opened. Added initialize_default_data_series() method to create these UI elements at startup, before any simulation data is available.
+
+## 2023-07-20: Modified the historian_manager.py to enable the cumulative_cost button/line by default, similar to how total_generation and cumulative_revenue were already enabled by default. This involved updating three locations: the create_toggle_button method, the create_line_for_data method, and the clear_chart method.
+
+## 2023-10-29: Enhanced the historian system to track power generation and consumption data for individual components. Added dynamic tracking of output for each generator, solar panel, and wind turbine component, as well as demand for each load component. The data is automatically added to the historian and displayed in charts.
+
+## 2023-10-30: Fixed historian component tracking to use component type and unique ID for key generation instead of relying on a non-existent name attribute. This ensures robust tracking of individual component data without errors.
+
+## 2023-10-31: Improved color generation algorithm in HistorianManager to create distinct color families based on component types. Generators now use orange-red colors, Solar panels use green colors, Wind turbines use blue colors, and Loads use purple colors. This ensures better visual differentiation between component data series in the chart.
+
+## 2023-11-01: Added two new permanent data series to the historian: battery_charge and system_instability. Battery charge tracks the total energy stored in all batteries in the system per hour. System instability tracks the absolute value of power surplus/deficit, showing energy imbalance in the system each hour. Both series are visible by default in the historian chart on the primary axis.
+
+## 2023-11-02: Changed the default visibility setting for battery_charge in the historian chart to be hidden by default. This change was made to reduce the initial complexity of the chart, showing only the most essential metrics (total generation, system instability, and cumulative revenue) by default. Users can still view battery charge data by toggling its visibility in the control panel.
+
+## 2023-11-03: Fixed a bug where the battery_charge button wasn't visible at all in the historian view before running a simulation. Added battery_charge to the default_primary list in initialize_default_data_series to ensure the button is always created at application startup. The button remains toggled off by default as intended, preserving the simplified initial chart view.
+
+## 2023-11-05: Added component-specific revenue and cost tracking to the historian. For revenue-generating components (loads, grid exports, cloud workloads), the system now tracks cumulative revenue earned by each component. For cost-incurring components (gas generators, grid imports), the system tracks cumulative cost incurred by each component. These are displayed as secondary axis lines in the historian chart with buttons positioned below the system-wide revenue and cost buttons. Component-specific revenue and cost lines are hidden by default but can be toggled on by the user. Button labels are formatted concisely to fit the fixed-width buttons.
+
+## 2023-11-06: Enhanced color assignment for component-specific revenue and cost lines in the historian chart. Revenue components (Rev_*) now use a teal/cyan color family, while cost components (Cost_*) use a red color family. This ensures clear visual distinction between different financial metrics and makes the chart easier to read when multiple financial series are displayed simultaneously.

@@ -46,8 +46,13 @@ class SimulationEngine(QObject):
             'grid_import': [0.0] * 8761,  # Add grid_import tracking to historian
             'grid_export': [0.0] * 8761,   # Add grid_export tracking to historian
             'cumulative_revenue': [0.0] * 8761,  # Add cumulative revenue tracking to historian
-            'cumulative_cost': [0.0] * 8761  # Add cumulative cost tracking to historian
+            'cumulative_cost': [0.0] * 8761,  # Add cumulative cost tracking to historian
+            'battery_charge': [0.0] * 8761,  # Add battery charge tracking to historian
+            'system_instability': [0.0] * 8761  # Add system instability tracking to historian
         }
+        
+        # The component-specific historian entries will be added dynamically
+        # as components are encountered during simulation
         
     def reset_historian(self):
         """Reset all data arrays within the historian object."""
@@ -132,16 +137,26 @@ class SimulationEngine(QObject):
             # Second pass: calculate local generation first (priority)
             remaining_load = total_load
             
+            # Track individual component outputs in this time step
+            component_outputs = {}
+            
             # Start with Solar Panel and Wind Turbine generation - highest priority
             for item in self.main_window.scene.items():
                 if isinstance(item, SolarPanelComponent) and (item.operating_mode == "Powerlandia 8760 - Midwest 1" or item.operating_mode == "Custom"):
                     output = item.calculate_output(remaining_load)
                     local_generation += output
                     remaining_load = max(0, remaining_load - output)
+                    
+                    # Track individual component output
+                    component_outputs[item] = output
+                    
                 elif isinstance(item, WindTurbineComponent) and (item.operating_mode == "Powerlandia 8760 - Midwest 1" or item.operating_mode == "Custom"):
                     output = item.calculate_output(remaining_load)
                     local_generation += output
                     remaining_load = max(0, remaining_load - output)
+                    
+                    # Track individual component output
+                    component_outputs[item] = output
             
             # Then get generation from all Static (Auto) generators
             for item in self.main_window.scene.items():
@@ -149,6 +164,9 @@ class SimulationEngine(QObject):
                     output = item.calculate_output(remaining_load)
                     local_generation += output
                     remaining_load = max(0, remaining_load - output)
+                    
+                    # Track individual component output
+                    component_outputs[item] = output
             
             # Next get generation from BTF Unit Commitment (Auto) generators
             # Get all BTF Unit Commitment generators and sort by cost_per_gj in ascending order (lowest cost first)
@@ -166,6 +184,9 @@ class SimulationEngine(QObject):
                 output = item.calculate_output(remaining_load)
                 local_generation += output
                 remaining_load = max(0, remaining_load - output)
+                
+                # Track individual component output
+                component_outputs[item] = output
             
             # Last, get generation from BTF Droop (Auto) generators, sharing load equally
             droop_generators = [item for item in self.main_window.scene.items() 
@@ -205,6 +226,9 @@ class SimulationEngine(QObject):
                             # Add to local generation and reduce remaining load
                             local_generation += actual_output
                             remaining_load = max(0, remaining_load - actual_output)
+                            
+                            # Track individual component output
+                            component_outputs[gen] = actual_output
                 else:
                     # No remaining load, set all droop generators to 0 output
                     for gen in droop_generators:
@@ -214,6 +238,18 @@ class SimulationEngine(QObject):
                             gen.last_output = max(0, gen.last_output - max_change)
                         else:
                             gen.last_output = 0
+                        
+                        # Track individual component output (even if zero)
+                        component_outputs[gen] = gen.last_output
+            
+            # Track individual load component demands
+            component_demands = {}
+            
+            # Calculate demand for each load component
+            for item in self.main_window.scene.items():
+                if isinstance(item, LoadComponent):
+                    demand = item.calculate_demand(current_time)
+                    component_demands[item] = demand
             
             # Third pass: if there's still remaining load, use battery discharge (second priority)
             if remaining_load > 0 and active_batteries:
@@ -503,7 +539,7 @@ class SimulationEngine(QObject):
             total_battery_charge = 0
             for item in self.main_window.scene.items():
                 if isinstance(item, BatteryComponent):
-                    total_battery_charge += item.current_charge / 1000.0
+                    total_battery_charge += item.current_charge / 1000.0 # Convert to MWh
             
             # Calculate total generation including battery discharge
             total_generation = local_generation + max(0, battery_power)
@@ -521,6 +557,118 @@ class SimulationEngine(QObject):
                 self.historian['total_load'][current_time] = adjusted_total_load  # Record adjusted total load in historian
                 self.historian['grid_import'][current_time] = grid_import  # Record grid import in historian
                 self.historian['grid_export'][current_time] = grid_export  # Record grid export in historian
+                self.historian['battery_charge'][current_time] = total_battery_charge * 1000  # Record total battery charge in kWh  
+                self.historian['system_instability'][current_time] = abs(power_surplus)  # Record absolute value of power surplus/deficit
+                
+                # Record individual component data in the historian
+                # For generation components
+                for component, output in component_outputs.items():
+                    # Create a unique key for this component
+                    if isinstance(component, GeneratorComponent):
+                        component_type = "Generator"
+                    elif isinstance(component, SolarPanelComponent):
+                        component_type = "Solar"
+                    elif isinstance(component, WindTurbineComponent):
+                        component_type = "Wind"
+                    else:
+                        component_type = "Unknown"
+                    
+                    # Create a key like "Generator_1" or "Solar_Panel_3"
+                    # Include the component ID which is unique
+                    component_id = str(id(component))[-6:]  # Use last 6 digits of the ID
+                    historian_key = f"{component_type}_{component_id}"
+                    
+                    # Initialize this component's data array if it doesn't exist
+                    if historian_key not in self.historian:
+                        self.historian[historian_key] = [0.0] * 8761
+                    
+                    # Record this component's output for the current time
+                    self.historian[historian_key][current_time] = output
+                
+                # For load components
+                for component, demand in component_demands.items():
+                    # Create a unique key for this load component
+                    component_id = str(id(component))[-6:]  # Use last 6 digits of the ID
+                    historian_key = f"Load_{component_id}"
+                    
+                    # Initialize this component's data array if it doesn't exist
+                    if historian_key not in self.historian:
+                        self.historian[historian_key] = [0.0] * 8761
+                    
+                    # Record this component's demand for the current time
+                    self.historian[historian_key][current_time] = demand
+                
+                # Record individual component revenue data in the historian
+                # For load components with revenue
+                for item in self.main_window.scene.items():
+                    if isinstance(item, LoadComponent) and hasattr(item, 'accumulated_revenue'):
+                        # Create a unique key for this load component's revenue
+                        component_id = str(id(item))[-6:]  # Use last 6 digits of the ID
+                        historian_key = f"Rev_Load_{component_id}"
+                        
+                        # Initialize this component's data array if it doesn't exist
+                        if historian_key not in self.historian:
+                            self.historian[historian_key] = [0.0] * 8761
+                        
+                        # Record this component's cumulative revenue for the current time
+                        self.historian[historian_key][current_time] = item.accumulated_revenue
+                
+                # For grid export components with revenue
+                for item in self.main_window.scene.items():
+                    if isinstance(item, GridExportComponent) and hasattr(item, 'accumulated_revenue'):
+                        # Create a unique key for this export component's revenue
+                        component_id = str(id(item))[-6:]  # Use last 6 digits of the ID
+                        historian_key = f"Rev_Export_{component_id}"
+                        
+                        # Initialize this component's data array if it doesn't exist
+                        if historian_key not in self.historian:
+                            self.historian[historian_key] = [0.0] * 8761
+                        
+                        # Record this component's cumulative revenue for the current time
+                        self.historian[historian_key][current_time] = item.accumulated_revenue
+                
+                # For cloud workload components with revenue
+                for item in self.main_window.scene.items():
+                    if isinstance(item, CloudWorkloadComponent) and hasattr(item, 'accumulated_revenue'):
+                        # Create a unique key for this cloud workload component's revenue
+                        component_id = str(id(item))[-6:]  # Use last 6 digits of the ID
+                        historian_key = f"Rev_Cloud_{component_id}"
+                        
+                        # Initialize this component's data array if it doesn't exist
+                        if historian_key not in self.historian:
+                            self.historian[historian_key] = [0.0] * 8761
+                        
+                        # Record this component's cumulative revenue for the current time
+                        self.historian[historian_key][current_time] = item.accumulated_revenue
+                
+                # Record individual component cost data in the historian
+                # For generator components with cost
+                for item in self.main_window.scene.items():
+                    if isinstance(item, GeneratorComponent) and hasattr(item, 'accumulated_cost'):
+                        # Create a unique key for this generator component's cost
+                        component_id = str(id(item))[-6:]  # Use last 6 digits of the ID
+                        historian_key = f"Cost_Gen_{component_id}"
+                        
+                        # Initialize this component's data array if it doesn't exist
+                        if historian_key not in self.historian:
+                            self.historian[historian_key] = [0.0] * 8761
+                        
+                        # Record this component's cumulative cost for the current time
+                        self.historian[historian_key][current_time] = item.accumulated_cost
+                
+                # For grid import components with cost
+                for item in self.main_window.scene.items():
+                    if isinstance(item, GridImportComponent) and hasattr(item, 'accumulated_cost'):
+                        # Create a unique key for this import component's cost
+                        component_id = str(id(item))[-6:]  # Use last 6 digits of the ID
+                        historian_key = f"Cost_Import_{component_id}"
+                        
+                        # Initialize this component's data array if it doesn't exist
+                        if historian_key not in self.historian:
+                            self.historian[historian_key] = [0.0] * 8761
+                        
+                        # Record this component's cumulative cost for the current time
+                        self.historian[historian_key][current_time] = item.accumulated_cost
             
             # Update analytics with all values (conditionally)
             if not skip_ui_updates:

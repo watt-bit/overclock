@@ -938,6 +938,19 @@ class PowerSystemSimulator(QMainWindow):
             # Draw the logo at its current position
             painter.drawPixmap(logo_pos, logo_pixmap)
         
+        # Add the mode toggle button if it exists
+        if hasattr(self, 'mode_toggle_btn'):
+            # Create a pixmap from the mode toggle button
+            mode_btn_pixmap = QPixmap(self.mode_toggle_btn.size())
+            mode_btn_pixmap.fill(Qt.transparent)
+            self.mode_toggle_btn.render(mode_btn_pixmap)
+            
+            # Get the button position
+            mode_btn_pos = self.mode_toggle_btn.pos()
+            
+            # Draw the button at its current position
+            painter.drawPixmap(mode_btn_pos, mode_btn_pixmap)
+        
         # End painting
         painter.end()
         

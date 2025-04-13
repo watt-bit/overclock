@@ -33,16 +33,15 @@ class ImageBackgroundButton(QPushButton):
                 padding: 5px;
                 background-color: transparent;
                 font-size: 14px;
-                font-weight: bold;
             }
             QPushButton:hover { 
                 border: 1px solid #666666;
-                background-color: rgba(255, 255, 255, 0.1); 
+                background-color: rgba(255, 255, 255, 0.2); 
             }
             QPushButton:pressed { 
                 border: 2px solid #777777;
                 padding: 4px; 
-                background-color: rgba(0, 0, 0, 0.1);
+                background-color: rgba(0, 0, 0, 0.2);
             }
         """)
         
