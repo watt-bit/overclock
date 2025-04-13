@@ -7,6 +7,8 @@ from src.components.pond import PondComponent
 from src.components.house1 import House1Component
 from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
+from src.components.traditional_data_center import TraditionalDataCenterComponent
+from src.components.distribution_pole import DistributionPoleComponent
 
 
 class KeyHandler:
@@ -79,7 +81,8 @@ class KeyHandler:
                     
                     # Only remove from components list if it's a functional component and in the list
                     if (not isinstance(component, (TreeComponent, BushComponent, PondComponent, 
-                                                  House1Component, House2Component, FactoryComponent)) and 
+                                                  House1Component, House2Component, FactoryComponent,
+                                                  TraditionalDataCenterComponent, DistributionPoleComponent)) and 
                         component in self.main_window.components):
                         self.main_window.components.remove(component)
                 

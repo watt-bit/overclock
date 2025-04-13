@@ -1721,3 +1721,31 @@ When organizing buttons for toggling data series visibility in visualization pan
    - Ensure buttons have consistent styling within their category
    - Provide clear visual indication of which section a button belongs to
    - Keep button creation logic modular to facilitate future changes
+
+## Component Deletion and Reference Management (2025-04-13)
+Key lessons from fixing the rapid deletion crash bug:
+
+1. **Reference Lifecycle Management**
+   - After deleting a component, clear any references to it to prevent further operations on deleted objects
+   - The `current_component` reference in `ComponentPropertiesManager` should be nullified after deletion
+   - This prevents subsequent delete operations from attempting to remove already-deleted components
+
+2. **Defensive Coding for Collections**
+   - Always check if an item exists in a collection before attempting to remove it
+   - Use `if component in self.main_window.components:` check before `components.remove(component)`
+   - This prevents `ValueError: list.remove(x): x not in list` exceptions when an item is already removed
+
+3. **Type-Based Component Management**
+   - Maintain consistent handling of decorative vs. functional components across the codebase
+   - Import all component types used in type checking to ensure consistent behavior
+   - Use the same list of decorative component types in all related operations (deletion, serialization, etc.)
+
+4. **Qt Graphics Scene Object Lifecycle**
+   - Qt emits QGraphicsScene::removeItem warnings when trying to remove an item from a scene it's not in
+   - Components may be removed from the scene but still referenced elsewhere in the code
+   - Always clear references to deleted scene items to prevent these issues
+
+5. **User Input Handling Robustness**
+   - Users may trigger the same action multiple times rapidly (e.g., pressing delete key repeatedly)
+   - Input handling code should be resilient to such repetitive actions
+   - Each operation should verify the validity of its target objects before proceeding

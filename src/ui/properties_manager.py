@@ -1114,7 +1114,11 @@ class ComponentPropertiesManager:
             self.main_window.scene.removeItem(component)
             
             # Only remove from components list if it's a functional component (not a decorative one)
-            if not isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent, DistributionPoleComponent)):
+            # and if it's actually in the components list (to prevent the "x not in list" error)
+            if (not isinstance(component, (TreeComponent, BushComponent, PondComponent, 
+                           House1Component, House2Component, FactoryComponent, 
+                           TraditionalDataCenterComponent, DistributionPoleComponent)) and 
+                component in self.main_window.components):
                 self.main_window.components.remove(component)
             
             # Clear the properties panel
@@ -1129,6 +1133,9 @@ class ComponentPropertiesManager:
                         if sub_item.widget():
                             sub_item.widget().deleteLater()
                     item.layout().deleteLater()
+            
+            # Clear the current component reference to prevent repeated deletion attempts
+            self.current_component = None
             
             # Update simulation state
             self.main_window.update_simulation() 

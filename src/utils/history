@@ -1640,3 +1640,11 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Secondary axis component buttons now consistently appear at the bottom of the secondary axis list
 - Improved distinction between default system-wide metrics and component-specific metrics
 - Enhanced user experience with more logical and predictable button organization
+
+## 2025-04-13: Fixed Rapid Component Deletion Crash
+- Fixed a bug where pressing delete multiple times quickly would cause the application to crash
+- Updated properties_manager.py to check if component exists in the components list before trying to remove it
+- Added code to clear the current_component reference after deletion to prevent duplicate deletion attempts
+- Enhanced key_handler.py with proper imports and component type checking for decorative components
+- Improved robustness of delete operations with additional safety checks
+- Eliminates the "ValueError: list.remove(x): x not in list" error when rapidly pressing delete
