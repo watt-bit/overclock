@@ -203,9 +203,11 @@ class UIInitializer:
         
         # Create canvas for drag and drop
         main_window.view = QGraphicsView(main_window.scene)
-        main_window.view.setDragMode(QGraphicsView.RubberBandDrag)
+        main_window.view.setDragMode(QGraphicsView.ScrollHandDrag)
         main_window.view.setRenderHint(QPainter.Antialiasing)
         main_window.view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+        main_window.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        main_window.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         
         # Set initial scaling for view
         main_window.current_zoom = 0.8

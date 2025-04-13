@@ -1186,9 +1186,9 @@ class PowerSystemSimulator(QMainWindow):
             self.view.setScene(self.scene)
             
             # Re-enable scrolling and movement in model view
-            self.view.setDragMode(QGraphicsView.RubberBandDrag)
-            self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-            self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            self.view.setDragMode(QGraphicsView.ScrollHandDrag)
+            self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
             
             # Re-enable zoom slider and restore previous value
             self.zoom_slider.setEnabled(True)

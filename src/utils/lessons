@@ -1635,3 +1635,20 @@ Key insights from adding gas consumption and cost tracking to generators:
 9. **Method Parameter Specificity in Qt**: Different Qt methods have strict requirements about parameter types. For example, QPainter.drawPixmap() with a rect parameter requires QRect (not QRectF), while QPainterPath.addRoundedRect() requires QRectF (not QRect). Always check method signatures and use the correct type conversions when necessary.
 
 - When running autocomplete, the simulation runs faster in historian view than in model view. This is because historian view doesn't need to render all the complex component graphics and connections during each time step. We've modified the autocomplete function to automatically switch to historian view for better performance.
+
+## Implementing Grab-and-Pan Navigation (2024-07-06)
+
+### Key Insights
+1. **User Experience Enhancement**: Changing from scrollbar-based navigation to grab-and-pan provides a more intuitive and modern experience for users, similar to other design applications.
+
+2. **Simple Implementation**: QGraphicsView provides built-in support for this navigation style through the ScrollHandDrag mode, making it a straightforward change.
+
+3. **Consistent Experience**: When implementing this change, it's important to update all relevant code locations, including the view switching functionality between model and historian views.
+
+4. **Selection vs. Navigation**: The previous RubberBandDrag mode allowed for selecting multiple items by dragging a selection rectangle. With ScrollHandDrag, users trade this for better navigation but will need to use other means (like Ctrl+click) for multi-selection.
+
+5. **Mode Awareness**: Different navigation modes are appropriate for different application states. ScrollHandDrag is ideal for model editing and exploration, while NoDrag is still used for the historian view.
+
+6. **User Feedback**: The hand cursor that appears during ScrollHandDrag mode provides clear visual feedback to users that they can drag the canvas.
+
+7. **Modern Interface Patterns**: This change aligns with user expectations from modern design tools and map applications where direct manipulation of the viewport is standard.
