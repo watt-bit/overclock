@@ -1162,6 +1162,18 @@ class PowerSystemSimulator(QMainWindow):
             # Set flag to indicate we're now in historian view
             self.is_model_view = False
             
+            # Hide the analytics panel if it's open
+            if self.analytics_dock.isVisible():
+                self.analytics_dock.setVisible(False)
+            
+            # Hide the analytics toggle button in historian view
+            if hasattr(self, 'analytics_toggle_btn'):
+                self.analytics_toggle_btn.hide()
+            
+            # Disable the toolbar menu buttons for properties and analytics
+            self.properties_action.setEnabled(False)
+            self.analytics_action.setEnabled(False)
+            
             # Update the historian chart with current data
             self.historian_manager.update_chart()
             

@@ -1648,3 +1648,5 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Enhanced key_handler.py with proper imports and component type checking for decorative components
 - Improved robustness of delete operations with additional safety checks
 - Eliminates the "ValueError: list.remove(x): x not in list" error when rapidly pressing delete
+
+## 2023-06-15: Fixed bug in switch_to_historian_view method where the analytics button and menu items weren't being hidden/disabled when automatically entering historian view via autocomplete, ensuring consistent behavior with manual mode toggling.

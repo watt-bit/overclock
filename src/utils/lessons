@@ -1749,3 +1749,5 @@ Key lessons from fixing the rapid deletion crash bug:
    - Users may trigger the same action multiple times rapidly (e.g., pressing delete key repeatedly)
    - Input handling code should be resilient to such repetitive actions
    - Each operation should verify the validity of its target objects before proceeding
+
+When implementing automated UI mode changes (like the autocomplete feature that switches to historian view), ensure that all UI elements are updated consistently with their manual counterparts. In this case, the switch_to_historian_view() method needed to include the same UI hiding/disabling logic that exists in toggle_mode_button() to maintain consistent behavior.
