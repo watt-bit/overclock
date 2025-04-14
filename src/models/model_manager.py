@@ -1,7 +1,7 @@
 import json
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QPointF
-import sip
+import sip  # type: ignore  
 
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent

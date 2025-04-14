@@ -15,7 +15,7 @@ from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
 from src.components.distribution_pole import DistributionPoleComponent
-import sip
+import sip  # type: ignore
 
 class ComponentAdder:
     def __init__(self, main_window):

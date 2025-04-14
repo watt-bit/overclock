@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
 from PyQt5.QtCore import Qt, QPointF, QRectF, QTimer, pyqtSignal, QObject, QSize
 from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor, QDoubleValidator, QIntValidator, QBrush, QKeySequence, QIcon, QRadialGradient
 import math
-import sip
+import sip  # type: ignore
 
 from src.components.base import ComponentBase
 from src.components.generator import GeneratorComponent
