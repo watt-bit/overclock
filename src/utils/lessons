@@ -1598,40 +1598,6 @@ Key insights from adding gas consumption and cost tracking to generators:
    - The model manager should handle both saving and loading these properties consistently
    - Cost accumulation values should persist across save/load operations to maintain simulation continuity
 
-## PyQt Object Lifecycle Management (2025-04-26)
-Key insights from fixing the welcome_text crash:
-
-1. **C++ Object Deletion Detection**
-   - PyQt widgets are C++ objects with Python wrappers
-   - When the C++ object is deleted, the Python wrapper becomes invalid but isn't automatically set to None
-   - The `sip` module provides `isdeleted()` to detect if the underlying C++ object has been deleted
-   - Always check `not sip.isdeleted(obj)` before accessing properties of PyQt objects that might have been deleted
-
-2. **Comprehensive Validation Pattern**
-   - Use a three-part check before accessing PyQt objects:
-     * `hasattr(self, 'attribute_name')` - Check if the attribute exists
-     * `self.attribute_name` - Check if the attribute has a value (not None)
-     * `not sip.isdeleted(self.attribute_name)` - Check if the C++ object is still valid
-   - This pattern prevents crashes from accessing deleted objects or non-existent attributes
-
-3. **Proactive Reference Clearing**
-   - Set references to None before actions that might delete objects (like clearing a scene)
-   - This ensures Python's garbage collector can properly handle the object
-   - Example: `self.welcome_text = None` before `self.scene.clear()`
-   - This prevents holding references to deleted C++ objects
-
-4. **Scene Clearing Best Practices**
-   - When clearing a QGraphicsScene, first set all references to scene items to None
-   - After `scene.clear()`, validate any remaining references before using them
-   - Be especially careful with deferred operations (like QTimer callbacks) that might execute after clearing
-   - Design UI initialization methods to safely handle cases where previous UI elements have been deleted
-
-5. **Cross-File Consistency**
-   - Apply the same safety pattern consistently across all files that might access the same objects
-   - When handling PyQt objects, ensure every file that accesses them imports `sip` 
-   - Update all cases where the object is accessed, not just where crashes are observed
-   - Document these patterns in the codebase to ensure future modifications follow the same safety practices
-
 [2023-06-14] Matplotlib axis formatting lessons:
 1. To remove scientific notation and order of magnitude labels at the top of an axis, use `ax.ticklabel_format(useOffset=False, style='plain')`.
 2. Custom tick formatting can be achieved using `matplotlib.ticker.FuncFormatter` with a callback function that receives the tick value and position.
@@ -1785,3 +1751,28 @@ Key lessons from fixing the rapid deletion crash bug:
    - Each operation should verify the validity of its target objects before proceeding
 
 When implementing automated UI mode changes (like the autocomplete feature that switches to historian view), ensure that all UI elements are updated consistently with their manual counterparts. In this case, the switch_to_historian_view() method needed to include the same UI hiding/disabling logic that exists in toggle_mode_button() to maintain consistent behavior.
+
+## Qt Graphics Scene Object Management (2025-04-14)
+1. **Validating QtGraphicsItem References**
+   - Always check if a graphics item is still in a scene before trying to access its properties
+   - Use `item.scene()` to verify if an item is still part of a scene
+   - C++ objects can be deleted even when Python still has references to their wrappers
+   - The error "wrapped C/C++ object has been deleted" indicates this kind of reference problem
+
+2. **Scene Clearing Behavior**
+   - When clearing a QGraphicsScene with `scene.clear()`, all items are immediately removed
+   - Python references to those items become invalid for accessing properties
+   - Explicitly remove important items before clearing the scene for proper cleanup
+   - Set Python references to None after removing items from the scene
+
+3. **Object Lifecycle Management**
+   - Qt's parent-child relationship determines object lifecycle in many cases
+   - QGraphicsScene takes ownership of added items and manages their memory
+   - When the scene is cleared or destroyed, it deletes all its items
+   - Scene items should never be explicitly deleted with `del` as the scene owns them
+   
+4. **Safe Reference Patterns**
+   - Defensive programming with checks like `if item and item.scene()` prevents crashes
+   - Consider using weak references for long-lived references to scene items
+   - Implement proper cleanup when switching between different scenes
+   - Always validate references to scene items after operations that might modify the scene

@@ -1651,11 +1651,18 @@ Modified historian_manager.py to make only the total_generation series visible b
 
 ## 2023-06-15: Fixed bug in switch_to_historian_view method where the analytics button and menu items weren't being hidden/disabled when automatically entering historian view via autocomplete, ensuring consistent behavior with manual mode toggling.
 
-## 2025-04-26: Fixed Welcome Text Crash After Loading Saved Files
-- Fixed crashes that occurred when switching to historian view or adding components after loading a saved file
-- Added sip module to check if PyQt objects have been deleted before accessing them
-- Updated center_welcome_text, zoom_changed, and component_adder to safely handle welcome_text references
-- Added explicit welcome_text = None calls before clearing the scene in model_manager.py
-- Added checks using hasattr, not sip.isdeleted, and other validation before accessing welcome_text properties
-- Prevents "RuntimeError: wrapped C/C++ object of type QGraphicsTextItem has been deleted" errors
-- Made loading saved files more robust by ensuring proper cleanup of previous UI elements
+## 2025-04-14 09:35 - Fixed Welcome Text Crash After Loading Save
+- Fixed a bug where switching to Historian view after loading a saved file would cause a crash
+- Modified the center_welcome_text method to check if welcome_text still exists in the scene
+- Added scene() check to verify the QGraphicsTextItem is still valid and in a scene
+- Added similar validation in zoom_changed method to prevent crashes when referencing deleted objects
+- Updated model_manager to properly remove welcome_text from scene before clearing it
+- This prevents "RuntimeError: wrapped C/C++ object of type QGraphicsTextItem has been deleted" error
+- Improves application stability when loading saved scenarios and switching views
+
+## 2025-04-14 10:15 - Extended Welcome Text Crash Fix to Component Adder
+- Fixed a potential crash in component_adder.py when adding components after loading a save
+- Added scene() check to verify the welcome_text object is still valid before trying to hide it
+- Similar to the previous fix in main_window.py for the welcome_text crash
+- This ensures the component adder properly handles cases where welcome_text has been deleted
+- Continues the improvement in application stability when switching between views
