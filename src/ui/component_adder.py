@@ -15,6 +15,7 @@ from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
 from src.components.distribution_pole import DistributionPoleComponent
+import sip
 
 class ComponentAdder:
     def __init__(self, main_window):
@@ -118,7 +119,7 @@ class ComponentAdder:
         
         # Hide welcome text after adding the first component (if it's not decorative)
         if component_type in ["generator", "grid_import", "grid_export", "bus", "load", "battery", "cloud_workload", "solar_panel", "wind_turbine"]:
-            if self.main_window.welcome_text and self.main_window.welcome_text.isVisible():
+            if hasattr(self.main_window, 'welcome_text') and self.main_window.welcome_text and not sip.isdeleted(self.main_window.welcome_text) and self.main_window.welcome_text.isVisible():
                 self.main_window.welcome_text.setVisible(False)
         
         # Create particle effect at the component's position

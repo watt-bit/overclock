@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
 from PyQt5.QtCore import Qt, QPointF, QRectF, QTimer, pyqtSignal, QObject, QSize
 from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor, QDoubleValidator, QIntValidator, QBrush, QKeySequence, QIcon, QRadialGradient
 import math
+import sip
 
 from src.components.base import ComponentBase
 from src.components.generator import GeneratorComponent
@@ -312,7 +313,7 @@ class PowerSystemSimulator(QMainWindow):
     
     def center_welcome_text(self):
         """Center the welcome text in the view after the view is shown"""
-        if self.welcome_text:
+        if self.welcome_text and hasattr(self.welcome_text, 'boundingRect') and not sip.isdeleted(self.welcome_text):
             # Get the center of the current viewport in scene coordinates
             view_center = self.view.mapToScene(self.view.viewport().rect().center())
             text_width = self.welcome_text.boundingRect().width()
@@ -791,6 +792,10 @@ class PowerSystemSimulator(QMainWindow):
             # Controls will be re-enabled after successful load by model_manager
             print("Autocomplete interrupted by load scenario.")
         
+        # Set welcome_text to None before loading - prevents any lingering references
+        if hasattr(self, 'welcome_text'):
+            self.welcome_text = None
+            
         self.model_manager.load_scenario()
 
     def create_connection_cursor(self, phase):
@@ -913,8 +918,8 @@ class PowerSystemSimulator(QMainWindow):
         # Update the scene
         self.view.update()
         
-        # Re-center welcome text if it exists
-        if hasattr(self, 'welcome_text') and self.welcome_text:
+        # Re-center welcome text if it exists and is valid
+        if hasattr(self, 'welcome_text') and self.welcome_text and not sip.isdeleted(self.welcome_text):
             self.center_welcome_text()
 
     def take_screenshot(self):

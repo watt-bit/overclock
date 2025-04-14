@@ -1650,3 +1650,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Eliminates the "ValueError: list.remove(x): x not in list" error when rapidly pressing delete
 
 ## 2023-06-15: Fixed bug in switch_to_historian_view method where the analytics button and menu items weren't being hidden/disabled when automatically entering historian view via autocomplete, ensuring consistent behavior with manual mode toggling.
+
+## 2025-04-26: Fixed Welcome Text Crash After Loading Saved Files
+- Fixed crashes that occurred when switching to historian view or adding components after loading a saved file
+- Added sip module to check if PyQt objects have been deleted before accessing them
+- Updated center_welcome_text, zoom_changed, and component_adder to safely handle welcome_text references
+- Added explicit welcome_text = None calls before clearing the scene in model_manager.py
+- Added checks using hasattr, not sip.isdeleted, and other validation before accessing welcome_text properties
+- Prevents "RuntimeError: wrapped C/C++ object of type QGraphicsTextItem has been deleted" errors
+- Made loading saved files more robust by ensuring proper cleanup of previous UI elements

@@ -1598,6 +1598,40 @@ Key insights from adding gas consumption and cost tracking to generators:
    - The model manager should handle both saving and loading these properties consistently
    - Cost accumulation values should persist across save/load operations to maintain simulation continuity
 
+## PyQt Object Lifecycle Management (2025-04-26)
+Key insights from fixing the welcome_text crash:
+
+1. **C++ Object Deletion Detection**
+   - PyQt widgets are C++ objects with Python wrappers
+   - When the C++ object is deleted, the Python wrapper becomes invalid but isn't automatically set to None
+   - The `sip` module provides `isdeleted()` to detect if the underlying C++ object has been deleted
+   - Always check `not sip.isdeleted(obj)` before accessing properties of PyQt objects that might have been deleted
+
+2. **Comprehensive Validation Pattern**
+   - Use a three-part check before accessing PyQt objects:
+     * `hasattr(self, 'attribute_name')` - Check if the attribute exists
+     * `self.attribute_name` - Check if the attribute has a value (not None)
+     * `not sip.isdeleted(self.attribute_name)` - Check if the C++ object is still valid
+   - This pattern prevents crashes from accessing deleted objects or non-existent attributes
+
+3. **Proactive Reference Clearing**
+   - Set references to None before actions that might delete objects (like clearing a scene)
+   - This ensures Python's garbage collector can properly handle the object
+   - Example: `self.welcome_text = None` before `self.scene.clear()`
+   - This prevents holding references to deleted C++ objects
+
+4. **Scene Clearing Best Practices**
+   - When clearing a QGraphicsScene, first set all references to scene items to None
+   - After `scene.clear()`, validate any remaining references before using them
+   - Be especially careful with deferred operations (like QTimer callbacks) that might execute after clearing
+   - Design UI initialization methods to safely handle cases where previous UI elements have been deleted
+
+5. **Cross-File Consistency**
+   - Apply the same safety pattern consistently across all files that might access the same objects
+   - When handling PyQt objects, ensure every file that accesses them imports `sip` 
+   - Update all cases where the object is accessed, not just where crashes are observed
+   - Document these patterns in the codebase to ensure future modifications follow the same safety practices
+
 [2023-06-14] Matplotlib axis formatting lessons:
 1. To remove scientific notation and order of magnitude labels at the top of an axis, use `ax.ticklabel_format(useOffset=False, style='plain')`.
 2. Custom tick formatting can be achieved using `matplotlib.ticker.FuncFormatter` with a callback function that receives the tick value and position.

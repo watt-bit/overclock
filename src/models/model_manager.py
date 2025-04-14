@@ -1,6 +1,7 @@
 import json
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QPointF
+import sip
 
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent
@@ -38,6 +39,11 @@ class ModelManager:
     
     def new_scenario(self):
         """Create a new blank scenario by clearing the scene and resetting all state"""
+        # Set welcome_text to None before clearing the scene
+        # This prevents any lingering references that might cause crashes
+        if hasattr(self.main_window, 'welcome_text'):
+            self.main_window.welcome_text = None
+            
         # Clear the scene
         self.main_window.scene.clear()
         
@@ -254,6 +260,10 @@ class ModelManager:
 
     def load_scenario_from_file(self, filename):
         """Load a scenario from a specific file path without showing a dialog"""
+        # First, ensure welcome_text is set to None to prevent reference issues
+        if hasattr(self.main_window, 'welcome_text'):
+            self.main_window.welcome_text = None
+        
         # Clear existing scenario
         self.new_scenario()
         
