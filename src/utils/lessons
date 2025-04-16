@@ -1936,3 +1936,59 @@ Key insights from extracting simulation control logic:
    - Breaking down a monolithic main window class into specialized controllers
    - Each controller focuses on a specific aspect of functionality
    - Together they form a more maintainable, modular architecture
+
+## Screenshot Feature Extraction (2024-07-11)
+Key insights from extracting the screenshot functionality:
+
+1. **Feature Isolation**
+   - Screenshot functionality is a well-contained feature with clear inputs and outputs
+   - Extracting it required minimal changes to the main window class
+   - The feature represents a good candidate for modular design with single responsibility
+
+2. **UI Component References**
+   - The screenshot manager needs references to UI components (view, logo, buttons)
+   - Passing the main window as a dependency allows access to all required UI elements
+   - This demonstrates the importance of proper dependency injection for UI managers
+
+3. **Consistent Method Signatures**
+   - Maintaining the exact same method signature (take_screenshot) preserves compatibility
+   - The main window method now simply delegates to the manager's method
+   - This pattern allows refactoring without requiring changes to calling code
+
+4. **Visual Consistency**
+   - Preserving exact visual output is critical for UI operations like screenshots
+   - The extracted code maintains identical rendering behavior
+   - This includes proper handling of optional elements like logo overlays
+
+5. **Modular UI Management**
+   - The extraction continues the architectural pattern of specialized manager classes
+   - Each UI feature (screenshot, connection, properties, etc.) has a dedicated manager
+   - This approach keeps the main window class focused on orchestration rather than implementation
+
+## TiledBackgroundWidget Extraction (2024-07-11)
+Key insights from extracting the TiledBackgroundWidget class:
+
+1. **UI Component Isolation**
+   - TiledBackgroundWidget is a standalone UI component with well-defined functionality
+   - Extracting it into a separate file improves modularity and focuses the main window on coordination rather than UI implementation
+   - Widget-specific rendering code like paintEvent should be encapsulated with the widget, not in the container
+
+2. **Duplicate Code Elimination**
+   - The same widget class was defined in both main_window.py and ui_initializer.py
+   - Extracting to a dedicated file eliminates this duplication and creates a single source of truth
+   - Both modules now import from the same file, ensuring consistent behavior
+
+3. **Import Organization**
+   - Moving UI components to separate files creates cleaner import hierarchies
+   - Import chains (main_window imports ui_initializer which imports tiled_background_widget) are more maintainable than circular imports
+   - Each file has more focused dependencies, making the dependency graph clearer
+
+4. **File Size Reduction**
+   - Removing the widget class from main_window.py and ui_initializer.py reduces those files' sizes
+   - This makes the main files easier to understand and navigate
+   - It also makes git diffs more focused since changes to the widget won't affect the main window file
+
+5. **Cross-Module Utility**
+   - The TiledBackgroundWidget is used across multiple modules (main_window and ui_initializer)
+   - Components used in multiple places benefit most from extraction to dedicated files
+   - This approach allows for easier reuse in future modules

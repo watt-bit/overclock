@@ -21,6 +21,8 @@ from .key_handler import KeyHandler
 from .autocomplete_manager import AutocompleteManager
 from .mode_toggle_manager import ModeToggleManager
 from .simulation_controller import SimulationController
+from .screenshot_manager import ScreenshotManager
+from .tiled_background_widget import TiledBackgroundWidget
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -123,45 +125,6 @@ class CustomScene(QGraphicsScene, QObject):
             for y in range(top, int(rect.bottom()) + tile_size, tile_size):
                 painter.drawPixmap(x, y, tile_size, tile_size, self.background_image)
 
-class TiledBackgroundWidget(QWidget):
-    """Widget that supports a tiled background image"""
-    
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.background_image = None
-        self.tile_size = 300  # Fixed tile size of 100x100 pixels
-        
-    def set_background(self, image_path):
-        """Set the background image from a file path"""
-        self.background_image = QPixmap(image_path)
-        self.update()
-        
-    def paintEvent(self, event):
-        """Override paintEvent to draw the tiled background"""
-        painter = QPainter(self)
-        
-        # First call the base implementation to clear the background
-        super().paintEvent(event)
-        
-        # Only proceed if we have a valid background image
-        if not self.background_image or self.background_image.isNull():
-            return
-            
-        # Get the size of the widget
-        rect = self.rect()
-        
-        # Scale the background image to our fixed tile size
-        scaled_image = self.background_image.scaled(self.tile_size, self.tile_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        
-        # Calculate the grid based on the view rect
-        left = int(rect.left()) - (int(rect.left()) % self.tile_size)
-        top = int(rect.top()) - (int(rect.top()) % self.tile_size)
-        
-        # Draw the tiled background
-        for x in range(left, int(rect.right()) + self.tile_size, self.tile_size):
-            for y in range(top, int(rect.bottom()) + self.tile_size, self.tile_size):
-                painter.drawPixmap(x, y, self.tile_size, self.tile_size, scaled_image)
-
 class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -248,6 +211,9 @@ class PowerSystemSimulator(QMainWindow):
         
         # Create simulation controller
         self.simulation_controller = SimulationController(self)
+        
+        # Create screenshot manager
+        self.screenshot_manager = ScreenshotManager(self)
         
         # Welcome text for new users
         self.welcome_text = None
@@ -622,47 +588,7 @@ class PowerSystemSimulator(QMainWindow):
 
     def take_screenshot(self):
         """Take a screenshot of the modeling view area and copy to clipboard"""
-        # Create a pixmap the size of the viewport
-        pixmap = QPixmap(self.view.viewport().size())
-        pixmap.fill(Qt.transparent)
-        
-        # Create painter for the pixmap
-        painter = QPainter(pixmap)
-        
-        # Render the view onto the pixmap
-        self.view.render(painter)
-        
-        # Add the Overclock logo overlay if it exists
-        if hasattr(self, 'logo_overlay') and not self.logo_overlay.pixmap().isNull():
-            # Get the logo position and pixmap
-            logo_pos = self.logo_overlay.pos()
-            logo_pixmap = self.logo_overlay.pixmap()
-            
-            # Draw the logo at its current position
-            painter.drawPixmap(logo_pos, logo_pixmap)
-        
-        # Add the mode toggle button if it exists
-        if hasattr(self, 'mode_toggle_btn'):
-            # Create a pixmap from the mode toggle button
-            mode_btn_pixmap = QPixmap(self.mode_toggle_btn.size())
-            mode_btn_pixmap.fill(Qt.transparent)
-            self.mode_toggle_btn.render(mode_btn_pixmap)
-            
-            # Get the button position
-            mode_btn_pos = self.mode_toggle_btn.pos()
-            
-            # Draw the button at its current position
-            painter.drawPixmap(mode_btn_pos, mode_btn_pixmap)
-        
-        # End painting
-        painter.end()
-        
-        # Copy pixmap to clipboard
-        clipboard = QApplication.clipboard()
-        clipboard.setPixmap(pixmap)
-        
-        # Show confirmation to user
-        QMessageBox.information(self, "Screenshot", "Screenshot copied to clipboard") 
+        self.screenshot_manager.take_screenshot()
 
     def toggle_background(self):
         """Cycle through background options"""

@@ -1782,3 +1782,26 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Preserved all method signatures, variable names, and behaviors
 - No changes to UI elements or visual appearance
 - Improved code organization by isolating simulation control logic from the main window
+
+## 2024-07-11: Screenshot Feature Extraction
+- Extracted screenshot functionality from main_window.py into screenshot_manager.py
+- Created new ScreenshotManager class to encapsulate screenshot-related logic
+- Updated PowerSystemSimulator to initialize and use the new ScreenshotManager
+- Maintained exact behavior of the screenshot feature:
+  * Creates a pixmap of the viewport size
+  * Properly renders the scene view
+  * Includes logo overlay when present
+  * Includes mode toggle button
+  * Copies to clipboard
+  * Shows confirmation message
+- Improved code organization by separating UI concerns from core window management
+- No changes to user experience or visual elements 
+
+## 2024-07-11: TiledBackgroundWidget Class Extraction
+- Extracted TiledBackgroundWidget class from main_window.py into its own file (src/ui/tiled_background_widget.py)
+- Updated references in main_window.py to import the class from the new file
+- Updated ui_initializer.py to import the class from the new file
+- Removed duplicate TiledBackgroundWidget class definition from ui_initializer.py
+- Maintained exact behavior of the widget without changing functionality
+- Improved code modularity by separating UI component from main window code
+- No changes to user experience or visual elements
