@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QTimer
 
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent
