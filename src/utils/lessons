@@ -1884,3 +1884,22 @@ Key insights from extracting the autocomplete functionality into a separate clas
    - Clearer code organization and easier maintenance
    - Ability to reuse the extracted functionality in different contexts
    - Main window becomes more of a coordinator than an implementer
+
+## Mode Toggle Manager Extraction (2024-07-08)
+
+### Key Insights
+1. **Class-Based Extraction**: Extracting the mode toggle functionality into a dedicated manager class improved modularity without changing behavior.
+
+2. **Reference-Based Design**: The ModeToggleManager operates through a reference to the main window, allowing it to access all necessary UI elements and state.
+
+3. **Method Signature Preservation**: By keeping method signatures identical in both classes, we ensured that existing calls from keyboard shortcuts and UI elements continued to work.
+
+4. **Complete Functional Encapsulation**: We moved not just the toggle functionality but all related view switches (model → historian and historian → model) to ensure cohesive responsibility.
+
+5. **Zero-Impact Delegation**: The PowerSystemSimulator class now simply delegates to the ModeToggleManager, making this change completely transparent to the rest of the application.
+
+6. **UI Element Compatibility**: We ensured that all UI style changes, element showing/hiding, and state management remained identical to the original implementation.
+
+7. **Incremental Architectural Improvement**: This extraction furthers the application's architectural progression toward better separation of concerns without disrupting existing functionality.
+
+8. **Disciplined Refactoring**: This change demonstrates how to safely extract functionality from a complex class by following strict rules about what changes are allowed and what must be preserved.

@@ -1764,3 +1764,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Maintained complete backward compatibility
 - No changes to UI appearance or component behavior
 - Improved code modularity and separation of concerns
+
+## 2024-07-08: Extracted Model/Historian Toggle Logic
+- Created a new ModeToggleManager class in src/ui/mode_toggle_manager.py
+- Extracted toggle_mode_button, switch_to_historian_view, and switch_to_model_view methods from PowerSystemSimulator
+- Maintained exact method signatures and behavior to ensure compatibility
+- Updated PowerSystemSimulator to delegate to ModeToggleManager
+- Followed strict extraction rules without modifying any UI code, component code, or signal/slot connections
+- No changes were made to variable names or method signatures
+- Improved code modularity while maintaining complete backward compatibility with existing functionality

@@ -19,6 +19,7 @@ from .particle_system import ParticleSystem
 from .ui_initializer import UIInitializer
 from .key_handler import KeyHandler
 from .autocomplete_manager import AutocompleteManager
+from .mode_toggle_manager import ModeToggleManager
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -240,6 +241,9 @@ class PowerSystemSimulator(QMainWindow):
         
         # Create autocomplete manager
         self.autocomplete_manager = AutocompleteManager(self)
+        
+        # Create mode toggle manager
+        self.mode_toggle_manager = ModeToggleManager(self)
         
         # Welcome text for new users
         self.welcome_text = None
@@ -956,182 +960,15 @@ class PowerSystemSimulator(QMainWindow):
 
     def toggle_mode_button(self):
         """Toggle the mode button text between Model and Historian"""
-        if self.is_model_view:
-            # Switching to Historian mode
-            self.mode_toggle_btn.setText("💾 Historian (TAB)")
-            
-            # Hide the properties panel if it's open
-            if self.properties_dock.isVisible():
-                self.properties_dock.setVisible(False)
-            
-            # Hide the analytics panel if it's open
-            if self.analytics_dock.isVisible():
-                self.analytics_dock.setVisible(False)
-            
-            # Hide the analytics toggle button in historian view
-            if hasattr(self, 'analytics_toggle_btn'):
-                self.analytics_toggle_btn.hide()
-            
-            # Disable the toolbar menu buttons for properties and analytics
-            self.properties_action.setEnabled(False)
-            self.analytics_action.setEnabled(False)
-            
-            # Disable all component buttons
-            self.disable_component_buttons(True)
-            
-            # Disable background toggle button in historian view and apply disabled style
-            self.background_toggle_btn.setEnabled(False)
-            self.background_toggle_btn.setStyleSheet("""
-                QPushButton { 
-                    background-color: #3D3D3D; 
-                    color: #999999; 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 5px; 
-                }
-            """)
-            
-            # Switch to the historian view
-            self.switch_to_historian_view()
-        else:
-            # Switching back to Model mode
-            self.mode_toggle_btn.setText("🧩 Model (TAB)")
-            
-            # Show the analytics toggle button when returning to model view
-            if hasattr(self, 'analytics_toggle_btn'):
-                self.analytics_toggle_btn.show()
-            
-            # Re-enable the toolbar menu buttons
-            self.properties_action.setEnabled(True)
-            self.analytics_action.setEnabled(True)
-            
-            # Re-enable all component buttons
-            self.disable_component_buttons(False)
-            
-            # Re-enable background toggle button in model view with original style
-            self.background_toggle_btn.setEnabled(True)
-            self.background_toggle_btn.setStyleSheet("""
-                QPushButton { 
-                    background-color: #3D3D3D; 
-                    color: white; 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 5px; 
-                }
-                QPushButton:hover { 
-                    background-color: #4D4D4D; 
-                    border: 1px solid #666666;
-                }
-                QPushButton:pressed { 
-                    background-color: #2D2D2D; 
-                    border: 2px solid #777777;
-                    padding: 4px; 
-                }
-            """)
-            
-            # Switch back to the model view
-            self.switch_to_model_view()
+        self.mode_toggle_manager.toggle_mode_button()
 
     def switch_to_historian_view(self):
         """Switch from model view to historian view"""
-        if self.is_model_view:
-            # Store the current zoom slider value
-            self.previous_zoom_value = self.zoom_slider.value()
-            
-            # Set flag to indicate we're now in historian view
-            self.is_model_view = False
-            
-            # Hide the analytics panel if it's open
-            if self.analytics_dock.isVisible():
-                self.analytics_dock.setVisible(False)
-            
-            # Hide the analytics toggle button in historian view
-            if hasattr(self, 'analytics_toggle_btn'):
-                self.analytics_toggle_btn.hide()
-            
-            # Disable the toolbar menu buttons for properties and analytics
-            self.properties_action.setEnabled(False)
-            self.analytics_action.setEnabled(False)
-            
-            # Update the historian chart with current data
-            self.historian_manager.update_chart()
-            
-            # Change the view to show the historian scene
-            self.view.setScene(self.historian_manager.historian_scene)
-            
-            # Disable scrolling and movement in historian view
-            self.view.setDragMode(QGraphicsView.NoDrag)
-            self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            
-            # Resize the chart widget to fit the current view size
-            view_size = self.view.viewport().size()
-            self.historian_manager.resize_chart_widget(view_size.width(), view_size.height())
-            
-            # Set zoom to 1x and disable slider
-            self.zoom_slider.setValue(100)  # Set slider to 1.0x
-            self.zoom_slider.setEnabled(False)
-            
-            # Ensure background toggle is disabled with gray text
-            self.background_toggle_btn.setEnabled(False)
-            self.background_toggle_btn.setStyleSheet("""
-                QPushButton { 
-                    background-color: #3D3D3D; 
-                    color: #999999; 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 5px; 
-                }
-            """)
-            
-            # Note: Setting the slider value automatically triggers zoom_changed,
-            # which applies the transform and updates the view.
+        self.mode_toggle_manager.switch_to_historian_view()
 
     def switch_to_model_view(self):
         """Switch from historian view back to model view"""
-        if not self.is_model_view:
-            # Set flag to indicate we're now in model view
-            self.is_model_view = True
-            
-            # Change the view back to show the model scene
-            self.view.setScene(self.scene)
-            
-            # Re-enable scrolling and movement in model view
-            self.view.setDragMode(QGraphicsView.ScrollHandDrag)
-            self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            
-            # Re-enable zoom slider and restore previous value
-            self.zoom_slider.setEnabled(True)
-            if self.previous_zoom_value is not None:
-                self.zoom_slider.setValue(self.previous_zoom_value)
-            
-            # Re-enable background toggle button with original style
-            self.background_toggle_btn.setEnabled(True)
-            self.background_toggle_btn.setStyleSheet("""
-                QPushButton { 
-                    background-color: #3D3D3D; 
-                    color: white; 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 5px; 
-                }
-                QPushButton:hover { 
-                    background-color: #4D4D4D; 
-                    border: 1px solid #666666;
-                }
-                QPushButton:pressed { 
-                    background-color: #2D2D2D; 
-                    border: 2px solid #777777;
-                    padding: 4px; 
-                }
-            """)
-            
-            # Reset the stored previous value
-            self.previous_zoom_value = None
-            
-            # Note: Setting the slider value automatically triggers zoom_changed,
-            # which applies the transform and updates the view. 
+        self.mode_toggle_manager.switch_to_model_view()
 
     def run_autocomplete(self):
         """Run the simulation from the current time to the end asynchronously"""
