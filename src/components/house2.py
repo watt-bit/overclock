@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QBrush, QColor, QPen, QPainter, QFont, QPixmap, QRadialGradient
+from PyQt5.QtGui import QBrush, QColor, QPixmap, QRadialGradient
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
 

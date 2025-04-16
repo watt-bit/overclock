@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent
 from src.components.bus import BusComponent

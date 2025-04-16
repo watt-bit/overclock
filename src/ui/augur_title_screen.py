@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout
 from PyQt5.QtGui import QPixmap, QKeyEvent
-from PyQt5.QtCore import Qt, QTimer, QSize, pyqtSignal
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 
 class AugurTitleScreen(QWidget):
     # Add a custom signal to indicate the Augur title screen should transition to the next screen

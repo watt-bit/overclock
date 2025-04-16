@@ -1,7 +1,6 @@
-from PyQt5.QtGui import QBrush, QColor, QPen, QPainter, QFont, QPixmap
+from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPixmap
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
-import csv
 import os
 
 class WindTurbineComponent(ComponentBase):

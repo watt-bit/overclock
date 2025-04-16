@@ -1,39 +1,15 @@
-import sys
-import json
-import re
-import random
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
-                            QLabel, QPushButton, QSlider, QFileDialog, 
-                            QGraphicsView, QGraphicsScene, QDockWidget, 
-                            QFormLayout, QLineEdit, QComboBox, QToolBar, 
-                            QAction, QMessageBox, QSplitter, QGraphicsLineItem,
-                            QApplication, QSpacerItem, QMenu, QShortcut, QFrame,
-                            QToolButton, QSizePolicy, QGraphicsItem)
-from PyQt5.QtCore import Qt, QPointF, QRectF, QTimer, pyqtSignal, QObject, QSize
-from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor, QDoubleValidator, QIntValidator, QBrush, QKeySequence, QIcon, QRadialGradient
-import math
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QGraphicsView, QGraphicsScene, QMessageBox, QApplication)
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QObject
+from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QBrush
 
-from src.components.base import ComponentBase
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent
 from src.components.bus import BusComponent
-from src.components.connection import Connection
 from src.components.grid_import import GridImportComponent
 from src.components.grid_export import GridExportComponent
 from src.components.battery import BatteryComponent
-from src.components.tree import TreeComponent
-from src.components.bush import BushComponent
-from src.components.pond import PondComponent
-from src.components.house1 import House1Component
-from src.components.house2 import House2Component
-from src.components.factory import FactoryComponent
-from src.components.traditional_data_center import TraditionalDataCenterComponent
 from src.components.cloud_workload import CloudWorkloadComponent
-from src.components.solar_panel import SolarPanelComponent
-from src.components.wind_turbine import WindTurbineComponent
-from src.components.distribution_pole import DistributionPoleComponent
 from src.simulation.engine import SimulationEngine
-from .analytics import AnalyticsPanel
 from .properties_manager import ComponentPropertiesManager
 from .connection_manager import ConnectionManager
 from .component_adder import ComponentAdder

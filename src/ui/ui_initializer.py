@@ -1,12 +1,10 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, 
-                            QLabel, QPushButton, QSlider, QFileDialog, 
-                            QGraphicsView, QGraphicsScene, QDockWidget, 
-                            QFormLayout, QLineEdit, QComboBox, QToolBar, 
-                            QAction, QMessageBox, QSplitter, QGraphicsLineItem,
-                            QApplication, QSpacerItem, QMenu, QShortcut, QFrame,
-                            QToolButton, QSizePolicy, QGraphicsItem)
-from PyQt5.QtCore import Qt, QPointF, QRectF, QTimer, pyqtSignal, QObject, QSize, QRect
-from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor, QDoubleValidator, QIntValidator, QBrush, QKeySequence, QIcon, QRadialGradient, QPainterPath
+                            QLabel, QPushButton, QSlider, QGraphicsView, QDockWidget, 
+                            QToolBar, 
+                            QAction, QMenu, QShortcut, QFrame,
+                            QToolButton, QSizePolicy)
+from PyQt5.QtCore import Qt, QRectF, QRect
+from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath
 
 # Import or reference modules and classes needed from main_window
 from .analytics import AnalyticsPanel

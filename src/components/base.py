@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QGraphicsRectItem, QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import QGraphicsRectItem
 from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtGui import QBrush, QColor, QPen, QPainter, QRadialGradient
+from PyQt5.QtGui import QBrush, QColor, QPen, QRadialGradient
 
 class ComponentBase(QGraphicsRectItem):
     def __init__(self, x, y, width=100, height=60):

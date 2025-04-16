@@ -1,6 +1,6 @@
 import json
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtCore import Qt
 
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent

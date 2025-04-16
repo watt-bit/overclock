@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QFormLayout, QLabel, 
-                            QProgressBar, QGroupBox, QPushButton, QHBoxLayout)
+                            QProgressBar, QGroupBox, QHBoxLayout)
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.patheffects as path_effects

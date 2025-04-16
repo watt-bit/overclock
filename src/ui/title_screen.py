@@ -1,8 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QFileDialog
-from PyQt5.QtGui import QPixmap, QKeyEvent, QFont, QCursor
-from PyQt5.QtCore import Qt, QTimer, QSize, pyqtSignal
-import json
+from PyQt5.QtGui import QPixmap, QFont, QCursor
+from PyQt5.QtCore import Qt, pyqtSignal
 
 class TitleScreen(QWidget):
     # Add a custom signal to indicate the title screen should be closed
