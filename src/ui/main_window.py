@@ -18,6 +18,7 @@ from .historian_manager import HistorianManager
 from .particle_system import ParticleSystem
 from .ui_initializer import UIInitializer
 from .key_handler import KeyHandler
+from .autocomplete_manager import AutocompleteManager
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -236,6 +237,9 @@ class PowerSystemSimulator(QMainWindow):
         
         # Create connection manager
         self.connection_manager = ConnectionManager(self)
+        
+        # Create autocomplete manager
+        self.autocomplete_manager = AutocompleteManager(self)
         
         # Welcome text for new users
         self.welcome_text = None
@@ -551,64 +555,10 @@ class PowerSystemSimulator(QMainWindow):
         
         # Stop autocomplete if it's running
         if self.is_autocompleting:
-            if self.autocomplete_timer:
-                self.autocomplete_timer.stop()
-            self.is_autocompleting = False
-            
-            # Define original styles for buttons with hover and pressed states
-            play_btn_style = """
-                QPushButton { 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 5px; 
-                    background-color: #0D47A1; 
-                    color: white; 
-                    font-weight: bold; 
-                    font-size: 16px; 
-                }
-                QPushButton:hover { 
-                    background-color: #1565C0; 
-                }
-                QPushButton:pressed { 
-                    background-color: #0A367B; 
-                    border: 2px solid #777777;
-                    padding: 4px; 
-                }
-            """
-            
-            speed_selector_style = """
-                QPushButton { 
-                    background-color: #3D3D3D; 
-                    color: white; 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 4px; 
-                    font-weight: bold; 
-                    font-size: 14px;
-                }
-                QPushButton:hover { 
-                    background-color: #4D4D4D; 
-                    border: 1px solid #666666;
-                }
-                QPushButton:pressed { 
-                    background-color: #2D2D2D; 
-                    border: 2px solid #777777;
-                    padding: 3px; 
-                }
-            """
-            
-            # Re-enable controls that were disabled by autocomplete
-            self.play_btn.setEnabled(True)
-            self.play_btn.setStyleSheet(play_btn_style)
-            
-            self.reset_btn.setEnabled(True)
-            self.time_slider.setEnabled(True)
-            self.autocomplete_btn.setEnabled(True)
-            
-            self.speed_selector.setEnabled(True)
-            self.speed_selector.setStyleSheet(speed_selector_style)
-            
-            self.disable_component_buttons(False)
+            self.autocomplete_manager.stop_autocomplete()
+            # Update main window state to match autocomplete manager state
+            self.is_autocompleting = self.autocomplete_manager.is_autocompleting
+            self.autocomplete_timer = self.autocomplete_manager.autocomplete_timer
             print("Autocomplete interrupted by reset.")
         
         # Set simulation state variables
@@ -714,57 +664,10 @@ class PowerSystemSimulator(QMainWindow):
         """Load a scenario from a file"""
         # Stop autocomplete if it's running before loading
         if self.is_autocompleting:
-            if self.autocomplete_timer:
-                self.autocomplete_timer.stop()
-            self.is_autocompleting = False
-            
-            # Define original styles for buttons with hover and pressed states
-            play_btn_style = """
-                QPushButton { 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 5px; 
-                    background-color: #0D47A1; 
-                    color: white; 
-                    font-weight: bold; 
-                    font-size: 16px; 
-                }
-                QPushButton:hover { 
-                    background-color: #1565C0; 
-                }
-                QPushButton:pressed { 
-                    background-color: #0A367B; 
-                    border: 2px solid #777777;
-                    padding: 4px; 
-                }
-            """
-            
-            speed_selector_style = """
-                QPushButton { 
-                    background-color: #3D3D3D; 
-                    color: white; 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 4px; 
-                    font-weight: bold; 
-                    font-size: 14px;
-                }
-                QPushButton:hover { 
-                    background-color: #4D4D4D; 
-                    border: 1px solid #666666;
-                }
-                QPushButton:pressed { 
-                    background-color: #2D2D2D; 
-                    border: 2px solid #777777;
-                    padding: 3px; 
-                }
-            """
-            
-            # Reset the button styles
-            self.play_btn.setStyleSheet(play_btn_style)
-            self.speed_selector.setStyleSheet(speed_selector_style)
-            
-            # Controls will be re-enabled after successful load by model_manager
+            self.autocomplete_manager.stop_autocomplete()
+            # Update main window state to match autocomplete manager state
+            self.is_autocompleting = self.autocomplete_manager.is_autocompleting
+            self.autocomplete_timer = self.autocomplete_manager.autocomplete_timer
             print("Autocomplete interrupted by load scenario.")
         
         self.model_manager.load_scenario()
@@ -1232,146 +1135,20 @@ class PowerSystemSimulator(QMainWindow):
 
     def run_autocomplete(self):
         """Run the simulation from the current time to the end asynchronously"""
+        # Update main window state to match autocomplete manager state
+        self.is_autocompleting = self.autocomplete_manager.is_autocompleting
+        self.autocomplete_timer = self.autocomplete_manager.autocomplete_timer
+        self.autocomplete_end_time = self.autocomplete_manager.autocomplete_end_time
         
-        # Check if already running
-        if self.simulation_engine.simulation_running or self.is_autocompleting:
-            return
+        # Delegate to the autocomplete manager
+        self.autocomplete_manager.run_autocomplete()
         
-        # Check network connectivity first
-        if not self.check_network_connectivity():
-            QMessageBox.warning(self, "Simulation Error",
-                              "All components must be connected in a single network to run the simulation.\n\n"
-                              "Please ensure all generators and loads are connected before starting.")
-            return
-        
-        # Switch to historian view if currently in model view
-        if self.is_model_view:
-            self.switch_to_historian_view()
-            self.mode_toggle_btn.setText("💾 Historian (TAB)")
-        
-        # Ensure we're not in scrub mode
-        self.simulation_engine.is_scrubbing = False
-        
-        # Get current and end times
-        start_time = self.simulation_engine.current_time_step
-        self.autocomplete_end_time = self.time_slider.maximum()
-        
-        # If already at the end, do nothing
-        if start_time >= self.autocomplete_end_time:
-            return
-            
-        print("Starting Autocomplete simulation...")
-        self.is_autocompleting = True
-        
-        # Define disabled styles for buttons
-        disabled_play_btn_style = "QPushButton { background-color: #2196F3; color: #99CCFF; border: 1px solid #555555; border-radius: 3px; padding: 5px; font-weight: bold; font-size: 16px; }"
-        disabled_speed_selector_style = "QPushButton { background-color: #3D3D3D; color: #999999; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
-        
-        # Save original button text for restoration
-        self.play_btn_text = self.play_btn.text()
-        self.speed_selector_text = self.speed_selector.text()
-        
-        # Disable controls during autocomplete
-        self.play_btn.setEnabled(False)
-        self.play_btn.setStyleSheet(disabled_play_btn_style)
-        
-        self.reset_btn.setEnabled(False)
-        self.time_slider.setEnabled(False)
-        self.autocomplete_btn.setEnabled(False)
-        
-        self.speed_selector.setEnabled(False)
-        self.speed_selector.setStyleSheet(disabled_speed_selector_style)
-        
-        self.disable_component_buttons(True) # Also disable component add/connect buttons
-
-        # Create and start the timer if it doesn't exist
-        if not self.autocomplete_timer:
-            self.autocomplete_timer = QTimer(self)
-            self.autocomplete_timer.timeout.connect(self._step_autocomplete)
-            
-        # Start timer with 0 interval for maximum speed while yielding
-        self.autocomplete_timer.start(0) 
-        
+        # Update main window state after autocomplete manager runs
+        self.is_autocompleting = self.autocomplete_manager.is_autocompleting
+        self.autocomplete_timer = self.autocomplete_manager.autocomplete_timer
+        self.autocomplete_end_time = self.autocomplete_manager.autocomplete_end_time
+    
     def _step_autocomplete(self):
-        """Perform a single step of the autocomplete process"""
-        current_time = self.simulation_engine.current_time_step
-        
-        if current_time < self.autocomplete_end_time:
-            # Process the current time step first (including time step 0)
-            self.simulation_engine.update_simulation(skip_ui_updates=True)
-            
-            # Then increment for the next iteration
-            self.simulation_engine.current_time_step += 1
-            
-            # Update only the time slider during the loop
-            self.time_slider.setValue(self.simulation_engine.current_time_step)
-            
-            # Keep timer running for the next step
-        else:
-            # Reached the end
-            self.autocomplete_timer.stop()
-            self.is_autocompleting = False
-            
-            # Perform one final update to refresh UI elements and charts
-            # This call will not skip UI updates
-            self.simulation_engine.update_simulation()
-            # Explicitly update historian chart if needed
-            if not self.is_model_view:
-                self.historian_manager.update_chart()
-            
-            # Define original styles for buttons with hover and pressed states
-            play_btn_style = """
-                QPushButton { 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 5px; 
-                    background-color: #0D47A1; 
-                    color: white; 
-                    font-weight: bold; 
-                    font-size: 16px; 
-                }
-                QPushButton:hover { 
-                    background-color: #1565C0; 
-                }
-                QPushButton:pressed { 
-                    background-color: #0A367B; 
-                    border: 2px solid #777777;
-                    padding: 4px; 
-                }
-            """
-            
-            speed_selector_style = """
-                QPushButton { 
-                    background-color: #3D3D3D; 
-                    color: white; 
-                    border: 1px solid #555555; 
-                    border-radius: 3px; 
-                    padding: 4px; 
-                    font-weight: bold; 
-                    font-size: 14px;
-                }
-                QPushButton:hover { 
-                    background-color: #4D4D4D; 
-                    border: 1px solid #666666;
-                }
-                QPushButton:pressed { 
-                    background-color: #2D2D2D; 
-                    border: 2px solid #777777;
-                    padding: 3px; 
-                }
-            """
-            
-            # Re-enable controls
-            self.play_btn.setEnabled(True)
-            self.play_btn.setStyleSheet(play_btn_style)
-            
-            self.reset_btn.setEnabled(True)
-            self.time_slider.setEnabled(True)
-            self.autocomplete_btn.setEnabled(True)
-            
-            self.speed_selector.setEnabled(True)
-            self.speed_selector.setStyleSheet(speed_selector_style)
-            
-            self.disable_component_buttons(False)
-            
-            print("Autocomplete simulation finished.") 
+        """This method is kept for compatibility but now delegates to the AutocompleteManager"""
+        # This method should never be called directly anymore as the timer connects to the manager's method
+        pass 

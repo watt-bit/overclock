@@ -1748,3 +1748,19 @@ Modified historian_manager.py to make only the total_generation series visible b
   * house1.py, house2.py, factory.py: Fixed QColor alpha and drawEllipse parameters
   * traditional_data_center.py, distribution_pole.py: Fixed QColor alpha and drawEllipse parameters
 - Resolved "TypeError: arguments did not match any overloaded call" errors from newer PyQt5 versions
+
+## 2024-07-10 - Extracted Autocomplete Functionality
+- Created a new AutocompleteManager class in src/ui/autocomplete_manager.py
+- Moved all autocomplete-related logic from main_window.py to the new class
+- Preserved exact behavior of:
+  * Checking simulation running state
+  * Network connectivity validation
+  * View switching logic
+  * UI control management
+  * Simulation stepping
+  * UI restoration
+- Updated main_window.py to delegate to AutocompleteManager
+- Updated reset_simulation and load_scenario methods to use AutocompleteManager.stop_autocomplete
+- Maintained complete backward compatibility
+- No changes to UI appearance or component behavior
+- Improved code modularity and separation of concerns

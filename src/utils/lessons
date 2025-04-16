@@ -1850,3 +1850,37 @@ Key insights from fixing PyQt5 upgrade issues:
   * QColor(r,g,b,a): The alpha parameter must be an integer
   * QFont(): The pointSize parameter must be an integer
 - Even when calculations result in whole numbers, they may be float type and need explicit conversion
+
+## Code Extraction Pattern for UI Functionality (2024-07-10)
+Key insights from extracting the autocomplete functionality into a separate class:
+
+1. **Clear Responsibility Boundaries**
+   - Extract related functionality into a dedicated manager class with a focused purpose
+   - Manager classes should handle one specific aspect of the application behavior
+   - Maintain clear responsibility separation between UI coordination and logic implementation
+   - This creates a more modular and maintainable codebase
+
+2. **State Synchronization Pattern**
+   - When extracting functionality that maintains state, synchronize state between the manager and main window
+   - Update main window state variables before and after manager method calls
+   - This maintains the illusion that the state is still managed by the main window
+   - Example: `self.is_autocompleting = self.autocomplete_manager.is_autocompleting`
+
+3. **Method Delegation Pattern**
+   - Keep original method signatures in the main window to maintain compatibility
+   - Delegate implementation to specialized manager classes
+   - This preserves backward compatibility with existing code
+   - Main window methods become thin wrappers around manager functionality
+
+4. **UI Interaction Handling**
+   - Pass the main window reference to managers that need to manipulate UI elements
+   - Use this reference to update UI state from the manager
+   - This approach preserves encapsulation while allowing necessary UI manipulation
+   - Alternative approaches like signals/slots could be used for more complex scenarios
+
+5. **Extraction Benefits**
+   - Reduced complexity in the main window class
+   - Better testability for the extracted functionality
+   - Clearer code organization and easier maintenance
+   - Ability to reuse the extracted functionality in different contexts
+   - Main window becomes more of a coordinator than an implementer
