@@ -1776,3 +1776,77 @@ When implementing automated UI mode changes (like the autocomplete feature that 
    - Consider using weak references for long-lived references to scene items
    - Implement proper cleanup when switching between different scenes
    - Always validate references to scene items after operations that might modify the scene
+
+## PyQt5 Version Compatibility (2025-04-16)
+Key insights from fixing PyQt5 upgrade issues:
+
+1. **Method Overload Changes**
+   - Different PyQt5 versions may have different method signatures or type expectations
+   - The `drawLine` method's overloads changed to require compatible types in newer versions
+   - Method calls that worked in older versions might fail after upgrades due to stricter type checking
+
+2. **QPointF vs. Raw Coordinates**
+   - Newer PyQt5 versions require more explicit coordinate types for drawing methods
+   - Using `QPointF` objects provides better type safety than passing raw numeric values
+   - This pattern applies to many Qt drawing methods (drawLine, drawRect, etc.)
+   - Using explicit type objects (QPointF, QPoint) makes code more resilient to API changes
+
+3. **Type Error Diagnosis**
+   - "arguments did not match any overloaded call" usually indicates a method signature mismatch
+   - Qt error messages list all available overloads, making it easier to identify the correct signature
+   - Look for parameter type mismatches in the error message (e.g., "expected 'float' but got 'int'")
+   - Type errors often occur when mixing integers and floats in drawing methods
+
+4. **Backward Compatibility**
+   - Using more explicit types typically maintains backward compatibility with older versions
+   - QPointF works in both older and newer versions for most drawing methods
+   - When upgrading dependencies, plan for a thorough testing phase to catch these issues
+
+5. **Documentation Differences**
+   - Qt API documentation may not always reflect exact Python binding implementations
+   - Actual method signatures in PyQt5 can sometimes differ from the C++ Qt documentation
+   - Error messages are often the best source of information about available method signatures
+
+6. **Qt Module Organization**
+   - Qt classes are organized into specific modules based on their functionality
+   - Key modules include QtCore (base classes), QtGui (graphics), QtWidgets (UI elements)
+   - Some classes might move between modules in different Qt/PyQt versions
+   - QPointF belongs to QtCore, not QtGui, as it's a fundamental coordinate type
+   - When importing classes, always verify their correct module using Qt documentation or error messages
+   - Import errors often indicate changes in class organization between versions
+
+7. **Explicit Type Conversion**
+   - Newer PyQt5 versions enforce stricter type checking for method arguments
+   - Always explicitly convert numeric values to the expected type:
+     * Use int() for integer parameters (QRect coordinates, QColor alpha values)
+     * Use float() for float parameters
+   - Python's automatic type conversion is not reliable with PyQt's C++ method bindings
+   - This is especially important with calculation results that might produce floats
+   - Common places requiring explicit conversion:
+     * QRect/QRectF constructors and coordinates
+     * QColor alpha values
+     * Drawing method coordinates
+     * Transform operations
+
+## PyQt5 Drawing Methods Type Requirements
+- PyQt5 drawing methods (like `drawRect`, `drawEllipse`, etc.) require integer parameters when using coordinate-based overloads
+- Methods affected include: `drawRect`, `drawEllipse`, `drawLine`, and possibly others
+- When using the x, y, width, height parameter form, all values must be integers, not floats
+- The QFont constructor's pointSize parameter also requires an integer
+- Always wrap coordinate and size parameters with int() conversion when they might be floats
+- Error signature: "TypeError: arguments did not match any overloaded call"
+- This requirement seems to be more strictly enforced in recent PyQt5 versions
+
+## PyQt5 Strict Type Checking
+- Newer versions of PyQt5 enforce stricter type checking for parameters
+- Drawing methods (drawRect, drawEllipse, drawLine, etc.) require integer parameters
+- QColor constructor requires integer alpha value in RGBA mode
+- Always use int() to convert calculation results to integers before passing to drawing methods
+- This applies to all coordinate, width/height, and alpha parameters
+- Error signature: "TypeError: arguments did not match any overloaded call"
+- Common functions affected:
+  * painter.drawRect(): All coordinates must be integers
+  * painter.drawEllipse(): All coordinates must be integers
+  * QColor(r,g,b,a): The alpha parameter must be an integer
+  * QFont(): The pointSize parameter must be an integer
+- Even when calculations result in whole numbers, they may be float type and need explicit conversion

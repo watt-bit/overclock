@@ -72,7 +72,7 @@ class SolarPanelComponent(ComponentBase):
             # Draw output indicator frame (outline)
             painter.setPen(QPen(Qt.white, 1.5))
             painter.setBrush(Qt.NoBrush)
-            painter.drawRect(indicator_x, indicator_y, indicator_width, indicator_height)
+            painter.drawRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height))
             
             # Determine fill color based on output percentage - use green with varying brightness
             # Darker green for lower output, brighter green for higher output
@@ -97,7 +97,7 @@ class SolarPanelComponent(ComponentBase):
             # Calculate y-position for fill (starting from bottom of indicator)
             fill_y = indicator_y + (indicator_height - fill_height)
             
-            painter.drawRect(indicator_x, fill_y, indicator_width, fill_height)
+            painter.drawRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height))
         
         # Calculate text area (remaining space below the image)
         text_rect = QRectF(
@@ -118,7 +118,7 @@ class SolarPanelComponent(ComponentBase):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
         # Set font with size adjusted for current zoom level
-        font = QFont('Arial', 14 * scale_factor)
+        font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)
         
         # Get current output percentage

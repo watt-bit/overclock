@@ -80,7 +80,7 @@ class ImageBackgroundButton(QPushButton):
             painter.drawPixmap(
                 QRect(0, 0, self.width(), self.height()),
                 scaled_image,
-                QRect(x_offset, y_offset, self.width(), self.height())
+                QRect(int(x_offset), int(y_offset), self.width(), self.height())
             )
             
         # Call the parent class paintEvent to draw the button content (text, etc.)
@@ -142,7 +142,12 @@ class BorderedMainWidget(QWidget):
         painter.drawPixmap(outer_rect, scaled_image)
         
         # Draw inner frame (creating a border effect)
-        inner_rect = rect.adjusted(self.border_width, self.border_width, -self.border_width, -self.border_width)
+        inner_rect = QRectF(
+            rect.x() + self.border_width, 
+            rect.y() + self.border_width,
+            rect.width() - 2 * self.border_width,
+            rect.height() - 2 * self.border_width
+        )
         inner_path = QPainterPath()
         inner_path.addRoundedRect(inner_rect, self.corner_radius-self.border_width, self.corner_radius-self.border_width)
         

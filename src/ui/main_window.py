@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QGraphicsView, QGraphicsScene, QMessageBox, QApplication)
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QObject
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QObject, QPointF
 from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QBrush
 
 from src.components.generator import GeneratorComponent
@@ -96,11 +96,11 @@ class CustomScene(QGraphicsScene, QObject):
             
             # Draw vertical grid lines
             for x in range(left, int(rect.right()) + grid_size, grid_size):
-                painter.drawLine(x, rect.top(), x, rect.bottom())
+                painter.drawLine(QPointF(x, rect.top()), QPointF(x, rect.bottom()))
                 
             # Draw horizontal grid lines  
             for y in range(top, int(rect.bottom()) + grid_size, grid_size):
-                painter.drawLine(rect.left(), y, rect.right(), y)
+                painter.drawLine(QPointF(rect.left(), y), QPointF(rect.right(), y))
                 
             return
             

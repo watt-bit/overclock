@@ -38,13 +38,13 @@ class BatteryComponent(ComponentBase):
             shadow_y + shadow_height / 2,
             shadow_width / 2
         )
-        gradient.setColorAt(0, QColor(0, 0, 0, 255 * self.shadow_opacity))
+        gradient.setColorAt(0, QColor(0, 0, 0, int(255 * self.shadow_opacity)))
         gradient.setColorAt(1, QColor(0, 0, 0, 0))
         
         # Draw the shadow
         painter.setBrush(QBrush(gradient))
         painter.setPen(Qt.NoPen)
-        painter.drawEllipse(shadow_x, shadow_y, shadow_width, shadow_height)
+        painter.drawEllipse(int(shadow_x), int(shadow_y), int(shadow_width), int(shadow_height))
         
         # Restore painter state after drawing shadow
         painter.restore()
@@ -117,7 +117,7 @@ class BatteryComponent(ComponentBase):
         # Draw battery level frame (outline)
         painter.setPen(QPen(Qt.white, 1.5))
         painter.setBrush(Qt.NoBrush)
-        painter.drawRect(indicator_x, indicator_y, indicator_width, indicator_height)
+        painter.drawRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height))
         
         # Determine fill color based on charge level
         if charge_percent < 0.25:
@@ -134,7 +134,7 @@ class BatteryComponent(ComponentBase):
         painter.setPen(Qt.NoPen)
         painter.setBrush(QBrush(fill_color))
         fill_width = indicator_width * charge_percent
-        painter.drawRect(indicator_x, indicator_y, fill_width, indicator_height)
+        painter.drawRect(int(indicator_x), int(indicator_y), int(fill_width), int(indicator_height))
         
         # Calculate text area (remaining space below the image)
         text_rect = QRectF(
@@ -155,7 +155,7 @@ class BatteryComponent(ComponentBase):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
         # Set font with size adjusted for current zoom level
-        font = QFont('Arial', 14 * scale_factor)
+        font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)
         
         # Calculate charge percentage

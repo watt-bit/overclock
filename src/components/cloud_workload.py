@@ -99,7 +99,7 @@ class CloudWorkloadComponent(ComponentBase):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
         # Set font with size adjusted for current zoom level
-        font = QFont('Arial', 14 * scale_factor)
+        font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)
         
         # Draw the component main text

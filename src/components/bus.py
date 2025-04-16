@@ -53,13 +53,13 @@ class BusComponent(ComponentBase):
             shadow_y + shadow_height / 2,
             shadow_width / 2
         )
-        gradient.setColorAt(0, QColor(0, 0, 0, 255 * self.shadow_opacity))
+        gradient.setColorAt(0, QColor(0, 0, 0, int(255 * self.shadow_opacity)))
         gradient.setColorAt(1, QColor(0, 0, 0, 0))
         
         # Draw the shadow
         painter.setBrush(QBrush(gradient))
         painter.setPen(Qt.NoPen)
-        painter.drawEllipse(shadow_x, shadow_y, shadow_width, shadow_height)
+        painter.drawEllipse(int(shadow_x), int(shadow_y), int(shadow_width), int(shadow_height))
         
         # Restore painter state after drawing shadow
         painter.restore()
@@ -135,7 +135,7 @@ class BusComponent(ComponentBase):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
         # Set font with size adjusted for current zoom level
-        font = QFont('Arial', 14 * scale_factor)
+        font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)
         
         # Determine status text based on load connections

@@ -1666,3 +1666,85 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Similar to the previous fix in main_window.py for the welcome_text crash
 - This ensures the component adder properly handles cases where welcome_text has been deleted
 - Continues the improvement in application stability when switching between views
+
+## 2025-04-16 16:30 - Fixed PyQt5 Upgrade Compatibility Issue
+- Modified CustomScene.drawBackground method to fix an error caused by Python/PyQt5 version upgrade
+- Updated drawLine calls to use QPointF objects for coordinates instead of raw float values
+- Fixed the "arguments did not match any overloaded call" TypeError that occurred after upgrading
+- The fix preserves all existing grid drawing functionality while being compatible with newer PyQt5 versions
+- This ensures proper background grid rendering in the main modeling view
+
+## 2025-04-16 16:45 - Fixed QPointF Import Error
+- Modified main_window.py to import QPointF from QtCore instead of QtGui
+- Fixed the "ImportError: cannot import name 'QPointF' from 'PyQt5.QtGui'" error
+- This complements the earlier fix that updated drawLine calls to use QPointF objects
+- Ensures the application works correctly with newer PyQt5 versions
+- Maintains compatibility with the existing codebase functionality
+
+## 2025-04-16 16:50 - Fixed QRect Parameter Type in BorderedMainWidget
+- Modified ui_initializer.py to use QRectF explicitly for inner rectangle creation
+- Replaced rect.adjusted() with explicit QRectF creation using individual coordinates
+- Fixed "TypeError: arguments did not match any overloaded call" in the BorderedMainWidget 
+- Ensures proper border rendering in the main window
+- Completes the compatibility fixes for newer PyQt5 versions
+
+## 2025-04-16 16:55 - Fixed QRect Float Parameters in ImageBackgroundButton
+- Modified ui_initializer.py to explicitly convert float offsets to integers for QRect constructor
+- Added int() calls for x_offset and y_offset when creating the source rectangle
+- Fixed "TypeError: arguments did not match any overloaded call" when using QRect
+- Ensures proper image rendering when using PyQt5's stricter type enforcement
+- All PyQt5 version compatibility issues have now been addressed
+
+## 2025-04-16 17:00 - Fixed QColor Alpha Parameter Type in ComponentBase
+- Modified components/base.py to explicitly convert shadow opacity to integer for QColor constructor
+- Added int() call for the alpha value in the setColorAt method for shadow gradient
+- Fixed "TypeError: arguments did not match any overloaded call" when using QColor
+- Ensures proper shadow rendering with the newer version's stricter type checking
+- This completes all the necessary type conversion fixes for PyQt5 compatibility
+
+## 2025-04-16 17:05 - Fixed drawEllipse Parameter Types in ComponentBase
+- Modified components/base.py to convert shadow coordinates from float to int for drawEllipse method
+- Added int() calls for shadow_x, shadow_y, shadow_width, and shadow_height parameters
+- Fixed "TypeError: arguments did not match any overloaded call" when using drawEllipse
+- Ensures proper shadow rendering for all component types
+- This is another instance of newer PyQt5 versions requiring explicit type conversion
+
+## 2025-04-16 17:10 - Fixed QFont Parameter Types Across All Components
+- Modified all component paint methods to explicitly convert font point sizes to integers
+- Added int() calls around scale_factor calculations for QFont creation across 9 different component files:
+  * generator.py
+  * solar_panel.py
+  * wind_turbine.py
+  * bus.py
+  * load.py
+  * cloud_workload.py
+  * battery.py
+  * grid_export.py
+  * grid_import.py
+- Fixed "TypeError: arguments did not match any overloaded call" when creating QFont objects
+- The pointSize parameter for QFont expects an integer, but we were using floating-point calculations
+- This completes the font rendering compatibility fixes for PyQt5 upgrade
+
+## 2025-04-09 - Fixed TypeError in LoadComponent paint method
+- Fixed TypeError in `drawRect` calls in the `LoadComponent.paint` method
+- Added integer conversion to all parameters in the two `drawRect` calls:
+  * `painter.drawRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height))`
+  * `painter.drawRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height))`
+- Resolved compatibility issue with recent PyQt5 updates which require integer parameters
+- Similar to previous fixes for other components that used float parameters in drawing methods
+
+## 2025-04-16 - Fixed PyQt5 Type Compatibility Issues
+- Fixed various components to work properly with newer PyQt5 versions that enforce stricter type checking
+- Modified all drawing method calls (drawRect, drawEllipse) to convert float parameters to integers
+- Added int() calls to QColor alpha channel parameters for gradient colors
+- Fixed the following files:
+  * grid_export.py: Added int() to drawRect calls
+  * grid_import.py: Added int() to drawRect calls
+  * solar_panel.py: Added int() to drawRect calls
+  * wind_turbine.py: Added int() to drawRect calls
+  * battery.py: Fixed QColor alpha and drawEllipse/drawRect parameters
+  * bus.py: Fixed QColor alpha and drawEllipse parameters
+  * tree.py, bush.py, pond.py: Fixed QColor alpha and drawEllipse parameters
+  * house1.py, house2.py, factory.py: Fixed QColor alpha and drawEllipse parameters
+  * traditional_data_center.py, distribution_pole.py: Fixed QColor alpha and drawEllipse parameters
+- Resolved "TypeError: arguments did not match any overloaded call" errors from newer PyQt5 versions
