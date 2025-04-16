@@ -1903,3 +1903,36 @@ Key insights from extracting the autocomplete functionality into a separate clas
 7. **Incremental Architectural Improvement**: This extraction furthers the application's architectural progression toward better separation of concerns without disrupting existing functionality.
 
 8. **Disciplined Refactoring**: This change demonstrates how to safely extract functionality from a complex class by following strict rules about what changes are allowed and what must be preserved.
+
+## Simulation Controller Extraction (2024-07-16)
+Key insights from extracting simulation control logic:
+
+1. **Controller Pattern Implementation**
+   - Creating a dedicated controller class improves separation of concerns
+   - Main window can delegate simulation control while focusing on UI coordination
+   - Controller class provides a single point of responsibility for simulation operations
+   - Keeps method signatures identical for compatibility across the application
+
+2. **State Management**
+   - Simulation state needs careful handling during operations like toggle, step, and reset
+   - The controller provides centralized management of simulation state transitions
+   - Main window still holds state variables, but controller manages all changes to them
+   - This preserves existing state variables while organizing their manipulation
+
+3. **UI Integration**
+   - Controllers need direct access to UI elements for proper visualization updates
+   - Passing the main window reference allows the controller to access all needed components
+   - This maintains exact compatibility with the original implementation
+   - No need to modify any UI elements or component code
+
+4. **Zero-Change Refactoring**
+   - The extraction demonstrates "zero-change refactoring" - moving code without changing behavior
+   - This minimizes risk when improving architecture without functional changes
+   - Original methods in main window now delegate one-to-one to controller methods
+   - Keeps behavior identical for users while improving code organization
+
+5. **Progressive Modularization**
+   - The simulation controller joins other controllers (properties, connection, model) in a progressive modularization strategy
+   - Breaking down a monolithic main window class into specialized controllers
+   - Each controller focuses on a specific aspect of functionality
+   - Together they form a more maintainable, modular architecture

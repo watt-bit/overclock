@@ -1773,3 +1773,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Followed strict extraction rules without modifying any UI code, component code, or signal/slot connections
 - No changes were made to variable names or method signatures
 - Improved code modularity while maintaining complete backward compatibility with existing functionality
+
+## 2024-07-16: Extracted Simulation Control Logic
+- Created new SimulationController class in src/ui/simulation_controller.py
+- Extracted toggle_simulation, step_simulation, update_simulation, and reset_simulation methods from main_window.py
+- Modified PowerSystemSimulator to delegate to SimulationController for all simulation operations
+- Maintained complete compatibility with the existing UI and component system
+- Preserved all method signatures, variable names, and behaviors
+- No changes to UI elements or visual appearance
+- Improved code organization by isolating simulation control logic from the main window

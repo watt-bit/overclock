@@ -169,3 +169,66 @@ class AutocompleteManager:
             self.main_window.disable_component_buttons(False)
             
             print("Autocomplete simulation finished.")
+            
+    def stop_autocomplete(self):
+        """Stop the autocomplete process if it's running"""
+        if self.is_autocompleting:
+            if self.autocomplete_timer:
+                self.autocomplete_timer.stop()
+            self.is_autocompleting = False
+            
+            # Define original styles for buttons with hover and pressed states
+            play_btn_style = """
+                QPushButton { 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 5px; 
+                    background-color: #0D47A1; 
+                    color: white; 
+                    font-weight: bold; 
+                    font-size: 16px; 
+                }
+                QPushButton:hover { 
+                    background-color: #1565C0; 
+                }
+                QPushButton:pressed { 
+                    background-color: #0A367B; 
+                    border: 2px solid #777777;
+                    padding: 4px; 
+                }
+            """
+            
+            speed_selector_style = """
+                QPushButton { 
+                    background-color: #3D3D3D; 
+                    color: white; 
+                    border: 1px solid #555555; 
+                    border-radius: 3px; 
+                    padding: 4px; 
+                    font-weight: bold; 
+                    font-size: 14px;
+                }
+                QPushButton:hover { 
+                    background-color: #4D4D4D; 
+                    border: 1px solid #666666;
+                }
+                QPushButton:pressed { 
+                    background-color: #2D2D2D; 
+                    border: 2px solid #777777;
+                    padding: 3px; 
+                }
+            """
+            
+            # Re-enable controls that were disabled by autocomplete
+            self.main_window.play_btn.setEnabled(True)
+            self.main_window.play_btn.setStyleSheet(play_btn_style)
+            
+            self.main_window.reset_btn.setEnabled(True)
+            self.main_window.time_slider.setEnabled(True)
+            self.main_window.autocomplete_btn.setEnabled(True)
+            
+            self.main_window.speed_selector.setEnabled(True)
+            self.main_window.speed_selector.setStyleSheet(speed_selector_style)
+            
+            self.main_window.disable_component_buttons(False)
+            print("Autocomplete interrupted.") 
