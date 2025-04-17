@@ -522,7 +522,7 @@ class PowerSystemSimulator(QMainWindow):
             
         # Reposition capex label and irr label in bottom left corner
         if hasattr(self, 'capex_label'):
-            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 50)
+            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 70)
         
         if hasattr(self, 'irr_label'):
             self.irr_label.move(10, self.view.height() - self.irr_label.height() - 25)
@@ -602,9 +602,9 @@ class PowerSystemSimulator(QMainWindow):
             formatted_capex = f"{total_capex:,.0f}"
             
             # Update the label text
-            self.capex_label.setText(f"System CAPEX ($): {formatted_capex}")
+            self.capex_label.setText(f"CAPEX ${formatted_capex}")
             self.capex_label.adjustSize()  # Resize to fit new content
             
             # Ensure it stays in the correct position
             if hasattr(self, 'view') and self.view:
-                self.capex_label.move(10, self.view.height() - self.capex_label.height() - 50) 
+                self.capex_label.move(10, self.view.height() - self.capex_label.height() - 70) 

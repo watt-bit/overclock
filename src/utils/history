@@ -1847,3 +1847,17 @@ Modified historian_manager.py to make only the total_generation series visible b
 ## 2023-09-17: Extended IRR calculator to calculate and display IRR for 12, 18, and 36 month periods. Added calculate_extended_irr function to src/utils/irr_calculator.py that generates synthetic data based on average hourly net revenue to estimate longer-term IRR values.
 
 ## 2023-07-12: Modified the screenshot_manager.py to include CAPEX and IRR labels in screenshots. Screenshots now capture both labels at their current positions, providing users with complete financial information when sharing screenshots.
+
+## 2024-07-10: Fixed Historian Mode Component Button Bug
+- Fixed an issue where component buttons were not properly disabled when entering historian view via autocomplete
+- Modified autocomplete_manager.py to ensure component buttons are disabled after switching to historian view
+- Added an explicit call to disable_component_buttons(True) after view switch to ensure consistent behavior
+- Previously, component buttons would remain enabled when autocompleting but disabled when manually toggling to historian view
+- This ensures consistent behavior regardless of how the user enters historian view
+
+## 2024-07-11: Fixed Component Buttons Re-enabling After Autocomplete
+- Fixed a bug where component buttons would be incorrectly re-enabled after autocomplete finishing
+- Modified autocomplete_manager.py to keep component buttons disabled in historian view after autocomplete completes
+- Updated both _step_autocomplete and stop_autocomplete methods to only re-enable buttons if in model view
+- Component buttons now remain disabled until the user explicitly switches back to model view
+- This ensures consistent behavior between manually toggling to historian view and entering it via autocomplete

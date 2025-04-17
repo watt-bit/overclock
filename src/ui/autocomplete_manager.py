@@ -43,6 +43,8 @@ class AutocompleteManager:
         if self.main_window.is_model_view:
             self.main_window.switch_to_historian_view()
             self.main_window.mode_toggle_btn.setText("💾 Historian (TAB)")
+            # Ensure component buttons are disabled regardless of how we enter historian view
+            self.main_window.disable_component_buttons(True)
         
         # Ensure we're not in scrub mode
         self.main_window.simulation_engine.is_scrubbing = False
@@ -79,7 +81,8 @@ class AutocompleteManager:
         self.main_window.speed_selector.setEnabled(False)
         self.main_window.speed_selector.setStyleSheet(disabled_speed_selector_style)
         
-        self.main_window.disable_component_buttons(True) # Also disable component add/connect buttons
+        # Ensure component buttons are disabled (redundant but safe)
+        self.main_window.disable_component_buttons(True)
 
         # Create and start the timer if it doesn't exist
         if not self.autocomplete_timer:
@@ -87,7 +90,7 @@ class AutocompleteManager:
             self.autocomplete_timer.timeout.connect(self._step_autocomplete)
             
         # Start timer with 0 interval for maximum speed while yielding
-        self.autocomplete_timer.start(0) 
+        self.autocomplete_timer.start(0)
         
     def _step_autocomplete(self):
         """Perform a single step of the autocomplete process"""
@@ -174,7 +177,10 @@ class AutocompleteManager:
             self.main_window.speed_selector.setEnabled(True)
             self.main_window.speed_selector.setStyleSheet(speed_selector_style)
             
-            self.main_window.disable_component_buttons(False)
+            # Only re-enable component buttons if we're in model view
+            # Otherwise, they should stay disabled when in historian view
+            if self.main_window.is_model_view:
+                self.main_window.disable_component_buttons(False)
             
             print("Autocomplete simulation finished.")
             
@@ -284,5 +290,9 @@ class AutocompleteManager:
             self.main_window.speed_selector.setEnabled(True)
             self.main_window.speed_selector.setStyleSheet(speed_selector_style)
             
-            self.main_window.disable_component_buttons(False)
+            # Only re-enable component buttons if we're in model view
+            # Otherwise, they should stay disabled when in historian view
+            if self.main_window.is_model_view:
+                self.main_window.disable_component_buttons(False)
+                
             print("Autocomplete interrupted.") 

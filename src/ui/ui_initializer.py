@@ -248,15 +248,16 @@ class UIInitializer:
         
         # Create CAPEX label overlay in bottom left corner
         main_window.capex_label = QLabel(main_window.view)
-        main_window.capex_label.setText("System CAPEX ($): 0")
+        main_window.capex_label.setText("CAPEX $0")
         main_window.capex_label.setStyleSheet("""
             QLabel {
-                color: white;
-                background-color: rgba(0, 0, 0, 120);
-                padding: 5px;
-                border-radius: 3px;
                 font-weight: bold;
-                font-size: 14px;
+                font-size: 16px;
+                background-color: #262626; 
+                color: rgba(255, 255, 255, 0.8);
+                border-radius: 3px; 
+                padding: 5px;
+                border: 1px solid #555555; 
             }
         """)
         main_window.capex_label.adjustSize()  # Size to fit content
@@ -267,12 +268,13 @@ class UIInitializer:
         main_window.irr_label.setText("Refresh Cycle IRR: --.--% (12 Mo.) | --.--% (18 Mo.) | --.--% (36 Mo.)")
         main_window.irr_label.setStyleSheet("""
             QLabel {
-                color: white;
-                background-color: rgba(0, 0, 0, 120);
-                padding: 5px;
-                border-radius: 3px;
                 font-weight: bold;
-                font-size: 14px;
+                font-size: 16px;
+                background-color: #262626; 
+                color: rgba(255, 255, 255, 0.8); 
+                border-radius: 3px; 
+                padding: 5px; 
+                border: 1px solid #555555; 
             }
         """)
         main_window.irr_label.adjustSize()  # Size to fit content
@@ -280,7 +282,7 @@ class UIInitializer:
         
         # Position labels in bottom left corner with padding
         # CAPEX label is positioned 35px up from the bottom
-        main_window.capex_label.move(10, main_window.view.height() - main_window.capex_label.height() - 50)
+        main_window.capex_label.move(10, main_window.view.height() - main_window.capex_label.height() - 70)
         # IRR label is positioned below the CAPEX label
         main_window.irr_label.move(10, main_window.view.height() - main_window.irr_label.height() - 25)
         
@@ -892,7 +894,7 @@ class UIInitializer:
             
         # Reposition capex label in bottom left corner
         if hasattr(self, 'capex_label'):
-            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 50)
+            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 70)
         
         # Reposition irr label in bottom left corner
         if hasattr(self, 'irr_label'):
