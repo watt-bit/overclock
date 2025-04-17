@@ -280,9 +280,9 @@ class UIInitializer:
         
         # Position labels in bottom left corner with padding
         # CAPEX label is positioned 35px up from the bottom
-        main_window.capex_label.move(10, main_window.view.height() - main_window.capex_label.height() - 35)
+        main_window.capex_label.move(10, main_window.view.height() - main_window.capex_label.height() - 50)
         # IRR label is positioned below the CAPEX label
-        main_window.irr_label.move(10, main_window.view.height() - main_window.irr_label.height() - 10)
+        main_window.irr_label.move(10, main_window.view.height() - main_window.irr_label.height() - 25)
         
         # Make the labels visible
         main_window.capex_label.show()
@@ -892,7 +892,11 @@ class UIInitializer:
             
         # Reposition capex label in bottom left corner
         if hasattr(self, 'capex_label'):
-            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 10)
+            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 50)
+        
+        # Reposition irr label in bottom left corner
+        if hasattr(self, 'irr_label'):
+            self.irr_label.move(10, self.view.height() - self.irr_label.height() - 25)
         
         # Resize historian chart if in historian view
         if not self.is_model_view and hasattr(self, 'historian_manager'):

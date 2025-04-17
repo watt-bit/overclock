@@ -220,7 +220,7 @@ class AutocompleteManager:
         
         # Ensure it stays in the correct position
         if hasattr(self.main_window, 'view') and self.main_window.view:
-            self.main_window.irr_label.move(10, self.main_window.view.height() - self.main_window.irr_label.height() - 10)
+            self.main_window.irr_label.move(10, self.main_window.view.height() - self.main_window.irr_label.height() - 25)
         
     def stop_autocomplete(self):
         """Stop the autocomplete process if it's running"""
