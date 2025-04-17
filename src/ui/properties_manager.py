@@ -64,6 +64,10 @@ class ComponentPropertiesManager:
         # Clear the current component reference
         if hasattr(self, 'current_component'):
             self.current_component = None
+            
+        # Clear the delete button reference
+        if hasattr(self, 'delete_btn'):
+            self.delete_btn = None
         
         # Force the properties dock to resize to its minimum size
         self.properties_widget.adjustSize()
@@ -102,6 +106,12 @@ class ComponentPropertiesManager:
         delete_btn = QPushButton("Delete (DEL)")
         delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; font-weight: bold; }")
         delete_btn.clicked.connect(self.delete_component)
+        
+        # Store reference to delete button for later enabling/disabling
+        self.delete_btn = delete_btn
+        
+        # Disable delete button if simulation is running or autocompleting
+        self.update_delete_button_state()
         
         right_column.addWidget(delete_btn)
         
@@ -198,6 +208,33 @@ class ComponentPropertiesManager:
         # Force the properties dock to resize to its minimum size
         self.properties_widget.adjustSize()
         self.main_window.properties_dock.adjustSize()
+    
+    def update_delete_button_state(self):
+        """
+        Update the state of the delete button based on simulation status.
+        Disables the button when simulation is running or in autocomplete mode.
+        """
+        if hasattr(self, 'delete_btn') and self.delete_btn is not None:
+            # Check if the button is still a valid widget
+            try:
+                # Test if the widget is still valid by checking a property
+                _ = self.delete_btn.isEnabled()
+                
+                # Only proceed if we didn't get an exception
+                is_running = self.main_window.simulation_engine.simulation_running
+                is_autocompleting = self.main_window.is_autocompleting
+                
+                self.delete_btn.setEnabled(not (is_running or is_autocompleting))
+                
+                # Update button appearance based on enabled state
+                if not self.delete_btn.isEnabled():
+                    self.delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #888888; color: #DDDDDD; font-weight: bold; }")
+                else:
+                    self.delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; font-weight: bold; }")
+            except (RuntimeError, Exception):
+                # The widget has been deleted or is otherwise invalid
+                # Remove our reference to it
+                self.delete_btn = None
     
     def _add_bus_properties(self, component, layout):
         # Add name field

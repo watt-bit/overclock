@@ -62,6 +62,10 @@ class AutocompleteManager:
         # Ensure main window has same autocomplete state
         self.main_window.is_autocompleting = True
         
+        # Update delete button state in properties manager
+        if hasattr(self.main_window, 'properties_manager'):
+            self.main_window.properties_manager.update_delete_button_state()
+        
         # Define disabled styles for buttons
         disabled_play_btn_style = "QPushButton { background-color: #2196F3; color: #99CCFF; border: 1px solid #555555; border-radius: 3px; padding: 5px; font-weight: bold; font-size: 16px; }"
         disabled_speed_selector_style = "QPushButton { background-color: #3D3D3D; color: #999999; border: 1px solid #555555; border-radius: 3px; padding: 4px; font-weight: bold; font-size: 14px;}"
@@ -113,6 +117,10 @@ class AutocompleteManager:
             self.is_autocompleting = False
             # Ensure main window also has autocomplete flag set to false
             self.main_window.is_autocompleting = False
+            
+            # Update delete button state in properties manager
+            if hasattr(self.main_window, 'properties_manager'):
+                self.main_window.properties_manager.update_delete_button_state()
             
             # Perform one final update to refresh UI elements and charts
             # This call will not skip UI updates
@@ -237,6 +245,10 @@ class AutocompleteManager:
             # Ensure main window also has autocomplete flag set to false
             self.main_window.is_autocompleting = False
             
+            # Update delete button state in properties manager
+            if hasattr(self.main_window, 'properties_manager'):
+                self.main_window.properties_manager.update_delete_button_state()
+            
             # Define original styles for buttons with hover and pressed states
             play_btn_style = """
                 QPushButton { 
@@ -279,7 +291,7 @@ class AutocompleteManager:
                 }
             """
             
-            # Re-enable controls that were disabled by autocomplete
+            # Re-enable controls
             self.main_window.play_btn.setEnabled(True)
             self.main_window.play_btn.setStyleSheet(play_btn_style)
             

@@ -52,6 +52,10 @@ class KeyHandler(QObject):
                 
             # Check for the Delete key
             if event.key() == Qt.Key_Delete:
+                # Don't process delete key if simulation is running or autocompleting
+                if self.main_window.simulation_engine.simulation_running or self.main_window.is_autocompleting:
+                    return True
+                    
                 # Process deletion for selected items in the scene
                 selected_items = [item for item in self.main_window.scene.selectedItems() if hasattr(item, 'connections')]
                 
@@ -133,6 +137,10 @@ class KeyHandler(QObject):
         # Delete key for deleting selected component is now handled by the event filter
         # but kept here for backward compatibility
         if key == Qt.Key_Delete:
+            # Don't process delete key if simulation is running or autocompleting
+            if self.main_window.simulation_engine.simulation_running or self.main_window.is_autocompleting:
+                return True
+                
             # Check if any components are selected in the scene
             selected_items = [item for item in self.main_window.scene.selectedItems() if hasattr(item, 'connections')]
             

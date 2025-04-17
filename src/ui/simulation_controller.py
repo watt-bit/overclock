@@ -36,6 +36,10 @@ class SimulationController:
             self.main_window.play_btn.setText("Pause (Space)")
             self.main_window.disable_component_buttons(True)
             
+            # Disable delete button in properties manager
+            if hasattr(self.main_window, 'properties_manager'):
+                self.main_window.properties_manager.update_delete_button_state()
+            
             # Disable autocomplete button during simulation and gray out text
             self.main_window.autocomplete_btn.setEnabled(False)
             self.main_window.autocomplete_btn.setStyleSheet("""
@@ -53,6 +57,10 @@ class SimulationController:
             self.main_window.sim_timer.stop()
             self.main_window.play_btn.setText("Run (Space)")
             self.main_window.disable_component_buttons(False)
+            
+            # Re-enable delete button in properties manager
+            if hasattr(self.main_window, 'properties_manager'):
+                self.main_window.properties_manager.update_delete_button_state()
             
             # Re-enable autocomplete button when simulation is paused and restore style
             self.main_window.autocomplete_btn.setEnabled(True)
@@ -83,6 +91,10 @@ class SimulationController:
             self.main_window.play_btn.setText("Run (Space)")
             self.main_window.sim_timer.stop()
             self.main_window.disable_component_buttons(False)
+            
+            # Re-enable delete button in properties manager
+            if hasattr(self.main_window, 'properties_manager'):
+                self.main_window.properties_manager.update_delete_button_state()
             
             # Re-enable autocomplete button when simulation ends and restore style
             self.main_window.autocomplete_btn.setEnabled(True)
@@ -181,6 +193,10 @@ class SimulationController:
         # Re-enable component buttons if they were disabled
         if was_running:
             self.main_window.disable_component_buttons(False)
+        
+        # Update delete button state in properties manager
+        if hasattr(self.main_window, 'properties_manager'):
+            self.main_window.properties_manager.update_delete_button_state()
         
         # Clear the analytics chart history
         self.main_window.analytics_panel.clear_chart_history()
