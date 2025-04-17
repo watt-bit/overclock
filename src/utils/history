@@ -1861,3 +1861,5 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated both _step_autocomplete and stop_autocomplete methods to only re-enable buttons if in model view
 - Component buttons now remain disabled until the user explicitly switches back to model view
 - This ensures consistent behavior between manually toggling to historian view and entering it via autocomplete
+
+## 2023-09-28: Fixed a bug in the load satisfaction calculation in the historian. Previously, loads in the first hour of simulation would incorrectly show as fully satisfied even when there was insufficient generation capacity. Updated the code to calculate load satisfaction ratio based on the actual remaining load after all generation sources have been utilized, regardless of the system stability status.

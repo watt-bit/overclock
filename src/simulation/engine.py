@@ -352,6 +352,16 @@ class SimulationEngine(QObject):
                 if remaining_load > self.stability_tolerance:
                     self.system_stable = False
             
+            # Calculate load satisfaction ratio based on actual remaining load,
+            # regardless of system stability status
+            if remaining_load > self.stability_tolerance and total_load > 0:
+                # Calculate what percentage of the total load was actually met
+                met_load = total_load - remaining_load
+                load_satisfaction_ratio = met_load / total_load
+            else:
+                # If remaining load is within tolerance or total_load is zero, all load is satisfied
+                load_satisfaction_ratio = 1.0
+            
             # Fifth pass: check for surplus power to charge batteries -- this should include solar and renewables as they are added too
             surplus_power = (local_generation + grid_import) - total_load
             
@@ -616,7 +626,7 @@ class SimulationEngine(QObject):
                 self.historian['grid_export'][current_time] = grid_export  # Record grid export in historian
                 self.historian['battery_charge'][current_time] = total_battery_charge * 1000  # Record total battery charge in kWh  
                 self.historian['system_instability'][current_time] = abs(power_surplus)  # Record absolute value of power surplus/deficit
-                # Record satisfied load which is the product of total load and load satisfaction ratio
+                # Record satisfied load based on calculated load_satisfaction_ratio
                 self.historian['satisfied_load'][current_time] = total_load * load_satisfaction_ratio  # Record satisfied load in historian
                 
                 # Record individual component data in the historian
