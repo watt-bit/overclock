@@ -61,6 +61,10 @@ class ComponentPropertiesManager:
                         sub_item.widget().deleteLater()
                 item.layout().deleteLater()
         
+        # Clear the current component reference
+        if hasattr(self, 'current_component'):
+            self.current_component = None
+        
         # Force the properties dock to resize to its minimum size
         self.properties_widget.adjustSize()
         self.main_window.properties_dock.adjustSize()
@@ -1223,4 +1227,7 @@ class ComponentPropertiesManager:
             self.main_window.update_simulation()
             
             # Update the CAPEX display
-            self.main_window.update_capex_display() 
+            self.main_window.update_capex_display()
+            
+            # Hide the properties panel
+            self.main_window.properties_dock.setVisible(False) 
