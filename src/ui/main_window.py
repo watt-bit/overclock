@@ -239,7 +239,7 @@ class PowerSystemSimulator(QMainWindow):
     def reset_irr_display(self):
         """Reset the IRR display to its default state"""
         if hasattr(self, 'irr_label'):
-            self.irr_label.setText("Refresh Cycle IRR: --.--%")
+            self.irr_label.setText("Refresh Cycle IRR: --.--% (12 Months)")
             self.irr_label.adjustSize()
             # Ensure it stays in the correct position
             if hasattr(self, 'view') and self.view:

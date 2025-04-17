@@ -193,9 +193,9 @@ class AutocompleteManager:
         if irr is not None:
             # Format as percentage with 2 decimal places
             irr_percentage = irr * 100
-            self.main_window.irr_label.setText(f"Refresh Cycle IRR: {irr_percentage:.2f}%")
+            self.main_window.irr_label.setText(f"Refresh Cycle IRR: {irr_percentage:.2f}% (12 Months)")
         else:
-            self.main_window.irr_label.setText("Refresh Cycle IRR: --.--%")
+            self.main_window.irr_label.setText("Refresh Cycle IRR: --.--% (12 Months)")
         
         # Adjust size to fit new content
         self.main_window.irr_label.adjustSize()
