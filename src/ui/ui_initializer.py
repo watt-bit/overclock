@@ -264,7 +264,7 @@ class UIInitializer:
         
         # Create IRR label overlay below CAPEX label
         main_window.irr_label = QLabel(main_window.view)
-        main_window.irr_label.setText("Refresh Cycle IRR: --.--% (12 Mo.)")
+        main_window.irr_label.setText("Refresh Cycle IRR: --.--% (12 Mo.) | --.--% (18 Mo.) | --.--% (36 Mo.)")
         main_window.irr_label.setStyleSheet("""
             QLabel {
                 color: white;

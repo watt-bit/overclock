@@ -1843,3 +1843,7 @@ Modified historian_manager.py to make only the total_generation series visible b
 - This is the first step toward implementing capital expenditure calculations in the economic model
 
 ## 2023-07-10: Optimized particle system to prevent particle generation during autocomplete runs to improve performance. Added checks in all particle generation methods to verify if autocomplete is active before creating particles.
+
+## 2023-09-17: Extended IRR calculator to calculate and display IRR for 12, 18, and 36 month periods. Added calculate_extended_irr function to src/utils/irr_calculator.py that generates synthetic data based on average hourly net revenue to estimate longer-term IRR values.
+
+## 2023-07-12: Modified the screenshot_manager.py to include CAPEX and IRR labels in screenshots. Screenshots now capture both labels at their current positions, providing users with complete financial information when sharing screenshots.

@@ -10,7 +10,7 @@ This code was extracted from the main_window.py file to improve modularity witho
 
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QMessageBox
-from src.utils.irr_calculator import calculate_irr
+from src.utils.irr_calculator import calculate_irr, calculate_extended_irr
 
 class AutocompleteManager:
     """
@@ -179,23 +179,41 @@ class AutocompleteManager:
             print("Autocomplete simulation finished.")
             
     def _update_irr_display(self):
-        """Calculate and update the IRR display"""
+        """Calculate and update the IRR display with 12, 18, and 36 month values"""
         # Get CAPEX and revenue/cost data
         total_capex = self.main_window.calculate_total_capex()
         hourly_revenue = self.main_window.simulation_engine.gross_revenue_data
         hourly_cost = self.main_window.simulation_engine.gross_cost_data
         current_hour = self.main_window.simulation_engine.current_time_step
         
-        # Calculate IRR using the utility function
-        irr = calculate_irr(total_capex, hourly_revenue, hourly_cost, current_hour)
+        # Calculate extended IRR values (12, 18, and 36 months)
+        irr_results = calculate_extended_irr(total_capex, hourly_revenue, hourly_cost, current_hour)
         
         # Update the IRR display
-        if irr is not None:
-            # Format as percentage with 2 decimal places
-            irr_percentage = irr * 100
-            self.main_window.irr_label.setText(f"Refresh Cycle IRR: {irr_percentage:.2f}% (12 Mo.)")
+        if irr_results[12] is not None:
+            # Format all IRR values with 2 decimal places
+            irr_12 = irr_results[12] * 100
+            irr_18 = irr_results[18] * 100 if irr_results[18] is not None else None
+            irr_36 = irr_results[36] * 100 if irr_results[36] is not None else None
+            
+            # Create display text with all IRR values
+            irr_text = f"Refresh Cycle IRR: {irr_12:.2f}% (12 Mo.)"
+            
+            # Add 18-month value
+            if irr_18 is not None:
+                irr_text += f" | {irr_18:.2f}% (18 Mo.)"
+            else:
+                irr_text += " | --.--% (18 Mo.)"
+                
+            # Add 36-month value
+            if irr_36 is not None:
+                irr_text += f" | {irr_36:.2f}% (36 Mo.)"
+            else:
+                irr_text += " | --.--% (36 Mo.)"
+                
+            self.main_window.irr_label.setText(irr_text)
         else:
-            self.main_window.irr_label.setText("Refresh Cycle IRR: --.--% (12 Mo.)")
+            self.main_window.irr_label.setText("Refresh Cycle IRR: --.--% (12 Mo.) | --.--% (18 Mo.) | --.--% (36 Mo.)")
         
         # Adjust size to fit new content
         self.main_window.irr_label.adjustSize()

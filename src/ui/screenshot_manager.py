@@ -41,6 +41,32 @@ class ScreenshotManager:
             # Draw the button at its current position
             painter.drawPixmap(mode_btn_pos, mode_btn_pixmap)
         
+        # Add the CAPEX label if it exists
+        if hasattr(self.main_window, 'capex_label'):
+            # Create a pixmap from the CAPEX label
+            capex_pixmap = QPixmap(self.main_window.capex_label.size())
+            capex_pixmap.fill(Qt.transparent)
+            self.main_window.capex_label.render(capex_pixmap)
+            
+            # Get the label position
+            capex_pos = self.main_window.capex_label.pos()
+            
+            # Draw the label at its current position
+            painter.drawPixmap(capex_pos, capex_pixmap)
+        
+        # Add the IRR label if it exists
+        if hasattr(self.main_window, 'irr_label'):
+            # Create a pixmap from the IRR label
+            irr_pixmap = QPixmap(self.main_window.irr_label.size())
+            irr_pixmap.fill(Qt.transparent)
+            self.main_window.irr_label.render(irr_pixmap)
+            
+            # Get the label position
+            irr_pos = self.main_window.irr_label.pos()
+            
+            # Draw the label at its current position
+            painter.drawPixmap(irr_pos, irr_pixmap)
+        
         # End painting
         painter.end()
         
