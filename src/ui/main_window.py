@@ -1,14 +1,8 @@
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QGraphicsView, QMessageBox, QApplication)
-from PyQt5.QtCore import Qt, QTimer, QPointF
-from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QBrush
+from PyQt5.QtWidgets import (QMainWindow, QGraphicsView, QMessageBox, QApplication)
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QColor
 
-from src.components.generator import GeneratorComponent
-from src.components.load import LoadComponent
 from src.components.bus import BusComponent
-from src.components.grid_import import GridImportComponent
-from src.components.grid_export import GridExportComponent
-from src.components.battery import BatteryComponent
-from src.components.cloud_workload import CloudWorkloadComponent
 from src.simulation.engine import SimulationEngine
 from .properties_manager import ComponentPropertiesManager
 from .connection_manager import ConnectionManager
@@ -22,7 +16,6 @@ from .autocomplete_manager import AutocompleteManager
 from .mode_toggle_manager import ModeToggleManager
 from .simulation_controller import SimulationController
 from .screenshot_manager import ScreenshotManager
-from .tiled_background_widget import TiledBackgroundWidget
 from .custom_scene import CustomScene
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
