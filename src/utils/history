@@ -1805,3 +1805,16 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Maintained exact behavior of the widget without changing functionality
 - Improved code modularity by separating UI component from main window code
 - No changes to user experience or visual elements
+
+## 2024-07-11: CustomScene Class Extraction
+- Extracted CustomScene class from main_window.py into its own file (src/ui/custom_scene.py)
+- Updated main_window.py to import the class from the new file
+- Maintained exact behavior of the scene including:
+  * Background image handling
+  * Background modes (texture, alternate texture, solid color with grid)
+  * Mouse event handling
+  * Properties panel interaction
+  * Grid drawing functionality
+- No changes to visual appearance or functionality
+- Improved code organization by separating scene functionality from main window
+- Continues the architectural pattern of extracting UI components into dedicated files

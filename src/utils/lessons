@@ -1992,3 +1992,36 @@ Key insights from extracting the TiledBackgroundWidget class:
    - The TiledBackgroundWidget is used across multiple modules (main_window and ui_initializer)
    - Components used in multiple places benefit most from extraction to dedicated files
    - This approach allows for easier reuse in future modules
+
+## CustomScene Extraction (2024-07-11)
+Key insights from extracting the CustomScene class:
+
+1. **Scene-View Architecture**
+   - CustomScene represents the model/content layer in Qt's Model-View architecture
+   - Separating the scene (model) from the main window (controller) creates cleaner architecture
+   - This mirrors Qt's own design pattern of separating QGraphicsScene from QGraphicsView
+   - Scene defines what content exists, while view controls how it's displayed
+
+2. **Complex Rendering Logic Isolation**
+   - The scene's drawBackground method contains complex rendering code for backgrounds and grids
+   - Extracting this to a separate file allows focused maintenance of rendering logic
+   - Visual presentation code is now cleanly separated from application control flow
+   - This makes both the main window and scene code easier to understand and maintain
+
+3. **Event Handling Differentiation**
+   - Scene handles scene-specific events (like mouseReleaseEvent on empty areas)
+   - Main window focuses on application-level events
+   - This separation clarifies responsibility for different interaction types
+   - Makes it easier to modify either scene interaction or application controls independently
+
+4. **Parent/Child Relationship Maintenance**
+   - The scene needs access to the main window (via parent() method) for properties panel manipulation
+   - We preserved this relationship with the lambda function: `self.scene.parent = lambda: self`
+   - This maintains proper access while still having separate files
+   - Shows how object relationships can be maintained across file boundaries
+
+5. **Incremental Architecture Improvement**
+   - Each extraction (TiledBackgroundWidget, CustomScene) incrementally improves the architecture
+   - The main window becomes progressively more focused on coordination rather than implementation
+   - Related functionality is grouped into logical files
+   - This creates a path toward comprehensive architectural improvement without risky rewrites
