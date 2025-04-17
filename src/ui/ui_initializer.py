@@ -246,6 +246,48 @@ class UIInitializer:
             # Make the logo visible
             main_window.logo_overlay.show()
         
+        # Create CAPEX label overlay in bottom left corner
+        main_window.capex_label = QLabel(main_window.view)
+        main_window.capex_label.setText("System CAPEX ($): 0")
+        main_window.capex_label.setStyleSheet("""
+            QLabel {
+                color: white;
+                background-color: rgba(0, 0, 0, 120);
+                padding: 5px;
+                border-radius: 3px;
+                font-weight: bold;
+                font-size: 14px;
+            }
+        """)
+        main_window.capex_label.adjustSize()  # Size to fit content
+        main_window.capex_label.setAttribute(Qt.WA_TransparentForMouseEvents)  # Make it click-through
+        
+        # Create IRR label overlay below CAPEX label
+        main_window.irr_label = QLabel(main_window.view)
+        main_window.irr_label.setText("Refresh Cycle IRR: --.--%")
+        main_window.irr_label.setStyleSheet("""
+            QLabel {
+                color: white;
+                background-color: rgba(0, 0, 0, 120);
+                padding: 5px;
+                border-radius: 3px;
+                font-weight: bold;
+                font-size: 14px;
+            }
+        """)
+        main_window.irr_label.adjustSize()  # Size to fit content
+        main_window.irr_label.setAttribute(Qt.WA_TransparentForMouseEvents)  # Make it click-through
+        
+        # Position labels in bottom left corner with padding
+        # CAPEX label is positioned 35px up from the bottom
+        main_window.capex_label.move(10, main_window.view.height() - main_window.capex_label.height() - 35)
+        # IRR label is positioned below the CAPEX label
+        main_window.irr_label.move(10, main_window.view.height() - main_window.irr_label.height() - 10)
+        
+        # Make the labels visible
+        main_window.capex_label.show()
+        main_window.irr_label.show()
+        
         # Create Mode/Historian toggle button in top-left corner
         main_window.mode_toggle_btn = QPushButton("🧩 Model (TAB)", main_window.view)
         main_window.mode_toggle_btn.setStyleSheet("""
@@ -831,6 +873,38 @@ class UIInitializer:
         # Create a keyboard shortcut for Tab to switch between views
         main_window.tab_shortcut = QShortcut(QKeySequence(Qt.Key_Tab), main_window)
         main_window.tab_shortcut.activated.connect(main_window.toggle_mode_button)
+
+    def on_view_resize(self, event):
+        """Handle resize events to reposition the logo overlay and historian chart"""
+        if hasattr(self, 'logo_overlay') and not self.logo_overlay.pixmap().isNull():
+            # Reposition logo in bottom right when view is resized
+            logo_width = self.logo_overlay.pixmap().width()
+            logo_height = self.logo_overlay.pixmap().height()
+            self.logo_overlay.move(self.view.width() - logo_width - 10, self.view.height() - logo_height - 10)
+        
+        # Reposition mode toggle button in top left corner
+        if hasattr(self, 'mode_toggle_btn'):
+            self.mode_toggle_btn.move(10, 10)
+            
+        # Reposition analytics toggle button in top right corner
+        if hasattr(self, 'analytics_toggle_btn'):
+            self.analytics_toggle_btn.move(self.view.width() - 85, 0)
+            
+        # Reposition capex label in bottom left corner
+        if hasattr(self, 'capex_label'):
+            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 10)
+        
+        # Resize historian chart if in historian view
+        if not self.is_model_view and hasattr(self, 'historian_manager'):
+            view_size = self.view.viewport().size()
+            self.historian_manager.resize_chart_widget(view_size.width(), view_size.height())
+        
+        # Call original resize event if it was saved
+        if hasattr(self, 'original_resize_event'):
+            self.original_resize_event(event)
+        else:
+            # Call base QGraphicsView implementation
+            QGraphicsView.resizeEvent(self.view, event)
 
 # Import TiledBackgroundWidget from main_window.py to avoid circular imports
 

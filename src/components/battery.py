@@ -17,6 +17,9 @@ class BatteryComponent(ComponentBase):
         self.current_charge = self.energy_capacity  # Start at 100% charge
         self.operating_mode = "BTF Basic Unit (Auto)"  # "Off" or "BTF Basic Unit (Auto)"
         
+        # Capital expenditure (CAPEX) property
+        self.capex_per_kw = 1500  # $1,500 per kW default for battery
+        
     def paint(self, painter, option, widget):
         # Save painter state
         painter.save()
@@ -217,5 +220,6 @@ class BatteryComponent(ComponentBase):
             'power_capacity': self.power_capacity,
             'energy_capacity': self.energy_capacity, 
             'current_charge': self.current_charge,
-            'operating_mode': self.operating_mode
+            'operating_mode': self.operating_mode,
+            'capex_per_kw': self.capex_per_kw
         } 

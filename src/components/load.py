@@ -31,6 +31,9 @@ class LoadComponent(ComponentBase):
         self.data_center_type = "GPU Intensive"  # Traditional Cloud, GPU Intensive, Crypto ASIC
         self.graphics_enabled = True  # Flag to control whether graphics are shown
         self.powerlandia_profile = None  # For Powerlandia 60CF profile
+        
+        # Capital expenditure (CAPEX) property
+        self.capex_per_kw = 17500  # $17,500 per kW default for load
     
     def paint(self, painter, option, widget):
         # Get component dimensions
@@ -478,6 +481,7 @@ class LoadComponent(ComponentBase):
             'random_profile': self.random_profile,
             'data_center_type': self.data_center_type,
             'graphics_enabled': self.graphics_enabled,  # Save graphics state
-            'powerlandia_profile': self.powerlandia_profile  # Save Powerlandia profile
+            'powerlandia_profile': self.powerlandia_profile,  # Save Powerlandia profile
+            'capex_per_kw': self.capex_per_kw
         } 
         return data 

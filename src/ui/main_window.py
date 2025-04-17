@@ -79,6 +79,8 @@ class PowerSystemSimulator(QMainWindow):
     def add_component(self, component_type):
         """Delegate to the ComponentAdder to handle component creation and addition"""
         self.component_adder.add_component(component_type)
+        # Update the CAPEX display after adding a component
+        self.update_capex_display()
     
     def start_connection(self):
         self.connection_manager.start_connection()
@@ -229,6 +231,19 @@ class PowerSystemSimulator(QMainWindow):
     
     def reset_simulation(self):
         self.simulation_controller.reset_simulation()
+        # Update the CAPEX display after resetting
+        self.update_capex_display()
+        # Reset the IRR display
+        self.reset_irr_display()
+    
+    def reset_irr_display(self):
+        """Reset the IRR display to its default state"""
+        if hasattr(self, 'irr_label'):
+            self.irr_label.setText("Refresh Cycle IRR: --.--%")
+            self.irr_label.adjustSize()
+            # Ensure it stays in the correct position
+            if hasattr(self, 'view') and self.view:
+                self.irr_label.move(10, self.view.height() - self.irr_label.height() - 10)
     
     def new_scenario(self):
         """Create a new blank scenario"""
@@ -246,6 +261,12 @@ class PowerSystemSimulator(QMainWindow):
         
         # Explicitly center the welcome text to ensure it's properly positioned
         QTimer.singleShot(150, self.center_welcome_text)
+        
+        # Update the CAPEX display
+        self.update_capex_display()
+        
+        # Reset the IRR display
+        self.reset_irr_display()
     
     def save_scenario(self):
         """Save the current scenario to a file"""
@@ -262,6 +283,12 @@ class PowerSystemSimulator(QMainWindow):
             print("Autocomplete interrupted by load scenario.")
         
         self.model_manager.load_scenario()
+        
+        # Update the CAPEX display after loading
+        self.update_capex_display()
+        
+        # Reset the IRR display
+        self.reset_irr_display()
 
     def create_connection_cursor(self, phase):
         """Create a custom cursor for connection mode with pulsing effect"""
@@ -492,6 +519,13 @@ class PowerSystemSimulator(QMainWindow):
         # Reposition analytics toggle button in top right corner
         if hasattr(self, 'analytics_toggle_btn'):
             self.analytics_toggle_btn.move(self.view.width() - 85, 0)
+            
+        # Reposition capex label and irr label in bottom left corner
+        if hasattr(self, 'capex_label'):
+            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 35)
+        
+        if hasattr(self, 'irr_label'):
+            self.irr_label.move(10, self.view.height() - self.irr_label.height() - 10)
         
         # Resize historian chart if in historian view
         if not self.is_model_view and hasattr(self, 'historian_manager'):
@@ -536,3 +570,41 @@ class PowerSystemSimulator(QMainWindow):
         """This method is kept for compatibility but now delegates to the AutocompleteManager"""
         # This method should never be called directly anymore as the timer connects to the manager's method
         pass 
+
+    def calculate_total_capex(self):
+        """Calculate the total CAPEX of all components in the system"""
+        total_capex = 0
+        
+        for component in self.components:
+            # Only include components that have capex_per_kw and a capacity/power attribute
+            if hasattr(component, 'capex_per_kw'):
+                capacity = 0
+                # Different components have capacity in different attributes
+                if hasattr(component, 'capacity'):
+                    capacity = component.capacity
+                elif hasattr(component, 'power_capacity'):
+                    capacity = component.power_capacity
+                elif hasattr(component, 'demand'):
+                    capacity = component.demand
+                    
+                # Add the component's CAPEX to the total
+                if capacity > 0:
+                    total_capex += component.capex_per_kw * capacity
+        
+        return total_capex
+    
+    def update_capex_display(self):
+        """Update the CAPEX display with the current total"""
+        if hasattr(self, 'capex_label'):
+            total_capex = self.calculate_total_capex()
+            
+            # Format the CAPEX value with commas for thousands
+            formatted_capex = f"{total_capex:,.0f}"
+            
+            # Update the label text
+            self.capex_label.setText(f"System CAPEX ($): {formatted_capex}")
+            self.capex_label.adjustSize()  # Resize to fit new content
+            
+            # Ensure it stays in the correct position
+            if hasattr(self, 'view') and self.view:
+                self.capex_label.move(10, self.view.height() - self.capex_label.height() - 35) 

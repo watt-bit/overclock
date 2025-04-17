@@ -140,7 +140,8 @@ class ModelManager:
                     "auto_charging": item.auto_charging,
                     "efficiency": item.efficiency,
                     "cost_per_gj": item.cost_per_gj,
-                    "accumulated_cost": item.accumulated_cost
+                    "accumulated_cost": item.accumulated_cost,
+                    "capex_per_kw": item.capex_per_kw
                 })
             elif isinstance(item, LoadComponent):
                 component_index_map[item] = index
@@ -151,7 +152,8 @@ class ModelManager:
                     "y": item.y(),
                     "demand": item.demand,
                     "profile_type": item.profile_type,
-                    "graphics_enabled": item.graphics_enabled
+                    "graphics_enabled": item.graphics_enabled,
+                    "capex_per_kw": item.capex_per_kw
                 })
             elif isinstance(item, BusComponent):
                 component_index_map[item] = index
@@ -190,7 +192,8 @@ class ModelManager:
                     "power_capacity": item.power_capacity,
                     "energy_capacity": item.energy_capacity,
                     "current_charge": item.current_charge,
-                    "operating_mode": item.operating_mode
+                    "operating_mode": item.operating_mode,
+                    "capex_per_kw": item.capex_per_kw
                 })
             elif isinstance(item, CloudWorkloadComponent):
                 component_index_map[item] = index
@@ -210,7 +213,8 @@ class ModelManager:
                     "x": item.x(),
                     "y": item.y(),
                     "capacity": item.capacity,
-                    "operating_mode": item.operating_mode
+                    "operating_mode": item.operating_mode,
+                    "capex_per_kw": item.capex_per_kw
                 })
             elif isinstance(item, WindTurbineComponent):
                 component_index_map[item] = index
@@ -220,7 +224,8 @@ class ModelManager:
                     "x": item.x(),
                     "y": item.y(),
                     "capacity": item.capacity,
-                    "operating_mode": item.operating_mode
+                    "operating_mode": item.operating_mode,
+                    "capex_per_kw": item.capex_per_kw
                 })
             elif isinstance(item, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent, DistributionPoleComponent)):
                 data["decorations"].append({
@@ -311,6 +316,10 @@ class ModelManager:
                     else:
                         component.accumulated_cost = 0.00
                     
+                    # Set capex_per_kw if available, otherwise keep default value
+                    if "capex_per_kw" in component_data:
+                        component.capex_per_kw = component_data["capex_per_kw"]
+                    
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
                     component_map.append(component)
@@ -328,6 +337,10 @@ class ModelManager:
                         
                     if "graphics_enabled" in component_data:
                         component.graphics_enabled = component_data["graphics_enabled"]
+                    
+                    # Set capex_per_kw if available, otherwise keep default value
+                    if "capex_per_kw" in component_data:
+                        component.capex_per_kw = component_data["capex_per_kw"]
                     
                     # Handle Powerlandia profile if needed
                     if component.profile_type == "Powerlandia 60CF":
@@ -388,6 +401,10 @@ class ModelManager:
                         component.operating_mode = component_data["operating_mode"]
                     else:
                         component.operating_mode = "BTF Basic Unit (Auto)"  # Default mode
+                     
+                    # Set capex_per_kw if available, otherwise keep default value
+                    if "capex_per_kw" in component_data:
+                        component.capex_per_kw = component_data["capex_per_kw"]
                         
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
@@ -405,6 +422,11 @@ class ModelManager:
                     component = SolarPanelComponent(x, y)
                     component.capacity = component_data.get("capacity", 500)
                     component.operating_mode = component_data.get("operating_mode", "Disabled")
+                    
+                    # Set capex_per_kw if available, otherwise keep default value
+                    if "capex_per_kw" in component_data:
+                        component.capex_per_kw = component_data["capex_per_kw"]
+                    
                     # Load custom profile data if available
                     if "custom_profile" in component_data and "profile_name" in component_data:
                         component.custom_profile = component_data["custom_profile"]
@@ -420,6 +442,11 @@ class ModelManager:
                     component = WindTurbineComponent(x, y)
                     component.capacity = component_data.get("capacity", 500)
                     component.operating_mode = component_data.get("operating_mode", "Disabled")
+                    
+                    # Set capex_per_kw if available, otherwise keep default value
+                    if "capex_per_kw" in component_data:
+                        component.capex_per_kw = component_data["capex_per_kw"]
+                    
                     # Load custom profile data if available
                     if "custom_profile" in component_data and "profile_name" in component_data:
                         component.custom_profile = component_data["custom_profile"]

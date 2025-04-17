@@ -91,6 +91,10 @@ class KeyHandler:
                 
                 # Update simulation state
                 self.main_window.update_simulation()
+                
+                # Update the CAPEX display after deleting components
+                self.main_window.update_capex_display()
+                
                 return True
             # If no scene items are selected, check if properties manager has a current component
             elif hasattr(self.main_window.properties_manager, 'current_component') and self.main_window.properties_manager.current_component:

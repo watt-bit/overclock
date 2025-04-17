@@ -19,6 +19,9 @@ class WindTurbineComponent(ComponentBase):
         self.last_output = 0  # Track the last output for display
         self.custom_profile = None  # Will hold custom profile data
         self.profile_name = None  # Will store the name of the loaded profile
+        
+        # Capital expenditure (CAPEX) property
+        self.capex_per_kw = 2000  # $2,000 per kW default for wind turbine
     
     def paint(self, painter, option, widget):
         # Call base class paint to handle the selection highlight
@@ -223,5 +226,6 @@ class WindTurbineComponent(ComponentBase):
             'capacity': self.capacity,
             'operating_mode': self.operating_mode,
             'custom_profile': self.custom_profile,
-            'profile_name': self.profile_name
+            'profile_name': self.profile_name,
+            'capex_per_kw': self.capex_per_kw
         } 

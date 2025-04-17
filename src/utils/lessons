@@ -2059,3 +2059,26 @@ Key insights from extracting the simulator initialization code:
    - Continued with core initialization code
    - Each step has incrementally improved the architecture
    - This demonstrates how large legacy classes can be gradually improved without risky rewrites
+
+## Component Property Expansion Pattern (2024-07-06)
+Key insights from adding CAPEX per kW property to multiple components:
+
+1. Consistent Implementation Approach
+   - Added the same property (capex_per_kw) to multiple component types
+   - Used consistent default values based on real-world estimates
+   - Maintained identical property naming across all components
+   - Applied the same implementation pattern for all component classes
+
+2. UI Integration Best Practices
+   - Added the property to each component's property panel consistently
+   - Used the same input validation pattern (_set_up_numeric_field)
+
+IRR Calculation:
+- We can calculate the internal rate of return (IRR) for the system by using the pyxirr library
+- IRR calculation requires a series of cash flows with dates - we use CAPEX as the initial negative cash flow at hour 0, followed by hourly net revenue
+- We calculate net revenue as (hourly revenue - hourly cost) which is already tracked in the simulation engine
+- IRR calculation can fail if there aren't enough positive cash flows to eventually recover the initial investment
+- For systems with very low revenue or short simulation runs, IRR may not be meaningful
+- The IRR is displayed only after a complete autocomplete run to ensure it's calculated based on a full simulation period
+
+2023-07-10: Visual effects like particles can significantly impact simulation performance, especially during bulk operations like autocomplete runs. It's important to have mechanisms to disable visual effects during performance-critical operations. The ParticleSystem class now checks for autocomplete mode before generating particles, which improves performance considerably.

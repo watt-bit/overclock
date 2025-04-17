@@ -1833,3 +1833,13 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Improved code organization by separating initialization logic from the main window class
 - Made PowerSystemSimulator.__init__ method much shorter and more focused
 - This represents another step in the incremental refactoring of the main window code
+
+## 2024-07-06: Added CAPEX per kW Property to Components
+- Added "CAPEX per kW" property to Generator, Battery, Load, Solar Panel, and Wind Turbine components
+- Set default values: Gas Generator ($2,000), Battery ($1,500), Load ($17,500), Solar Panel ($1,000), Wind Turbine ($2,000)
+- Added property display and editing in ComponentPropertiesManager for each component type
+- Updated ModelManager to properly save and load the new property
+- The property is currently informational only with no functional impact on simulation
+- This is the first step toward implementing capital expenditure calculations in the economic model
+
+## 2023-07-10: Optimized particle system to prevent particle generation during autocomplete runs to improve performance. Added checks in all particle generation methods to verify if autocomplete is active before creating particles.

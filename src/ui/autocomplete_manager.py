@@ -10,6 +10,7 @@ This code was extracted from the main_window.py file to improve modularity witho
 
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QMessageBox
+from src.utils.irr_calculator import calculate_irr
 
 class AutocompleteManager:
     """
@@ -56,6 +57,8 @@ class AutocompleteManager:
             
         print("Starting Autocomplete simulation...")
         self.is_autocompleting = True
+        # Ensure main window has same autocomplete state
+        self.main_window.is_autocompleting = True
         
         # Define disabled styles for buttons
         disabled_play_btn_style = "QPushButton { background-color: #2196F3; color: #99CCFF; border: 1px solid #555555; border-radius: 3px; padding: 5px; font-weight: bold; font-size: 16px; }"
@@ -105,6 +108,8 @@ class AutocompleteManager:
             # Reached the end
             self.autocomplete_timer.stop()
             self.is_autocompleting = False
+            # Ensure main window also has autocomplete flag set to false
+            self.main_window.is_autocompleting = False
             
             # Perform one final update to refresh UI elements and charts
             # This call will not skip UI updates
@@ -112,6 +117,9 @@ class AutocompleteManager:
             # Explicitly update historian chart if needed
             if not self.main_window.is_model_view:
                 self.main_window.historian_manager.update_chart()
+            
+            # Calculate and display IRR
+            self._update_irr_display()
             
             # Define original styles for buttons with hover and pressed states
             play_btn_style = """
@@ -170,12 +178,40 @@ class AutocompleteManager:
             
             print("Autocomplete simulation finished.")
             
+    def _update_irr_display(self):
+        """Calculate and update the IRR display"""
+        # Get CAPEX and revenue/cost data
+        total_capex = self.main_window.calculate_total_capex()
+        hourly_revenue = self.main_window.simulation_engine.gross_revenue_data
+        hourly_cost = self.main_window.simulation_engine.gross_cost_data
+        current_hour = self.main_window.simulation_engine.current_time_step
+        
+        # Calculate IRR using the utility function
+        irr = calculate_irr(total_capex, hourly_revenue, hourly_cost, current_hour)
+        
+        # Update the IRR display
+        if irr is not None:
+            # Format as percentage with 2 decimal places
+            irr_percentage = irr * 100
+            self.main_window.irr_label.setText(f"Refresh Cycle IRR: {irr_percentage:.2f}%")
+        else:
+            self.main_window.irr_label.setText("Refresh Cycle IRR: --.--%")
+        
+        # Adjust size to fit new content
+        self.main_window.irr_label.adjustSize()
+        
+        # Ensure it stays in the correct position
+        if hasattr(self.main_window, 'view') and self.main_window.view:
+            self.main_window.irr_label.move(10, self.main_window.view.height() - self.main_window.irr_label.height() - 10)
+        
     def stop_autocomplete(self):
         """Stop the autocomplete process if it's running"""
         if self.is_autocompleting:
             if self.autocomplete_timer:
                 self.autocomplete_timer.stop()
             self.is_autocompleting = False
+            # Ensure main window also has autocomplete flag set to false
+            self.main_window.is_autocompleting = False
             
             # Define original styles for buttons with hover and pressed states
             play_btn_style = """

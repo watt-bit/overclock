@@ -26,6 +26,9 @@ class GeneratorComponent(ComponentBase):
         self.accumulated_cost = 0.00  # Track accumulated cost in dollars
         self.previous_cost = 0.00  # Track previous cost for milestone detection
         
+        # Capital expenditure (CAPEX) property
+        self.capex_per_kw = 2000  # $2,000 per kW default for gas generator
+        
         # Smoke emission point (will be calculated in paint)
         self.smoke_point = QPointF(0, 0)
         # Timer for smoke emission
@@ -262,5 +265,6 @@ class GeneratorComponent(ComponentBase):
             'auto_charging': self.auto_charging,
             'efficiency': self.efficiency,
             'cost_per_gj': self.cost_per_gj,
-            'accumulated_cost': self.accumulated_cost
+            'accumulated_cost': self.accumulated_cost,
+            'capex_per_kw': self.capex_per_kw
         } 

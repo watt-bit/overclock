@@ -73,6 +73,7 @@ class SimulatorInitializer:
         
         # Initialize particle system now that scene exists
         simulator.particle_system = ParticleSystem(simulator.scene)
+        simulator.particle_system.main_window = simulator  # Set reference to main window
         
         # Initialize the component adder
         simulator.component_adder = ComponentAdder(simulator)

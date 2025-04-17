@@ -184,9 +184,14 @@ class ParticleSystem:
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_particles)
         self.timer.setInterval(33)  # ~30 fps
+        self.main_window = None  # Will be set by the main window after initialization
     
     def create_puff(self, x, y, num_particles=12):
         """Create a puff of smoke particles at the given coordinates"""
+        # Skip particle generation during autocomplete
+        if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
+            return
+            
         # Create particles
         for _ in range(num_particles):
             # Add random offset to create wider origin area
@@ -216,6 +221,10 @@ class ParticleSystem:
             intensity (float): Intensity level from 0.0 to 1.0 controlling 
                                number of particles and size
         """
+        # Skip particle generation during autocomplete
+        if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
+            return
+            
         # Calculate number of particles based on intensity
         # More intensity = more particles (between 2 and 15)
         base_particles = 2
@@ -248,6 +257,10 @@ class ParticleSystem:
     
     def create_revenue_popup(self, x, y, amount=1000):
         """Create a revenue popup at the given coordinates"""
+        # Skip particle generation during autocomplete
+        if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
+            return
+            
         # Create the revenue particle
         particle = RevenueParticle(x, y, amount)
         self.scene.addItem(particle)
@@ -259,6 +272,10 @@ class ParticleSystem:
     
     def create_cost_popup(self, x, y, amount=1000):
         """Create a cost popup at the given coordinates"""
+        # Skip particle generation during autocomplete
+        if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
+            return
+            
         # Create the cost particle
         particle = CostParticle(x, y, amount)
         self.scene.addItem(particle)
