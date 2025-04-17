@@ -17,109 +17,15 @@ from .mode_toggle_manager import ModeToggleManager
 from .simulation_controller import SimulationController
 from .screenshot_manager import ScreenshotManager
 from .custom_scene import CustomScene
+from .simulator_initializer import SimulatorInitializer
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
 class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("OVERCLOCK | Watt-Bit Research | https://watt-bit.com | research preview presented by Augur VC | https://augurvc.com")
-        self.resize(2400, 1200)
+        SimulatorInitializer.initialize(self)
         
-        # Initialize variables
-        self.components = []
-        self.connections = []
-        self.creating_connection = False
-        self.connection_source = None
-        self.temp_connection = None
-        self.cursor_phase = 0
-        self.is_scrubbing = False
-        self.scrub_timer = None
-        
-        # Create particle system for visual effects
-        self.particle_system = None  # Will initialize after scene is created
-        
-        # Autocomplete state
-        self.is_autocompleting = False
-        self.autocomplete_timer = None
-        self.autocomplete_end_time = 0
-        
-        # Track if the properties panel has been positioned yet
-        self.properties_panel_positioned = False
-        
-        # Background mode: 0 = background1, 1 = background2, 2 = solid color
-        self.background_mode = 2  # Set default to solid color (Background Off)
-        
-        # Create simulation engine
-        self.simulation_engine = SimulationEngine(self)
-        
-        # Create properties manager
-        self.properties_manager = ComponentPropertiesManager(self)
-        
-        # Create model manager
-        self.model_manager = ModelManager(self)
-        
-        # Create historian manager
-        self.historian_manager = HistorianManager(self)
-        
-        # Cursor animation
-        self.cursor_timer = QTimer()
-        self.cursor_timer.timeout.connect(self.update_cursor)
-        self.cursor_size = 32
-        
-        # Create scene with custom signal
-        self.scene = CustomScene()
-        self.scene.parent = lambda: self
-        self.scene.component_clicked.connect(self.properties_manager.show_component_properties)
-        
-        # Initialize particle system now that scene exists
-        self.particle_system = ParticleSystem(self.scene)
-        
-        # Initialize the component adder
-        self.component_adder = ComponentAdder(self)
-        
-        # Set the initial background mode to solid color
-        self.scene.set_background(self.background_mode)
-        
-        # Flag to track whether we're in model or historian view
-        self.is_model_view = True
-        
-        # Store the previous zoom value when switching to historian
-        self.previous_zoom_value = None
-        
-        # Initialize the UI using the new UIInitializer
-        UIInitializer.initialize_ui(self)
-        
-        # Setup simulation timer
-        self.sim_timer = QTimer()
-        self.sim_timer.timeout.connect(lambda: self.step_simulation(1))
-        self.simulation_speed = 1
-        
-        # Create connection manager
-        self.connection_manager = ConnectionManager(self)
-        
-        # Create autocomplete manager
-        self.autocomplete_manager = AutocompleteManager(self)
-        
-        # Create mode toggle manager
-        self.mode_toggle_manager = ModeToggleManager(self)
-        
-        # Create simulation controller
-        self.simulation_controller = SimulationController(self)
-        
-        # Create screenshot manager
-        self.screenshot_manager = ScreenshotManager(self)
-        
-        # Welcome text for new users
-        self.welcome_text = None
-        self.add_welcome_text()
-         
-        # Center the window on the screen
-        self.center_on_screen()
-        
-        # Create KeyHandler instance
-        self.key_handler = KeyHandler(self)
-    
     def center_on_screen(self):
         """Center the window on the screen"""
         screen_geometry = QApplication.desktop().screenGeometry()

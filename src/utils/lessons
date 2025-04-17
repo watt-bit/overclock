@@ -2025,3 +2025,37 @@ Key insights from extracting the CustomScene class:
    - The main window becomes progressively more focused on coordination rather than implementation
    - Related functionality is grouped into logical files
    - This creates a path toward comprehensive architectural improvement without risky rewrites
+
+## Simulator Initialization Extraction (2024-07-12)
+Key insights from extracting the simulator initialization code:
+
+1. **Constructor Simplification**
+   - Extracting initialization code significantly simplifies the class constructor
+   - A one-line constructor that delegates to an external initializer is more maintainable
+   - This pattern creates a clear separation between object creation and initialization
+   - Makes the PowerSystemSimulator class easier to understand at a glance
+
+2. **Initialization Sequence Management**
+   - The initialization code contains a carefully ordered sequence of steps
+   - Extracting this sequence to a dedicated class makes the order more explicit and maintainable
+   - Comments in the initialization code can focus on the "why" rather than the "what"
+   - Initialization dependencies (like needing scene before particle system) become clearer
+
+3. **Dependency Injection Pattern**
+   - The SimulatorInitializer uses a form of dependency injection
+   - It receives the simulator instance and configures it externally
+   - This reinforces the separation of concerns principle
+   - Makes testing easier as initialization could be mocked or customized
+
+4. **Initialization Parameterization**
+   - Extracted initialization code could be made more flexible in the future
+   - Parameters could be added to control specific aspects of initialization
+   - Different initialization strategies could be implemented and swapped
+   - For example, headless mode for testing or different UI configurations
+
+5. **Progressive Refactoring**
+   - This extraction completes a series of progressive improvements
+   - Started with UI components (TiledBackgroundWidget, CustomScene)
+   - Continued with core initialization code
+   - Each step has incrementally improved the architecture
+   - This demonstrates how large legacy classes can be gradually improved without risky rewrites

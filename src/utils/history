@@ -1818,3 +1818,18 @@ Modified historian_manager.py to make only the total_generation series visible b
 - No changes to visual appearance or functionality
 - Improved code organization by separating scene functionality from main window
 - Continues the architectural pattern of extracting UI components into dedicated files
+
+## 2024-07-12: Simulator Initialization Code Extraction
+- Created new SimulatorInitializer class in src/ui/simulator_initializer.py
+- Extracted the entire initialization code from PowerSystemSimulator.__init__ to the new class
+- Updated PowerSystemSimulator to use the SimulatorInitializer.initialize method
+- Maintained exact behavioral consistency including:
+  * Component creation and initialization
+  * Manager setup (properties, connection, model, historian, etc.)
+  * UI initialization sequence
+  * Signal connections
+  * Welcome text and window positioning
+- No changes to visual appearance or functionality
+- Improved code organization by separating initialization logic from the main window class
+- Made PowerSystemSimulator.__init__ method much shorter and more focused
+- This represents another step in the incremental refactoring of the main window code
