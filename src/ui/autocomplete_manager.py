@@ -8,7 +8,7 @@ of the simulation timeframe asynchronously, while providing appropriate UI feedb
 This code was extracted from the main_window.py file to improve modularity without changing functionality.
 """
 
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtWidgets import QMessageBox
 from src.utils.irr_calculator import calculate_irr, calculate_extended_irr
 
@@ -192,6 +192,56 @@ class AutocompleteManager:
             
             print("Autocomplete simulation finished.")
             
+    def _get_irr_color(self, irr_value):
+        """
+        Calculate color for IRR value based on range:
+        - Below -75%: Bright red
+        - At 0%: White with lower alpha
+        - Above 100%: Bright green
+        - Interpolate between these points
+        
+        Args:
+            irr_value: IRR value as a percentage (e.g., 15.23 for 15.23%)
+            
+        Returns:
+            HTML color string for the IRR value
+        """
+        if irr_value is None:
+            # Default color for missing values
+            return "rgba(255, 255, 255, 0.8)"
+            
+        # Define color stops
+        red_stop = -75.0  # Below this is bright red
+        neutral_stop = 0.0  # This is white (with lower alpha)
+        green_stop = 100.0  # Above this is bright green
+        
+        # Define colors at each stop (r, g, b, a)
+        red_color = (255, 50, 50, 1.0)  # Bright red
+        neutral_color = (255, 255, 255, 0.8)  # White with slightly lower alpha
+        green_color = (50, 255, 50, 1.0)  # Bright green
+        
+        # Clamp irr_value between red_stop and green_stop for interpolation
+        clamped_value = max(red_stop, min(green_stop, irr_value))
+        
+        # Interpolate colors based on where the value falls
+        if clamped_value <= neutral_stop:
+            # Interpolate between red and neutral
+            t = (clamped_value - red_stop) / (neutral_stop - red_stop)
+            r = int(red_color[0] + t * (neutral_color[0] - red_color[0]))
+            g = int(red_color[1] + t * (neutral_color[1] - red_color[1]))
+            b = int(red_color[2] + t * (neutral_color[2] - red_color[2]))
+            a = red_color[3] + t * (neutral_color[3] - red_color[3])
+        else:
+            # Interpolate between neutral and green
+            t = (clamped_value - neutral_stop) / (green_stop - neutral_stop)
+            r = int(neutral_color[0] + t * (green_color[0] - neutral_color[0]))
+            g = int(neutral_color[1] + t * (green_color[1] - neutral_color[1]))
+            b = int(neutral_color[2] + t * (green_color[2] - neutral_color[2]))
+            a = neutral_color[3] + t * (green_color[3] - neutral_color[3])
+            
+        # Return as rgba string
+        return f"rgba({r}, {g}, {b}, {a})"
+            
     def _update_irr_display(self):
         """Calculate and update the IRR display with 12, 18, and 36 month values"""
         # Get CAPEX and revenue/cost data
@@ -210,24 +260,35 @@ class AutocompleteManager:
             irr_18 = irr_results[18] * 100 if irr_results[18] is not None else None
             irr_36 = irr_results[36] * 100 if irr_results[36] is not None else None
             
-            # Create display text with all IRR values
-            irr_text = f"Refresh Cycle IRR: {irr_12:.2f}% (12 Mo.)"
+            # Get colors for IRR values
+            color_12 = self._get_irr_color(irr_12)
+            color_18 = self._get_irr_color(irr_18)
+            color_36 = self._get_irr_color(irr_36)
+            
+            # Create display text with all IRR values using HTML for color
+            irr_text = f'Refresh Cycle IRR: <span style="color: {color_12}">{irr_12:.2f}%</span> (12 Mo.)'
             
             # Add 18-month value
             if irr_18 is not None:
-                irr_text += f" | {irr_18:.2f}% (18 Mo.)"
+                irr_text += f' | <span style="color: {color_18}">{irr_18:.2f}%</span> (18 Mo.)'
             else:
-                irr_text += " | --.--% (18 Mo.)"
+                irr_text += ' | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (18 Mo.)'
                 
             # Add 36-month value
             if irr_36 is not None:
-                irr_text += f" | {irr_36:.2f}% (36 Mo.)"
+                irr_text += f' | <span style="color: {color_36}">{irr_36:.2f}%</span> (36 Mo.)'
             else:
-                irr_text += " | --.--% (36 Mo.)"
+                irr_text += ' | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (36 Mo.)'
                 
+            # Set rich text in the label
             self.main_window.irr_label.setText(irr_text)
+            # Allow HTML formatting in the label
+            self.main_window.irr_label.setTextFormat(Qt.RichText)
         else:
-            self.main_window.irr_label.setText("Refresh Cycle IRR: --.--% (12 Mo.) | --.--% (18 Mo.) | --.--% (36 Mo.)")
+            # Default placeholder text with standard color
+            irr_text = 'Refresh Cycle IRR: <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (12 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (18 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (36 Mo.)'
+            self.main_window.irr_label.setText(irr_text)
+            self.main_window.irr_label.setTextFormat(Qt.RichText)
         
         # Adjust size to fit new content
         self.main_window.irr_label.adjustSize()
