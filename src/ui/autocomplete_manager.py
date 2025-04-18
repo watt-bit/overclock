@@ -28,6 +28,9 @@ class AutocompleteManager:
     def run_autocomplete(self):
         """Run the simulation from the current time to the end asynchronously"""
         
+        # Reset the simulation first to ensure we capture the entire timeline
+        self.main_window.reset_simulation()
+        
         # Check if already running
         if self.main_window.simulation_engine.simulation_running or self.is_autocompleting:
             return

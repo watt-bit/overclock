@@ -27,9 +27,9 @@ class HistorianManager:
         self.toggle_buttons = {}  # Dictionary to store toggle buttons by data key
         self.colors = {  # Default colors for known data types - dark-mode friendly colors
             'total_generation': '#66BB6A',  # Soft green
-            'total_load': '#FF7043',  # Soft orange
+            'total_load': '#FFCA28',  # Soft orange
             'grid_import': '#AB47BC',  # Soft purple
-            'grid_export': '#FFCA28',  # Soft amber
+            'grid_export': '#FF7043',  # Soft amber
             'cumulative_revenue': '#4FC3F7',  # Bright sky blue for revenue
             'cumulative_cost': '#D32F2F',   # Soft red for cost
             'battery_charge': '#42A5F5',  # Bright blue for battery charge

@@ -521,7 +521,7 @@ class PowerSystemSimulator(QMainWindow):
             # Reposition logo in bottom right when view is resized
             logo_width = self.logo_overlay.pixmap().width()
             logo_height = self.logo_overlay.pixmap().height()
-            self.logo_overlay.move(self.view.width() - logo_width - 10, self.view.height() - logo_height - 10)
+            self.logo_overlay.move(self.view.width() - logo_width - 5, self.view.height() - logo_height + 5)
         
         # Reposition mode toggle button in top left corner
         if hasattr(self, 'mode_toggle_btn'):

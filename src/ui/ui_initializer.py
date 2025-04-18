@@ -238,7 +238,7 @@ class UIInitializer:
             main_window.logo_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)  # Make it click-through
             
             # Position in bottom right corner with padding
-            main_window.logo_overlay.move(main_window.view.width() - scaled_width - 10, main_window.view.height() - scaled_height - 10)
+            main_window.logo_overlay.move(main_window.view.width() - scaled_width - 5, main_window.view.height() - scaled_height + 5)
             
             # Connect to view's resize event to maintain position
             main_window.view.resizeEvent = main_window.on_view_resize
@@ -746,7 +746,7 @@ class UIInitializer:
         main_window.screenshot_btn.setFixedWidth(150)
 
         # Add Autocomplete button
-        main_window.autocomplete_btn = QPushButton("🚀 Autocomplete (Enter)")
+        main_window.autocomplete_btn = QPushButton("🚀 Autocomplete IRR (Enter)")
         main_window.autocomplete_btn.clicked.connect(main_window.run_autocomplete)
         main_window.autocomplete_btn.setStyleSheet(common_button_style + """
             QPushButton { 
@@ -883,7 +883,7 @@ class UIInitializer:
             # Reposition logo in bottom right when view is resized
             logo_width = self.logo_overlay.pixmap().width()
             logo_height = self.logo_overlay.pixmap().height()
-            self.logo_overlay.move(self.view.width() - logo_width - 10, self.view.height() - logo_height - 10)
+            self.logo_overlay.move(self.view.width() - logo_width - 5, self.view.height() - logo_height + 5)
         
         # Reposition mode toggle button in top left corner
         if hasattr(self, 'mode_toggle_btn'):
