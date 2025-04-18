@@ -390,11 +390,13 @@ class PowerSystemSimulator(QMainWindow):
             if hasattr(self, 'autocomplete_manager'):
                 self.autocomplete_manager.cleanup()
             event.accept()
+            QApplication.quit()
         else:  # QMessageBox.No
             # Clean up resources before exiting
             if hasattr(self, 'autocomplete_manager'):
                 self.autocomplete_manager.cleanup()
-            event.accept() 
+            event.accept()
+            QApplication.quit() 
 
     def zoom_changed(self, value):
         """Handle zoom slider value changes"""
