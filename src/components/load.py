@@ -33,7 +33,7 @@ class LoadComponent(ComponentBase):
         self.powerlandia_profile = None  # For Powerlandia 60CF profile
         
         # Capital expenditure (CAPEX) property
-        self.capex_per_kw = 17500  # $17,500 per kW default for load
+        self.capex_per_kw = 17000  # $17,000 per kW default for load
     
     def paint(self, painter, option, widget):
         # Get component dimensions
