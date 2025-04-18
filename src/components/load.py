@@ -319,7 +319,7 @@ class LoadComponent(ComponentBase):
             # 55% annual load factor
             # Up to 75% max inter-hourly ramp
             # Day/night cycle with lower usage at night
-            base_load_factor = 0.55
+            base_load_factor = 0.6
             max_ramp = 0.75
             
             # Initialize with a value around the base load factor
