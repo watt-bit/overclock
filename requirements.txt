@@ -1,0 +1,4 @@
+# Python 3.13.3
+PyQt5==5.15.11
+matplotlib==3.10.1
+numpy==2.2.4 
