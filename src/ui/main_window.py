@@ -386,8 +386,14 @@ class PowerSystemSimulator(QMainWindow):
             event.ignore()
         elif reply == QMessageBox.Yes:
             self.save_scenario()
+            # Clean up resources before exiting
+            if hasattr(self, 'autocomplete_manager'):
+                self.autocomplete_manager.cleanup()
             event.accept()
         else:  # QMessageBox.No
+            # Clean up resources before exiting
+            if hasattr(self, 'autocomplete_manager'):
+                self.autocomplete_manager.cleanup()
             event.accept() 
 
     def zoom_changed(self, value):

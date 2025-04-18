@@ -1879,3 +1879,13 @@ Modified historian_manager.py to make only the total_generation series visible b
 - This prevents attempting to disconnect signals that aren't connected in historian view
 - Properly handles different signal/connection management between model and historian views
 - Improves application stability by enforcing proper mode-specific behavior for keyboard shortcuts
+
+## 2025-04-17 20:10 - Fixed Segmentation Fault on Application Exit
+- Identified and fixed a bug in AutocompleteManager that caused crashes when exiting the application
+- Added checks to ensure irr_label exists and is visible before manipulating it in _update_irr_display
+- Added proper cleanup method to AutocompleteManager to stop timers and clean up references
+- Modified main_window.py to call the cleanup method in closeEvent before exiting
+- Added defensive programming with try/except to handle timer signal disconnection
+- Added proper null reference handling to prevent accessing destroyed UI elements
+- Fixed bug where timer callbacks could still execute during application shutdown
+- This ensures clean application exit without segmentation faults

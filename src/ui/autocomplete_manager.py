@@ -244,6 +244,10 @@ class AutocompleteManager:
             
     def _update_irr_display(self):
         """Calculate and update the IRR display with 12, 18, and 36 month values"""
+        # Check if the main window still exists and has a valid irr_label
+        if not hasattr(self.main_window, 'irr_label') or not self.main_window.irr_label:
+            return
+            
         # Get CAPEX and revenue/cost data
         total_capex = self.main_window.calculate_total_capex()
         hourly_revenue = self.main_window.simulation_engine.gross_revenue_data
@@ -280,22 +284,29 @@ class AutocompleteManager:
             else:
                 irr_text += ' | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (36 Mo.)'
                 
-            # Set rich text in the label
-            self.main_window.irr_label.setText(irr_text)
-            # Allow HTML formatting in the label
-            self.main_window.irr_label.setTextFormat(Qt.RichText)
+            # Check if the irr_label is still valid before setting text
+            if self.main_window.irr_label.isVisible():
+                # Set rich text in the label
+                self.main_window.irr_label.setText(irr_text)
+                # Allow HTML formatting in the label
+                self.main_window.irr_label.setTextFormat(Qt.RichText)
         else:
             # Default placeholder text with standard color
             irr_text = 'Refresh Cycle IRR: <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (12 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (18 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (36 Mo.)'
-            self.main_window.irr_label.setText(irr_text)
-            self.main_window.irr_label.setTextFormat(Qt.RichText)
+            
+            # Check if the irr_label is still valid before setting text
+            if self.main_window.irr_label.isVisible():
+                self.main_window.irr_label.setText(irr_text)
+                self.main_window.irr_label.setTextFormat(Qt.RichText)
         
-        # Adjust size to fit new content
-        self.main_window.irr_label.adjustSize()
-        
-        # Ensure it stays in the correct position
-        if hasattr(self.main_window, 'view') and self.main_window.view:
-            self.main_window.irr_label.move(10, self.main_window.view.height() - self.main_window.irr_label.height() - 25)
+        # Only adjust size and position if the label is still valid and visible
+        if self.main_window.irr_label.isVisible():
+            # Adjust size to fit new content
+            self.main_window.irr_label.adjustSize()
+            
+            # Ensure it stays in the correct position
+            if hasattr(self.main_window, 'view') and self.main_window.view:
+                self.main_window.irr_label.move(10, self.main_window.view.height() - self.main_window.irr_label.height() - 25)
         
     def stop_autocomplete(self):
         """Stop the autocomplete process if it's running"""
@@ -368,4 +379,24 @@ class AutocompleteManager:
             if self.main_window.is_model_view:
                 self.main_window.disable_component_buttons(False)
                 
-            print("Autocomplete interrupted.") 
+            print("Autocomplete interrupted.")
+            
+    def cleanup(self):
+        """Clean up resources before shutdown - call this when the application is closing"""
+        if self.autocomplete_timer:
+            try:
+                # Disconnect the timer signal first to prevent callbacks
+                self.autocomplete_timer.timeout.disconnect(self._step_autocomplete)
+            except (TypeError, RuntimeError):
+                # Signal might not be connected, that's okay
+                pass
+            # Stop the timer
+            self.autocomplete_timer.stop()
+            self.autocomplete_timer = None
+        
+        # Reset state
+        self.is_autocompleting = False
+        self.autocomplete_end_time = 0
+        
+        # Clear any referenced objects
+        self.main_window = None 
