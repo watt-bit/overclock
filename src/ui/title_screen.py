@@ -82,9 +82,16 @@ class TitleScreen(QWidget):
         exit_btn.setCursor(QCursor(Qt.PointingHandCursor))
     
     def close_safely(self):
-        """Safely close the window without causing segmentation fault"""
-        # Just close this window, which will trigger proper cleanup
+        """Safely close the window and exit the application"""
+        # First close this window properly
         self.close()
+        
+        # Then quit the entire application
+        # We need to use QApplication.instance() to get the current application instance
+        from PyQt5.QtWidgets import QApplication
+        app = QApplication.instance()
+        if app:
+            app.quit()
     
     def create_new_project_button(self):
         """Create and add the New Project button"""

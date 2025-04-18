@@ -1905,3 +1905,44 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Added safety checks to clean up timers in the Augur and WBR title screens
 - Properly removes event handlers to prevent accessing deleted objects
 - This fix ensures clean application exit regardless of which screen is active when quitting
+
+## 2025-04-17 21:10 - Implemented Robust Application Lifecycle Management
+- Completely redesigned the application exit handling to fix persistent segmentation fault issues
+- Created a dedicated AppManager class to safely manage application resources and cleanup
+- Moved all application objects (screens, main window) into the manager for better lifecycle control
+- Added robust error handling with nested try/except blocks to ensure cleanup completes even if errors occur
+- Implemented comprehensive cleanup of all resources:
+  * Safely stops all timers across all screens and windows
+  * Closes all matplotlib plots
+  * Properly calls cleanup methods on components like autocomplete_manager
+  * Hides all windows to prevent further event processing
+- Changed main() function to return app.exec_() instead of calling sys.exit() directly
+- Improved separation of concerns with dedicated lifecycle management
+- Fixed persistent segmentation faults occurring when using Cmd+Q or window close buttons
+
+## 2025-04-17 21:40 - Enhanced Application Shutdown for Post-Cleanup Segmentation Fault
+- Fixed persistent segmentation fault occurring after application cleanup
+- Implemented advanced Qt object cleanup strategies:
+  * Added signal disconnection before any cleanup to prevent callback crashes
+  * Changed cleanup order to stop timers before hiding windows
+  * Added explicit disconnection of all timer signals to prevent deferred callbacks
+  * Used blockSignals(True) to prevent any signal processing during cleanup
+  * Set widget parents to None to break parent-child relationships
+  * Explicitly cleared references to deleted objects
+  * Processed screens in reverse order of appearance for proper deletion sequence
+  * Added garbage collection forcing after cleanup
+  * Guarded against repeated cleanup execution with state tracking
+  * Added direct connection mode for aboutToQuit signal to ensure immediate execution
+  * Disabled automatic quit on last window closed
+- Restructured cleanup into multiple helper methods for better code organization
+- Added precautions against circular references
+- Built in comprehensive safety with multiple exception handling blocks
+- Redesigned application entry point to ensure proper shutdown sequence
+
+## 2025-04-17 22:00 - Fixed Title Screen Close Button Behavior
+- Fixed issue where clicking the X button on title screens only closed the window but didn't quit the application
+- Modified TitleScreen's close_safely method to properly quit the entire application using QApplication.instance().quit()
+- Added closeEvent handlers to AugurTitleScreen and WBRTitleScreen to detect user-initiated window closing
+- Implemented smart detection to distinguish between normal transitions and user-initiated closing
+- Application now properly exits when any title screen's close button (X) is clicked
+- Behavior now matches Cmd+Q for consistent application exit experience
