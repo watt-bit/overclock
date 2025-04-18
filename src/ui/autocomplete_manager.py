@@ -218,7 +218,7 @@ class AutocompleteManager:
         # Define colors at each stop (r, g, b, a)
         red_color = (255, 50, 50, 0.9)  # Bright red
         neutral_color = (255, 255, 255, 1.0)  # White
-        green_color = (50, 255, 50, 0.9)  # Bright green
+        green_color = (139, 255, 74, 0.9)  # Bright green
         
         # Clamp irr_value between red_stop and green_stop for interpolation
         clamped_value = max(red_stop, min(green_stop, irr_value))

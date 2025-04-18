@@ -422,9 +422,19 @@ class HistorianManager:
         """Resize the chart widget to fit the given dimensions"""
         # Check if main_widget exists before resizing
         if hasattr(self, 'main_widget'):
+            # Resize the widget to fill the view
             self.main_widget.resize(width, height)
-            # Optionally, force the layout to update immediately
+            
+            # Force the layout to update immediately
             self.main_layout.activate()
+            
+            # Ensure the chart proxy item is positioned correctly in the scene
+            if hasattr(self, 'chart_proxy') and self.chart_proxy.scene() == self.historian_scene:
+                # Center the chart in the scene
+                self.chart_proxy.setPos(0, 0)
+                
+                # Update the scene rect to match the chart size
+                self.historian_scene.setSceneRect(0, 0, width, height)
     
     def update_secondary_axis_formatting(self, max_value):
         """

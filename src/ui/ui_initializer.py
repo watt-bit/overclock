@@ -248,7 +248,8 @@ class UIInitializer:
         
         # Create CAPEX label overlay in bottom left corner
         main_window.capex_label = QLabel(main_window.view)
-        main_window.capex_label.setText("CAPEX $0")
+        main_window.capex_label.setText("CAPEX <span style='color: #FFCA28;'>$0</span>")
+        main_window.capex_label.setTextFormat(Qt.RichText)
         main_window.capex_label.setStyleSheet("""
             QLabel {
                 font-weight: bold;

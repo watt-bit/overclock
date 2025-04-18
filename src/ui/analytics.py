@@ -66,11 +66,11 @@ class AnalyticsPanel(QWidget):
                                       path_effects=[path_effects.SimpleLineShadow(shadow_color='#AB47BC', alpha=0.2, offset=(0,0), linewidth=7),
                                                   path_effects.Normal()])
                                                   
-        self.grid_export_line, = self.ax.plot([], [], '-', color='#FFCA28', linewidth=2, label='Grid Export', alpha=0.9,
+        self.grid_export_line, = self.ax.plot([], [], '-', color='#FF7043', linewidth=2, label='Grid Export', alpha=0.9,
                                              path_effects=[path_effects.SimpleLineShadow(shadow_color='#FFCA28', alpha=0.2, offset=(0,0), linewidth=7),
                                                          path_effects.Normal()])
                                                          
-        self.load_line, = self.ax.plot([], [], '-', color='#FF7043', linewidth=2, label='Load', alpha=0.9,
+        self.load_line, = self.ax.plot([], [], '-', color='#FFCA28', linewidth=2, label='Load', alpha=0.9,
                                       path_effects=[path_effects.SimpleLineShadow(shadow_color='#FF7043', alpha=0.2, offset=(0,0), linewidth=7),
                                                   path_effects.Normal()])
                                                   

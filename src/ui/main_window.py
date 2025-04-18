@@ -612,8 +612,8 @@ class PowerSystemSimulator(QMainWindow):
             # Format the CAPEX value with commas for thousands
             formatted_capex = f"{total_capex:,.0f}"
             
-            # Update the label text
-            self.capex_label.setText(f"CAPEX ${formatted_capex}")
+            # Update the label text with HTML formatting to make $ and value gold
+            self.capex_label.setText(f"CAPEX <span style='color: #FFCA28;'>${formatted_capex}</span>")
             self.capex_label.adjustSize()  # Resize to fit new content
             
             # Ensure it stays in the correct position

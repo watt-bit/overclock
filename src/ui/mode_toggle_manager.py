@@ -116,6 +116,10 @@ class ModeToggleManager:
             # Change the view to show the historian scene
             self.main_window.view.setScene(self.main_window.historian_manager.historian_scene)
             
+            # Reset the view's scroll position to ensure the chart is centered
+            self.main_window.view.resetTransform()  # Clear any existing transforms
+            self.main_window.view.setTransform(self.main_window.view.transform().scale(1, 1))  # Set to 1:1 scale
+            
             # Disable scrolling and movement in historian view
             self.main_window.view.setDragMode(QGraphicsView.NoDrag)
             self.main_window.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -124,6 +128,9 @@ class ModeToggleManager:
             # Resize the chart widget to fit the current view size
             view_size = self.main_window.view.viewport().size()
             self.main_window.historian_manager.resize_chart_widget(view_size.width(), view_size.height())
+            
+            # Center the view on the chart AFTER resizing
+            self.main_window.view.centerOn(self.main_window.historian_manager.chart_proxy)
             
             # Set zoom to 1x and disable slider
             self.main_window.zoom_slider.setValue(100)  # Set slider to 1.0x
