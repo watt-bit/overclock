@@ -75,11 +75,16 @@ class TitleScreen(QWidget):
         # Position button at (5,5) in the top left corner
         exit_btn.move(5, 5)
         
-        # Connect button click to exit application
-        exit_btn.clicked.connect(QApplication.quit)
+        # Connect button click to close the window instead of quitting the application
+        exit_btn.clicked.connect(self.close_safely)
         
         # Set cursor to hand when hovering over button
         exit_btn.setCursor(QCursor(Qt.PointingHandCursor))
+    
+    def close_safely(self):
+        """Safely close the window without causing segmentation fault"""
+        # Just close this window, which will trigger proper cleanup
+        self.close()
     
     def create_new_project_button(self):
         """Create and add the New Project button"""

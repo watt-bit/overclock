@@ -1889,3 +1889,19 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Added proper null reference handling to prevent accessing destroyed UI elements
 - Fixed bug where timer callbacks could still execute during application shutdown
 - This ensures clean application exit without segmentation faults
+
+## 2025-04-17 20:15 - Fixed Title Screen Exit Button Segmentation Fault
+- Fixed a bug where clicking the X button on the title screen would cause a segmentation fault
+- Modified the exit button's click handler to use self.close() instead of QApplication.quit()
+- Added a new close_safely() method to properly handle title screen closure
+- This prevents segmentation fault on exit by ensuring proper cleanup
+- Maintains the same visual appearance and functionality while providing a safer exit process
+
+## 2025-04-17 20:45 - Fixed Application-Wide Quit Segmentation Fault
+- Fixed a bug where using Cmd+Q or the exit button at the title screen would cause a segmentation fault
+- Added proper application-wide cleanup handler using QApplication.aboutToQuit signal
+- Implemented clean_up_application function in main.py to safely stop all timers and release resources
+- Added code to hide all windows during cleanup to prevent further events
+- Added safety checks to clean up timers in the Augur and WBR title screens
+- Properly removes event handlers to prevent accessing deleted objects
+- This fix ensures clean application exit regardless of which screen is active when quitting

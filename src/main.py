@@ -50,6 +50,28 @@ def main():
     # Connect the WBR title screen's transition signal to show the original title screen
     wbr_title_screen.transition_to_next.connect(title_screen.show)
     
+    # Setup proper application cleanup on exit
+    def clean_up_application():
+        # Stop any running timers in the title screens
+        if hasattr(augur_title_screen, 'timer') and augur_title_screen.timer.isActive():
+            augur_title_screen.timer.stop()
+            
+        if hasattr(wbr_title_screen, 'timer') and wbr_title_screen.timer.isActive():
+            wbr_title_screen.timer.stop()
+            
+        # If main window is created, clean up its resources
+        if main_window and hasattr(main_window, 'autocomplete_manager'):
+            main_window.autocomplete_manager.cleanup()
+            
+        # Hide all windows to prevent further events
+        augur_title_screen.hide()
+        wbr_title_screen.hide()
+        title_screen.hide()
+        main_window.hide()
+    
+    # Connect the cleanup function to the aboutToQuit signal
+    app.aboutToQuit.connect(clean_up_application)
+    
     # Show the Augur title screen first
     augur_title_screen.show()
     
