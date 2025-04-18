@@ -211,14 +211,14 @@ class AutocompleteManager:
             return "rgba(255, 255, 255, 0.8)"
             
         # Define color stops
-        red_stop = -75.0  # Below this is bright red
+        red_stop = -50.0  # Below this is bright red
         neutral_stop = 0.0  # This is white (with lower alpha)
         green_stop = 100.0  # Above this is bright green
         
         # Define colors at each stop (r, g, b, a)
-        red_color = (255, 50, 50, 1.0)  # Bright red
-        neutral_color = (255, 255, 255, 0.8)  # White with slightly lower alpha
-        green_color = (50, 255, 50, 1.0)  # Bright green
+        red_color = (255, 50, 50, 0.9)  # Bright red
+        neutral_color = (255, 255, 255, 1.0)  # White
+        green_color = (50, 255, 50, 0.9)  # Bright green
         
         # Clamp irr_value between red_stop and green_stop for interpolation
         clamped_value = max(red_stop, min(green_stop, irr_value))
