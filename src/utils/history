@@ -896,7 +896,7 @@
 
 ## 2023-05-16
 - Added Multi-Cloud Spot operating mode to CloudWorkloadComponent
-- Added resource parameters for Traditional Cloud, GPU Intensive, and Crypto ASIC
+- Added resource parameters for Traditional Cloud, GPU Dense, and Crypto ASIC
 - Updated properties panel to display parameters when in Multi-Cloud Spot mode
 - Implemented revenue calculation based on energy consumed by Data Center loads
 - Updated simulation engine to include cloud workload revenue in gross revenue calculations

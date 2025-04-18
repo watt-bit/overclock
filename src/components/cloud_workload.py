@@ -21,8 +21,8 @@ class CloudWorkloadComponent(ComponentBase):
         self.traditional_cloud_power = 0.14  # kW per resource
         self.traditional_cloud_price = 0.05  # $ per resource hour
         
-        self.gpu_intensive_power = 1.0  # kW per resource
-        self.gpu_intensive_price = 1.25  # $ per resource hour
+        self.gpu_intensive_power = 0.77  # kW per resource
+        self.gpu_intensive_price = 2.00  # $ per resource hour
         
         self.crypto_asic_power = 5.0  # kW per resource
         self.crypto_asic_price = 1.00  # $ per resource hour
@@ -150,7 +150,7 @@ class CloudWorkloadComponent(ComponentBase):
         if load_component.data_center_type == "Traditional Cloud":
             power_per_resource = self.traditional_cloud_power
             price_per_resource = self.traditional_cloud_price
-        elif load_component.data_center_type == "GPU Intensive":
+        elif load_component.data_center_type == "GPU Dense":
             power_per_resource = self.gpu_intensive_power
             price_per_resource = self.gpu_intensive_price
         elif load_component.data_center_type == "Crypto ASIC":

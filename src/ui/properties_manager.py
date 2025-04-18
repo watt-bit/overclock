@@ -623,7 +623,7 @@ class ComponentPropertiesManager:
         data_center_layout.setContentsMargins(0, 0, 0, 0)
         data_center_type = QComboBox()
         data_center_type.setStyleSheet(COMBOBOX_STYLE)
-        data_center_type.addItems(["GPU Intensive", "Traditional Cloud", "Crypto ASIC"])
+        data_center_type.addItems(["GPU Dense", "Traditional Cloud", "Crypto ASIC"])
         data_center_type.setCurrentText(component.data_center_type)
         data_center_type.currentTextChanged.connect(lambda text: setattr(component, 'data_center_type', text))
         data_center_layout.addWidget(data_center_type)
@@ -940,9 +940,9 @@ class ComponentPropertiesManager:
         trad_params_label = QLabel(f"Power: {component.traditional_cloud_power} kW\nPrice: ${component.traditional_cloud_price:.2f}")
         resource_params_layout.addRow("Traditional Cloud:", trad_params_label)
         
-        # Add GPU intensive parameters
+        # Add GPU Dense parameters
         gpu_params_label = QLabel(f"Power: {component.gpu_intensive_power} kW\nPrice: ${component.gpu_intensive_price:.2f}")
-        resource_params_layout.addRow("GPU Intensive:", gpu_params_label)
+        resource_params_layout.addRow("GPU Dense:", gpu_params_label)
         
         # Add crypto ASIC parameters
         crypto_params_label = QLabel(f"Power: {component.crypto_asic_power} kW\nPrice: ${component.crypto_asic_price:.2f}")

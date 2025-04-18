@@ -28,7 +28,7 @@ class LoadComponent(ComponentBase):
         self.frequency = 1.0  # Cycles per day (for Sine Wave mode)
         self.random_profile = None  # For Random 8760 mode
         self.max_ramp_rate = 0.25  # Maximum change in output per hour (25% default)
-        self.data_center_type = "GPU Intensive"  # Traditional Cloud, GPU Intensive, Crypto ASIC
+        self.data_center_type = "GPU Dense"  # Traditional Cloud, GPU Dense, Crypto ASIC
         self.graphics_enabled = True  # Flag to control whether graphics are shown
         self.powerlandia_profile = None  # For Powerlandia 60CF profile
         
@@ -315,7 +315,7 @@ class LoadComponent(ComponentBase):
                 
                 profile.append(current_value)
         
-        elif self.data_center_type == "GPU Intensive":
+        elif self.data_center_type == "GPU Dense":
             # 55% annual load factor
             # Up to 75% max inter-hourly ramp
             # Day/night cycle with lower usage at night
