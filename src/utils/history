@@ -1863,3 +1863,19 @@ Modified historian_manager.py to make only the total_generation series visible b
 - This ensures consistent behavior between manually toggling to historian view and entering it via autocomplete
 
 ## 2023-09-28: Fixed a bug in the load satisfaction calculation in the historian. Previously, loads in the first hour of simulation would incorrectly show as fully satisfied even when there was insufficient generation capacity. Updated the code to calculate load satisfaction ratio based on the actual remaining load after all generation sources have been utilized, regardless of the system stability status.
+
+## 2024-07-19: Fixed ESC Key Crash Bug in Connection Manager
+- Fixed a crash that occurred when pressing ESC when not in any connection mode
+- Updated cancel_sever_connection method in ConnectionManager to safely check if the signal is connected before disconnecting
+- Added a hasattr check in the main window's eventFilter method to verify the sever_connection_btn exists before checking its state
+- Implemented defensive coding to prevent "method object is not connected" error
+- The fix ensures that the Escape key always behaves correctly regardless of application state
+- Improved overall application stability by properly handling edge cases in key event processing
+
+## 2024-07-21: Fixed ESC Key Crash in Historian View
+- Fixed a crash that occurred when pressing ESC repeatedly in historian view
+- Modified eventFilter in main_window.py to check if we're in model view before handling connection-related operations
+- Added an explicit check for is_model_view=True before processing ESC key for connection or sever modes
+- This prevents attempting to disconnect signals that aren't connected in historian view
+- Properly handles different signal/connection management between model and historian views
+- Improves application stability by enforcing proper mode-specific behavior for keyboard shortcuts

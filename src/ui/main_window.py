@@ -97,13 +97,16 @@ class PowerSystemSimulator(QMainWindow):
         if (obj is self.view and 
             event.type() == event.KeyPress and 
             event.key() == Qt.Key_Escape):
-            if self.creating_connection:
-                self.cancel_connection()
-                return True
-            # Check if sever connection button is disabled (indicating we're in sever mode)
-            elif not self.sever_connection_btn.isEnabled():
-                self.connection_manager.cancel_sever_connection()
-                return True
+            # Only handle connection-related ESC operations in model view
+            if hasattr(self, 'is_model_view') and self.is_model_view:
+                if self.creating_connection:
+                    self.cancel_connection()
+                    return True
+                # Check if sever connection button is disabled (indicating we're in sever mode)
+                # Only call cancel_sever_connection if the button is actually disabled
+                elif hasattr(self, 'sever_connection_btn') and not self.sever_connection_btn.isEnabled():
+                    self.connection_manager.cancel_sever_connection()
+                    return True
         
         # Handle mouse movement for connection line
         if (obj is self.view.viewport() and 

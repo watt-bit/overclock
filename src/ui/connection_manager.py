@@ -556,7 +556,7 @@ class ConnectionManager:
     
     def cancel_sever_connection(self):
         """Cancel the sever connection mode"""
-        # Reset cursor
+        # Restore cursor
         self.view.setCursor(Qt.ArrowCursor)
         self.view.viewport().setCursor(Qt.ArrowCursor)
         

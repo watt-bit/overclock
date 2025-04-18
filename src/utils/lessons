@@ -2086,3 +2086,41 @@ IRR Calculation:
 ## The IRR calculator now supports extended time periods (12, 18, and 36 months) by using real simulation data for the first 12 months and synthetic data based on average hourly net revenue for longer periods. This allows users to estimate the longer-term economic viability of their system configuration beyond the standard one-year simulation period.
 
 ## The historian's "satisfied load" calculation needed to be based directly on the remaining load after all generation sources are exhausted, rather than relying on the system stability flag. This ensures accurate reporting in all time steps, including the first hour of simulation. The fix involves calculating the load satisfaction ratio based on (total_load - remaining_load) / total_load, independent of whether the system has been marked as unstable.
+
+## Defensive Event Handling for Key Events (2024-07-19)
+
+### Key Insights
+1. **Attribute Existence Checks**: Always verify that required attributes exist before accessing them in event handlers, especially in complex applications where components may be initialized in different orders or contexts.
+
+2. **Signal Connection Verification**: Before disconnecting signals, check if they are actually connected using `receivers()` count or try-except blocks to avoid "method not connected" errors.
+
+3. **State-Dependent Event Handling**: Key events like ESC may need different handling based on application state. Use clear condition checks to determine the appropriate action.
+
+4. **Defensive Coding in Event Filters**: Event filters are called frequently and need to be robust against unexpected states. Use defensive programming techniques to handle edge cases gracefully.
+
+5. **Component Initialization Awareness**: Be aware that during application lifecycle, some UI components might not be fully initialized when events occur. Always check for existence before access.
+
+6. **Graceful Degradation**: When an error condition is detected in event handling, the best approach is to gracefully degrade rather than crash - ignore the event or take a safe alternative action.
+
+7. **Error Propagation Prevention**: Event handlers should contain try-except blocks or condition checks to prevent errors from propagating to the main event loop, which could crash the application.
+
+8. **Consistent Event Handling API**: Maintaining consistent patterns for event handling across the application makes code more maintainable and less prone to errors.
+
+## Mode-Dependent Event Handling (2024-07-21)
+
+### Key Insights
+1. **Mode-Specific Event Handling**: Events like key presses may need to be handled differently depending on the application's current mode (e.g., model view vs. historian view).
+
+2. **Mode State Validation**: Always check the current mode before executing mode-specific operations to prevent trying to manipulate UI elements or signals that don't exist in the current mode.
+
+3. **Signal Disconnection Safety**: The most common crash in Qt applications involves trying to disconnect signals that aren't connected. Always verify signal connection state before disconnecting.
+
+4. **Multi-Layer Defense**: Combine multiple safety checks for robust event handling:
+   - Check whether the application is in the correct mode
+   - Verify relevant UI components exist using hasattr()
+   - Validate signal connection status before manipulating signals
+   - Use receivers() count to check if a specific method is connected to a signal
+
+5. **Separate Mode-Specific Logic**: When an application has multiple modes with different interaction patterns, consider designing event handlers with explicit mode branching rather than implicit assumptions about available objects and connections.
+
+6. **Edge Case Testing**: Events occurring at mode boundaries (immediately after mode switches) or when triggered repeatedly need special testing attention, as these conditions often reveal hidden assumptions in the event handling code.
