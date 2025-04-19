@@ -1,6 +1,6 @@
 import random
-from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsTextItem
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsTextItem, QLabel
+from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import QPen, QColor, QBrush, QRadialGradient, QFont
 
 # Particle system classes for smoke puff effect
@@ -175,12 +175,69 @@ class CostParticle(QGraphicsTextItem):
         # Return whether the particle is still visible
         return self.alpha > 0.1
 
+class ViewCapexParticle(QLabel):
+    """Text particle for displaying CAPEX increments that appears in the view rather than the scene"""
+    
+    def __init__(self, x, y, amount=1000000, is_positive=True, parent=None):
+        super().__init__(parent)
+        self.amount = amount
+        self.is_positive = is_positive
+        
+        # Position the label at the specified coordinates
+        # Convert coordinates to integers to fix TypeError with setGeometry
+        self.setGeometry(int(x), int(y), 300, 60)  # Initial size, will adjust based on content
+        
+        # Random velocity for natural movement (with upward bias)
+        self.dx = random.uniform(-1.5, 1.5)
+        self.dy = random.uniform(-8.0, -2.0)  # Slightly faster upward movement
+        
+        # Random fade rate
+        self.fade_rate = random.uniform(0.02, 0.04)
+        self.alpha = 1.0
+        
+        # Set initial appearance
+        self.update_appearance()
+        
+        # Make the label visible
+        self.show()
+    
+    def update_appearance(self):
+        """Update the particle's visual appearance"""
+        # Create HTML with a semi-transparent gray background and colored text
+        bg_alpha = int(self.alpha * 150)  # More transparent background
+        text_alpha = int(self.alpha * 255)
+        
+        # Green for positive, red for negative
+        text_color = "rgba(0, 170, 0, {})".format(text_alpha) if self.is_positive else "rgba(210, 0, 0, {})".format(text_alpha)
+        sign = "+" if self.is_positive else "-"
+        
+        html = f'<span style="background-color: rgba(80, 80, 80, {bg_alpha}); padding: 2px 6px; border-radius: 4px; color: {text_color}; font-size: 21px; font-weight: bold;">{sign}${self.amount:,} 💸</span>'
+        
+        # Set the HTML content
+        self.setText(html)
+        self.adjustSize()  # Adjust size to fit content
+    
+    def update_particle(self):
+        """Update particle position and opacity for animation"""
+        # Move the particle
+        self.move(self.x() + int(self.dx), self.y() + int(self.dy))
+        
+        # Fade the particle
+        self.alpha -= self.fade_rate
+        
+        # Update appearance
+        self.update_appearance()
+        
+        # Return whether the particle is still visible
+        return self.alpha > 0.1
+
 class ParticleSystem:
     """Manages a set of particles for visual effects"""
     
     def __init__(self, scene):
         self.scene = scene
         self.particles = []
+        self.view_particles = []  # New list for view-based particles
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_particles)
         self.timer.setInterval(33)  # ~30 fps
@@ -285,9 +342,22 @@ class ParticleSystem:
         if not self.timer.isActive():
             self.timer.start()
     
+    def create_capex_popup(self, x, y, amount=1000000, is_positive=True):
+        """Create a CAPEX popup at the given coordinates in the view (not the scene)"""
+        if self.main_window is None or not hasattr(self.main_window, 'view'):
+            return
+            
+        # Create the CAPEX particle directly in the view
+        particle = ViewCapexParticle(x, y, amount, is_positive, self.main_window.view)
+        self.view_particles.append(particle)
+        
+        # Start the animation timer if not already running
+        if not self.timer.isActive():
+            self.timer.start()
+    
     def update_particles(self):
         """Update all particles and remove those that are no longer visible"""
-        if not self.particles:
+        if not self.particles and not self.view_particles:
             self.timer.stop()
             return
             
@@ -301,6 +371,16 @@ class ParticleSystem:
         
         self.particles = remaining_particles
         
+        # Update view-based particles
+        remaining_view_particles = []
+        for particle in self.view_particles:
+            if particle.update_particle():
+                remaining_view_particles.append(particle)
+            else:
+                particle.deleteLater()  # Schedule for deletion
+        
+        self.view_particles = remaining_view_particles
+        
         # Stop the timer if all particles are gone
-        if not self.particles:
+        if not self.particles and not self.view_particles:
             self.timer.stop() 

@@ -1946,3 +1946,14 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Implemented smart detection to distinguish between normal transitions and user-initiated closing
 - Application now properly exits when any title screen's close button (X) is clicked
 - Behavior now matches Cmd+Q for consistent application exit experience
+
+## 2024-07-16: Added CAPEX Change Milestone Particle Effect
+- Added visual feedback for significant CAPEX changes (increments or decrements of $1,000,000)
+- Created CapexParticle class in src/ui/particle_system.py for displaying financial change indicators
+- Particles show either "+$1,000,000" in green (for increases) or "-$1,000,000" in red (for decreases)
+- Added previous_capex tracking in PowerSystemSimulator to detect million-dollar milestones
+- Implemented check_capex_milestone method to create particles when thresholds are crossed
+- Particles originate from the CAPEX label in the bottom-left corner of the screen
+- Effect appears whenever CAPEX changes, regardless of simulation state
+- CAPEX changes can trigger multiple particles for multi-million dollar changes
+- Provides instant visual feedback for major financial impacts of component additions/removals

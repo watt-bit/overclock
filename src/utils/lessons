@@ -2124,3 +2124,36 @@ IRR Calculation:
 5. **Separate Mode-Specific Logic**: When an application has multiple modes with different interaction patterns, consider designing event handlers with explicit mode branching rather than implicit assumptions about available objects and connections.
 
 6. **Edge Case Testing**: Events occurring at mode boundaries (immediately after mode switches) or when triggered repeatedly need special testing attention, as these conditions often reveal hidden assumptions in the event handling code.
+
+## Visual Feedback for Capital Expenditure Changes (2024-07-16)
+Key insights from implementing the CAPEX milestone particle effect:
+
+1. Cross-Component Visual Feedback
+   - Unlike component-specific particles that originate from individual components, the CAPEX particles come from a UI element (the CAPEX label)
+   - This demonstrates how the particle system can be used for both component-level and system-level visual feedback
+   - The same visual language (particle animations) can be consistently applied across different contexts
+   - Using the same particle appearance with different values/colors creates a coherent visual system
+
+2. Threshold Detection Pattern
+   - The million-dollar threshold detection uses the same integer division pattern as the thousand-dollar revenue milestones
+   - This creates a consistent approach to milestone detection across the codebase
+   - Detecting changes in integer division results (`previous_millions != current_millions`) efficiently identifies threshold crossings
+   - Calculating absolute difference (`abs(current_millions - previous_millions)`) handles both positive and negative changes
+
+3. Context-Aware Visual Cues
+   - Color coding (green/red) immediately communicates the nature of the change (increase/decrease)
+   - Sign prefixes (+/-) reinforce the direction of change
+   - Larger font size (28pt vs 26pt) indicates the higher magnitude of CAPEX changes compared to revenue/cost
+   - Using a different emoji (💰 instead of 💸) visually distinguishes capital from operational expenses
+
+4. Always-On Feedback
+   - Unlike revenue/cost milestones that only appear during simulation, CAPEX milestones appear regardless of simulation state
+   - This provides immediate feedback when adding, modifying, or removing components
+   - Users can see the financial impact of their design decisions in real-time
+   - The lack of simulation dependency makes the feedback more discoverable during the design phase
+
+5. Multiple Particle Creation
+   - The system correctly handles large changes by creating multiple particles for multi-million dollar changes
+   - This preserves the consistent visual language where each particle represents exactly $1,000,000
+   - Users can visually count particles to understand the magnitude of very large changes
+   - The pattern scales well for both small and large CAPEX changes

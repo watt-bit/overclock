@@ -25,6 +25,7 @@ class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
         SimulatorInitializer.initialize(self)
+        self.previous_capex = 0  # Initialize previous CAPEX for tracking changes
         
     def center_on_screen(self):
         """Center the window on the screen"""
@@ -609,6 +610,9 @@ class PowerSystemSimulator(QMainWindow):
         if hasattr(self, 'capex_label'):
             total_capex = self.calculate_total_capex()
             
+            # Check for million dollar milestones
+            self.check_capex_milestone(total_capex)
+            
             # Format the CAPEX value with commas for thousands
             formatted_capex = f"{total_capex:,.0f}"
             
@@ -618,4 +622,39 @@ class PowerSystemSimulator(QMainWindow):
             
             # Ensure it stays in the correct position
             if hasattr(self, 'view') and self.view:
-                self.capex_label.move(10, self.view.height() - self.capex_label.height() - 70) 
+                self.capex_label.move(10, self.view.height() - self.capex_label.height() - 70)
+    
+    def check_capex_milestone(self, current_capex):
+        """Check if CAPEX has crossed a $1,000,000 milestone and create a particle if needed"""
+        # Skip if we're not in a scene or not properly initialized
+        if not hasattr(self, 'particle_system'):
+            self.previous_capex = current_capex
+            return
+        
+        # Calculate how many $1,000,000 increments we've crossed
+        previous_millions = int(self.previous_capex / 1000000)
+        current_millions = int(current_capex / 1000000)
+        
+        if current_millions != previous_millions:
+            # We've crossed at least one $1,000,000 milestone
+            # Calculate the direction (positive or negative change)
+            is_positive = current_capex > self.previous_capex
+            
+            # Get the position of the CAPEX label
+            if hasattr(self, 'capex_label'):
+                # Get the location of the capex label for particle origin
+                label_x = self.capex_label.x() + 50
+                label_y = self.capex_label.y()  # top
+                
+                # Calculate number of particles to create (one for each million crossed)
+                num_particles = abs(current_millions - previous_millions)
+                
+                # Create a popup for each $1,000,000 increment
+                for _ in range(num_particles):
+                    if is_positive:
+                        self.particle_system.create_capex_popup(label_x, label_y, 1000000, is_positive=True)
+                    else:
+                        self.particle_system.create_capex_popup(label_x, label_y, 1000000, is_positive=False)
+        
+        # Store current CAPEX for next check
+        self.previous_capex = current_capex 
