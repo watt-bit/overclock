@@ -414,6 +414,13 @@ class ModelManager:
                     component = CloudWorkloadComponent(x, y)
                     component.operating_mode = component_data.get("operating_mode", "No Customer")
                     component.accumulated_revenue = component_data.get("accumulated_revenue", 0.0)
+                    # Load dedicated capacity parameters if they exist
+                    if "dedicated_power_per_resource" in component_data:
+                        component.dedicated_power_per_resource = component_data.get("dedicated_power_per_resource", 1.20)
+                    if "dedicated_power_use_efficiency" in component_data:
+                        component.dedicated_power_use_efficiency = component_data.get("dedicated_power_use_efficiency", 1.15)
+                    if "dedicated_price_per_resource" in component_data:
+                        component.dedicated_price_per_resource = component_data.get("dedicated_price_per_resource", 3.25)
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
                     component_map.append(component)

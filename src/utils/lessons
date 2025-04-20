@@ -2157,3 +2157,52 @@ Key insights from implementing the CAPEX milestone particle effect:
    - This preserves the consistent visual language where each particle represents exactly $1,000,000
    - Users can visually count particles to understand the magnitude of very large changes
    - The pattern scales well for both small and large CAPEX changes
+
+## Component Operating Modes and Conditional UI (2024-07-17)
+Key insights from implementing the "Dedicated Capacity" operating mode for Cloud Workload components:
+
+1. Mode-Specific Property Sets
+   - Different operating modes can expose entirely different sets of properties 
+   - Using conditional widget visibility based on the selected mode creates a clean, focused UI
+   - This maintains UI simplicity while supporting multiple complex behaviors within a single component type
+   - Each mode can have its own specialized parameters without cluttering the UI
+
+2. Parameter Value Preservation
+   - Even when properties aren't visible, their values should be preserved
+   - When switching between modes, all mode-specific properties remain intact
+   - This allows users to configure different modes and switch between them without losing settings
+   - The component's serialization method must save all properties regardless of current mode
+
+3. Efficient UI Widget Management
+   - Creating separate container widgets for each mode's properties keeps the code organized
+   - Using setVisible() to toggle containers is more efficient than recreating widgets
+   - This approach maintains the state of all UI controls across mode switches
+   - Form layouts within containers provide consistent spacing and alignment for each mode
+
+4. Mode-Specific Business Logic
+   - Each operating mode can implement completely different calculation logic
+   - The calculate_cloud_revenue method uses conditional branching based on operating mode
+   - This allows for fundamentally different business models within the same component type
+   - Parameters like efficiency factors can be applied differently in each mode's calculations
+
+5. Default Value Consistency
+   - Default values should be defined in multiple places to ensure consistency:
+   - In the component's __init__ method for newly created components
+   - In the load_scenario_from_file method for backward compatibility with saved files
+   - In UI code when setting up initial control values
+   - This redundancy ensures components behave correctly regardless of how they're created
+
+6. Comprehensive Mode Filtering
+   - When filtering components by operating mode in the simulation engine, ensure all valid modes are included
+   - Using list comprehensions with OR conditions (mode == "A" or mode == "B") allows multiple modes to be processed
+   - Mode-specific filtering should be updated whenever new operating modes are added to a component
+   - Missing a mode in filtering logic can cause functional components to be excluded from simulation calculations
+   - This was demonstrated by the bug where Dedicated Capacity cloud workloads didn't accumulate revenue because the simulation engine only collected Multi-Cloud Spot workloads
+
+7. Realistic Pricing Model Implementation
+   - Different operating modes can implement fundamentally different pricing models that reflect real-world business scenarios
+   - On-demand models (like Multi-Cloud Spot) typically charge only for actual resource consumption
+   - Reserved capacity models (like Dedicated Capacity) charge for the full reserved capacity regardless of actual usage
+   - Implementing both models allows users to compare economic trade-offs between flexibility and commitment
+   - This pattern of implementing multiple realistic pricing approaches within a single component provides valuable simulation insights
+   - The revenue calculation logic must properly reflect the business reality of each pricing model to provide meaningful results

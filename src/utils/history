@@ -1957,3 +1957,43 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Effect appears whenever CAPEX changes, regardless of simulation state
 - CAPEX changes can trigger multiple particles for multi-million dollar changes
 - Provides instant visual feedback for major financial impacts of component additions/removals
+
+## 2024-07-17: Added "Dedicated Capacity" Operating Mode to Cloud Workload Component
+- Added a new "Dedicated Capacity" operating mode to CloudWorkloadComponent
+- Implemented three new user-editable properties specific to this mode:
+  * Power per Resource (kW) - default is 1.20 kW per resource
+  * Power Use Efficiency (1.0-2.0) - default is 1.15, represents inefficiency factor
+  * Price per Resource / Hour ($) - default is $3.25 per resource hour
+- Modified cloud revenue calculation to account for power use efficiency in Dedicated Capacity mode
+- Updated properties panel UI with controls for the new properties including:
+  * Text field for Power per Resource with validation
+  * Slider for Power Use Efficiency (100%-200%)
+  * Text field for Price per Resource / Hour with validation
+- Enhanced component serialization to save the dedicated capacity parameters
+- Updated model manager to load these parameters from saved scenarios
+- Revenue calculation applies efficiency factor to power per resource for realistic inefficiency modeling
+
+## 2024-07-17: Fixed Cloud Workload Properties Panel Crash
+- Fixed a bug in the CloudWorkload properties panel that caused a crash when displaying the "Multi-Cloud Spot" section
+- The issue was in _add_cloud_workload_properties method in src/ui/properties_manager.py
+- Fixed by replacing revenue_label.text() (a string) with a proper QLabel widget in multi_cloud_params_layout.addRow call
+- Created a separate QLabel for the "Multi-Cloud Spot" panel section to avoid type mismatch
+- Updated the on_mode_changed function to update both revenue labels when switching modes
+- Crash error was "TypeError: arguments did not match any overloaded call" 
+- This was due to QFormLayout.addRow() requiring a widget for the second parameter, not a string
+
+## 2024-07-17: Fixed Dedicated Capacity Mode Revenue Calculation
+- Fixed a bug where Cloud Workload components in "Dedicated Capacity" mode weren't accumulating revenue
+- The issue was in the simulation engine where it only collected cloud workload components in "Multi-Cloud Spot" mode
+- Modified the cloud_workload_components selection to include components in both "Multi-Cloud Spot" AND "Dedicated Capacity" modes
+- Updated the list comprehension to check for either mode using an OR condition
+- Now Cloud Workload components in "Dedicated Capacity" mode correctly accumulate revenue during simulation
+- Both operating modes now work as intended with proper revenue calculation and display
+
+## 2024-07-17: Enhanced Dedicated Capacity Mode for Realistic GPU Pricing
+- Modified the CloudWorkloadComponent's "Dedicated Capacity" mode to better reflect real-world dedicated GPU pricing
+- Changed revenue calculation to charge for 100% utilization regardless of actual usage
+- Updated calculate_cloud_revenue method to use load_component.demand (maximum capacity) instead of actual energy consumed
+- This simulates how cloud providers charge for dedicated GPU instances - customers pay for the full reserved capacity even if they don't use it all
+- The change significantly increases revenue from Dedicated Capacity mode compared to Multi-Cloud Spot mode, which only charges for actual usage
+- Provides a more realistic pricing model contrast between on-demand (Multi-Cloud Spot) and reserved (Dedicated Capacity) cloud resources

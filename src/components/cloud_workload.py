@@ -15,7 +15,7 @@ class CloudWorkloadComponent(ComponentBase):
         self.shadow_opacity = 0
         
         # Component properties
-        self.operating_mode = "No Customer"  # "No Customer" or "Multi-Cloud Spot"
+        self.operating_mode = "No Customer"  # "No Customer", "Multi-Cloud Spot", or "Dedicated Capacity"
         
         # Resource parameters for Multi-Cloud Spot mode (not editable by user)
         self.traditional_cloud_power = 0.14  # kW per resource
@@ -26,6 +26,11 @@ class CloudWorkloadComponent(ComponentBase):
         
         self.crypto_asic_power = 5.0  # kW per resource
         self.crypto_asic_price = 1.00  # $ per resource hour
+        
+        # Resource parameters for Dedicated Capacity mode (editable by user)
+        self.dedicated_power_per_resource = 1.20  # kW per resource
+        self.dedicated_power_use_efficiency = 1.15  # Efficiency factor (1.0-2.0)
+        self.dedicated_price_per_resource = 2.50  # $ per resource hour
         
         # Track accumulated revenue
         self.accumulated_revenue = 0.00  # $ from cloud workload
@@ -106,8 +111,8 @@ class CloudWorkloadComponent(ComponentBase):
         component_text = f"Cloud Workload ({self.operating_mode})"
         painter.drawText(main_text_rect, Qt.AlignCenter, component_text)
         
-        # Draw the revenue text if in Multi-Cloud Spot mode
-        if self.operating_mode == "Multi-Cloud Spot":
+        # Draw the revenue text if in revenue-generating mode
+        if self.operating_mode in ["Multi-Cloud Spot", "Dedicated Capacity"]:
             revenue_text = f"Revenue: ${self.accumulated_revenue:.2f}"
             painter.drawText(revenue_rect, Qt.AlignCenter, revenue_text)
         
@@ -143,29 +148,51 @@ class CloudWorkloadComponent(ComponentBase):
         if not self.is_directly_connected_to_load(load_component):
             return 0.0
             
-        if self.operating_mode != "Multi-Cloud Spot" or load_component.profile_type != "Data Center":
-            return 0.0
-        
-        # Determine resources used based on data center type
-        if load_component.data_center_type == "Traditional Cloud":
-            power_per_resource = self.traditional_cloud_power
-            price_per_resource = self.traditional_cloud_price
-        elif load_component.data_center_type == "GPU Dense":
-            power_per_resource = self.gpu_intensive_power
-            price_per_resource = self.gpu_intensive_price
-        elif load_component.data_center_type == "Crypto ASIC":
-            power_per_resource = self.crypto_asic_power
-            price_per_resource = self.crypto_asic_price
-        else:
-            return 0.0  # Unknown data center type
+        if self.operating_mode == "Multi-Cloud Spot" and load_component.profile_type == "Data Center":
+            # Determine resources used based on data center type
+            if load_component.data_center_type == "Traditional Cloud":
+                power_per_resource = self.traditional_cloud_power
+                price_per_resource = self.traditional_cloud_price
+            elif load_component.data_center_type == "GPU Dense":
+                power_per_resource = self.gpu_intensive_power
+                price_per_resource = self.gpu_intensive_price
+            elif load_component.data_center_type == "Crypto ASIC":
+                power_per_resource = self.crypto_asic_power
+                price_per_resource = self.crypto_asic_price
+            else:
+                return 0.0  # Unknown data center type
             
-        # Calculate number of resources
-        if power_per_resource > 0:
-            # Energy (kWh) / power per resource (kW) = resource hours
-            resource_hours = energy_consumed / power_per_resource
-            # Revenue = resource hours * price per resource hour
-            revenue = resource_hours * price_per_resource
-            return revenue
+            # Calculate number of resources
+            if power_per_resource > 0:
+                # Energy (kWh) / power per resource (kW) = resource hours
+                resource_hours = energy_consumed / power_per_resource
+                # Revenue = resource hours * price per resource hour
+                revenue = resource_hours * price_per_resource
+                return revenue
+            
+            return 0.0
+
+        elif self.operating_mode == "Dedicated Capacity" and load_component.profile_type == "Data Center":
+            # For Dedicated Capacity mode, apply the power use efficiency factor
+            # This makes it less efficient, requiring more power per resource
+            effective_power_per_resource = self.dedicated_power_per_resource * self.dedicated_power_use_efficiency
+            
+            if effective_power_per_resource > 0:
+                # For dedicated capacity, we charge for full utilization regardless of actual usage
+                # This reflects real-world dedicated GPU pricing where customers pay for the full reserved capacity
+                # Use the load component's full capacity (demand) instead of actual energy consumed
+                
+                # Calculate max potential energy for 1 hour at full capacity
+                max_energy = load_component.demand * 1.0  # demand (kW) * 1 hour = energy (kWh)
+                
+                # Calculate resource hours based on full capacity
+                resource_hours = max_energy / effective_power_per_resource
+                
+                # Revenue = resource hours * price per resource hour
+                revenue = resource_hours * self.dedicated_price_per_resource
+                return revenue
+            
+            return 0.0
         
         return 0.0
     
@@ -221,11 +248,21 @@ class CloudWorkloadComponent(ComponentBase):
     
     def serialize(self):
         """Serialize the component data for saving"""
-        return {
+        data = {
             'type': 'cloud_workload',
             'x': self.x(),
             'y': self.y(),
             'operating_mode': self.operating_mode,
             'accumulated_revenue': self.accumulated_revenue,
             'previous_revenue': self.previous_revenue
-        } 
+        }
+        
+        # Add dedicated capacity parameters if in that mode
+        if self.operating_mode == "Dedicated Capacity":
+            data.update({
+                'dedicated_power_per_resource': self.dedicated_power_per_resource,
+                'dedicated_power_use_efficiency': self.dedicated_power_use_efficiency,
+                'dedicated_price_per_resource': self.dedicated_price_per_resource
+            })
+            
+        return data 

@@ -515,7 +515,8 @@ class SimulationEngine(QObject):
                     # Calculate revenue from cloud workloads
                     cloud_workload_components = [item for item in self.main_window.scene.items() 
                                                 if isinstance(item, CloudWorkloadComponent) and 
-                                                item.operating_mode == "Multi-Cloud Spot"]
+                                                (item.operating_mode == "Multi-Cloud Spot" or
+                                                 item.operating_mode == "Dedicated Capacity")]
                     
                     for cloud_workload in cloud_workload_components:
                         cloud_revenue = 0.0
