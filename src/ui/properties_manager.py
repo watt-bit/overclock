@@ -520,7 +520,7 @@ class ComponentPropertiesManager:
         market_prices_layout.setContentsMargins(0, 0, 0, 0)
         market_prices_selector = QComboBox()
         market_prices_selector.setStyleSheet(COMBOBOX_STYLE)
-        market_prices_selector.addItems(["None", "Powerlandia 8760 Wholesale Pool - Year 1", "Custom"])
+        market_prices_selector.addItems(["None", "Powerlandia 8760 Wholesale - Year 1", "Custom"])
         market_prices_selector.setCurrentText(component.market_prices_mode)
         market_prices_selector.setMinimumWidth(250)
         market_prices_layout.addWidget(market_prices_selector)
@@ -535,7 +535,7 @@ class ComponentPropertiesManager:
         # Create a widget to hold the market prices layout
         market_prices_widget = QWidget()
         market_prices_widget.setLayout(market_prices_layout)
-        market_prices_widget.setFixedWidth(250)
+        market_prices_widget.setFixedWidth(275)
         
         # Add profile info label
         profile_info = QLabel()

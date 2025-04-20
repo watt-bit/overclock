@@ -156,7 +156,7 @@ class GridExportComponent(ComponentBase):
     
     def load_market_prices(self):
         """Load market prices from CSV file"""
-        if self.market_prices is None and self.market_prices_mode == "Powerlandia 8760 Wholesale Pool - Year 1":
+        if self.market_prices is None and self.market_prices_mode == "Powerlandia 8760 Wholesale - Year 1":
             # Load data from CSV file
             csv_path = "src/data/Powerlandia-poolprices-year1.csv"
             
@@ -193,7 +193,7 @@ class GridExportComponent(ComponentBase):
             return 0.0
             
         # If using Powerlandia 8760 market prices, use the CSV data
-        if self.market_prices_mode == "Powerlandia 8760 Wholesale Pool - Year 1":
+        if self.market_prices_mode == "Powerlandia 8760 Wholesale - Year 1":
             # Load market prices if not already loaded
             if self.market_prices is None:
                 self.load_market_prices()
