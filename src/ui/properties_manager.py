@@ -481,6 +481,52 @@ class ComponentPropertiesManager:
         cost_edit.setStyleSheet(INPUT_STYLE)
         self._set_up_numeric_field(cost_edit, lambda value: setattr(component, 'cost_per_kwh', value), min_value=0.00)
         
+        # Create market prices selector with dropdown
+        market_prices_layout = QHBoxLayout()
+        market_prices_layout.setContentsMargins(0, 0, 0, 0)
+        market_prices_selector = QComboBox()
+        market_prices_selector.setStyleSheet(COMBOBOX_STYLE)
+        market_prices_selector.addItems(["None", "Powerlandia 8760 Wholesale - Year 1", "Custom"])
+        market_prices_selector.setCurrentText(component.market_prices_mode)
+        market_prices_selector.setMinimumWidth(250)
+        market_prices_layout.addWidget(market_prices_selector)
+        
+        # Add load profile button (only visible for Custom type)
+        load_profile_btn = QPushButton("Load Profile")
+        load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+        load_profile_btn.setVisible(component.market_prices_mode == "Custom")
+        load_profile_btn.clicked.connect(lambda: self._load_custom_profile(component))
+        market_prices_layout.addWidget(load_profile_btn)
+        
+        # Create a widget to hold the market prices layout
+        market_prices_widget = QWidget()
+        market_prices_widget.setLayout(market_prices_layout)
+        market_prices_widget.setFixedWidth(275)
+        
+        # Add profile info label
+        profile_info = QLabel()
+        if component.market_prices_mode == "Custom" and component.profile_name:
+            profile_info.setText(f"Loaded: {component.profile_name}")
+        else:
+            profile_info.setText("")
+        
+        def on_market_prices_mode_changed(text):
+            component.market_prices_mode = text
+            # If switching to Powerlandia mode, load market prices
+            if text == "Powerlandia 8760 Wholesale - Year 1":
+                component.load_market_prices()
+            # Show/hide load profile button based on mode
+            load_profile_btn.setVisible(text == "Custom")
+            # Update profile info text
+            if text == "Custom" and component.profile_name:
+                profile_info.setText(f"Loaded: {component.profile_name}")
+            else:
+                profile_info.setText("")
+            component.update()  # Refresh the component display
+            self.main_window.update_simulation()  # Update simulation to reflect the change
+        
+        market_prices_selector.currentTextChanged.connect(on_market_prices_mode_changed)
+        
         # Add auto-charging toggle button
         auto_charging_btn = QPushButton("ON" if component.auto_charge_batteries else "OFF")
         auto_charging_btn.setStyleSheet(
@@ -502,6 +548,8 @@ class ComponentPropertiesManager:
         
         layout.addRow("Max Capacity (kW):", capacity_edit)
         layout.addRow("Bulk Import PPA ($/kWh):", cost_edit)
+        layout.addRow("Market Import Prices ($/kWh):", market_prices_widget)
+        layout.addRow("", profile_info)
         layout.addRow("Operating Mode:", QLabel("Last Resort Unit (Auto)"))
         layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
     

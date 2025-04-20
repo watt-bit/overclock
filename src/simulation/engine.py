@@ -578,13 +578,24 @@ class SimulationEngine(QObject):
                     
                     # Calculate cost from imports
                     for item in self.main_window.scene.items():
-                        if isinstance(item, GridImportComponent) and item.cost_per_kwh > 0:
+                        if isinstance(item, GridImportComponent) and (item.cost_per_kwh > 0 or item.market_prices_mode != "None"):
                             # Get this component's specific import amount
                             component_import = component_imports.get(item, 0)
                             
                             # Calculate the import cost for this time step
                             import_energy = component_import * steps_moved  # kWh imported
-                            import_cost = import_energy * item.cost_per_kwh
+                            
+                            # Check if market prices are being used
+                            market_price = 0.00
+                            if item.market_prices_mode != "None":
+                                # Get current market price based on the current time step
+                                market_price = item.get_current_market_price(current_time)
+                            
+                            # Total price is the sum of bulk PPA price and market price (if any)
+                            total_price = item.cost_per_kwh + market_price
+                            
+                            # Calculate cost using the total price
+                            import_cost = import_energy * total_price
                             
                             # Add to accumulated cost for this import component
                             item.accumulated_cost += import_cost

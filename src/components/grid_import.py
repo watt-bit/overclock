@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPixmap
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
+import os
 
 class GridImportComponent(ComponentBase):
     def __init__(self, x, y):
@@ -18,6 +19,12 @@ class GridImportComponent(ComponentBase):
         self.accumulated_cost = 0.00  # Track accumulated cost in dollars
         self.previous_cost = 0.00  # Track previous cost for milestone detection
         self.last_import = 0  # Track the last import amount for display
+        
+        # Market import prices properties
+        self.market_prices_mode = "None"  # Default mode - no market prices
+        self.market_prices = None  # Will hold data from CSV file
+        self.custom_profile = None  # Will hold custom profile data
+        self.profile_name = None  # Will store the name of the loaded profile
     
     def paint(self, painter, option, widget):
         # Save painter state
@@ -141,12 +148,73 @@ class GridImportComponent(ComponentBase):
         painter.drawText(capacity_rect, Qt.AlignCenter, capacity_text)
         
         # Draw the cost text if price is set
-        if self.cost_per_kwh > 0:
+        if self.cost_per_kwh > 0 or self.market_prices_mode != "None":
             cost_text = f"Cost: ${self.accumulated_cost:.2f}"
             painter.drawText(cost_rect, Qt.AlignCenter, cost_text)
         
         # Restore painter state
         painter.restore()
+    
+    def load_market_prices(self):
+        """Load market prices from CSV file"""
+        if self.market_prices is None and self.market_prices_mode == "Powerlandia 8760 Wholesale - Year 1":
+            # Load data from CSV file
+            csv_path = "src/data/Powerlandia-poolprices-year1.csv"
+            
+            if os.path.exists(csv_path):
+                try:
+                    self.market_prices = []
+                    with open(csv_path, 'r', encoding='utf-8-sig') as file:  # utf-8-sig handles BOM character
+                        # Read each line and convert to float
+                        for line in file:
+                            line = line.strip()
+                            if line:  # Skip empty lines
+                                try:
+                                    self.market_prices.append(float(line))
+                                except ValueError:
+                                    # Skip lines that can't be converted to float
+                                    print(f"Warning: Could not convert '{line}' to float, skipping.")
+                            
+                    # Ensure we have enough data (8760 hours)
+                    if len(self.market_prices) < 8760:
+                        print(f"Warning: CSV file has only {len(self.market_prices)} entries, expected 8760.")
+                        # Pad with zeros if needed
+                        self.market_prices.extend([0.0] * (8760 - len(self.market_prices)))
+                except Exception as e:
+                    print(f"Error loading market prices: {e}")
+                    self.market_prices = [0.0] * 8760  # Default to zero on error
+            else:
+                print(f"File not found: {csv_path}")
+                self.market_prices = [0.0] * 8760  # Default to zero if file not found
+    
+    def get_current_market_price(self, current_time):
+        """Get the current market price for the given time step"""
+        # If not using market prices, return 0
+        if self.market_prices_mode == "None":
+            return 0.0
+            
+        # If using Powerlandia 8760 market prices, use the CSV data
+        if self.market_prices_mode == "Powerlandia 8760 Wholesale - Year 1":
+            # Load market prices if not already loaded
+            if self.market_prices is None:
+                self.load_market_prices()
+                
+            # Get price for current hour (wrap around if beyond 8760)
+            hour_index = current_time % len(self.market_prices)
+            return self.market_prices[hour_index]
+        
+        # If using Custom mode, use custom profile data    
+        if self.market_prices_mode == "Custom" and self.custom_profile is not None:
+            # Get price for current hour (wrap around if beyond profile length)
+            if current_time < len(self.custom_profile):
+                return self.custom_profile[current_time]
+            else:
+                # Wrap around if needed
+                hour_index = current_time % len(self.custom_profile)
+                return self.custom_profile[hour_index]
+            
+        # Default case (should not reach here)
+        return 0.0
     
     def calculate_output(self, deficit):
         """Calculate grid import based on system deficit"""
@@ -216,5 +284,8 @@ class GridImportComponent(ComponentBase):
             'cost_per_kwh': self.cost_per_kwh,
             'accumulated_cost': self.accumulated_cost,
             'previous_cost': self.previous_cost,
-            'last_import': self.last_import
+            'last_import': self.last_import,
+            'market_prices_mode': self.market_prices_mode,
+            'custom_profile': self.custom_profile,
+            'profile_name': self.profile_name
         } 

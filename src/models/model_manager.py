@@ -171,7 +171,12 @@ class ModelManager:
                     "type": "GridImport",
                     "x": item.x(),
                     "y": item.y(),
-                    "capacity": item.capacity
+                    "capacity": item.capacity,
+                    "cost_per_kwh": item.cost_per_kwh,
+                    "accumulated_cost": item.accumulated_cost,
+                    "market_prices_mode": item.market_prices_mode,
+                    "custom_profile": item.custom_profile,
+                    "profile_name": item.profile_name
                 })
             elif isinstance(item, GridExportComponent):
                 component_index_map[item] = index
@@ -367,6 +372,11 @@ class ModelManager:
                     component.capacity = component_data.get("capacity", 500)
                     # Load auto_charge_batteries with default True for backward compatibility
                     component.auto_charge_batteries = component_data.get("auto_charge_batteries", True)
+                    component.cost_per_kwh = component_data.get("cost_per_kwh", 0.0)
+                    component.accumulated_cost = component_data.get("accumulated_cost", 0.0)
+                    component.market_prices_mode = component_data.get("market_prices_mode", "None")
+                    component.custom_profile = component_data.get("custom_profile", None)
+                    component.profile_name = component_data.get("profile_name", "")
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
                     component_map.append(component)
