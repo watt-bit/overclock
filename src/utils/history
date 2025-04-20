@@ -1997,3 +1997,23 @@ Modified historian_manager.py to make only the total_generation series visible b
 - This simulates how cloud providers charge for dedicated GPU instances - customers pay for the full reserved capacity even if they don't use it all
 - The change significantly increases revenue from Dedicated Capacity mode compared to Multi-Cloud Spot mode, which only charges for actual usage
 - Provides a more realistic pricing model contrast between on-demand (Multi-Cloud Spot) and reserved (Dedicated Capacity) cloud resources
+
+## 2024-07-19: Added Market Export Prices to Grid Export Component
+- Added "Market Export Prices" property to GridExportComponent with three modes:
+  * None - Default mode, no market pricing data used
+  * Powerlandia 8760 Wholesale Pool - Year 1 - Uses price data from Powerlandia-poolprices-year1.csv
+  * Custom - Allows loading user-provided CSV files with hourly price data
+- Implemented CSV loading functionality for both built-in and custom price data
+- Modified the properties panel to include mode selection dropdown and load button for custom files
+- Updated the simulation engine to include market prices in revenue calculations
+- Market prices are added to the bulk PPA price when calculating export revenue
+- Added proper serialization/deserialization of market price settings in model manager
+- This feature allows users to model more realistic grid export pricing with time-varying market prices
+
+## 2024-07-20: Fixed Market Export Prices Revenue Calculation Bug
+- Fixed a logical bug in GridExportComponent revenue calculation
+- Previously, revenue was only calculated if bulk_ppa_price > 0, missing cases where only market prices were set
+- Updated SimulationEngine to calculate revenue if either bulk_ppa_price > 0 OR market_prices_mode != "None"
+- Fixed GridExportComponent.paint method to display revenue text with the same condition
+- This ensures revenue is properly calculated and displayed when using market prices even with bulk_ppa_price = 0
+- Improved the flexibility of the grid export pricing model to handle market-only pricing scenarios

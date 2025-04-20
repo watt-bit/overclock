@@ -2206,3 +2206,43 @@ Key insights from implementing the "Dedicated Capacity" operating mode for Cloud
    - Implementing both models allows users to compare economic trade-offs between flexibility and commitment
    - This pattern of implementing multiple realistic pricing approaches within a single component provides valuable simulation insights
    - The revenue calculation logic must properly reflect the business reality of each pricing model to provide meaningful results
+
+## Market Price Integration Patterns (2024-07-19)
+Key insights from implementing market export prices for grid exports:
+
+1. **Component State Extension Pattern**
+   - Adding new operating modes to components follows a consistent pattern:
+     * Add mode property with appropriate default value
+     * Implement mode-specific data structures and loading methods
+     * Add UI controls for mode selection and configuration
+     * Update simulation logic to use mode-specific calculations
+     * Extend serialization to preserve mode and related data
+
+2. **Time-Varying Price Modeling**
+   - Market prices provide a more realistic model of grid export compensation:
+     * Fixed bulk PPA price represents long-term contracts
+     * Time-varying market prices represent spot market fluctuations
+     * Combined approach (bulk PPA + market) models hybrid compensation schemes
+     * This matches real-world power purchase agreements that often include both components
+
+3. **CSV Data Integration Pattern**
+   - CSV file handling across different component types follows a consistent pattern:
+     * Load data from file once and cache in memory
+     * Handle encoding issues with utf-8-sig for BOM characters
+     * Provide robust error handling for missing/invalid data
+     * Use time step indexing with wrap-around for data that's shorter than simulation period
+     * Store both raw data and metadata (like profile name) for user feedback
+
+4. **Custom vs. Built-in Data Sources**
+   - The three-mode pattern (None/Built-in/Custom) provides flexibility:
+     * None - Simplest model with fixed pricing
+     * Built-in - Ready-to-use realistic data without configuration
+     * Custom - Maximum flexibility for advanced users
+   - This tiered approach accommodates both novice and expert users
+
+5. **UI Interaction Patterns**
+   - Dynamic UI elements that change based on mode selection:
+     * Show/hide load button based on "Custom" mode
+     * Display loaded file name when a custom profile is loaded
+     * Update component immediately when mode changes
+     * Trigger simulation update to reflect changes in real-time

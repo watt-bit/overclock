@@ -534,13 +534,24 @@ class SimulationEngine(QObject):
                     
                     # Calculate revenue from exports
                     for item in self.main_window.scene.items():
-                        if isinstance(item, GridExportComponent) and item.bulk_ppa_price > 0:
+                        if isinstance(item, GridExportComponent) and (item.bulk_ppa_price > 0 or item.market_prices_mode != "None"):
                             # Get this component's specific export amount rather than the total grid_export
                             component_export = component_exports.get(item, 0)
                             
                             # Calculate the export revenue for this time step
                             export_energy = component_export * steps_moved  # kWh exported
-                            export_revenue = export_energy * item.bulk_ppa_price
+                            
+                            # Check if market prices are being used
+                            market_price = 0.00
+                            if item.market_prices_mode != "None":
+                                # Get current market price based on the current time step
+                                market_price = item.get_current_market_price(current_time)
+                            
+                            # Total price is the sum of bulk PPA price and market price (if any)
+                            total_price = item.bulk_ppa_price + market_price
+                            
+                            # Calculate revenue using the total price
+                            export_revenue = export_energy * total_price
                             
                             # Add to accumulated revenue for this export component
                             item.accumulated_revenue += export_revenue

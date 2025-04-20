@@ -180,7 +180,12 @@ class ModelManager:
                     "type": "GridExport",
                     "x": item.x(),
                     "y": item.y(),
-                    "capacity": item.capacity
+                    "capacity": item.capacity,
+                    "bulk_ppa_price": item.bulk_ppa_price,
+                    "accumulated_revenue": item.accumulated_revenue,
+                    "market_prices_mode": item.market_prices_mode,
+                    "custom_profile": item.custom_profile,
+                    "profile_name": item.profile_name
                 })
             elif isinstance(item, BatteryComponent):
                 component_index_map[item] = index
@@ -369,6 +374,11 @@ class ModelManager:
                 elif component_type == "GridExport":
                     component = GridExportComponent(x, y)
                     component.capacity = component_data.get("capacity", 500)
+                    component.bulk_ppa_price = component_data.get("bulk_ppa_price", 0.0)
+                    component.accumulated_revenue = component_data.get("accumulated_revenue", 0.0)
+                    component.market_prices_mode = component_data.get("market_prices_mode", "None")
+                    component.custom_profile = component_data.get("custom_profile", None)
+                    component.profile_name = component_data.get("profile_name", "")
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
                     component_map.append(component)

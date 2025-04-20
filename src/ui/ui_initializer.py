@@ -213,7 +213,7 @@ class UIInitializer:
         main_window.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         
         # Set initial scaling for view
-        main_window.current_zoom = 0.8
+        main_window.current_zoom = 1.0
         
         # Apply initial zoom transform
         transform = main_window.view.transform()
@@ -735,7 +735,7 @@ class UIInitializer:
         main_window.zoom_slider = QSlider(Qt.Horizontal)
         main_window.zoom_slider.setMinimum(40)  # 0.4x zoom (changed from 20/0.2x)
         main_window.zoom_slider.setMaximum(100)  # 1.0x zoom
-        main_window.zoom_slider.setValue(80)    # Default to 0.8x
+        main_window.zoom_slider.setValue(100)    # Default to 1.0x
         main_window.zoom_slider.setFixedWidth(150)
         main_window.zoom_slider.valueChanged.connect(main_window.zoom_changed)
         main_window.zoom_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
