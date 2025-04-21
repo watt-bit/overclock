@@ -2246,3 +2246,22 @@ Key insights from implementing market export prices for grid exports:
      * Display loaded file name when a custom profile is loaded
      * Update component immediately when mode changes
      * Trigger simulation update to reflect changes in real-time
+
+## Custom animated UI elements in PyQt5:
+- To create animated UI elements in PyQt5, extend the appropriate widget or graphics item class (like QGraphicsTextItem)
+- Use QTimer for animation timing (typically 30-60ms interval for smooth animation)
+- Override the paint method to implement custom drawing with QPainter
+- For animated gradients, adjust gradient color positions in the timer's update method
+- Remember to call super().paint() to preserve the base class's drawing functionality
+- For text elements, consider the performance impact and only animate static display elements rather than frequently changing ones
+
+## Text outline techniques in PyQt5:
+- To create outlines around individual text characters, use QPainterPath.addText()
+- For custom text outlines, first create an empty QPainterPath
+- Add text to the path with font, size and position information
+- Draw the path with a QPen that has the desired styling (color, width, etc.)
+- For animated outlines, use a gradient pen and update gradient positions in a timer
+- To handle multi-line text, split the text and calculate positioning for each line
+- Use QFontMetrics to calculate text dimensions for proper positioning
+- Consider painting the original text first, then the outline on top for better visibility
+- For performance reasons, cache paths when possible and only recreate when text changes

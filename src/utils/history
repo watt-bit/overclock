@@ -2017,3 +2017,15 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Fixed GridExportComponent.paint method to display revenue text with the same condition
 - This ensures revenue is properly calculated and displayed when using market prices even with bulk_ppa_price = 0
 - Improved the flexibility of the grid export pricing model to handle market-only pricing scenarios
+
+## 2023-10-30: Improved the animated rainbow gradient border on the welcome text to follow the text content more closely rather than surrounding the entire bounding rectangle. Used the document layout's frameBoundingRect to get the actual text content dimensions and applied custom padding to create a tighter, more text-focused border. Increased border width and border radius for a more prominent effect.
+
+## 2023-10-26: Added an animated rainbow gradient border to the welcome text by creating a custom GradientBorderText class that extends QGraphicsTextItem. The class implements a paint method that draws a rounded rectangle with a rainbow gradient border around the text. Animation is achieved using a QTimer that shifts the gradient positions on each refresh, creating a flowing rainbow effect.
+
+## 2023-10-29: Fixed missing QGraphicsTextItem import in main_window.py that was causing application crashes. Added the import to the PyQt5.QtWidgets import list to fix the NameError when defining the GradientBorderText class.
+
+## 2023-10-30: Improved the animated rainbow gradient border on the welcome text to follow the text content more closely rather than surrounding the entire bounding rectangle. Used the document layout's frameBoundingRect to get the actual text content dimensions and applied custom padding to create a tighter, more text-focused border. Increased border width and border radius for a more prominent effect.
+
+## 2023-10-31: Enhanced the welcome text animation to make the rainbow border follow the actual letter contours instead of surrounding the text box. Modified the GradientBorderText class to use QPainterPath.addText() to create a path of the text outlines, then apply the gradient stroke to that path. Used QFontMetrics to properly center each line of text, handling multi-line text correctly. This creates a more visually striking effect with the rainbow border tracing each letter individually.
+
+## 2023-11-01: Updated the welcome text rainbow gradient with a more electric and cool color palette for better dark mode aesthetics. Replaced the original rainbow colors with electric blues, cyans, bright purples, and neon teals. Reduced the border width from 6px to 3px for a more precise outline of the text contours. The new color scheme creates a more modern, high-tech visual effect that maintains good contrast in dark mode.
