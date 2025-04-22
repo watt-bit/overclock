@@ -2265,3 +2265,36 @@ Key insights from implementing market export prices for grid exports:
 - Use QFontMetrics to calculate text dimensions for proper positioning
 - Consider painting the original text first, then the outline on top for better visibility
 - For performance reasons, cache paths when possible and only recreate when text changes
+
+## Dynamic Axis Formatting in Matplotlib (2024-04-12)
+Key insights from implementing consistent axis formatting across different charts:
+
+1. Consistent User Experience
+   - Using the same formatting approach across different charts creates a more cohesive UI
+   - When values have the same meaning (e.g., financial data), they should be displayed consistently
+   - Users can more easily compare data between different views when the formatting is consistent
+   - Primary axis in one chart can match secondary axis in another for functional equivalence
+
+2. Scale-Adaptive Formatting
+   - Dynamic formatting that adjusts based on data magnitude improves readability
+   - Using different units (thousands, millions, billions) based on scale keeps values concise
+   - Updating axis labels to reflect current units provides necessary context
+   - This pattern creates an intuitive progression as values grow larger during simulation
+
+3. Custom Tick Formatting
+   - Matplotlib's FuncFormatter provides powerful customization for tick labels
+   - Custom formatting functions can apply different logic based on value ranges
+   - Scaled values with consistent decimal precision improve readability
+   - Including commas for large values enhances number legibility
+
+4. Reusing Formatting Logic
+   - Similar formatting needs can share implementation code across different components
+   - Similar but separate methods allow for potential divergence in the future if needed
+   - Using clear method names (update_revenue_axis_formatting, update_secondary_axis_formatting)
+    makes the purpose explicit even with similar implementation
+
+5. Maintaining Visual Consistency
+   - Applying consistent color schemes across related UI elements
+   - Matching tick and label styling (font, color, size) across charts
+   - Ensuring grid lines and spines have consistent appearance
+   - All these elements contribute to a polished, professional UI

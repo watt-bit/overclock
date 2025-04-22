@@ -2029,3 +2029,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 ## 2023-10-31: Enhanced the welcome text animation to make the rainbow border follow the actual letter contours instead of surrounding the text box. Modified the GradientBorderText class to use QPainterPath.addText() to create a path of the text outlines, then apply the gradient stroke to that path. Used QFontMetrics to properly center each line of text, handling multi-line text correctly. This creates a more visually striking effect with the rainbow border tracing each letter individually.
 
 ## 2023-11-01: Updated the welcome text rainbow gradient with a more electric and cool color palette for better dark mode aesthetics. Replaced the original rainbow colors with electric blues, cyans, bright purples, and neon teals. Reduced the border width from 6px to 3px for a more precise outline of the text contours. The new color scheme creates a more modern, high-tech visual effect that maintains good contrast in dark mode.
+
+## 2024-04-12: Enhanced Revenue Chart Formatting in Analytics Panel
+- Modified the primary y-axis in the revenue chart to use the same formatting as the historian chart's secondary axis
+- Added dynamic scaling to display values in thousands, millions, or billions based on magnitude
+- Implemented formatted tick labels with appropriate units ($ 1,000s, $1,000,000s)
+- Added update_revenue_axis_formatting method to handle dynamic formatting
+- Removed scientific notation from the top of the axis
+- Improved visual consistency between the analytics panel and historian view
+- Enhanced readability of financial data with more intuitive value representation

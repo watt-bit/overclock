@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QFormLayout, QLabel,
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.patheffects as path_effects
+import matplotlib.ticker as ticker
 
 class AnalyticsPanel(QWidget):
     def __init__(self, parent=None):
@@ -303,6 +304,9 @@ class AnalyticsPanel(QWidget):
         for spine in self.revenue_ax.spines.values():
             spine.set_color('#29304D')
         
+        # Remove scientific notation from top of axis
+        self.revenue_ax.ticklabel_format(useOffset=False)
+        
         # Create empty line for gross revenue
         self.gross_revenue_line, = self.revenue_ax.plot([], [], '-', color='#4FC3F7', linewidth=2, label='Cumulative Revenue', alpha=0.9,
                                                       path_effects=[path_effects.SimpleLineShadow(shadow_color='#4FC3F7', alpha=0.2, offset=(0,0), linewidth=7),
@@ -588,11 +592,13 @@ class AnalyticsPanel(QWidget):
                 
                 if y_max > 0:
                     self.revenue_ax.set_ylim(0, y_max * 1.1)  # 10% headroom
+                    self.update_revenue_axis_formatting(y_max * 1.1)
             else:
                 # Auto-adjust y scale based on cumulative revenue only
                 max_revenue = max(cumulative_revenue) if cumulative_revenue else 100
                 if max_revenue > 0:
                     self.revenue_ax.set_ylim(0, max_revenue * 1.1)  # 10% headroom
+                    self.update_revenue_axis_formatting(max_revenue * 1.1)
             
             # Draw the revenue canvas
             try:
@@ -644,6 +650,9 @@ class AnalyticsPanel(QWidget):
         self.revenue_ax.set_xlim(0, 8760)  # Show full year
         self.revenue_ax.set_ylim(0, 100)
         
+        # Reset the revenue axis formatting
+        self.update_revenue_axis_formatting(100)
+        
         # Apply dark mode styling to spine lines
         for spine in self.ax.spines.values():
             spine.set_color('#29304D')
@@ -657,4 +666,43 @@ class AnalyticsPanel(QWidget):
             self.canvas.draw()
             self.revenue_canvas.draw()
         finally:
-            self.is_drawing = False 
+            self.is_drawing = False
+    
+    def update_revenue_axis_formatting(self, max_value):
+        """
+        Update the revenue axis formatting based on the maximum value
+        
+        Args:
+            max_value: The maximum value on the revenue axis
+        """
+        # Remove the current formatter if it exists
+        self.revenue_ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
+        
+        if max_value >= 1_000_000_000:  # Greater than $1B
+            # Format in millions with commas
+            def format_func(x, pos):
+                # Convert to millions and add commas
+                x_in_millions = x / 1_000_000
+                if x_in_millions >= 1000:
+                    return f"{x_in_millions:,.0f}"
+                return f"{x_in_millions:.1f}"
+            
+            self.revenue_ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
+            self.revenue_ax.set_ylabel('Amount ($1,000,000s)', color='#B5BEDF')
+            
+        elif max_value >= 1_000_000:  # Greater than $1M
+            # Format in millions
+            def format_func(x, pos):
+                return f"{x/1_000_000:.1f}"
+            
+            self.revenue_ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
+            self.revenue_ax.set_ylabel('Amount ($1,000,000s)', color='#B5BEDF')
+            
+        else:  # Less than $1M
+            # Format in thousands
+            def format_func(x, pos):
+                return f"{x/1_000:.1f}"
+            
+            self.revenue_ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_func))
+            self.revenue_ax.set_ylabel('Amount ($ 1,000s)', color='#B5BEDF')
+        
