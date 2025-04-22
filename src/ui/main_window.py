@@ -32,7 +32,6 @@ class GradientBorderText(QGraphicsTextItem):
             QColor(40, 170, 226),   # Bright cyan
             QColor(84, 13, 110),    # Deep purple
             QColor(255, 202, 40),   # bright gold
-            QColor(65, 88, 208),    # Electric blue
             QColor(8, 204, 193),    # Electric teal
             QColor(0, 230, 255),    # Neon cyan
             QColor(0, 126, 255),    # Bright blue
