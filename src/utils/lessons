@@ -2363,3 +2363,5 @@ Key components of the CAPEX system:
    - Leverages the ParticleSystem class to create these visual effects
 
 This system demonstrates a clean separation of concerns, with a dedicated manager class handling all CAPEX-related functionality while maintaining backward compatibility with the rest of the application.
+
+[2023-08-05] When dealing with components that use transparent backgrounds (like image-based components), traditional color adjustment techniques won't work for hover effects. Using a semi-transparent color with a specified alpha value (QColor with RGBA) provides a visible hover effect while still allowing the underlying image to show through.

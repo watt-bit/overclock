@@ -2067,3 +2067,5 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Prevents "AttributeError: 'PowerSystemSimulator' object has no attribute 'previous_capex'" crash
 - Enhanced robustness of the initialization sequence
 - Ensures application starts up properly even if initialization order changes
+
+## 2023-08-05: Modified base.py to implement a semi-transparent white highlight effect (alpha 0.1) when hovering over components. This ensures components with transparent backgrounds (like image-based components) have a visible hover effect.

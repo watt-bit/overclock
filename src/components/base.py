@@ -11,6 +11,8 @@ class ComponentBase(QGraphicsRectItem):
         self.setBrush(QBrush(QColor(200, 200, 200)))
         self.setPen(QPen(Qt.NoPen))
         self.setAcceptHoverEvents(True)
+        # Store the original brush for restoration after hover
+        self.original_brush = self.brush()
         # List to keep track of connected lines
         self.connections = []
         
@@ -82,20 +84,20 @@ class ComponentBase(QGraphicsRectItem):
         # Only change cursor if not in connection mode
         if not self.scene() or not hasattr(self.scene(), 'parent') or not self.scene().parent().creating_connection:
             self.setCursor(Qt.PointingHandCursor)
-        # Lighten the component color on hover
-        current_color = self.brush().color()
-        lighter_color = current_color.lighter(110)
-        self.setBrush(QBrush(lighter_color))
+        # Save the original brush for restoring later
+        self.original_brush = self.brush()
+        # Set a semi-transparent white background (alpha 0.1)
+        hover_color = QColor(255, 255, 255, 25)  # RGBA where 25 is approx 10% of 255
+        self.setBrush(QBrush(hover_color))
         super().hoverEnterEvent(event)
     
     def hoverLeaveEvent(self, event):
         # Only unset cursor if not in connection mode
         if not self.scene() or not hasattr(self.scene(), 'parent') or not self.scene().parent().creating_connection:
             self.unsetCursor()
-        # Restore original color
-        current_color = self.brush().color()
-        original_color = current_color.darker(110)
-        self.setBrush(QBrush(original_color))
+        # Restore original brush
+        if hasattr(self, 'original_brush'):
+            self.setBrush(self.original_brush)
         super().hoverLeaveEvent(event)
     
     def mousePressEvent(self, event):
