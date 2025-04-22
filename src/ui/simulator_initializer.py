@@ -114,9 +114,8 @@ class SimulatorInitializer:
         # Create screenshot manager
         simulator.screenshot_manager = ScreenshotManager(simulator)
         
-        # Welcome text for new users
+        # Initialize welcome_text variable but don't add it yet
         simulator.welcome_text = None
-        simulator.add_welcome_text()
          
         # Center the window on the screen
         simulator.center_on_screen()

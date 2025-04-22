@@ -36,6 +36,19 @@ class PowerSystemSimulator(QMainWindow):
     
     def add_welcome_text(self):
         """Add welcome text with animated rainbow gradient border to the middle of the canvas"""
+        # Get the center of the viewport in scene coordinates
+        view_center = self.view.mapToScene(self.view.viewport().rect().center())
+        
+        # First trigger the particle effect BEFORE adding the welcome text
+        if hasattr(self, 'particle_system') and self.particle_system:
+            self.particle_system.create_welcome_puff(
+                view_center.x(),
+                view_center.y(),
+                width=600,
+                height=250,
+                num_particles=200  # More particles for a better effect
+            )
+        
         # Create custom text item with welcome message
         self.welcome_text = GradientBorderText()
         self.scene.addItem(self.welcome_text)
@@ -46,15 +59,15 @@ class PowerSystemSimulator(QMainWindow):
         font.setBold(True)
         self.welcome_text.setFont(font)
         
-        # Set text color to white with a semi-transparent look
+        # Set text color with a semi-transparent look
         self.welcome_text.setDefaultTextColor(QColor(38, 38, 38, 255))
         
         # Set text width and center-align the text
         self.welcome_text.setTextWidth(700)
         self.welcome_text.setHtml("<div align='center'>Welcome<br>Build Here</div>")
         
-        # Center the text (will be properly positioned after view is shown)
-        QTimer.singleShot(100, self.center_welcome_text)
+        # Center the text immediately
+        self.center_welcome_text()
     
     def center_welcome_text(self):
         """Center the welcome text in the view after the view is shown"""
@@ -251,10 +264,8 @@ class PowerSystemSimulator(QMainWindow):
         self.model_manager.new_scenario()
         
         # Add new welcome text after the scene has been cleared
+        # This will also trigger the particle effect and center the text
         self.add_welcome_text()
-        
-        # Explicitly center the welcome text to ensure it's properly positioned
-        QTimer.singleShot(150, self.center_welcome_text)
         
         # Update the CAPEX display
         self.update_capex_display()
@@ -412,9 +423,15 @@ class PowerSystemSimulator(QMainWindow):
         # Update the scene
         self.view.update()
         
-        # Re-center welcome text if it exists and is valid
+        # Reposition welcome text without creating particles if it exists and is valid
         if hasattr(self, 'welcome_text') and self.welcome_text and self.welcome_text.scene():
-            self.center_welcome_text()
+            # Get the center of the current viewport in scene coordinates
+            view_center = self.view.mapToScene(self.view.viewport().rect().center())
+            text_width = self.welcome_text.boundingRect().width()
+            text_height = self.welcome_text.boundingRect().height()
+            
+            # Position text in the center (without calling center_welcome_text)
+            self.welcome_text.setPos(view_center.x() - text_width/2, view_center.y() - text_height/2)
 
     def take_screenshot(self):
         """Take a screenshot of the modeling view area and copy to clipboard"""

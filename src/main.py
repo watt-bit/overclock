@@ -11,7 +11,7 @@ matplotlib.rcParams['interactive'] = False
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QObject, pyqtSignal, Qt
+from PyQt5.QtCore import QObject, pyqtSignal, Qt, QTimer
 from src.ui.main_window import PowerSystemSimulator
 from src.ui.title_screen import TitleScreen
 from src.ui.wbr_title_screen import WBRTitleScreen
@@ -179,7 +179,13 @@ def main():
     app_manager.title_screen = TitleScreen()
     
     # Connect the title screen's transition signal to show the main window
-    app_manager.title_screen.transition_to_main.connect(app_manager.main_window.show)
+    # with a custom handler to ensure welcome text is centered
+    def handle_new_project_transition():
+        app_manager.main_window.show()
+        # Directly add welcome text which will trigger particles and center the text
+        app_manager.main_window.add_welcome_text()
+    
+    app_manager.title_screen.transition_to_main.connect(handle_new_project_transition)
     
     # Connect the title screen's transition signal with file to load and show the main window
     def handle_load_transition(filename):

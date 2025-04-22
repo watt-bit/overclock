@@ -355,6 +355,40 @@ class ParticleSystem:
         if not self.timer.isActive():
             self.timer.start()
     
+    def create_welcome_puff(self, center_x, center_y, width=600, height=250, num_particles=200):
+        """Create a rectangular puff of smoke particles around the welcome text
+        
+        Args:
+            center_x (float): Center X coordinate for the rectangular area
+            center_y (float): Center Y coordinate for the rectangular area
+            width (int): Width of the rectangular area in pixels
+            height (int): Height of the rectangular area in pixels
+            num_particles (int): Number of particles to create
+        """
+        # Skip particle generation during autocomplete
+        if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
+            return
+            
+        # Create particles
+        for _ in range(num_particles):
+            # Add random offset within rectangular area
+            offset_x = random.uniform(-width/2, width/2)
+            offset_y = random.uniform(-height/2, height/2)
+            
+            # Calculate particle position with offset
+            particle_x = center_x + offset_x
+            particle_y = center_y + offset_y
+            
+            # Create particle with random size
+            size = random.uniform(8, 75)
+            particle = Particle(particle_x, particle_y, size)
+            self.scene.addItem(particle)
+            self.particles.append(particle)
+        
+        # Start the animation timer if not already running
+        if not self.timer.isActive():
+            self.timer.start()
+    
     def update_particles(self):
         """Update all particles and remove those that are no longer visible"""
         if not self.particles and not self.view_particles:
