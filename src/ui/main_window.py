@@ -1,22 +1,9 @@
-from PyQt5.QtWidgets import (QMainWindow, QGraphicsView, QMessageBox, QApplication, QGraphicsTextItem)
-from PyQt5.QtCore import Qt, QTimer, QRectF
-from PyQt5.QtGui import QColor, QPen, QLinearGradient, QPainterPath, QFontMetrics
+from PyQt5.QtWidgets import (QMainWindow, QGraphicsView, QMessageBox, QApplication)
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QColor
 
 from src.components.bus import BusComponent
-from src.simulation.engine import SimulationEngine
-from .properties_manager import ComponentPropertiesManager
-from .connection_manager import ConnectionManager
-from .component_adder import ComponentAdder
-from src.models.model_manager import ModelManager
-from .historian_manager import HistorianManager
-from .particle_system import ParticleSystem
-from .ui_initializer import UIInitializer, GradientBorderText
-from .key_handler import KeyHandler
-from .autocomplete_manager import AutocompleteManager
-from .mode_toggle_manager import ModeToggleManager
-from .simulation_controller import SimulationController
-from .screenshot_manager import ScreenshotManager
-from .custom_scene import CustomScene
+from .ui_initializer import GradientBorderText
 from .simulator_initializer import SimulatorInitializer
 from .capex_manager import CapexManager
 
