@@ -84,20 +84,27 @@ class ComponentBase(QGraphicsRectItem):
         # Only change cursor if not in connection mode
         if not self.scene() or not hasattr(self.scene(), 'parent') or not self.scene().parent().creating_connection:
             self.setCursor(Qt.PointingHandCursor)
-        # Save the original brush for restoring later
+        # Save the original brush and pen for restoring later
         self.original_brush = self.brush()
-        # Set a semi-transparent white background (alpha 0.1)
-        hover_color = QColor(255, 255, 255, 25)  # RGBA where 25 is approx 10% of 255
+        self.original_pen = self.pen()
+        # Set a semi-transparent ice blue background (alpha 0.1)
+        hover_color = QColor(210, 235, 255, 25)  # RGBA where 25 is approx 10% of 255
         self.setBrush(QBrush(hover_color))
+        # Add a bright ice blue border with transparency
+        border_color = QColor(100, 200, 255, 180)  # Brighter blue with 70% opacity
+        hover_pen = QPen(border_color, 2)  # 2px width
+        self.setPen(hover_pen)
         super().hoverEnterEvent(event)
     
     def hoverLeaveEvent(self, event):
         # Only unset cursor if not in connection mode
         if not self.scene() or not hasattr(self.scene(), 'parent') or not self.scene().parent().creating_connection:
             self.unsetCursor()
-        # Restore original brush
+        # Restore original brush and pen
         if hasattr(self, 'original_brush'):
             self.setBrush(self.original_brush)
+        if hasattr(self, 'original_pen'):
+            self.setPen(self.original_pen)
         super().hoverLeaveEvent(event)
     
     def mousePressEvent(self, event):

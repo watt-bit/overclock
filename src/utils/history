@@ -2069,3 +2069,7 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Ensures application starts up properly even if initialization order changes
 
 ## 2023-08-05: Modified base.py to implement a semi-transparent white highlight effect (alpha 0.1) when hovering over components. This ensures components with transparent backgrounds (like image-based components) have a visible hover effect.
+
+## 2023-08-07: Changed the component hover highlight color from semi-transparent white to semi-transparent ice blue (RGB 210, 235, 255) with 10% opacity. This provides better visual feedback when hovering over components while maintaining the same transparency level.
+
+## 2023-08-08: Enhanced component hover effect by adding a bright ice blue border (RGB 150, 230, 255) with 70% opacity and 2px width. This complements the existing ice blue background highlight and creates a more noticeable visual feedback when hovering over components.
