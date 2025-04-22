@@ -41,7 +41,7 @@ class GradientBorderText(QGraphicsTextItem):
         
         # Animation properties
         self.animation_offset = 0
-        self.animation_speed = 0.5
+        self.animation_speed = 1
         self.border_width = 1
         self.text_content = "Welcome\nBuild Here"
         
