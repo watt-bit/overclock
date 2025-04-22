@@ -355,7 +355,7 @@ class ParticleSystem:
         if not self.timer.isActive():
             self.timer.start()
     
-    def create_welcome_puff(self, center_x, center_y, width=600, height=250, num_particles=200):
+    def create_welcome_puff(self, center_x, center_y, width=500, height=200, num_particles=200):
         """Create a rectangular puff of smoke particles around the welcome text
         
         Args:
@@ -380,7 +380,7 @@ class ParticleSystem:
             particle_y = center_y + offset_y
             
             # Create particle with random size
-            size = random.uniform(8, 75)
+            size = random.uniform(20, 75)
             particle = Particle(particle_x, particle_y, size)
             self.scene.addItem(particle)
             self.particles.append(particle)

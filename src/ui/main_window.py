@@ -44,8 +44,8 @@ class PowerSystemSimulator(QMainWindow):
             self.particle_system.create_welcome_puff(
                 view_center.x(),
                 view_center.y(),
-                width=600,
-                height=250,
+                width=500,
+                height=200,
                 num_particles=200  # More particles for a better effect
             )
         
