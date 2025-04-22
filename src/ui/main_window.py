@@ -89,7 +89,7 @@ class GradientBorderText(QGraphicsTextItem):
             path.addPath(text_path)
             
             # Move down for next line
-            y_offset += 120  # Approximate line height
+            y_offset += 125  # Approximate line height
         
         # Create gradient for the border
         gradient = QLinearGradient(0, 0, 700, 240)  # Approximate dimensions of text area
@@ -530,9 +530,9 @@ class PowerSystemSimulator(QMainWindow):
         
         # Update button text
         if self.background_mode == 0:
-            self.background_toggle_btn.setText("🌄 Background 1")
+            self.background_toggle_btn.setText("🌄 Kindersley")
         elif self.background_mode == 1:
-            self.background_toggle_btn.setText("🌄 Background 2")
+            self.background_toggle_btn.setText("🌄 Abilene")
         else:  # mode == 2
             self.background_toggle_btn.setText("🌄 Background Off")
         
