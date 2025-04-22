@@ -15,6 +15,7 @@ from .screenshot_manager import ScreenshotManager
 from .custom_scene import CustomScene
 from .ui_initializer import UIInitializer
 from .key_handler import KeyHandler
+from .capex_manager import CapexManager
 
 
 class SimulatorInitializer:
@@ -74,6 +75,9 @@ class SimulatorInitializer:
         # Initialize particle system now that scene exists
         simulator.particle_system = ParticleSystem(simulator.scene)
         simulator.particle_system.main_window = simulator  # Set reference to main window
+        
+        # Initialize CAPEX manager
+        simulator.capex_manager = CapexManager(simulator)
         
         # Initialize the component adder
         simulator.component_adder = ComponentAdder(simulator)

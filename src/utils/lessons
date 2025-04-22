@@ -2298,3 +2298,68 @@ Key insights from implementing consistent axis formatting across different chart
    - Matching tick and label styling (font, color, size) across charts
    - Ensuring grid lines and spines have consistent appearance
    - All these elements contribute to a polished, professional UI
+
+## UI Component Organization Pattern (2024-08-02)
+Key insights from relocating the GradientBorderText class to ui_initializer.py:
+
+1. **Logical Grouping by Functionality**
+   - UI-related classes should be grouped together in dedicated files
+   - The ui_initializer.py file serves as a natural home for UI component classes
+   - Classes that define visual elements belong with other visual elements
+   - This creates a clearer mental model of where to find and modify UI component code
+
+2. **Import Management**
+   - When moving classes between files, carefully handle import requirements
+   - Add missing imports in the destination file (QGraphicsTextItem, QTimer, QLinearGradient, QFontMetrics)
+   - Update imports in files that use the moved class
+   - This ensures the functionality works correctly in its new location
+
+3. **Zero-Change Refactoring**
+   - Moving a class without changing its implementation preserves behavior
+   - This type of refactoring focuses purely on code organization, not behavior modification
+   - Maintaining identical method signatures and behavior ensures compatibility
+   - Visual elements continue to render exactly as before despite code relocation
+
+4. **Incremental Modularization**
+   - Moving UI classes one at a time allows for controlled, incremental improvement
+   - Each moved class reduces the size and complexity of main_window.py
+   - This gradual approach is safer than large-scale refactoring
+   - Over time, these individual changes add up to significant architectural improvement
+
+5. **Class Responsibility Alignment**
+   - The GradientBorderText class is a specialized UI component, not core application logic
+   - Placing it with other UI components better aligns with single responsibility principle
+   - main_window.py should focus on application flow and coordination, not UI implementation details
+   - ui_initializer.py is specifically designed for UI component definitions and initialization
+
+6. **Maintainability Benefits**
+   - Shorter files are easier to navigate and understand
+   - Related classes in the same file make modifications more efficient
+   - Changes to UI components won't require modifying the main application file
+   - This separation makes the codebase more maintainable over time
+
+## CAPEX Management System
+The CAPEX (Capital Expenditure) management system is responsible for calculating and displaying the total capital expenditure for all components in the simulation.
+
+Key components of the CAPEX system:
+1. The CapexManager class (src/ui/capex_manager.py) handles all CAPEX-related logic:
+   - calculate_total_capex: Iterates through all components to sum up their capital costs
+   - update_capex_display: Updates the UI to display the current CAPEX value
+   - check_capex_milestone: Creates particle effects when CAPEX crosses $1,000,000 thresholds
+
+2. CAPEX calculation is component-type dependent:
+   - Different components store capacity in different attributes (capacity, power_capacity, demand)
+   - Each component may have a capex_per_kw property that defines its cost per kilowatt
+   - Only components with both capex_per_kw and a non-zero capacity value contribute to total CAPEX
+
+3. The system is tightly integrated with the UI:
+   - Displays CAPEX in the bottom-left corner of the modeling view
+   - Uses HTML formatting to highlight the dollar value in gold
+   - Creates particle effects using the particle system for visual feedback
+
+4. CAPEX milestone tracking:
+   - Tracks when CAPEX crosses $1,000,000 thresholds (both increasing and decreasing)
+   - Creates visual particles showing +$1,000,000 or -$1,000,000 when thresholds are crossed
+   - Leverages the ParticleSystem class to create these visual effects
+
+This system demonstrates a clean separation of concerns, with a dedicated manager class handling all CAPEX-related functionality while maintaining backward compatibility with the rest of the application.

@@ -2038,3 +2038,32 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Removed scientific notation from the top of the axis
 - Improved visual consistency between the analytics panel and historian view
 - Enhanced readability of financial data with more intuitive value representation
+
+## 2024-08-02: Relocated GradientBorderText Class to Improve Code Organization
+- Moved the GradientBorderText class from main_window.py to ui_initializer.py
+- Added necessary imports in ui_initializer.py for QGraphicsTextItem, QTimer, QLinearGradient, and QFontMetrics
+- Updated import statement in main_window.py to import GradientBorderText from ui_initializer
+- No changes to functionality or appearance of the welcome text animation
+- Improved code organization and modularity by grouping UI-related classes in ui_initializer.py
+- This continues the ongoing effort to modularize the codebase and reduce the size of main_window.py
+
+## 2024-07-16: Extracted CAPEX Management Logic
+- Created new CapexManager class in src/ui/capex_manager.py
+- Extracted all CAPEX calculation and display logic from main_window.py to the new class
+- Moved the following methods to the CapexManager:
+  * calculate_total_capex
+  * update_capex_display
+  * check_capex_milestone
+- Modified main_window.py to delegate to CapexManager instance
+- Updated the simulator_initializer.py to initialize CapexManager after ParticleSystem
+- Maintained complete backward compatibility with existing CAPEX functionality
+- No changes to UI behavior or appearance
+- Reduced complexity in main_window.py while improving modularity
+
+## 2024-07-16: Fixed CapexManager Initialization Bug
+- Fixed a critical bug in the CapexManager initialization
+- Modified the constructor to handle the case where main_window.previous_capex might not be initialized yet
+- Used getattr(main_window, 'previous_capex', 0) to safely access the attribute with a default value
+- Prevents "AttributeError: 'PowerSystemSimulator' object has no attribute 'previous_capex'" crash
+- Enhanced robustness of the initialization sequence
+- Ensures application starts up properly even if initialization order changes

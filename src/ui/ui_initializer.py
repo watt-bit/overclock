@@ -2,13 +2,102 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
                             QLabel, QPushButton, QSlider, QGraphicsView, QDockWidget, 
                             QToolBar, 
                             QAction, QMenu, QShortcut, QFrame,
-                            QToolButton, QSizePolicy)
-from PyQt5.QtCore import Qt, QRectF, QRect
-from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath
+                            QToolButton, QSizePolicy, QGraphicsTextItem)
+from PyQt5.QtCore import Qt, QRectF, QRect, QTimer
+from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics
 
 # Import or reference modules and classes needed from main_window
 from .analytics import AnalyticsPanel
 from .tiled_background_widget import TiledBackgroundWidget
+
+class GradientBorderText(QGraphicsTextItem):
+    """A text item with animated gradient border for welcome screen"""
+    
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        # Initialize gradient colors for a cool, electric darkmode effect
+        self.colors = [
+            QColor(65, 88, 208),    # Electric blue
+            QColor(40, 170, 226),   # Bright cyan
+            QColor(84, 13, 110),    # Deep purple
+            QColor(255, 202, 40),   # bright gold
+            QColor(8, 204, 193),    # Electric teal
+            QColor(0, 230, 255),    # Neon cyan
+            QColor(0, 126, 255),    # Bright blue
+            QColor(65, 88, 208),    # Electric blue
+        ]
+        
+        # Animation properties
+        self.animation_offset = 0
+        self.animation_speed = 1
+        self.border_width = 1
+        self.text_content = "Welcome\nBuild Here"
+        
+        # Set up animation timer
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.animate)
+        self.timer.start(50)  # Update every 50ms
+        
+        # Set clear background
+        self.setDefaultTextColor(QColor(38, 38, 38, 255))
+    
+    def animate(self):
+        """Update animation and trigger redraw"""
+        self.animation_offset = (self.animation_offset + self.animation_speed) % 100
+        self.update()
+    
+    def paint(self, painter, option, widget=None):
+        """Paint the text with animated rainbow border following the letter contours"""
+        painter.save()
+        
+        # First, paint the text normally to a temporary transparent pixmap
+        # This is needed to get proper positioning with the original text renderer
+        super().paint(painter, option, widget)
+        
+        # Create outline path for the text
+        path = QPainterPath()
+        
+        # Get the font metrics for proper sizing
+        font = self.font()
+        font.setPointSize(100)  # Match the font size set in add_welcome_text
+        font.setBold(True)
+        
+        # Split the text by lines
+        lines = self.text_content.split('\n')
+        y_offset = 0
+        
+        # Add each line of text as a separate text path
+        for line in lines:
+            # Center each line
+            text_width = QFontMetrics(font).width(line)
+            x_offset = (700 - text_width) / 2  # 700 is the text width set in add_welcome_text
+            
+            # Add text to path
+            text_path = QPainterPath()
+            text_path.addText(x_offset, y_offset + 100, font, line)  # 100 is approximate height for first line
+            path.addPath(text_path)
+            
+            # Move down for next line
+            y_offset += 125  # Approximate line height
+        
+        # Create gradient for the border
+        gradient = QLinearGradient(0, 0, 700, 240)  # Approximate dimensions of text area
+        
+        # Set gradient colors with animation offset
+        num_colors = len(self.colors)
+        for i in range(num_colors):
+            # Calculate position with offset for animation
+            pos = (i / (num_colors - 1) + self.animation_offset / 100) % 1.0
+            gradient.setColorAt(pos, self.colors[i])
+        
+        # Set up the pen for drawing the text outline
+        outline_pen = QPen(gradient, self.border_width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        painter.setPen(outline_pen)
+        
+        # Draw the text outline
+        painter.drawPath(path)
+        
+        painter.restore()
 
 # Custom Button with Image Background
 class ImageBackgroundButton(QPushButton):
