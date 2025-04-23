@@ -16,6 +16,7 @@ from src.ui.main_window import PowerSystemSimulator
 from src.ui.title_screen import TitleScreen
 from src.ui.wbr_title_screen import WBRTitleScreen
 from src.ui.augur_title_screen import AugurTitleScreen
+from src.utils.audio_player import AudioPlayer
 
 # Create a dedicated class to manage application lifecycle and cleanup
 class AppManager(QObject):
@@ -24,11 +25,32 @@ class AppManager(QObject):
     title_screen = None
     wbr_title_screen = None
     augur_title_screen = None
+    audio_player = None
     
     def __init__(self):
         super().__init__()
         self._cleanup_done = False
         self._is_quitting = False
+        
+        # Initialize audio player
+        self.audio_player = AudioPlayer()
+        
+    def start_title_music(self):
+        """Start playing the title screen music"""
+        music_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui/assets/audio/titleloop.wav")
+        success = self.audio_player.play(music_path, loop=True)
+        if success:
+            print("Title music started")
+            # Set volume to 70%
+            self.audio_player.set_volume(70)
+        else:
+            print("Failed to start title music")
+            
+    def stop_title_music(self):
+        """Stop the title screen music"""
+        if self.audio_player:
+            self.audio_player.stop()
+            print("Title music stopped")
         
     def clean_up_application(self):
         """Safely clean up all application resources"""
@@ -40,6 +62,9 @@ class AppManager(QObject):
         self._cleanup_done = True
         
         print("Cleaning up application resources...")
+        
+        # Stop music
+        self.stop_title_music()
         
         # Disconnect signal handlers first to prevent callbacks during cleanup
         self._disconnect_signals()
@@ -181,6 +206,8 @@ def main():
     # Connect the title screen's transition signal to show the main window
     # with a custom handler to ensure welcome text is centered
     def handle_new_project_transition():
+        # Stop the title music when transitioning to main window
+        app_manager.stop_title_music()
         app_manager.main_window.show()
         # Directly add welcome text which will trigger particles and center the text
         app_manager.main_window.add_welcome_text()
@@ -189,6 +216,8 @@ def main():
     
     # Connect the title screen's transition signal with file to load and show the main window
     def handle_load_transition(filename):
+        # Stop the title music when transitioning to main window
+        app_manager.stop_title_music()
         app_manager.main_window.show()
         app_manager.main_window.model_manager.load_scenario_from_file(filename)
     
@@ -208,6 +237,9 @@ def main():
     
     # Connect cleanup to application quit - use Qt.DirectConnection to ensure it runs immediately
     app.aboutToQuit.connect(app_manager.clean_up_application, Qt.DirectConnection)
+    
+    # Start playing title music
+    app_manager.start_title_music()
     
     # Show the Augur title screen first
     app_manager.augur_title_screen.show()

@@ -2073,3 +2073,13 @@ Modified historian_manager.py to make only the total_generation series visible b
 ## 2023-08-07: Changed the component hover highlight color from semi-transparent white to semi-transparent ice blue (RGB 210, 235, 255) with 10% opacity. This provides better visual feedback when hovering over components while maintaining the same transparency level.
 
 ## 2023-08-08: Enhanced component hover effect by adding a bright ice blue border (RGB 150, 230, 255) with 70% opacity and 2px width. This complements the existing ice blue background highlight and creates a more noticeable visual feedback when hovering over components.
+
+## 2024-07-12: Implemented Title Screen Background Music
+- Added background music that plays during all three title screens
+- Created a robust AudioPlayer class in src/utils/audio_player.py to handle music playback
+- Implemented proper looping functionality using the QMediaPlayer.mediaStatusChanged signal
+- Added start_title_music and stop_title_music methods to AppManager in main.py
+- Music starts when the application launches and stops when the user clicks either the "New Project" or "Load Project" button
+- Set default music volume to 70%
+- Added proper cleanup to disconnect signals and stop playback when application closes
+- Music file used is titleloop.wav located in src/ui/assets/audio/
