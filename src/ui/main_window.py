@@ -15,6 +15,7 @@ class PowerSystemSimulator(QMainWindow):
         SimulatorInitializer.initialize(self)
         self.previous_capex = 0  # Initialize previous CAPEX for tracking changes
         self.capex_manager = CapexManager(self)  # Initialize the CAPEX manager
+        self.reset_simulation()  # Reset the simulation to the initial state
         
     def center_on_screen(self):
         """Center the window on the screen"""

@@ -2073,3 +2073,11 @@ Modified historian_manager.py to make only the total_generation series visible b
 ## 2023-08-07: Changed the component hover highlight color from semi-transparent white to semi-transparent ice blue (RGB 210, 235, 255) with 10% opacity. This provides better visual feedback when hovering over components while maintaining the same transparency level.
 
 ## 2023-08-08: Enhanced component hover effect by adding a bright ice blue border (RGB 150, 230, 255) with 70% opacity and 2px width. This complements the existing ice blue background highlight and creates a more noticeable visual feedback when hovering over components.
+
+## 2024-07-06: Updated Progress Bar Styles to Match Dark Theme
+- Modified all progress bars in src/ui/analytics.py to use dark mode colors
+- Changed background color from light (#f0f0f0) to dark (#11182F) to match app theme
+- Updated text color from black to light (#E1E6F9) for better readability 
+- Changed border color from grey to #29304D to match other UI elements
+- Applied consistent styling across all progress bars including the system status bar
+- Maintained the existing color coding for different types of metrics

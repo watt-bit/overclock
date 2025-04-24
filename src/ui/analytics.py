@@ -112,21 +112,33 @@ class AnalyticsPanel(QWidget):
         # Left column for most common bars
         left_column = QFormLayout()
         
-        # Time label
-        self.time_value_label = QLabel("0 hr")
-        self.time_value_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        
-        left_column.addRow("Time:", self.time_value_label)
+        # Time label - convert to progress bar
+        self.time_bar = QProgressBar()
+        self.time_bar.setMaximum(8760)  # Total hours in a year
+        self.time_bar.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid #29304D;
+                border-radius: 5px;
+                text-align: center;
+                background-color: #11182F;
+                color: #E1E6F9;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background-color: #9E9E9E;
+            }
+        """)
+        left_column.addRow("Time:", self.time_bar)
         
         # Generation bar
         self.generation_bar = QProgressBar()
         self.generation_bar.setStyleSheet("""
             QProgressBar {
-                border: 2px solid grey;
+                border: 2px solid #29304D;
                 border-radius: 5px;
                 text-align: center;
-                background-color: #f0f0f0;
-                color: black;
+                background-color: #11182F;
+                color: #E1E6F9;
                 font-weight: bold;
             }
             QProgressBar::chunk {
@@ -139,11 +151,11 @@ class AnalyticsPanel(QWidget):
         self.battery_bar = QProgressBar()
         self.battery_bar.setStyleSheet("""
             QProgressBar {
-                border: 2px solid grey;
+                border: 2px solid #29304D;
                 border-radius: 5px;
                 text-align: center;
-                background-color: #f0f0f0;
-                color: black;
+                background-color: #11182F;
+                color: #E1E6F9;
                 font-weight: bold;
             }
             QProgressBar::chunk {
@@ -156,11 +168,11 @@ class AnalyticsPanel(QWidget):
         self.grid_import_bar = QProgressBar()
         self.grid_import_bar.setStyleSheet("""
             QProgressBar {
-                border: 2px solid grey;
+                border: 2px solid #29304D;
                 border-radius: 5px;
                 text-align: center;
-                background-color: #f0f0f0;
-                color: black;
+                background-color: #11182F;
+                color: #E1E6F9;
                 font-weight: bold;
             }
             QProgressBar::chunk {
@@ -173,15 +185,15 @@ class AnalyticsPanel(QWidget):
         self.grid_export_bar = QProgressBar()
         self.grid_export_bar.setStyleSheet("""
             QProgressBar {
-                border: 2px solid grey;
+                border: 2px solid #29304D;
                 border-radius: 5px;
                 text-align: center;
-                background-color: #f0f0f0;
-                color: black;
+                background-color: #11182F;
+                color: #E1E6F9;
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #FFCA28;
+                background-color: #FF7043;
             }
         """)
         left_column.addRow("Grid Export:", self.grid_export_bar)
@@ -190,15 +202,15 @@ class AnalyticsPanel(QWidget):
         self.load_bar = QProgressBar()
         self.load_bar.setStyleSheet("""
             QProgressBar {
-                border: 2px solid grey;
+                border: 2px solid #29304D;
                 border-radius: 5px;
                 text-align: center;
-                background-color: #f0f0f0;
+                background-color: #11182F;
                 color: black;
                 font-weight: bold;
             }
             QProgressBar::chunk {
-                background-color: #FF7043;
+                background-color: #FFCA28;
             }
         """)
         left_column.addRow("Load:", self.load_bar)
@@ -210,11 +222,11 @@ class AnalyticsPanel(QWidget):
         self.surplus_bar = QProgressBar()
         self.surplus_bar.setStyleSheet("""
             QProgressBar {
-                border: 2px solid grey;
+                border: 2px solid #29304D;
                 border-radius: 5px;
                 text-align: center;
-                background-color: #f0f0f0;
-                color: black;
+                background-color: #11182F;
+                color: #E1E6F9;
                 font-weight: bold;
             }
             QProgressBar::chunk {
@@ -227,11 +239,11 @@ class AnalyticsPanel(QWidget):
         self.unused_capacity_bar = QProgressBar()
         self.unused_capacity_bar.setStyleSheet("""
             QProgressBar {
-                border: 2px solid grey;
+                border: 2px solid #29304D;
                 border-radius: 5px;
                 text-align: center;
-                background-color: #f0f0f0;
-                color: black;
+                background-color: #11182F;
+                color: #E1E6F9;
                 font-weight: bold;
             }
             QProgressBar::chunk {
@@ -241,30 +253,93 @@ class AnalyticsPanel(QWidget):
         right_column.addRow("Unused Capacity:", self.unused_capacity_bar)
         
         # Use labels for volumetric metrics instead of progress bars
-        # Total imported energy label
-        self.total_imported_label = QLabel("0 MWh")
-        self.total_imported_label.setStyleSheet("font-weight: bold;")
-        right_column.addRow("Total Imported:", self.total_imported_label)
+        # Total imported energy label - convert to progress bar
+        self.total_imported_bar = QProgressBar()
+        self.total_imported_bar.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid #29304D;
+                border-radius: 5px;
+                text-align: center;
+                background-color: #11182F;
+                color: #E1E6F9;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background-color: #E57373;
+            }
+        """)
+        right_column.addRow("Total Imported:", self.total_imported_bar)
         
-        # Total exported energy label
-        self.total_exported_label = QLabel("0 MWh")
-        self.total_exported_label.setStyleSheet("font-weight: bold;")
-        right_column.addRow("Total Exported:", self.total_exported_label)
+        # Total exported energy label - convert to progress bar
+        self.total_exported_bar = QProgressBar()
+        self.total_exported_bar.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid #29304D;
+                border-radius: 5px;
+                text-align: center;
+                background-color: #11182F;
+                color: #E1E6F9;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background-color: #81C784;
+            }
+        """)
+        right_column.addRow("Total Exported:", self.total_exported_bar)
         
-        # Net grid energy label
-        self.net_energy_label = QLabel("0 MWh")
-        self.net_energy_label.setStyleSheet("font-weight: bold;")
-        right_column.addRow("Net To/From Grid:", self.net_energy_label)
+        # Net grid energy label - convert to progress bar
+        self.net_energy_bar = QProgressBar()
+        self.net_energy_bar.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid #29304D;
+                border-radius: 5px;
+                text-align: center;
+                background-color: #11182F;
+                color: #E1E6F9;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background-color: #64B5F6;
+            }
+        """)
+        right_column.addRow("Net To/From Grid:", self.net_energy_bar)
         
-        # System stability label
-        self.stable_label = QLabel("Yes")
-        self.stable_label.setStyleSheet("font-weight: bold; color: green;")
-        right_column.addRow("Stable:", self.stable_label)
-        
-        # Add new label for total battery charge
-        self.total_battery_charge_label = QLabel("0 MWh")
-        self.total_battery_charge_label.setStyleSheet("font-weight: bold;")
-        right_column.addRow("Total Battery Charge:", self.total_battery_charge_label)
+        # Add new bar for total battery charge
+        self.total_battery_charge_bar = QProgressBar()
+        self.total_battery_charge_bar.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid #29304D;
+                border-radius: 5px;
+                text-align: center;
+                background-color: #11182F;
+                color: #E1E6F9;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background-color: #7986CB;
+            }
+        """)
+        right_column.addRow("Total Battery Charge:", self.total_battery_charge_bar)
+
+        # System stability label - convert to a button-like progress bar
+        self.stable_bar = QProgressBar()
+        self.stable_bar.setMaximum(100)
+        self.stable_bar.setValue(100)  # Always 100% filled
+        self.stable_bar.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid grey;
+                border-radius: 5px;
+                text-align: center;
+                background-color: #f0f0f0;
+                color: black;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background-color: #4CAF50;  
+            }
+        """)
+        self.stable_bar.setFormat("STABLE")
+        right_column.addRow("System Status:", self.stable_bar)
         
         # Add columns to container
         bars_container_layout.addLayout(left_column)
@@ -364,7 +439,8 @@ class AnalyticsPanel(QWidget):
         unused_capacity = total_capacity - base_generation
         
         # Always update time display, even in scrub mode
-        self.time_value_label.setText(f"{current_time} hr")
+        self.time_bar.setValue(current_time)
+        self.time_bar.setFormat(f"{current_time} hr")
         
         # If in scrub mode, don't update any other UI elements
         if is_scrubbing:
@@ -417,26 +493,63 @@ class AnalyticsPanel(QWidget):
         total_exported_mwh = total_exported / 1000.0
         net_energy_mwh = (total_imported - total_exported) / 1000.0
         
-        # Update the energy labels with MWh units
-        self.total_imported_label.setText(f"{total_imported_mwh:,.2f} MWh")
-        self.total_exported_label.setText(f"{total_exported_mwh:,.2f} MWh")
+        # Calculate maximum energy value for scaling
+        max_energy = max(abs(total_imported_mwh), abs(total_exported_mwh), abs(net_energy_mwh), total_battery_charge, 100)
+        
+        # Update the energy progress bars with MWh units
+        self.total_imported_bar.setMaximum(int(max_energy * 1.1))  # 10% headroom
+        self.total_imported_bar.setValue(int(total_imported_mwh))
+        self.total_imported_bar.setFormat(f"{total_imported_mwh:,.2f} MWh")
+        
+        self.total_exported_bar.setMaximum(int(max_energy * 1.1))
+        self.total_exported_bar.setValue(int(total_exported_mwh))
+        self.total_exported_bar.setFormat(f"{total_exported_mwh:,.2f} MWh")
         
         # Use +/- formatting for net grid energy
-        if net_energy_mwh >= 0:
-            self.net_energy_label.setText(f"+{net_energy_mwh:,.2f} MWh")
-        else:
-            self.net_energy_label.setText(f"{net_energy_mwh:,.2f} MWh")  # Already has minus sign
+        self.net_energy_bar.setMaximum(int(max_energy * 1.1))
+        self.net_energy_bar.setMinimum(int(-max_energy * 1.1))  # Allow negative values
+        self.net_energy_bar.setValue(int(net_energy_mwh))
+        net_text = f"+{net_energy_mwh:,.2f} MWh" if net_energy_mwh >= 0 else f"{net_energy_mwh:,.2f} MWh"
+        self.net_energy_bar.setFormat(net_text)
         
         # Update stability label
         if system_stable:
-            self.stable_label.setText("Yes")
-            self.stable_label.setStyleSheet("font-weight: bold; color: green;")
+            self.stable_bar.setStyleSheet("""
+                QProgressBar {
+                    border: 2px solid #29304D;
+                    border-radius: 5px;
+                    text-align: center;
+                    background-color: #11182F;
+                    color: #E1E6F9;
+                    font-weight: bold;
+                }
+                QProgressBar::chunk {
+                    background-color: #4CAF50;  
+                }
+            """)
+            self.stable_bar.setFormat("STABLE")
+            self.stable_bar.setValue(100)
         else:
-            self.stable_label.setText("No")
-            self.stable_label.setStyleSheet("font-weight: bold; color: red;")
+            self.stable_bar.setStyleSheet("""
+                QProgressBar {
+                    border: 2px solid #29304D;
+                    border-radius: 5px;
+                    text-align: center;
+                    background-color: #11182F;
+                    color: #E1E6F9;
+                    font-weight: bold;
+                }
+                QProgressBar::chunk {
+                    background-color: #F44336;  
+                }
+            """)
+            self.stable_bar.setFormat("UNSTABLE")
+            self.stable_bar.setValue(100)  # Keep at 100% to fill the bar with red
         
         # Update total battery charge (already in MWh)
-        self.total_battery_charge_label.setText(f"{total_battery_charge:,.2f} MWh")
+        self.total_battery_charge_bar.setMaximum(int(max_energy * 1.1))
+        self.total_battery_charge_bar.setValue(int(total_battery_charge))
+        self.total_battery_charge_bar.setFormat(f"{total_battery_charge:,.2f} MWh")
         
         # Update hidden labels
         self.power_produced_label.setText(f"{power_produced:.2f} kW")
@@ -618,6 +731,37 @@ class AnalyticsPanel(QWidget):
         # Protect against re-entrance
         if self.is_drawing:
             return
+            
+        # Reset time progress bar
+        self.time_bar.setValue(0)
+        self.time_bar.setFormat("0 hr")
+            
+        # Reset energy progress bars
+        self.total_imported_bar.setValue(0)
+        self.total_imported_bar.setFormat("0.00 MWh")
+        self.total_exported_bar.setValue(0)
+        self.total_exported_bar.setFormat("0.00 MWh")
+        self.net_energy_bar.setValue(0)
+        self.net_energy_bar.setFormat("0.00 MWh")
+        self.total_battery_charge_bar.setValue(0)
+        self.total_battery_charge_bar.setFormat("0.00 MWh")
+        
+        # Reset stability bar to stable (green)
+        self.stable_bar.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid #29304D;
+                border-radius: 5px;
+                text-align: center;
+                background-color: #11182F;
+                color: #E1E6F9;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background-color: #4CAF50; 
+            }
+        """)
+        self.stable_bar.setFormat("STABLE")
+        self.stable_bar.setValue(100)
             
         # Clear data lists
         self.time_data.clear()
