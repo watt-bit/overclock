@@ -61,7 +61,7 @@ class GridExportComponent(ComponentBase):
             
             # Calculate export percentage
             if self.capacity > 0:
-                export_percentage = self.last_export / self.capacity
+                export_percentage = min(1.0, self.last_export / self.capacity)
             else:
                 export_percentage = 0
             

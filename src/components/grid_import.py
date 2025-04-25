@@ -62,7 +62,7 @@ class GridImportComponent(ComponentBase):
             
             # Calculate import percentage
             if self.capacity > 0:
-                import_percentage = self.last_import / self.capacity
+                import_percentage = min(1.0, self.last_import / self.capacity)
             else:
                 import_percentage = 0
             

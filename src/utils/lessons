@@ -2384,3 +2384,26 @@ This system demonstrates a clean separation of concerns, with a dedicated manage
    - Resource limits should be tuned to balance visual appeal and performance
    - There's a direct tradeoff between effect quantity and application stability
    - Implement safeguards for all resource-intensive features
+
+## Visual Indicator Bounds Safety (2024-07-16)
+Key insights from fixing the grid export/import indicator overflow bug:
+
+1. **Input Validation for Visual Elements**
+   - Visual elements that scale based on component state need input validation and bounds checking
+   - The min() function is a clean way to implement upper bounds on calculated values (min(1.0, value))
+   - This pattern should be applied to all percentage-based visual indicators
+
+2. **Edge Case Identification**
+   - User interactions can create unexpected state combinations not initially considered
+   - The capacity < usage scenario reveals the importance of testing extreme parameter changes
+   - Pause state allows users to modify parameters in ways that create invalid ratios
+
+3. **Visual Feedback Safety**
+   - Visual indicators should never break visual bounds regardless of component state
+   - Visual elements should degrade gracefully even when underlying data is in an unusual state
+   - Capping at logical maximums (e.g., 100% for a percentage) preserves visual consistency
+
+4. **UI State Separation**
+   - Visual representation should be insulated from raw component state
+   - Intermediate calculations with bounds checking create this separation
+   - This pattern allows internal component state to be technically "invalid" while maintaining valid visual representation

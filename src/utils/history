@@ -2101,3 +2101,10 @@ Modified historian_manager.py to make only the total_generation series visible b
 ## 2023-05-08: Implemented capacity limits (25kW to 5,000,000kW) for all generation and load components in the properties manager to ensure realistic values and prevent extreme inputs.
 
 ## 2023-07-11: Fixed component positioning bug in component_adder.py by removing random x-y offsets. Components are now added at fixed position (0,0) instead of random positions, which was causing issues with the particle system.
+
+## 2024-07-16 - Fixed Grid Export/Import Indicator Overflow Bug
+- Fixed a bug where the vertical export and import indicators could overflow their bounds
+- Modified grid_export.py and grid_import.py to cap the export/import percentage at 100%
+- Used min(1.0, value/capacity) to prevent the indicator from extending beyond its frame
+- Bug occurred when users decreased component capacity below the current usage level while paused
+- Fix ensures visual indicators always remain within their proper bounds regardless of capacity changes
