@@ -424,6 +424,10 @@ class ComponentPropertiesManager:
         
         auto_charging_btn.clicked.connect(toggle_auto_charging)
         
+        # Add conversion constant info label
+        conversion_info = QLabel(f"{component.conversion_constant}")
+        conversion_info.setStyleSheet("color: white;")
+        
         # Add efficiency field
         efficiency_layout = QHBoxLayout()
         efficiency_layout.setContentsMargins(0, 0, 0, 0)
@@ -496,6 +500,7 @@ class ComponentPropertiesManager:
         layout.addRow("Output Level:", output_level_widget)
         layout.addRow("Ramp Rate Limiter:", ramp_rate_widget)
         layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
+        layout.addRow("kWh per GJ:", conversion_info)
         layout.addRow("Efficiency:", efficiency_widget)
         layout.addRow("Gas Cost per GJ ($):", cost_edit)
         layout.addRow("CAPEX per kW ($):", capex_edit)
