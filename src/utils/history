@@ -2090,3 +2090,10 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Used icy blue color (#A0D8FF) with 12pt font
 - Positioned in the bottom left corner of the window
 - Added for version identification and branding
+
+## 2024-08-12: Implemented Particle System Limits 
+- Added a MAX_PARTICLES constant (1000) to the ParticleSystem class in src/ui/particle_system.py
+- Created a helper method _can_add_particles() to check if adding particles would exceed the limit
+- Modified all particle creation methods to check against the limit before creating particles
+- Prevents potential crashes caused by excessive particle generation
+- No changes to the visual appearance or behavior of particles that are created within the limits

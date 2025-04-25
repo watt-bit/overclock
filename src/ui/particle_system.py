@@ -234,6 +234,8 @@ class ViewCapexParticle(QLabel):
 class ParticleSystem:
     """Manages a set of particles for visual effects"""
     
+    MAX_PARTICLES = 500  # Maximum number of particles allowed to prevent crashes
+    
     def __init__(self, scene):
         self.scene = scene
         self.particles = []
@@ -243,10 +245,26 @@ class ParticleSystem:
         self.timer.setInterval(33)  # ~30 fps
         self.main_window = None  # Will be set by the main window after initialization
     
+    def _can_add_particles(self, count):
+        """Check if adding more particles would exceed the maximum limit
+        
+        Args:
+            count (int): Number of particles to be added
+            
+        Returns:
+            bool: True if particles can be added, False otherwise
+        """
+        total_particles = len(self.particles) + len(self.view_particles)
+        return total_particles + count <= self.MAX_PARTICLES
+    
     def create_puff(self, x, y, num_particles=12):
         """Create a puff of smoke particles at the given coordinates"""
         # Skip particle generation during autocomplete
         if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
+            return
+            
+        # Check if adding these particles would exceed the limit
+        if not self._can_add_particles(num_particles):
             return
             
         # Create particles
@@ -288,6 +306,10 @@ class ParticleSystem:
         max_particles = 15
         num_particles = int(base_particles + (max_particles - base_particles) * intensity)
         
+        # Check if adding these particles would exceed the limit
+        if not self._can_add_particles(num_particles):
+            return
+            
         # Create particles
         for _ in range(num_particles):
             # Tighter grouping at the origin point
@@ -318,6 +340,10 @@ class ParticleSystem:
         if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
             return
             
+        # Check if adding this particle would exceed the limit
+        if not self._can_add_particles(1):
+            return
+            
         # Create the revenue particle
         particle = RevenueParticle(x, y, amount)
         self.scene.addItem(particle)
@@ -333,6 +359,10 @@ class ParticleSystem:
         if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
             return
             
+        # Check if adding this particle would exceed the limit
+        if not self._can_add_particles(1):
+            return
+            
         # Create the cost particle
         particle = CostParticle(x, y, amount)
         self.scene.addItem(particle)
@@ -345,6 +375,10 @@ class ParticleSystem:
     def create_capex_popup(self, x, y, amount=1000000, is_positive=True):
         """Create a CAPEX popup at the given coordinates in the view (not the scene)"""
         if self.main_window is None or not hasattr(self.main_window, 'view'):
+            return
+            
+        # Check if adding this particle would exceed the limit
+        if not self._can_add_particles(1):
             return
             
         # Create the CAPEX particle directly in the view
@@ -367,6 +401,10 @@ class ParticleSystem:
         """
         # Skip particle generation during autocomplete
         if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
+            return
+            
+        # Check if adding these particles would exceed the limit
+        if not self._can_add_particles(num_particles):
             return
             
         # Create particles

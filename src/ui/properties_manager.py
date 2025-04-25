@@ -321,7 +321,7 @@ class ComponentPropertiesManager:
             # Update CAPEX display when capacity changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(capacity_edit, update_capacity)
+        self._set_up_numeric_field(capacity_edit, update_capacity, min_value=25, max_value=5000000)
         
         # Add operating mode selector
         mode_selector = QComboBox()
@@ -644,7 +644,7 @@ class ComponentPropertiesManager:
             # Update CAPEX display when demand changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(demand_edit, update_demand)
+        self._set_up_numeric_field(demand_edit, update_demand, min_value=25, max_value=5000000)
         
         # Add price per kWh field
         price_edit = QLineEdit(str(component.price_per_kwh))
@@ -956,7 +956,7 @@ class ComponentPropertiesManager:
             # Update CAPEX display when power capacity changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(power_capacity_edit, update_power_capacity, min_value=1)
+        self._set_up_numeric_field(power_capacity_edit, update_power_capacity, min_value=25, max_value=5000000)
         
         # Energy capacity field
         energy_capacity_edit = QLineEdit(str(component.energy_capacity))
@@ -977,7 +977,7 @@ class ComponentPropertiesManager:
             component.update()
             self.main_window.update_simulation()
         
-        self._set_up_numeric_field(energy_capacity_edit, update_energy_capacity, min_value=1)
+        self._set_up_numeric_field(energy_capacity_edit, update_energy_capacity, min_value=25, max_value=5000000)
         
         # Operating mode selector
         mode_selector = QComboBox()

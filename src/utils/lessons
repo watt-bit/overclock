@@ -2365,3 +2365,22 @@ Key components of the CAPEX system:
 This system demonstrates a clean separation of concerns, with a dedicated manager class handling all CAPEX-related functionality while maintaining backward compatibility with the rest of the application.
 
 [2023-08-05] When dealing with components that use transparent backgrounds (like image-based components), traditional color adjustment techniques won't work for hover effects. Using a semi-transparent color with a specified alpha value (QColor with RGBA) provides a visible hover effect while still allowing the underlying image to show through.
+
+## Performance Optimization: Particle System Limit (2024-08-12)
+1. Resource Management
+   - Visual effects systems can cause performance issues when unbounded
+   - Setting fixed limits on visual elements prevents resource exhaustion
+   - Early detection of limits is more efficient than crash recovery
+   - Predictable resource usage improves application stability
+
+2. Defensive Programming
+   - Check resource limits before allocation, not after
+   - Different particle creation methods should all enforce the same limits
+   - Centralize limit checking in a helper method for consistency
+   - Fail gracefully by skipping effect creation rather than crashing
+
+3. Design Considerations
+   - Visual effects should enhance, not impede, user experience
+   - Resource limits should be tuned to balance visual appeal and performance
+   - There's a direct tradeoff between effect quantity and application stability
+   - Implement safeguards for all resource-intensive features
