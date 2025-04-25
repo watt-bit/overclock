@@ -2097,3 +2097,5 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Modified all particle creation methods to check against the limit before creating particles
 - Prevents potential crashes caused by excessive particle generation
 - No changes to the visual appearance or behavior of particles that are created within the limits
+
+## 2023-05-08: Implemented capacity limits (25kW to 5,000,000kW) for all generation and load components in the properties manager to ensure realistic values and prevent extreme inputs.

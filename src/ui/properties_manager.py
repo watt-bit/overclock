@@ -474,7 +474,7 @@ class ComponentPropertiesManager:
     def _add_grid_import_properties(self, component, layout):
         capacity_edit = QLineEdit(str(component.capacity))
         capacity_edit.setStyleSheet(INPUT_STYLE)
-        self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value))
+        self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value), min_value=25, max_value=5000000)
         
         # Add cost per kWh field
         cost_edit = QLineEdit(str(component.cost_per_kwh))
@@ -556,7 +556,7 @@ class ComponentPropertiesManager:
     def _add_grid_export_properties(self, component, layout):
         capacity_edit = QLineEdit(str(component.capacity))
         capacity_edit.setStyleSheet(INPUT_STYLE)
-        self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value))
+        self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value), min_value=25, max_value=5000000)
         
         # Add price per kWh field
         price_edit = QLineEdit(str(component.bulk_ppa_price))
@@ -1203,7 +1203,7 @@ class ComponentPropertiesManager:
                 capacity_field.setText(str(component.capacity))
         
         # Set up numeric validation for the capacity field
-        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=0)
+        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=25, max_value=5000000)
         
         # Add CAPEX per kW field
         capex_edit = QLineEdit(str(component.capex_per_kw))
@@ -1285,7 +1285,7 @@ class ComponentPropertiesManager:
                 capacity_field.setText(str(component.capacity))
         
         # Set up numeric validation for the capacity field
-        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=0)
+        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=25, max_value=5000000)
         
         # Add CAPEX per kW field
         capex_edit = QLineEdit(str(component.capex_per_kw))
