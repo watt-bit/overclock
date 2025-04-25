@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QBrush, QColor, QPixmap, QRadialGradient
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
+from src.utils.resource import resource_path
 
 class TreeComponent(ComponentBase):
     def __init__(self, x, y):
@@ -9,7 +10,7 @@ class TreeComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap("src/ui/assets/tree.png")
+        self.image = QPixmap(resource_path("src/ui/assets/tree.png"))
         
         # Decorative component with no functional properties
         self.name = "Tree"

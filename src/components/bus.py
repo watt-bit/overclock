@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPixmap, QRadialGradient
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
+from src.utils.resource import resource_path
 
 class BusComponent(ComponentBase):
     def __init__(self, x, y):
@@ -9,8 +10,8 @@ class BusComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the images
-        self.loaded_image = QPixmap("src/ui/assets/busloaded.png")
-        self.auto_image = QPixmap("src/ui/assets/busauto")  # Remove .png extension
+        self.loaded_image = QPixmap(resource_path("src/ui/assets/busloaded.png"))
+        self.auto_image = QPixmap(resource_path("src/ui/assets/busauto"))  # Remove .png extension
         
         self.is_on = True  # Default state is on
         self.name = "Bus"  # Default name

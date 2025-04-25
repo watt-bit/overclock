@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPixmap, QRadialGradient
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
+from src.utils.resource import resource_path
 
 class BatteryComponent(ComponentBase):
     def __init__(self, x, y):
@@ -9,7 +10,7 @@ class BatteryComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap("src/ui/assets/battery.png")
+        self.image = QPixmap(resource_path("src/ui/assets/battery.png"))
         
         # Battery properties
         self.power_capacity = 1000  # kW - maximum charge/discharge rate

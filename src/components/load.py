@@ -6,6 +6,7 @@ from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPixmap
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
 from .bus import BusComponent
+from src.utils.resource import resource_path
 
 class LoadComponent(ComponentBase):
     def __init__(self, x, y):
@@ -14,7 +15,7 @@ class LoadComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap("src/ui/assets/load.png")
+        self.image = QPixmap(resource_path("src/ui/assets/load.png"))
         
         self.demand = 2000  # kW
         self.price_per_kwh = 0.00  # Default price per kWh in dollars

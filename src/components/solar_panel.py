@@ -2,6 +2,7 @@ from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPixmap
 from PyQt5.QtCore import Qt, QRectF
 from .base import ComponentBase
 import os
+from src.utils.resource import resource_path
 
 class SolarPanelComponent(ComponentBase):
     def __init__(self, x, y):
@@ -10,7 +11,7 @@ class SolarPanelComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap("src/ui/assets/solarpanel.png")
+        self.image = QPixmap(resource_path("src/ui/assets/solarpanel.png"))
         
         # Solar panel properties
         self.capacity = 1000  # kW - default capacity

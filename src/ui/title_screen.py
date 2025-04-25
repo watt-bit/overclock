@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QFileDialog
 from PyQt5.QtGui import QPixmap, QFont, QCursor
 from PyQt5.QtCore import Qt, pyqtSignal
+from src.utils.resource import resource_path
 
 class TitleScreen(QWidget):
     # Add a custom signal to indicate the title screen should be closed
@@ -20,7 +21,7 @@ class TitleScreen(QWidget):
         
         # Load and display the title image
         title_image = QLabel()
-        pixmap = QPixmap("src/ui/assets/demotitle6.png")
+        pixmap = QPixmap(resource_path("src/ui/assets/demotitle6.png"))
         if not pixmap.isNull():
             title_image.setPixmap(pixmap)
         else:
@@ -109,7 +110,7 @@ class TitleScreen(QWidget):
         
         # Add image to button
         img_label = QLabel()
-        pixmap = QPixmap("src/ui/assets/newproject.png")
+        pixmap = QPixmap(resource_path("src/ui/assets/newproject.png"))
         if not pixmap.isNull():
             pixmap = pixmap.scaled(20, 20, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             img_label.setPixmap(pixmap)
@@ -167,7 +168,7 @@ class TitleScreen(QWidget):
         
         # Add image to button
         img_label = QLabel()
-        pixmap = QPixmap("src/ui/assets/loadproject.png")
+        pixmap = QPixmap(resource_path("src/ui/assets/loadproject.png"))
         if not pixmap.isNull():
             pixmap = pixmap.scaled(20, 20, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             img_label.setPixmap(pixmap)

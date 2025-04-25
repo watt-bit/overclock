@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QPixmap
+from src.utils.resource import resource_path
 
 
 class TiledBackgroundWidget(QWidget):
@@ -13,7 +14,7 @@ class TiledBackgroundWidget(QWidget):
         
     def set_background(self, image_path):
         """Set the background image from a file path"""
-        self.background_image = QPixmap(image_path)
+        self.background_image = QPixmap(resource_path(image_path))
         self.update()
         
     def paintEvent(self, event):

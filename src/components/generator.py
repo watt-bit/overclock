@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QPen, QFont, QPixmap
 from PyQt5.QtCore import Qt, QRectF, QPointF
 from .base import ComponentBase
+from src.utils.resource import resource_path
 
 class GeneratorComponent(ComponentBase):
     def __init__(self, x, y):
@@ -9,7 +10,7 @@ class GeneratorComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap("src/ui/assets/generator.png")
+        self.image = QPixmap(resource_path("src/ui/assets/generator.png"))
         
         self.capacity = 1000  # kW
         self.operating_mode = "BTF Droop (Auto)"  # Static (Auto), BTF Unit Commitment (Auto), or BTF Droop (Auto)

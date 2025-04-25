@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QGraphicsScene
 from PyQt5.QtCore import QObject, pyqtSignal, QPointF
 from PyQt5.QtGui import QPen, QPixmap, QColor, QBrush
+from src.utils.resource import resource_path
 
 
 class CustomScene(QGraphicsScene, QObject):
@@ -11,7 +12,7 @@ class CustomScene(QGraphicsScene, QObject):
         QObject.__init__(self)
         
         # Load the background image
-        self.background_image = QPixmap("src/ui/assets/background.png")
+        self.background_image = QPixmap(resource_path("src/ui/assets/background.png"))
         # Set the background brush to tile the image
         if not self.background_image.isNull():
             self.setBackgroundBrush(QBrush(self.background_image))
@@ -42,12 +43,12 @@ class CustomScene(QGraphicsScene, QObject):
         
         if mode == 0:
             # Background 1 (default texture)
-            self.background_image = QPixmap("src/ui/assets/background.png")
+            self.background_image = QPixmap(resource_path("src/ui/assets/background.png"))
             if not self.background_image.isNull():
                 self.setBackgroundBrush(QBrush(self.background_image))
         elif mode == 1:
             # Background 2 (alternate texture)
-            self.background_image = QPixmap("src/ui/assets/background2.png")
+            self.background_image = QPixmap(resource_path("src/ui/assets/background2.png"))
             if not self.background_image.isNull():
                 self.setBackgroundBrush(QBrush(self.background_image))
         elif mode == 2:

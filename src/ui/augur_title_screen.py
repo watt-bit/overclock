@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from src.utils.resource import resource_path
 
 class AugurTitleScreen(QWidget):
     # Add a custom signal to indicate the Augur title screen should transition to the next screen
@@ -19,7 +20,7 @@ class AugurTitleScreen(QWidget):
         
         # Load and display the Augur title image
         title_image = QLabel()
-        pixmap = QPixmap("src/ui/assets/augurtitle2.png")
+        pixmap = QPixmap(resource_path("src/ui/assets/augurtitle2.png"))
         if not pixmap.isNull():
             title_image.setPixmap(pixmap)
         else:

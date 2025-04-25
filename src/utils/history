@@ -2108,3 +2108,17 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Used min(1.0, value/capacity) to prevent the indicator from extending beyond its frame
 - Bug occurred when users decreased component capacity below the current usage level while paused
 - Fix ensures visual indicators always remain within their proper bounds regardless of capacity changes
+
+## 2024-06-21 15:30 - Implemented resource_path utility for PyInstaller compatibility
+- Created utils/resource.py module with resource_path function to handle paths in both development and PyInstaller environments
+- Modified all image loading references in the codebase to use resource_path
+- This will ensure images can be found correctly when running from source or from a compiled executable
+- Updated components, UI screens, and main application code to use the new utility function
+
+## 2024-07-15: Moved main.py to Root Directory for PyInstaller Compatibility
+- Relocated main.py from src folder to the root application directory
+- Maintained all imports and functionality
+- No code changes other than import paths
+- This change improves compatibility with PyInstaller packaging
+- PyInstaller can now be run from the root directory using the main.py entry point
+- The application structure remains the same with all modules still in the src directory

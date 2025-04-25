@@ -2407,3 +2407,22 @@ Key insights from fixing the grid export/import indicator overflow bug:
    - Visual representation should be insulated from raw component state
    - Intermediate calculations with bounds checking create this separation
    - This pattern allows internal component state to be technically "invalid" while maintaining valid visual representation
+
+## PyInstaller Packaging Best Practices (2024-07-15)
+1. Entry Point Location
+   - Main application entry point (main.py) should be placed in the root directory
+   - This makes it easier for PyInstaller to find all dependencies
+   - Using a main script in a subdirectory can cause import resolution issues
+   - PyInstaller commands can be run directly on the root main.py file
+
+2. Resource Path Management
+   - Always use resource_path function for file paths to resources
+   - This ensures compatibility between running from source and from compiled executable
+   - Relative paths work differently when running from PyInstaller-bundled executables
+   - All file operations should use the resource_path utility for consistent behavior
+
+3. Package Structure Preservation
+   - Moving the entry point file doesn't require changing the package structure
+   - Keep all modules in their original directories (src/components, src/ui, etc.)
+   - Update imports in the main file to use full package paths (from src.ui.main_window import...)
+   - This maintains code organization while improving build compatibility

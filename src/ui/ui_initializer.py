@@ -9,6 +9,7 @@ from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterP
 # Import or reference modules and classes needed from main_window
 from .analytics import AnalyticsPanel
 from .tiled_background_widget import TiledBackgroundWidget
+from src.utils.resource import resource_path
 
 class GradientBorderText(QGraphicsTextItem):
     """A text item with animated gradient border for welcome screen"""
@@ -102,7 +103,7 @@ class ImageBackgroundButton(QPushButton):
     def __init__(self, text, image_path, parent=None):
         super().__init__(text, parent)
         try:
-            self.bg_image = QPixmap(image_path)
+            self.bg_image = QPixmap(resource_path(image_path))
             if self.bg_image.isNull():
                 print(f"Warning: Could not load {image_path} - using default button style")
                 self.bg_image = None
@@ -179,7 +180,7 @@ class BorderedMainWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         try:
-            self.border_image = QPixmap("src/ui/assets/innertitlebardark.png")
+            self.border_image = QPixmap(resource_path("src/ui/assets/innertitlebardark.png"))
             if self.border_image.isNull():
                 print("Warning: Could not load innertitlebardark.png - using default border")
                 self.border_image = None
@@ -315,7 +316,7 @@ class UIInitializer:
         
         # Create Overclock logo overlay
         main_window.logo_overlay = QLabel(main_window.view)
-        logo_pixmap = QPixmap("src/ui/assets/overclocklogo.png")
+        logo_pixmap = QPixmap(resource_path("src/ui/assets/overclocklogo.png"))
         if not logo_pixmap.isNull():
             # Calculate 10% of the original size while maintaining aspect ratio
             scaled_width = int(logo_pixmap.width() * 0.1)
@@ -411,9 +412,9 @@ class UIInitializer:
         class AnalyticsToggleButton(QLabel):
             def __init__(self, parent=None):
                 super().__init__(parent)
-                self.normal_pixmap = QPixmap("src/ui/assets/analyticsbutton.png")
-                self.hover_pixmap = QPixmap("src/ui/assets/analyticsbuttonhover.png")
-                self.clicked_pixmap = QPixmap("src/ui/assets/analyticsbuttonclick.png")
+                self.normal_pixmap = QPixmap(resource_path("src/ui/assets/analyticsbutton.png"))
+                self.hover_pixmap = QPixmap(resource_path("src/ui/assets/analyticsbuttonhover.png"))
+                self.clicked_pixmap = QPixmap(resource_path("src/ui/assets/analyticsbuttonclick.png"))
                 
                 # Scale pixmaps to 40x40 while maintaining aspect ratio
                 self.normal_pixmap = self.normal_pixmap.scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -471,13 +472,13 @@ class UIInitializer:
         # Use TiledBackgroundWidget from main_window
         # We need to use the class from main_window instead of creating it here
         component_widget = TiledBackgroundWidget()
-        component_widget.set_background("src/ui/assets/backgroundstars.png")
+        component_widget.set_background(resource_path("src/ui/assets/backgroundstars.png"))
         component_layout = QVBoxLayout(component_widget)
         
         # Add component panel top image
         top_image_label = QLabel()
         top_image_label.setStyleSheet("border: none;")
-        top_pixmap = QPixmap("src/ui/assets/componentspaneltop.png")
+        top_pixmap = QPixmap(resource_path("src/ui/assets/componentspaneltop.png"))
         if not top_pixmap.isNull():
             # Get the width of the component widget minus layout margins
             # We'll wait to set the actual image after the first button is created
@@ -487,7 +488,7 @@ class UIInitializer:
         # Add WBR logo overlay
         main_window.wbr_logo_label = QLabel(top_image_label)  # Set parent to top_image_label
         main_window.wbr_logo_label.setStyleSheet("border: none; background: transparent;")
-        wbr_logo_pixmap = QPixmap("src/ui/assets/wbrlogo.png")
+        wbr_logo_pixmap = QPixmap(resource_path("src/ui/assets/wbrlogo.png"))
         if not wbr_logo_pixmap.isNull():
             # Scale to 125px width while preserving aspect ratio
             aspect_ratio = wbr_logo_pixmap.height() / wbr_logo_pixmap.width()
@@ -712,7 +713,7 @@ class UIInitializer:
         time_dock.setStyleSheet("QDockWidget { border: none; }")
         
         time_widget = TiledBackgroundWidget()
-        time_widget.set_background("src/ui/assets/backgroundstars.png")
+        time_widget.set_background(resource_path("src/ui/assets/backgroundstars.png"))
         time_layout = QVBoxLayout(time_widget)
         
         time_controls = QHBoxLayout()
@@ -828,7 +829,7 @@ class UIInitializer:
         main_window.zoom_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
         # Add screenshot button
-        main_window.screenshot_btn = ImageBackgroundButton("📷 Screenshot", "src/ui/assets/innertitlebardark.png")
+        main_window.screenshot_btn = ImageBackgroundButton("📷 Screenshot", resource_path("src/ui/assets/innertitlebardark.png"))
         main_window.screenshot_btn.clicked.connect(main_window.take_screenshot)
         main_window.screenshot_btn.setFixedWidth(150)
 
@@ -871,7 +872,7 @@ class UIInitializer:
         
         # Add logo on the left side instead of a spacer
         sim_logo_label = QLabel()
-        sim_logo_pixmap = QPixmap("src/ui/assets/augurvibelogosmall.png")
+        sim_logo_pixmap = QPixmap(resource_path("src/ui/assets/augurvibelogosmall.png"))
         if not sim_logo_pixmap.isNull():
             # Set fixed width to 175px (same as the left spacer it's replacing)
             sim_logo_label.setFixedWidth(175)

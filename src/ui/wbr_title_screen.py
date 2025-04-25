@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from src.utils.resource import resource_path
 
 class WBRTitleScreen(QWidget):
     # Add a custom signal to indicate the WBR title screen should transition to the next screen
@@ -19,7 +20,7 @@ class WBRTitleScreen(QWidget):
         
         # Load and display the WBR title image
         title_image = QLabel()
-        pixmap = QPixmap("src/ui/assets/WBRtitle.png")
+        pixmap = QPixmap(resource_path("src/ui/assets/WBRtitle.png"))
         if not pixmap.isNull():
             title_image.setPixmap(pixmap)
         else:
