@@ -2122,3 +2122,48 @@ Modified historian_manager.py to make only the total_generation series visible b
 - This change improves compatibility with PyInstaller packaging
 - PyInstaller can now be run from the root directory using the main.py entry point
 - The application structure remains the same with all modules still in the src directory
+
+## 2024-08-12: Added Maintenance Parameters to Generator Component
+- Added four new maintenance-related parameters to the GeneratorComponent class:
+  * frequency_per_10000_hours: 5.0 by default (maintenance events per 10,000 operating hours)
+  * minimum_downtime: 4 hours by default (minimum downtime per maintenance event)
+  * maximum_downtime: 96 hours by default (maximum downtime per maintenance event)
+  * cooldown_time: 2000 hours by default (operating hours between maintenance events)
+- Updated the properties panel to display these parameters at the bottom of the generator properties
+- Modified the serialize method to include these parameters when saving generators
+- Updated the ModelManager to handle loading these parameters from saved files
+- Added appropriate validation for the new input fields
+- These parameters lay the groundwork for an upcoming maintenance system that will introduce realistic generator outages during simulation
+
+## 2024-08-13: Implemented Generator Maintenance Functionality
+- Added logic to enable random maintenance events for generators based on the maintenance parameters
+- Implemented maintenance state tracking variables:
+  * is_in_maintenance: Tracks if generator is currently unavailable due to maintenance
+  * maintenance_time_remaining: Tracks hours left in current maintenance event
+  * cooldown_time_remaining: Tracks hours left in cooldown period after maintenance
+  * total_operating_hours: Tracks total hours generator has been operating
+- Added _update_maintenance_status method to handle maintenance state logic:
+  * Calculates probability of maintenance events based on frequency_per_10000_hours
+  * Determines random maintenance duration between minimum_downtime and maximum_downtime
+  * Enforces cooldown period after maintenance to prevent consecutive outages
+- Modified calculate_output method to return 0 when generator is in maintenance
+- Updated paint method to display "MAINTENANCE" status with remaining hours
+- Disabled smoke particles when generator is in maintenance
+- Updated simulation_controller to reset maintenance state when simulation is reset
+- This feature adds realism to the generator component by simulating random maintenance outages
+
+## 2024-08-13: Fixed Maintenance Bug for BTF Droop Generators
+- Fixed a bug where generators in "BTF Droop (Auto)" mode weren't entering maintenance
+- Modified simulation engine to check generator maintenance status before calculating output for droop generators
+- Added explicit maintenance status update for all droop generators at the beginning of their processing
+- Updated the simulation engine to properly increment operating hours for droop generators
+- Ensured consistent maintenance behavior across all generator operating modes
+- The fix allows all generator types to experience random maintenance events based on their maintenance parameters
+
+## 2024-08-13: Fixed Load Distribution Bug in BTF Droop Mode
+- Fixed a bug where droop generators weren't properly distributing load when some were in maintenance
+- Modified the load apportioning algorithm to only consider active droop generators (not in maintenance)
+- Created a separate list of active droop generators after filtering out those in maintenance
+- Calculated total capacity based only on active generators to ensure proper load sharing
+- Improved system stability by ensuring remaining droop generators correctly compensate for those in maintenance
+- Enhanced BTF Droop mode to dynamically adjust to generator availability changes

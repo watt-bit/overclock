@@ -141,7 +141,11 @@ class ModelManager:
                     "efficiency": item.efficiency,
                     "cost_per_gj": item.cost_per_gj,
                     "accumulated_cost": item.accumulated_cost,
-                    "capex_per_kw": item.capex_per_kw
+                    "capex_per_kw": item.capex_per_kw,
+                    "frequency_per_10000_hours": item.frequency_per_10000_hours,
+                    "minimum_downtime": item.minimum_downtime,
+                    "maximum_downtime": item.maximum_downtime,
+                    "cooldown_time": item.cooldown_time
                 })
             elif isinstance(item, LoadComponent):
                 component_index_map[item] = index
@@ -329,6 +333,16 @@ class ModelManager:
                     # Set capex_per_kw if available, otherwise keep default value
                     if "capex_per_kw" in component_data:
                         component.capex_per_kw = component_data["capex_per_kw"]
+                    
+                    # Set maintenance parameters if available
+                    if "frequency_per_10000_hours" in component_data:
+                        component.frequency_per_10000_hours = component_data["frequency_per_10000_hours"]
+                    if "minimum_downtime" in component_data:
+                        component.minimum_downtime = component_data["minimum_downtime"]
+                    if "maximum_downtime" in component_data:
+                        component.maximum_downtime = component_data["maximum_downtime"]
+                    if "cooldown_time" in component_data:
+                        component.cooldown_time = component_data["cooldown_time"]
                     
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)

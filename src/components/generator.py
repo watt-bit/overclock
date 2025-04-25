@@ -30,6 +30,18 @@ class GeneratorComponent(ComponentBase):
         # Capital expenditure (CAPEX) property
         self.capex_per_kw = 2000  # $2,000 per kW default for gas generator
         
+        # Maintenance parameters
+        self.frequency_per_10000_hours = 5.0  # Default: 5 occurrences per 10,000 operating hours
+        self.minimum_downtime = 4  # Default: 4 hours minimum downtime per maintenance event
+        self.maximum_downtime = 96  # Default: 96 hours maximum downtime per maintenance event
+        self.cooldown_time = 2000  # Default: 2000 hours between maintenance events
+        
+        # Maintenance state tracking
+        self.is_in_maintenance = False  # Whether generator is currently in maintenance
+        self.maintenance_time_remaining = 0  # Hours remaining in current maintenance event
+        self.cooldown_time_remaining = 0  # Hours remaining in cooldown period
+        self.total_operating_hours = 0  # Total hours generator has been operating
+        
         # Smoke emission point (will be calculated in paint)
         self.smoke_point = QPointF(0, 0)
         # Timer for smoke emission
@@ -98,18 +110,25 @@ class GeneratorComponent(ComponentBase):
             if hasattr(parent, 'simulation_engine') and hasattr(parent.simulation_engine, 'current_time_step'):
                 current_time = parent.simulation_engine.current_time_step
         
-        # In Static (Auto) mode, use output_level as percentage
-        # In BTF Unit Commitment (Auto) mode, calculate actual output based on system load
-        # In BTF Droop (Auto) mode, share load equally with other droop-mode generators
-        if self.operating_mode == "Static (Auto)":
-            output_percentage = int(self.output_level * 100)
+        # Add maintenance status text if generator is in maintenance
+        if self.is_in_maintenance:
+            output_percentage = 0  # Output is 0 during maintenance
+            # Draw capacity info with maintenance status
+            capacity_text = f"{self.capacity} kW (gas) | MAINTENANCE ({self.maintenance_time_remaining}h)"
         else:
-            # Instead of recalculating the output, use the last_output value
-            # which is set correctly by the simulation engine
-            output_percentage = int((self.last_output / self.capacity) * 100) if self.capacity > 0 else 0
+            # In Static (Auto) mode, use output_level as percentage
+            # In BTF Unit Commitment (Auto) mode, calculate actual output based on system load
+            # In BTF Droop (Auto) mode, share load equally with other droop-mode generators
+            if self.operating_mode == "Static (Auto)":
+                output_percentage = int(self.output_level * 100)
+            else:
+                # Instead of recalculating the output, use the last_output value
+                # which is set correctly by the simulation engine
+                output_percentage = int((self.last_output / self.capacity) * 100) if self.capacity > 0 else 0
+            
+            # Draw the capacity, generation level and type text centered below the image
+            capacity_text = f"{self.capacity} kW (gas) | {output_percentage}%"
         
-        # Draw the capacity, generation level and type text centered below the image
-        capacity_text = f"{self.capacity} kW (gas) | {output_percentage}%"
         painter.drawText(text_rect, Qt.AlignCenter, capacity_text)
         
         # Add cost display (always visible, even when cost is 0)
@@ -138,6 +157,10 @@ class GeneratorComponent(ComponentBase):
         if not hasattr(parent, 'particle_system') or not parent.particle_system:
             return
             
+        # Don't emit smoke if generator is in maintenance
+        if self.is_in_maintenance:
+            return
+            
         # Only emit smoke if generator is actually producing power
         if self.capacity <= 0 or self.last_output <= 0:
             return
@@ -153,6 +176,18 @@ class GeneratorComponent(ComponentBase):
         )
     
     def calculate_output(self, total_load):
+        # Update maintenance status based on operating hours
+        self._update_maintenance_status()
+        
+        # If the generator is in maintenance, output is 0
+        if self.is_in_maintenance:
+            self.last_output = 0
+            return 0
+        
+        # Only increment operating hours if we're actually generating power
+        if self.last_output > 0:
+            self.total_operating_hours += 1
+            
         # Calculate target output based on operating mode
         if self.operating_mode == "Static (Auto)":
             target_output = self.capacity * self.output_level
@@ -166,7 +201,7 @@ class GeneratorComponent(ComponentBase):
         elif self.operating_mode == "BTF Droop (Auto)":
             # This mode is handled differently in the simulation engine
             # as all droop generators need to coordinate together
-            # Return last_output to avoid recalculation
+            # Just return the current output - the engine will update it
             return self.last_output
         
         # Apply ramp rate limiting if enabled
@@ -187,6 +222,49 @@ class GeneratorComponent(ComponentBase):
         # Save this output for next time step
         self.last_output = actual_output
         return actual_output
+        
+    def _update_maintenance_status(self):
+        """Update the maintenance status of the generator based on current state and random factors."""
+        import random
+        
+        # If the generator is already in maintenance, decrease the remaining time
+        if self.is_in_maintenance:
+            self.maintenance_time_remaining -= 1
+            
+            # Check if maintenance is finished
+            if self.maintenance_time_remaining <= 0:
+                self.is_in_maintenance = False
+                self.maintenance_time_remaining = 0
+                # Start cooldown period
+                self.cooldown_time_remaining = self.cooldown_time
+        
+        # If the generator is in cooldown, decrease the remaining time
+        elif self.cooldown_time_remaining > 0:
+            self.cooldown_time_remaining -= 1
+        
+        # If not in maintenance or cooldown, check for random outage
+        elif self.last_output > 0:  # Only check if generator is operating
+            # Calculate hourly probability of maintenance from frequency per 10,000 hours
+            hourly_probability = self.frequency_per_10000_hours / 10000.0
+            
+            # Generate random number and check against probability
+            if random.random() < hourly_probability:
+                # Start a maintenance event
+                self.is_in_maintenance = True
+                
+                # Calculate random maintenance duration within allowed range
+                self.maintenance_time_remaining = random.randint(
+                    self.minimum_downtime, 
+                    self.maximum_downtime
+                )
+                
+    def update(self):
+        """Called when the component needs to be updated"""
+        # Call the parent's update method
+        super().update()
+        
+        # Check for cost milestones
+        self.check_cost_milestone()
     
     def calculate_gas_consumption(self, electricity_kwh):
         """Calculate gas consumption in GJ based on electricity generated"""
@@ -202,14 +280,6 @@ class GeneratorComponent(ComponentBase):
     def calculate_gas_cost(self, gas_gj):
         """Calculate cost of gas consumption"""
         return gas_gj * self.cost_per_gj
-    
-    def update(self):
-        """Called when the component needs to be updated"""
-        # Call the parent's update method
-        super().update()
-        
-        # Check for cost milestones
-        self.check_cost_milestone()
     
     def check_cost_milestone(self):
         """Check if cost has crossed a $1000 milestone and create a particle if needed"""
@@ -267,5 +337,9 @@ class GeneratorComponent(ComponentBase):
             'efficiency': self.efficiency,
             'cost_per_gj': self.cost_per_gj,
             'accumulated_cost': self.accumulated_cost,
-            'capex_per_kw': self.capex_per_kw
+            'capex_per_kw': self.capex_per_kw,
+            'frequency_per_10000_hours': self.frequency_per_10000_hours,
+            'minimum_downtime': self.minimum_downtime,
+            'maximum_downtime': self.maximum_downtime,
+            'cooldown_time': self.cooldown_time
         } 

@@ -180,6 +180,11 @@ class SimulationController:
             elif isinstance(item, GeneratorComponent):
                 item.accumulated_cost = 0.0
                 item.previous_cost = 0.0
+                # Reset maintenance state
+                item.is_in_maintenance = False
+                item.maintenance_time_remaining = 0
+                item.cooldown_time_remaining = 0
+                item.total_operating_hours = 0
                 item.update()  # Refresh the visual display
             # Reset all batteries to 100% charge
             elif isinstance(item, BatteryComponent):

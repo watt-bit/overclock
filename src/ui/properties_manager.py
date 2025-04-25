@@ -461,6 +461,35 @@ class ComponentPropertiesManager:
             
         self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
         
+        # Add maintenance parameters  
+        # Frequency per 10,000 hours field
+        frequency_edit = QLineEdit(str(component.frequency_per_10000_hours))
+        frequency_edit.setStyleSheet(INPUT_STYLE)
+        self._set_up_numeric_field(frequency_edit, 
+                                  lambda value: setattr(component, 'frequency_per_10000_hours', value), 
+                                  min_value=0.0, max_value=100.0)
+        
+        # Minimum downtime field
+        min_downtime_edit = QLineEdit(str(component.minimum_downtime))
+        min_downtime_edit.setStyleSheet(INPUT_STYLE)
+        self._set_up_numeric_field(min_downtime_edit, 
+                                  lambda value: setattr(component, 'minimum_downtime', value), 
+                                  is_float=False, min_value=1, max_value=1000)
+        
+        # Maximum downtime field
+        max_downtime_edit = QLineEdit(str(component.maximum_downtime))
+        max_downtime_edit.setStyleSheet(INPUT_STYLE)
+        self._set_up_numeric_field(max_downtime_edit, 
+                                  lambda value: setattr(component, 'maximum_downtime', value), 
+                                  is_float=False, min_value=1, max_value=1000)
+        
+        # Cooldown time field
+        cooldown_edit = QLineEdit(str(component.cooldown_time))
+        cooldown_edit.setStyleSheet(INPUT_STYLE)
+        self._set_up_numeric_field(cooldown_edit, 
+                                  lambda value: setattr(component, 'cooldown_time', value), 
+                                  is_float=False, min_value=1, max_value=10000)
+        
         # Add all controls to properties layout
         layout.addRow("Capacity (kW):", capacity_edit)
         layout.addRow("Operating Mode:", mode_selector)
@@ -470,6 +499,10 @@ class ComponentPropertiesManager:
         layout.addRow("Efficiency:", efficiency_widget)
         layout.addRow("Gas Cost per GJ ($):", cost_edit)
         layout.addRow("CAPEX per kW ($):", capex_edit)
+        layout.addRow("Outages per 10k Hrs:", frequency_edit)
+        layout.addRow("Min Downtime (hrs):", min_downtime_edit)
+        layout.addRow("Max Downtime (hrs):", max_downtime_edit)
+        layout.addRow("Cooldown Time (hrs):", cooldown_edit)
     
     def _add_grid_import_properties(self, component, layout):
         capacity_edit = QLineEdit(str(component.capacity))
