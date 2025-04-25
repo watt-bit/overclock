@@ -26,9 +26,9 @@ class ComponentAdder:
         """Create and add a component of the specified type to the scene"""
         position = None  # Store position for particle effect
         
-        # Generate random offsets within ±300 range
-        x_offset = random.randint(-300, 300)
-        y_offset = random.randint(-300, 300)
+        # Set fixed position at origin (0,0)
+        x_offset = 0
+        y_offset = 0
         
         if component_type == "generator":
             component = GeneratorComponent(x_offset, y_offset)
