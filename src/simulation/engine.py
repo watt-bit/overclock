@@ -257,21 +257,27 @@ class SimulationEngine(QObject):
                     if hasattr(gen, '_update_maintenance_status'):
                         gen._update_maintenance_status()
                 
-                # Filter out generators that are in maintenance to get active droop generators
-                active_droop_generators = [gen for gen in droop_generators 
-                                          if not (hasattr(gen, 'is_in_maintenance') and gen.is_in_maintenance)]
+                # Filter out generators that are in maintenance
+                available_droop_generators = [gen for gen in droop_generators 
+                                            if not (hasattr(gen, 'is_in_maintenance') and gen.is_in_maintenance)]
                 
-                if remaining_load > 0 and active_droop_generators:
-                    # Calculate total capacity of only active droop generators
-                    total_droop_capacity = sum(gen.capacity for gen in active_droop_generators)
+                # Process generators in maintenance to set outputs to 0
+                for gen in droop_generators:
+                    if hasattr(gen, 'is_in_maintenance') and gen.is_in_maintenance:
+                        gen.last_output = 0
+                        component_outputs[gen] = 0
+                
+                if remaining_load > 0 and available_droop_generators:
+                    # Calculate total capacity of available droop generators (excluding those in maintenance)
+                    total_droop_capacity = sum(gen.capacity for gen in available_droop_generators)
                     
                     if total_droop_capacity > 0:
-                        # Determine equal percentage for all active droop generators
+                        # Determine equal percentage for all available droop generators
                         # Cap at 100% - we don't want to exceed their capacity
                         droop_percentage = min(1.0, remaining_load / total_droop_capacity)
                         
-                        # Apply the same percentage to all active droop generators
-                        for gen in active_droop_generators:
+                        # Apply the same percentage to all available droop generators
+                        for gen in available_droop_generators:
                             # Calculate target output based on equal percentage
                             target_output = gen.capacity * droop_percentage
                             
@@ -300,24 +306,9 @@ class SimulationEngine(QObject):
                             # Update operating hours for this droop generator if it's producing power
                             if actual_output > 0:
                                 gen.total_operating_hours += 1
-                    
-                    # Set output to 0 for generators in maintenance
-                    for gen in droop_generators:
-                        if hasattr(gen, 'is_in_maintenance') and gen.is_in_maintenance:
-                            # Set output to 0 and track it
-                            gen.last_output = 0
-                            component_outputs[gen] = 0
-                
-                elif remaining_load <= 0:
-                    # No remaining load, set all droop generators to 0 output
-                    for gen in droop_generators:
-                        # Skip this generator if it's in maintenance
-                        if hasattr(gen, 'is_in_maintenance') and gen.is_in_maintenance:
-                            # Set output to 0 and track it
-                            gen.last_output = 0
-                            component_outputs[gen] = 0
-                            continue
-                            
+                else:
+                    # No remaining load or no available generators, set all droop generators to 0 output
+                    for gen in available_droop_generators:
                         # If ramp rate limiting is enabled, respect it when ramping down
                         if gen.ramp_rate_enabled and gen.last_output > 0:
                             max_change = gen.capacity * gen.ramp_rate_limit

@@ -2160,10 +2160,12 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Ensured consistent maintenance behavior across all generator operating modes
 - The fix allows all generator types to experience random maintenance events based on their maintenance parameters
 
-## 2024-08-13: Fixed Load Distribution Bug in BTF Droop Mode
-- Fixed a bug where droop generators weren't properly distributing load when some were in maintenance
-- Modified the load apportioning algorithm to only consider active droop generators (not in maintenance)
-- Created a separate list of active droop generators after filtering out those in maintenance
-- Calculated total capacity based only on active generators to ensure proper load sharing
-- Improved system stability by ensuring remaining droop generators correctly compensate for those in maintenance
-- Enhanced BTF Droop mode to dynamically adjust to generator availability changes
+## 2024-08-13: Improved BTF Droop Mode Load Apportionment During Maintenance
+- Fixed a bug where BTF Droop generators would not correctly apportion load when some generators were in maintenance
+- Modified the simulation engine to filter out generators in maintenance before calculating droop capacity
+- Previously, the total capacity included all droop generators even if some were in maintenance
+- Now the system calculates available capacity based only on droop generators not in maintenance
+- The droop percentage is now calculated only for available generators, preventing system imbalance
+- Updated the processing order to first handle generators in maintenance, then apportion load among available generators
+- This change ensures the system properly rebalances when droop generators enter or exit maintenance
+- Improves system stability during generator maintenance events
