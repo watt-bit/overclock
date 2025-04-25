@@ -1,7 +1,7 @@
 import sys
 import os
 import gc
-# OVERCLOCK Watt-Bit Sandbox from Augur | https://augurvc.com
+# OVERCLOCK Watt-Bit Sandbox]
 # Add the parent directory to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -11,7 +11,7 @@ matplotlib.rcParams['interactive'] = False
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QObject, pyqtSignal, Qt, QTimer
+from PyQt5.QtCore import QObject, Qt
 from src.ui.main_window import PowerSystemSimulator
 from src.ui.title_screen import TitleScreen
 from src.ui.wbr_title_screen import WBRTitleScreen
