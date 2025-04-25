@@ -44,8 +44,8 @@ class SimulationController:
             self.main_window.autocomplete_btn.setEnabled(False)
             self.main_window.autocomplete_btn.setStyleSheet("""
                 QPushButton { 
-                    background-color: #1B5E20; 
-                    color: #99CCAA; 
+                    background-color: #005C5C; 
+                    color: #99CCCC; 
                     border: 1px solid #555555; 
                     border-radius: 3px; 
                     padding: 5px; 
@@ -66,7 +66,7 @@ class SimulationController:
             self.main_window.autocomplete_btn.setEnabled(True)
             self.main_window.autocomplete_btn.setStyleSheet("""
                 QPushButton { 
-                    background-color: #1B5E20; 
+                    background-color: #005C5C; 
                     color: white; 
                     border: 1px solid #555555; 
                     border-radius: 3px; 
@@ -75,10 +75,10 @@ class SimulationController:
                     font-size: 16px; 
                 }
                 QPushButton:hover { 
-                    background-color: #2E7D32; 
+                    background-color: #007878; 
                 }
                 QPushButton:pressed { 
-                    background-color: #154919; 
+                    background-color: #004040; 
                     border: 2px solid #777777;
                     padding: 4px; 
                 }
@@ -100,7 +100,7 @@ class SimulationController:
             self.main_window.autocomplete_btn.setEnabled(True)
             self.main_window.autocomplete_btn.setStyleSheet("""
                 QPushButton { 
-                    background-color: #1B5E20; 
+                    background-color: #005C5C; 
                     color: white; 
                     border: 1px solid #555555; 
                     border-radius: 3px; 
@@ -109,10 +109,10 @@ class SimulationController:
                     font-size: 16px; 
                 }
                 QPushButton:hover { 
-                    background-color: #2E7D32; 
+                    background-color: #007878; 
                 }
                 QPushButton:pressed { 
-                    background-color: #154919; 
+                    background-color: #004040; 
                     border: 2px solid #777777;
                     padding: 4px; 
                 }
@@ -214,7 +214,7 @@ class SimulationController:
         self.main_window.autocomplete_btn.setEnabled(True)
         self.main_window.autocomplete_btn.setStyleSheet("""
             QPushButton { 
-                background-color: #1B5E20; 
+                background-color: #005C5C; 
                 color: white; 
                 border: 1px solid #555555; 
                 border-radius: 3px; 
@@ -223,10 +223,10 @@ class SimulationController:
                 font-size: 16px; 
             }
             QPushButton:hover { 
-                background-color: #2E7D32; 
+                background-color: #007878; 
             }
             QPushButton:pressed { 
-                background-color: #154919; 
+                background-color: #004040; 
                 border: 2px solid #777777;
                 padding: 4px; 
             }

@@ -760,16 +760,16 @@ class UIInitializer:
         main_window.play_btn.clicked.connect(main_window.toggle_simulation)
         main_window.play_btn.setStyleSheet(common_button_style + """
             QPushButton { 
-                background-color: #0D47A1; 
+                background-color: #003A80; 
                 color: white; 
                 font-weight: bold; 
                 font-size: 16px; 
             }
             QPushButton:hover { 
-                background-color: #1565C0; 
+                background-color: #0050AA;
             }
             QPushButton:pressed { 
-                background-color: #0A367B; 
+                background-color: #002A60; 
             }
         """)
         main_window.play_btn.setFixedWidth(140)
@@ -778,16 +778,16 @@ class UIInitializer:
         main_window.reset_btn.clicked.connect(main_window.reset_simulation)
         main_window.reset_btn.setStyleSheet(common_button_style + """
             QPushButton { 
-                background-color: #B71C1C; 
+                background-color: #5D1818; 
                 color: white; 
                 font-weight: bold; 
                 font-size: 14px; 
             }
             QPushButton:hover { 
-                background-color: #C62828; 
+                background-color: #7D2222; 
             }
             QPushButton:pressed { 
-                background-color: #9B1818; 
+                background-color: #3D1010; 
             }
         """)
         main_window.reset_btn.setFixedWidth(90)
@@ -834,20 +834,20 @@ class UIInitializer:
         main_window.screenshot_btn.setFixedWidth(150)
 
         # Add Autocomplete button
-        main_window.autocomplete_btn = QPushButton("🚀 Autocomplete IRR (Enter)")
+        main_window.autocomplete_btn = QPushButton("🚀 Autocomplete (Enter)")
         main_window.autocomplete_btn.clicked.connect(main_window.run_autocomplete)
         main_window.autocomplete_btn.setStyleSheet(common_button_style + """
             QPushButton { 
-                background-color: #1B5E20; 
+                background-color: #005C5C; 
                 color: white; 
                 font-weight: bold; 
                 font-size: 16px; 
             }
             QPushButton:hover { 
-                background-color: #2E7D32; 
+                background-color: #007878; 
             }
             QPushButton:pressed { 
-                background-color: #154919; 
+                background-color: #004040; 
             }
         """)
         main_window.autocomplete_btn.setFixedWidth(250)
