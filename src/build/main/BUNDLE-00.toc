@@ -1,5 +1,0 @@
-([('main',
-   '/Users/graemeharrison/Library/Mobile '
-   'Documents/com~apple~CloudDocs/Documents/Software Tools : '
-   'Experiments/Watt-Bit Sandbox/src/dist/main',
-   'EXECUTABLE')],)
