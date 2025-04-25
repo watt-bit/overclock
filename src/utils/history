@@ -2083,3 +2083,10 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Maintained the existing color coding for different types of metrics
 
 ## 2023-11-10: Modified component_adder.py to add random positioning for new components. Components now appear with random x and y offsets within a ±300 range for better visual interest instead of all stacking at (0,0).
+
+## 2024-07-06: Added Version Label to Title Screen
+- Added a version label to the title screen in src/ui/title_screen.py
+- Implemented with "OVERCLOCK v 2025.01.00 | Watt-Bit Research" text
+- Used icy blue color (#A0D8FF) with 12pt font
+- Positioned in the bottom left corner of the window
+- Added for version identification and branding

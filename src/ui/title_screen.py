@@ -45,6 +45,9 @@ class TitleScreen(QWidget):
         # Add Load Project button
         self.create_load_project_button()
         
+        # Add version label in the bottom left corner
+        self.create_version_label()
+        
         # Center the window on the screen
         self.center_on_screen()
     
@@ -223,6 +226,22 @@ class TitleScreen(QWidget):
         """Handle new project button click"""
         self.transition_to_main.emit()
         self.close()
+    
+    def create_version_label(self):
+        """Create and add the version label in the bottom left corner"""
+        version_label = QLabel("OVERCLOCK v 2025.01.00 | Watt-Bit Research", self)
+        version_label.setFixedWidth(350)
+        
+        # Set font to 12pt normal weight
+        font = QFont()
+        font.setPointSize(12)
+        version_label.setFont(font)
+        
+        # Set icy blue color
+        version_label.setStyleSheet("color: #A0D8FF;")
+        
+        # Position in bottom left corner with 10px margin
+        version_label.move(10, self.height() - version_label.height() - 10)
     
     def center_on_screen(self):
         """Center the window on the screen"""
