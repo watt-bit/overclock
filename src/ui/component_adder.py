@@ -1,3 +1,4 @@
+import random
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent
 from src.components.bus import BusComponent
@@ -25,93 +26,97 @@ class ComponentAdder:
         """Create and add a component of the specified type to the scene"""
         position = None  # Store position for particle effect
         
+        # Generate random offsets within ±300 range
+        x_offset = random.randint(-300, 300)
+        y_offset = random.randint(-300, 300)
+        
         if component_type == "generator":
-            component = GeneratorComponent(0, 0)
+            component = GeneratorComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "grid_import":
-            component = GridImportComponent(0, 0)
+            component = GridImportComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "grid_export":
-            component = GridExportComponent(0, 0)
+            component = GridExportComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "bus":
-            component = BusComponent(0, 0)
+            component = BusComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "load":
-            component = LoadComponent(0, 0)
+            component = LoadComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "battery":
-            component = BatteryComponent(0, 0)
+            component = BatteryComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "cloud_workload":
-            component = CloudWorkloadComponent(0, 0)
+            component = CloudWorkloadComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "solar_panel":
-            component = SolarPanelComponent(0, 0)
+            component = SolarPanelComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "wind_turbine":
-            component = WindTurbineComponent(0, 0)
+            component = WindTurbineComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             self.main_window.components.append(component)
             position = component.pos()
         elif component_type == "tree":
-            component = TreeComponent(0, 0)
+            component = TreeComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add trees to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "bush":
-            component = BushComponent(0, 0)
+            component = BushComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add bushes to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "pond":
-            component = PondComponent(0, 0)
+            component = PondComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add ponds to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "house1":
-            component = House1Component(0, 0)
+            component = House1Component(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add houses to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "house2":
-            component = House2Component(0, 0)
+            component = House2Component(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add houses to the components list as they are decorative
             # and should not affect network connectivity checks
         elif component_type == "factory":
-            component = FactoryComponent(0, 0)
+            component = FactoryComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add factories to the components list as they are decorative
         elif component_type == "traditional_data_center":
-            component = TraditionalDataCenterComponent(0, 0)
+            component = TraditionalDataCenterComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add traditional data centers to the components list as they are decorative
         elif component_type == "distribution_pole":
-            component = DistributionPoleComponent(0, 0)
+            component = DistributionPoleComponent(x_offset, y_offset)
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add distribution poles to the components list as they are decorative

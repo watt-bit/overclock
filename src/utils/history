@@ -2081,3 +2081,5 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Changed border color from grey to #29304D to match other UI elements
 - Applied consistent styling across all progress bars including the system status bar
 - Maintained the existing color coding for different types of metrics
+
+## 2023-11-10: Modified component_adder.py to add random positioning for new components. Components now appear with random x and y offsets within a ±300 range for better visual interest instead of all stacking at (0,0).
