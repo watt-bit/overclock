@@ -2182,3 +2182,349 @@ Modified historian_manager.py to make only the total_generation series visible b
   * Include UI assets in the bundled application 
   * Upload the built executable as a workflow artifact
 - This enables automated Windows builds through GitHub's infrastructure
+
+## 2024-08-15: Modified Welcome Text Centering to First Center View on Origin
+- Added center_view_on_origin method to PowerSystemSimulator via SimulatorInitializer
+- Modified add_welcome_text to first center the view at (0,0) where components are added
+- Updated center_welcome_text to position welcome text relative to the new view center
+- This ensures the welcome text appears centered on the same coordinates where new components are added
+- Improves the user experience by providing better orientation when starting to build
+
+## 2025-03-28 22:30 - UI Enhancements
+- Modified properties panel to be floating and hidden by default
+- Added automatic positioning of properties panel at 300px up and right from screen center
+- Added 'P' hotkey to toggle properties panel visibility
+- Made properties panel auto-open when selecting a component
+- Made analytics panel hidden by default
+- Enhanced dock widget title bars with darker background and centered text
+- Increased speed selector dropdown width to prevent text cutting off
+- Added position_properties_panel_if_needed method for consistent panel positioning
+- These changes provide a cleaner UI by default with quick access to panels when needed
+
+## 2025-03-28 22:35 - Implemented Properties Panel Auto-Resize
+- Modified properties panel to automatically resize to fit its contents
+- Added size policy configurations to allow the panel to shrink to its minimum size
+- Reduced layout margins to create a more compact properties panel
+- Added adjustSize() calls after updating panel contents
+- Configured dock widget features to support proper resizing behavior
+- This change provides a cleaner, more space-efficient UI experience
+- Properties panel now takes up minimal screen space based on its content
+
+## 2025-03-28 22:50 - Removed Title Bars from Fixed Panels
+- Removed title bars from Components panel and Simulation Controls panel
+- Prevented these panels from being undocked or closed
+- Used setTitleBarWidget(QWidget()) to remove the title bars
+- Set dock widget features to QDockWidget.NoDockWidgetFeatures
+- This creates a cleaner, more integrated UI with fixed panels
+- Reduces visual clutter and prevents accidental panel undocking/closing
+
+## 2025-03-28 22:55 - Added Camera Emoji to Screenshot Button 
+- Added camera emoji (📷) to the beginning of the Screenshot button text
+- Improves button recognition through visual iconography
+- Makes the UI more visually intuitive
+- Maintains the existing functionality while enhancing visual clarity
+
+## 2025-03-28 23:15 - Added Title Screen
+- Created new TitleScreen class in src/ui/title_screen.py
+- Implemented a frameless window that displays a title image
+- Set up the window to close when Enter key is pressed
+- Modified src/main.py to show the title screen first before the main application window
+- Set up proper event handling to load the main window after the title screen closes
+- Uses the demotitle.png image (1536x1024px) from the assets folder
+- Image is displayed at native resolution and centered on screen
+- Provides a more professional application entry experience
+
+## 2025-03-28 23:30 - Fixed Title Screen Transition Bug
+- Modified title screen implementation to use a custom signal approach instead of relying on the destroyed signal
+- Added transition_to_main signal to TitleScreen class
+- Updated keyPressEvent to emit the signal before closing the window
+- Updated main.py to connect to the transition_to_main signal instead of destroyed
+- Reordered object creation in main.py to create the main window first
+- Fixed issue where pressing Enter or Space wasn't consistently opening the main window
+- Improved reliability of the launch sequence with explicit signaling
+
+## 2025-03-28 23:45 - Added Main Window Centering
+- Implemented center_on_screen method in PowerSystemSimulator class
+- Added automatic centering of the main window when it opens
+- Used the same approach as the title screen centering for consistency
+- Provides a more polished user experience with properly positioned windows
+- Main window now appears centered on the user's screen after the title screen closes
+
+## 2025-03-29 00:00 - Added Welcome Text for New Users
+- Added a welcome message in the center of the modeling area
+- Displays "Welcome" and "Build Here" to guide new users
+- Message automatically disappears when the first component is added
+- Text is styled with large, semi-transparent white font for good visibility
+- Implemented with delayed positioning to ensure proper centering after view initialization
+- Improves usability for first-time users by providing clear instruction
+
+## 2025-03-29 00:00 - Improved Welcome Text Alignment
+- Updated the welcome text to be center-aligned within its textbox
+- Used HTML formatting with <div align='center'> to properly center the text
+- Set a fixed text width to control the alignment area
+- Provides a more professional and polished appearance for the welcome message
+
+## 2025-03-29 00:15 - Fixed Welcome Text Deletion Error
+- Fixed critical bug where welcome text would cause crash after using the New button
+- Updated new_scenario method to properly handle welcome text reference
+- Added proper cleanup of old welcome text when creating a new scenario
+- Added recreation of welcome text after scene is cleared
+- Resolved "wrapped C/C++ object of type QGraphicsTextItem has been deleted" error
+
+## 2025-03-29 00:45 - Enhanced Button Appearance During Simulation
+- Updated component and connection buttons to have grey text when disabled during simulation
+- Added visual distinction between enabled (white text) and disabled (grey text) buttons
+- Maintained the same background color and border style for consistency
+- Improved user interface by providing clearer visual feedback about button availability
+- Enhanced user experience by making the disabled state more visually apparent
+
+## 2025-03-29 01:00 - Added Component Panel Header Image
+- Added a new image to the top of the components panel
+- Used componentspaneltop.png image from assets folder
+- Scaled the image to match the width of component buttons while preserving aspect ratio
+- Positioned the image at the very top of the component layout before any buttons
+- Enhanced the visual appeal and branding of the component panel
+- Created a more polished and professional interface appearance
+
+## 2025-03-29 01:15 - Added Golden Border to Component Panel Header Image
+- Added a 2px wide golden border around the component panel header image
+- Used CSS styling with "border: 2px solid gold" on the image label
+- Enhanced the visual prominence of the header image
+- Created an elegant framing effect that highlights the branding element
+- Improved visual distinction between the header image and component buttons
+
+## 2025-03-29 01:30 - Fixed Toolbar Font Size Issue
+- Fixed issue where toolbar font size wasn't changing despite setting the font point size
+- Replaced direct font setting approach with CSS stylesheet method
+- Used "QToolBar { font-size: 14pt; } QToolButton { font-size: 14pt; }" to ensure consistent sizing
+- Applied styling to both the toolbar and its buttons for comprehensive coverage
+- Increased font size from 12pt to 14pt for better visibility
+- Ensured consistent font sizing across all toolbar elements
+
+## 2025-03-29 01:45 - Added Auto-Charge Batteries Feature for Grid Import Components
+- Added a new property 'auto_charge_batteries' to GridImportComponent (enabled by default)
+- Added toggle button in the properties panel for controlling this feature
+- Modified the simulation engine to respect this setting during battery charging
+- Updated the 7th pass of simulation to only use grid import components with auto_charge_batteries enabled
+- Added proper serialization and loading of this property in save/load functionality
+- Provides users with more control over battery charging behavior from grid imports
+- Similar functionality to the generator's auto-charging capability but for grid import pathways
+
+## 2025-03-29 10:25 - Fixed Panel Sizes for UI Consistency
+- Set components panel to a fixed width of 250px
+- Set simulation controls panel to a fixed height of 80px
+- Removed user ability to resize these panels for a more consistent UI experience
+- Ensures UI elements maintain their intended proportions
+- Prevents accidental resizing of critical interface elements
+
+## 2024-03-29 23:47 - Fixed Battery Division by Zero Error
+- Fixed division by zero error in BatteryComponent when energy_capacity is zero
+- Added safety checks in BatteryComponent.paint method to prevent division by zero
+- Added similar safety checks in ComponentPropertiesManager._add_battery_properties method
+- Bug occurred when entering values in the battery properties panel
+- Ensures charge_percent calculation is safe even when energy_capacity is temporarily zero
+- No changes to existing functionality, just added error prevention
+
+## 2024-03-30 01:00 - Added Bulk PPA Price for Grid Export Component
+- Added 'Bulk PPA Price' property to GridExportComponent class with default value of $0.00
+- Added 'accumulated_revenue' property to track revenue from exported energy
+- Updated GridExportComponent's paint method to display accumulated revenue
+- Modified ComponentPropertiesManager to add Bulk PPA Price field to grid export properties
+- Updated SimulationEngine to calculate export revenue based on Bulk PPA Price
+- Added export revenue to gross revenue calculations and chart
+- Export revenue now appears alongside load revenue in the revenue chart
+- This change allows users to track revenue from both load service and grid export
+
+## 2023-05-15
+- Created CloudWorkloadComponent class in src/components/cloud_workload.py
+- Added Cloud Workload button to the main window UI
+- Integrated the component with keyboard shortcut (W)
+- Updated model manager to handle saving and loading of CloudWorkloadComponent
+- Added cloud workload properties display in the properties manager
+- Updated connection manager to handle the new component
+
+## 2023-05-16
+- Added Multi-Cloud Spot operating mode to CloudWorkloadComponent
+- Added resource parameters for Traditional Cloud, GPU Dense, and Crypto ASIC
+- Updated properties panel to display parameters when in Multi-Cloud Spot mode
+- Implemented revenue calculation based on energy consumed by Data Center loads
+- Updated simulation engine to include cloud workload revenue in gross revenue calculations
+- Added revenue display to CloudWorkloadComponent and properties panel
+- Ensured proper serialization and deserialization of accumulated revenue 
+
+## 2023-05-17
+- Fixed bug where cloud workload component revenue display was not reset when the Reset button was pressed
+- Updated reset_simulation method in main_window.py to also reset CloudWorkloadComponent instances 
+
+## 2025-03-30: Set form layout alignment to left align in properties panels:
+- Modified src/ui/properties_manager.py to set left alignment for form layouts
+- Applied to main properties layout, left column, and resource params layout
+
+## 2025-03-30: Removed shadow effect from cloud workload component only:
+- Modified src/components/cloud_workload.py to set shadow_opacity = 0
+
+## 2025-03-30: Added application icon:
+- Added appicon.png as the application icon
+- Modified src/main.py to set the window icon using QApplication.setWindowIcon() 
+
+## 2024-07-05: Updated Simulation Veracity Log
+- Conducted comprehensive review of src/simulation/engine.py
+- Added detailed analysis of SimulationEngine implementation to the simulation veracity log
+- Documented key findings related to:
+  * Simulation architecture and multi-pass design
+  * Power flow calculations and energy conservation principles
+  * Generator control strategies and operation modes
+  * Battery management and charging/discharging logic
+  * System stability monitoring
+  * Revenue calculation mechanisms
+  * Time management strategies
+- Identified notable optimizations and areas for future enhancement 
+
+## 2025-04-01 20:20 - Added Solar Panel Component
+- Created new SolarPanelComponent class in src/components/solar_panel.py
+- Component uses solarpanel.png image with transparent background
+- Added "Solar (P)anel" button to the UI with keyboard shortcut 'P'
+- Implemented property handling with "Operating Mode" dropdown (currently only "Disabled" option)
+- Added serialization support for saving/loading solar panel components
+- Integrated component with the connection system for network connectivity
+- Component is currently non-functional (doesn't generate power) as it's in "Disabled" mode 
+
+## 2025-04-01 20:30 - Fixed Welcome Text Bug with Solar Panel Component
+- Fixed bug where welcome text didn't disappear when adding a solar panel as the first component
+- Added "solar_panel" to the list of component types that trigger hiding the welcome text
+- Bug was caused by solar panel not being included in the original list of components that hide the text
+- Ensures consistent behavior when adding any functional (non-decorative) component as the first component 
+
+## 2025-04-01 20:35 - Added Capacity Property to Solar Panel Component
+- Added "Capacity" property to SolarPanelComponent with a default value of 500 kW
+- Updated the component's paint method to display capacity information
+- Added capacity field to the properties panel for user editing
+- Implemented proper validation for numeric input
+- Updated the serialize/deserialize methods to save and load the capacity property
+- Updated the visual display to show capacity information below operating mode
+- The component remains non-functional (doesn't generate power) as it's still in "Disabled" mode
+
+## 2025-04-01 20:45 - Added Powerlandia 8760 Solar Generation Capability
+- Added "Powerlandia 8760 - Midwest 1" operating mode to SolarPanelComponent
+- Implemented CSV data loading for hourly solar capacity factors from powerlandia-solargen-year1.csv
+- Updated the calculate_output method to use capacity factors based on simulation time
+- Modified the simulation engine to prioritize solar generation before other sources
+- Updated the properties panel to include the new operating mode option
+- Added output percentage display to show current generation relative to capacity
+- Enhanced the model manager to properly save/load solar panel operating mode
+- Solar generation is now fully integrated with the existing power flow logic
+- Interface shows real-time solar output percentage based on time-of-day factors
+
+## 2025-04-01 20:55 - Fixed Solar Panel Capacity Accounting Bug
+- Fixed bug where solar panel generation was incorrectly showing up as "unused capacity"
+- Added solar panel capacity to the total_capacity calculation in the simulation engine
+- Only counts capacity for solar panels in "Powerlandia 8760" mode (not disabled panels)
+- Ensures solar generation is properly accounted for in capacity utilization calculations
+- Fixes incorrect analytics display showing solar generation as unused when it was actually serving load
+
+## April 3, 2023
+- Added overclocklogo.png to the bottom right corner of the modeling window
+- Logo is displayed at 10% of its original size with transparent background
+- Implemented proper positioning to stay in bottom-right corner when window is resized
+- Made the logo click-through so users can interact with components behind it
+- Updated the screenshot function to include the Overclock logo in captured screenshots
+
+## 2023-10-31 Modified main_window.py to set the dock widget corners to give priority to left and right dock areas for the top corners, and bottom dock area for the bottom corners. This makes the top dock area (like the properties panel) appear "inside" the left and right dock areas, while the bottom dock area (simulation controls) appears "outside" them and takes priority at the corners.
+
+## 2025-04-03 - Fixed Multi-Component Deletion Bug
+- Updated keyPressEvent handler in main_window.py to properly handle multiple selected components
+- Added checks to safely delete multiple components at once when pressing the Delete key
+- Prevented the 'component not in list' error when deleting multiple selected components
+- Improved user experience by allowing batch deletion of components
+
+## 2024-07-08: Enhanced Historian Chart for Dynamic Data Series
+- Modified the HistorianManager class in src/ui/historian_manager.py to support multiple data series
+- Replaced the single generation_line with a dictionary of lines to handle arbitrary data series
+- Added a color management system with predefined colors for known data types and dynamic color generation
+- Implemented dynamic creation of lines based on data available in the historian
+- Added proper line formatting with consistent styling (paths, shadows, colors)
+- Improved legend management to show all active data series
+- Enhanced the clear_chart method to handle multiple lines
+- Made the chart automatically detect and visualize any data added to the historian dictionary
+- Maintained backward compatibility with existing total_generation data
+
+## Apr 05, 2024: Fixed critical timing bug where time step 0 was being skipped in both autocomplete and play modes. The issue was in the simulation engine's step_simulation method, which was incrementing the current_time_step before processing it. This made the simulation jump from 0 to 1 without ever processing the initial state (t=0). Modified the step_simulation method to ensure it processes the current time step first, and only then increments for the next iteration.
+
+## Apr 05, 2024: Fixed additional timing bug in the main window's step_simulation method. The previous fix correctly updated the simulation engine but there was still an issue in the calling sequence. The method was calling step_simulation (which increments time) before calling update_simulation (which processes the current time). Reordered the operations to process the current time step first, then increment for the next step, ensuring time step 0 is properly processed when playing the simulation.
+
+## 2024-07-08: Added Total Load to Historian
+- Modified SimulationEngine to track and record total_load in the historian data
+- Added 'total_load' array initialization in the historian dictionary
+- Added code to record the total_load value at each time step
+- Leverages the dynamic chart system to automatically display the new data series without requiring visualization code changes
+
+## 2024-07-08: Added Grid Import and Export to Historian
+- Modified SimulationEngine to track and record grid_import and grid_export in the historian data
+- Added 'grid_import' and 'grid_export' arrays to the historian dictionary initialization
+- Added code to record the grid import and export values at each time step
+- Leverages the dynamic chart system to automatically visualize grid import/export without additional code changes
+
+## 2024-07-08: Added Data Series Toggle Controls to Historian View
+- Modified the HistorianManager to include a panel of toggle buttons to the left of the chart
+- Added one button for each data series in the historian
+- Buttons allow users to show/hide individual data series on the chart
+- Implemented visual styling with buttons matching the line colors
+- Added scroll area to support many data series
+- Updated the chart to only consider visible lines when calculating y-axis scaling
+- Enhanced legend to show faded entries for hidden data series
+- Made all buttons dynamically generate as new data series are added to the historian
+- Maintained backward compatibility with the existing historian functionality
+
+## 2024-07-08: Removed Legend from Historian Chart
+- Removed the redundant legend from the historian chart
+- The color-coded buttons in the data series toggle panel already provide the same information
+- Removed label parameter from plot lines to ensure clean rendering without legend
+- Simplified chart layout and reduced visual clutter
+- Maintains all functionality while providing a cleaner, more streamlined interface
+
+## 2024-07-08: Added Cumulative Revenue Tracking with Secondary Y-Axis
+- Added cumulative_revenue to the historian data to track revenue accumulation over time
+- Modified the SimulationEngine to calculate and record cumulative revenue at each time step
+- Enhanced the HistorianManager to support dual y-axes for different data types
+- Added a secondary y-axis with distinct styling (pink color) for revenue data
+- Implemented automatic axis visibility based on visible data series
+- Added visual separation between power data and revenue data in the control panel
+- Ensured revenue toggle button always appears at the bottom of the control list
+- Added $ symbol to the revenue button label for clearer identification
+- Maintained consistent behavior with existing toggle functionality
+- Enhanced the clear_chart method to properly reset both axes
+
+## 2024-07-08: Made Secondary Axis Data Series Hidden by Default
+- Modified the HistorianManager to hide secondary axis data series (like cumulative revenue) by default
+- Updated line creation to initialize secondary axis series as invisible
+- Made secondary axis toggle buttons start in the "off" state (checked)
+- Updated the clear_chart method to maintain separate default states for primary and secondary axis series
+- Enhanced the update_chart method to properly handle the default visibility states
+- Improved usability by focusing initial view on core power metrics without financial data
+- Secondary axis remains completely hidden until explicitly toggled on by the user
+
+## 2023-09-19: Fixed a bug in the export revenue calculation where multiple export connections would generate multiplied revenue. Now properly tracks individual export amounts per component and uses those for revenue calculations rather than applying the total grid export to each component.
+
+## 2024-07-08: Fixed Grid Export Revenue Calculation Bug
+- Fixed a critical bug in the export revenue calculation system where the component_exports dictionary was only initialized when surplus power existed
+- Modified the code to initialize the dictionary outside the conditional block so it's always available
+- Prevents "UnboundLocalError: local variable 'component_exports' referenced before assignment" crash when calculating revenue without any surplus power
+
+Modified historian_manager.py to make only the total_generation series visible by default, instead of all primary axis series. Updated the create_line_for_data, create_toggle_button, and clear_chart methods to implement this behavior.
+
+## 2023-05-21: Swapped the order of title screens - changed flow from WBR->Augur->Original to Augur->WBR->Original by adjusting the connection sequence and changing which screen is shown first.
+
+## 2025-04-05 - Added Grid Export Price Prioritization
+- Modified the simulation engine to prioritize grid export components based on their bulk PPA price
+- Changed the export order to process grid exports in descending price order (highest price first)
+- Added a proper grid_export_components sorting mechanism in the Eighth Pass section of update_simulation
+- Used Python's sort with a key function to sort components by bulk_ppa_price with reverse=True
+- Fixed a bug where component_exports was referenced before assignment in some cases
+- This change ensures that when multiple grid export components exist, exports (and revenue) will be 
+  allocated to higher-priced components first to maximize revenue
+
+## 2024-07-10 - Added New Decorative Component: Traditional Data Center
+- Created new TraditionalDataCenterComponent class in src/components/traditional_data_center.py
+- Added "Add Traditional Data Center" option to the Add Props menu in main_window.py
+- Updated PropertyManager to handle the new decorative component
+- Updated ModelManager to save/load the new component

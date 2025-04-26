@@ -2426,3 +2426,35 @@ Key insights from fixing the grid export/import indicator overflow bug:
    - Keep all modules in their original directories (src/components, src/ui, etc.)
    - Update imports in the main file to use full package paths (from src.ui.main_window import...)
    - This maintains code organization while improving build compatibility
+
+## View Centering for Better User Orientation
+Key insights from modifying the welcome text initialization to center the view on the origin:
+
+1. **Consistent User Starting Point**
+   - Centering the view at (0,0) before adding welcome text ensures users start from a consistent position
+   - This aligns the initial view with the location where new components will be added
+   - Users have a better sense of spatial orientation when building their first components
+   - Reduces confusion and makes the transition from welcome screen to component building more intuitive
+
+2. **Coordinated View-Scene Relationship**
+   - QGraphicsView's centerOn() method provides a clean way to position the view at specific scene coordinates
+   - Adding a helper method (center_view_on_origin) makes this operation reusable across the application
+   - Maintaining a clean separation between the scene (content) and view (viewport) is important in Qt's graphics framework
+   - Scene coordinates and view coordinates have distinct roles and purposes
+
+3. **Welcome Text as Initial Reference Point**
+   - The welcome text serves as both a greeting and a spatial reference point
+   - By centering it at (0,0), it creates an anchor point for understanding the coordinate system
+   - This helps users develop a mental model of where new components will appear
+   - The text naturally disappears when components are added, creating a smooth transition
+
+4. **Lambda Implementation for Simple Methods**
+   - Using a lambda function to implement center_view_on_origin is appropriate for simple, one-line operations
+   - This approach avoids creating a full method definition while still making the functionality available
+   - It's a clean pattern for simple helpers added during initialization
+
+5. **Simulation Spatial Context**
+   - In a spatial simulation like the power system simulator, positioning consistency is important for user experience
+   - Centering the view affects how users perceive distance and scale in the simulation
+   - Starting at the origin provides a neutral reference point for the spatial model
+   - This careful attention to spatial context improves overall usability

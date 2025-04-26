@@ -1,5 +1,4 @@
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QTimer, QPointF
 
 from src.simulation.engine import SimulationEngine
 from .properties_manager import ComponentPropertiesManager
@@ -119,6 +118,9 @@ class SimulatorInitializer:
          
         # Center the window on the screen
         simulator.center_on_screen()
+        
+        # Add method to center the view on origin (0,0)
+        simulator.center_view_on_origin = lambda: simulator.view.centerOn(QPointF(0, 0))
         
         # Create KeyHandler instance
         simulator.key_handler = KeyHandler(simulator) 

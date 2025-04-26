@@ -23,7 +23,7 @@ class PowerSystemSimulator(QMainWindow):
         window_geometry = self.geometry()
         
         x = (screen_geometry.width() - window_geometry.width()) // 2
-        y = (screen_geometry.height() - window_geometry.height()) // 2 - 50
+        y = (screen_geometry.height() - window_geometry.height()) // 2 - 75
         
         self.move(x, y)
     
@@ -37,10 +37,13 @@ class PowerSystemSimulator(QMainWindow):
     
     def add_welcome_text(self):
         """Add welcome text with animated rainbow gradient border to the middle of the canvas"""
-        # Get the center of the viewport in scene coordinates
+        # First, center the view at the origin (0,0) where components are added
+        self.center_view_on_origin()
+        
+        # Get the center of the viewport in scene coordinates after centering on origin
         view_center = self.view.mapToScene(self.view.viewport().rect().center())
         
-        # First trigger the particle effect BEFORE adding the welcome text
+        # Trigger the particle effect BEFORE adding the welcome text
         if hasattr(self, 'particle_system') and self.particle_system:
             self.particle_system.create_welcome_puff(
                 view_center.x(),
@@ -52,6 +55,10 @@ class PowerSystemSimulator(QMainWindow):
         
         # Create custom text item with welcome message
         self.welcome_text = GradientBorderText()
+
+        # Center the text immediately before adding it to the scene
+
+
         self.scene.addItem(self.welcome_text)
         
         # Set font and style
