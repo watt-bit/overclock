@@ -471,7 +471,7 @@ class ComponentPropertiesManager:
         frequency_edit.setStyleSheet(INPUT_STYLE)
         self._set_up_numeric_field(frequency_edit, 
                                   lambda value: setattr(component, 'frequency_per_10000_hours', value), 
-                                  min_value=0.0, max_value=100.0)
+                                  min_value=0.0, max_value=1000.0)
         
         # Minimum downtime field
         min_downtime_edit = QLineEdit(str(component.minimum_downtime))
@@ -1094,8 +1094,8 @@ class ComponentPropertiesManager:
         self._set_up_numeric_field(
             power_per_resource_edit, 
             lambda value: setattr(component, 'dedicated_power_per_resource', value),
-            min_value=0.01,
-            max_value=10.0
+            min_value=0.05,
+            max_value=100.0
         )
         dedicated_params_layout.addRow("Power per Resource (kW):", power_per_resource_edit)
         
@@ -1130,8 +1130,8 @@ class ComponentPropertiesManager:
         self._set_up_numeric_field(
             price_per_resource_edit, 
             lambda value: setattr(component, 'dedicated_price_per_resource', value),
-            min_value=0.01,
-            max_value=100.0
+            min_value=0.00,
+            max_value=10.0
         )
         dedicated_params_layout.addRow("Price per Resource Hour ($):", price_per_resource_edit)
         
