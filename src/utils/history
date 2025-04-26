@@ -2169,3 +2169,16 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Updated the processing order to first handle generators in maintenance, then apportion load among available generators
 - This change ensures the system properly rebalances when droop generators enter or exit maintenance
 - Improves system stability during generator maintenance events
+
+## 2024-07-23: Added GitHub Actions Windows Build Workflow
+- Created .github/workflows/windows-build.yml file
+- Implemented a GitHub Action workflow to build Windows executable
+- Configured the workflow to run on manual trigger only (workflow_dispatch)
+- Set up the build process to:
+  * Use Python 3.13.3
+  * Install dependencies from requirements.txt
+  * Build using PyInstaller with proper app name and icon
+  * Package application as a single executable file
+  * Include UI assets in the bundled application 
+  * Upload the built executable as a workflow artifact
+- This enables automated Windows builds through GitHub's infrastructure
