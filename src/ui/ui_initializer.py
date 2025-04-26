@@ -18,18 +18,22 @@ class GradientBorderText(QGraphicsTextItem):
         super().__init__(text, parent)
         # Initialize gradient colors for a cool, electric darkmode effect
         self.colors = [
-            QColor(65, 88, 208),    # Electric blue
-            QColor(40, 170, 226),   # Bright cyan
-            QColor(8, 204, 193),    # Electric teal
-            QColor(0, 230, 255),    # Neon cyan
-            QColor(0, 126, 255),    # Bright blue
-            QColor(65, 88, 208),    # Electric blue
+            QColor(48, 68, 168),    # Starlight electric blue
+            QColor(36, 120, 165),   # Cool bright cyan
+            QColor(20, 140, 135),   # Crisp electric teal
+            QColor(10, 160, 175),   # Bright neon cyan
+            QColor(10, 95, 175),    # Luminous bright blue
+            QColor(30, 100, 150),   # Starlight azure
+            QColor(40, 125, 180),   # Brighter midnight sky blue
+            QColor(24, 155, 180),   # Bright dark aquamarine
+            QColor(35, 90, 140),    # Cool steel blue
+            QColor(48, 68, 168),    # Starlight electric blue
         ]
         
         # Animation properties
         self.animation_offset = 0
         self.animation_speed = 0.5
-        self.border_width = 1
+        self.border_width = 3
         self.text_content = "Welcome\nBuild Here"
         
         # Set up animation timer

@@ -56,7 +56,7 @@ class PowerSystemSimulator(QMainWindow):
         self.welcome_text.setFont(font)
         
         # Set text color with a semi-transparent look
-        self.welcome_text.setDefaultTextColor(QColor(38, 38, 38, 255))
+        self.welcome_text.setDefaultTextColor(QColor(38, 38, 38, 0))
         
         # Set text width and center-align the text
         self.welcome_text.setTextWidth(700)
