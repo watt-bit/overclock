@@ -98,40 +98,6 @@ class GradientBorderText(QGraphicsTextItem):
         
         painter.restore()
 
-# Custom Button with Image Background
-class ImageBackgroundButton(QPushButton):
-    def __init__(self, text, image_path, parent=None):
-        super().__init__(text, parent)
-        try:
-            self.bg_image = QPixmap(resource_path(image_path))
-            if self.bg_image.isNull():
-                print(f"Warning: Could not load {image_path} - using default button style")
-                self.bg_image = None
-        except Exception as e:
-            print(f"Error loading button background image: {e}")
-            self.bg_image = None
-            
-        # Set transparent background to let our custom painting show through
-        self.setStyleSheet("""
-            QPushButton { 
-                color: white; 
-                border: 1px solid #555555; 
-                border-radius: 3px; 
-                padding: 5px;
-                background-color: transparent;
-                font-size: 14px;
-            }
-            QPushButton:hover { 
-                border: 1px solid #666666;
-                background-color: rgba(255, 255, 255, 0.2); 
-            }
-            QPushButton:pressed { 
-                border: 2px solid #777777;
-                padding: 4px; 
-                background-color: rgba(0, 0, 0, 0.2);
-            }
-        """)
-        
     def paintEvent(self, event):
         if self.bg_image and not self.bg_image.isNull():
             # Paint the background image first
@@ -790,7 +756,7 @@ class UIInitializer:
                 background-color: #3D1010; 
             }
         """)
-        main_window.reset_btn.setFixedWidth(90)
+        main_window.reset_btn.setFixedWidth(110)
 
         # Add speed control
         speed_label = QLabel("⏩ Speed:")
@@ -829,9 +795,10 @@ class UIInitializer:
         main_window.zoom_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
         # Add screenshot button
-        main_window.screenshot_btn = ImageBackgroundButton("📷 Screenshot", resource_path("src/ui/assets/innertitlebardark.png"))
+        main_window.screenshot_btn = QPushButton("📷 Screenshot")
         main_window.screenshot_btn.clicked.connect(main_window.take_screenshot)
         main_window.screenshot_btn.setFixedWidth(150)
+        main_window.screenshot_btn.setStyleSheet(default_button_style)
 
         # Add Autocomplete button
         main_window.autocomplete_btn = QPushButton("🚀 Autocomplete (Enter)")
