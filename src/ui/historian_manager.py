@@ -114,7 +114,7 @@ class HistorianManager:
         self.figure = plt.figure(figsize=(12, 6))
         self.figure.patch.set_facecolor('#0A0E22')  # Dark navy-blue background
         self.ax = self.figure.add_subplot(111)
-        self.ax.set_facecolor('#11182F')  # Low-glow twilight tone for plot area
+        self.ax.set_facecolor('#0A0E22')  # Low-glow twilight tone for plot area
         
         # Create secondary y-axis
         self.ax2 = self.ax.twinx()
@@ -132,7 +132,7 @@ class HistorianManager:
         self.ax.set_xlabel('Time Step (hour)', color='#B5BEDF')
         self.ax.set_ylabel('Power (kW)', color='#B5BEDF')
         self.ax.tick_params(colors='#B5BEDF')  # Soft powdery blue-lavender for tick labels
-        self.ax.grid(True, color='#3B4766', linestyle='-')  # Major gridlines
+        self.ax.grid(True, color='#2A334F', linestyle='-')  # Major gridlines
         self.ax.grid(True, which='minor', color='#2A334F', linestyle='--', alpha=0.5)  # Minor gridlines
         
         # Set spines (borders) color

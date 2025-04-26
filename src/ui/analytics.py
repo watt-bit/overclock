@@ -28,7 +28,7 @@ class AnalyticsPanel(QWidget):
         self.figure = plt.figure(figsize=(6, 4))
         self.figure.patch.set_facecolor('#0A0E22')  # Dark navy-blue background
         self.ax = self.figure.add_subplot(111)
-        self.ax.set_facecolor('#11182F')  # Low-glow twilight tone for plot area
+        self.ax.set_facecolor('#0A0E22')  # Low-glow twilight tone for plot area
         # Adjust subplot parameters to give specified padding
         self.figure.subplots_adjust(left=0.15, right=0.98, bottom=0.12, top=0.97)
         self.canvas = FigureCanvas(self.figure)
@@ -47,7 +47,7 @@ class AnalyticsPanel(QWidget):
         self.ax.set_xlabel('Time Step (hour)', color='#B5BEDF')
         self.ax.set_ylabel('Power (kW)', color='#B5BEDF')
         self.ax.tick_params(colors='#B5BEDF')  # Soft powdery blue-lavender for tick labels
-        self.ax.grid(True, color='#3B4766', linestyle='-')  # Major gridlines
+        self.ax.grid(True, color='#2A334F', linestyle='-')  # Major gridlines
         self.ax.grid(True, which='minor', color='#2A334F', linestyle='--', alpha=0.5)  # Minor gridlines
         
         # Set spines (borders) color
@@ -55,19 +55,19 @@ class AnalyticsPanel(QWidget):
             spine.set_color('#29304D')
         
         # Create empty lines with labels - matching progress bar colors
-        self.generation_line, = self.ax.plot([], [], '-', color='#66BB6A', linewidth=2, label='Local Generation', alpha=0.9,
+        self.generation_line, = self.ax.plot([], [], '-', color='#66BB6A', linewidth=2, label='Generation', alpha=0.9,
                                             path_effects=[path_effects.SimpleLineShadow(shadow_color='#66BB6A', alpha=0.2, offset=(0,0), linewidth=7),
                                                         path_effects.Normal()])
                                                         
-        self.battery_line, = self.ax.plot([], [], '-', color='#42A5F5', linewidth=2, label='Net Battery Power', alpha=0.9,
+        self.battery_line, = self.ax.plot([], [], '-', color='#42A5F5', linewidth=2, label='Batteries', alpha=0.9,
                                          path_effects=[path_effects.SimpleLineShadow(shadow_color='#42A5F5', alpha=0.2, offset=(0,0), linewidth=7),
                                                      path_effects.Normal()])  # Blue for battery
                                                      
-        self.grid_line, = self.ax.plot([], [], '-', color='#AB47BC', linewidth=2, label='Grid Import', alpha=0.9,
+        self.grid_line, = self.ax.plot([], [], '-', color='#AB47BC', linewidth=2, label='Import', alpha=0.9,
                                       path_effects=[path_effects.SimpleLineShadow(shadow_color='#AB47BC', alpha=0.2, offset=(0,0), linewidth=7),
                                                   path_effects.Normal()])
                                                   
-        self.grid_export_line, = self.ax.plot([], [], '-', color='#FF7043', linewidth=2, label='Grid Export', alpha=0.9,
+        self.grid_export_line, = self.ax.plot([], [], '-', color='#FF7043', linewidth=2, label='Export', alpha=0.9,
                                              path_effects=[path_effects.SimpleLineShadow(shadow_color='#FFCA28', alpha=0.2, offset=(0,0), linewidth=7),
                                                          path_effects.Normal()])
                                                          
@@ -75,11 +75,11 @@ class AnalyticsPanel(QWidget):
                                       path_effects=[path_effects.SimpleLineShadow(shadow_color='#FF7043', alpha=0.2, offset=(0,0), linewidth=7),
                                                   path_effects.Normal()])
                                                   
-        self.surplus_line, = self.ax.plot([], [], ':', color='#BA68C8', linewidth=2, label='Surplus/Deficit', alpha=0.9,
+        self.surplus_line, = self.ax.plot([], [], ':', color='#BA68C8', linewidth=2, label='Instability', alpha=0.9,
                                          path_effects=[path_effects.SimpleLineShadow(shadow_color='#BA68C8', alpha=0.2, offset=(0,0), linewidth=7),
                                                      path_effects.Normal()])
                                                      
-        self.unused_capacity_line, = self.ax.plot([], [], ':', color='#7986CB', linewidth=2, label='Unused Capacity', alpha=0.7,
+        self.unused_capacity_line, = self.ax.plot([], [], ':', color='#7986CB', linewidth=2, label='Capacity', alpha=0.7,
                                                  path_effects=[path_effects.SimpleLineShadow(shadow_color='#7986CB', alpha=0.2, offset=(0,0), linewidth=7),
                                                              path_effects.Normal()])
         
@@ -359,7 +359,7 @@ class AnalyticsPanel(QWidget):
         self.revenue_figure = plt.figure(figsize=(6, 3))
         self.revenue_figure.patch.set_facecolor('#0A0E22')  # Dark navy-blue background
         self.revenue_ax = self.revenue_figure.add_subplot(111)
-        self.revenue_ax.set_facecolor('#11182F')  # Low-glow twilight tone for plot area
+        self.revenue_ax.set_facecolor('#0A0E22')  # Low-glow twilight tone for plot area
         # Adjust subplot parameters to give specified padding
         self.revenue_figure.subplots_adjust(left=0.15, right=0.98, bottom=0.18, top=0.95)
         self.revenue_canvas = FigureCanvas(self.revenue_figure)
@@ -372,7 +372,7 @@ class AnalyticsPanel(QWidget):
         self.revenue_ax.set_xlabel('Time Step (hour)', color='#B5BEDF')
         self.revenue_ax.set_ylabel('Amount ($)', color='#B5BEDF')
         self.revenue_ax.tick_params(colors='#B5BEDF')  # Soft powdery blue-lavender for tick labels
-        self.revenue_ax.grid(True, color='#3B4766', linestyle='-')  # Major gridlines
+        self.revenue_ax.grid(True, color='#2A334F', linestyle='-')  # Major gridlines
         self.revenue_ax.grid(True, which='minor', color='#2A334F', linestyle='--', alpha=0.5)  # Minor gridlines
         
         # Set spines (borders) color
@@ -383,12 +383,12 @@ class AnalyticsPanel(QWidget):
         self.revenue_ax.ticklabel_format(useOffset=False)
         
         # Create empty line for gross revenue
-        self.gross_revenue_line, = self.revenue_ax.plot([], [], '-', color='#4FC3F7', linewidth=2, label='Cumulative Revenue', alpha=0.9,
+        self.gross_revenue_line, = self.revenue_ax.plot([], [], '-', color='#4FC3F7', linewidth=2, label='Revenue', alpha=0.9,
                                                       path_effects=[path_effects.SimpleLineShadow(shadow_color='#4FC3F7', alpha=0.2, offset=(0,0), linewidth=7),
                                                                   path_effects.Normal()])
         
         # Create empty line for gross cost
-        self.gross_cost_line, = self.revenue_ax.plot([], [], '-', color='#D32F2F', linewidth=2, label='Cumulative Op Cost', alpha=0.9,
+        self.gross_cost_line, = self.revenue_ax.plot([], [], '-', color='#D32F2F', linewidth=2, label='OpEx', alpha=0.9,
                                                    path_effects=[path_effects.SimpleLineShadow(shadow_color='#D32F2F', alpha=0.2, offset=(0,0), linewidth=7),
                                                                path_effects.Normal()])
         
