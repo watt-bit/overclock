@@ -77,7 +77,7 @@ class GradientBorderText(QGraphicsTextItem):
             path.addPath(text_path)
             
             # Move down for next line
-            y_offset += 125  # Approximate line height
+            y_offset += 123  # Approximate line height
         
         # Create gradient for the border
         gradient = QLinearGradient(0, 0, 700, 240)  # Approximate dimensions of text area

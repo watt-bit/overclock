@@ -42,23 +42,11 @@ class PowerSystemSimulator(QMainWindow):
         
         # Get the center of the viewport in scene coordinates after centering on origin
         view_center = self.view.mapToScene(self.view.viewport().rect().center())
-        
-        # Trigger the particle effect BEFORE adding the welcome text
-        if hasattr(self, 'particle_system') and self.particle_system:
-            self.particle_system.create_welcome_puff(
-                view_center.x(),
-                view_center.y(),
-                width=500,
-                height=200,
-                num_particles=200  # More particles for a better effect
-            )
+
         
         # Create custom text item with welcome message
         self.welcome_text = GradientBorderText()
-
-        # Center the text immediately before adding it to the scene
-
-
+        
         self.scene.addItem(self.welcome_text)
         
         # Set font and style
@@ -74,11 +62,7 @@ class PowerSystemSimulator(QMainWindow):
         self.welcome_text.setTextWidth(700)
         self.welcome_text.setHtml("<div align='center'>Welcome<br>Build Here</div>")
         
-        # Center the text immediately
-        self.center_welcome_text()
-    
-    def center_welcome_text(self):
-        """Center the welcome text in the view after the view is shown"""
+        # Center the welcome text in the view
         if self.welcome_text and self.welcome_text.scene():
             # Get the center of the current viewport in scene coordinates
             view_center = self.view.mapToScene(self.view.viewport().rect().center())
@@ -87,6 +71,16 @@ class PowerSystemSimulator(QMainWindow):
             
             # Position text in the center
             self.welcome_text.setPos(view_center.x() - text_width/2, view_center.y() - text_height/2)
+            
+        # Trigger the particle effect AFTER adding the welcome text
+        if hasattr(self, 'particle_system') and self.particle_system:
+            self.particle_system.create_welcome_puff(
+                view_center.x(),
+                view_center.y(),
+                width=500,
+                height=200,
+                num_particles=200  # More particles for a better effect
+            )
     
     def add_component(self, component_type):
         """Delegate to the ComponentAdder to handle component creation and addition"""
