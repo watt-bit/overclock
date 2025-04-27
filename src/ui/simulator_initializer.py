@@ -23,7 +23,7 @@ class SimulatorInitializer:
         """Initialize the PowerSystemSimulator with all necessary components and settings"""
         # Set window properties
         simulator.setWindowTitle("OVERCLOCK | Watt-Bit Research | https://watt-bit.com | research preview presented by Augur VC | https://augurvc.com")
-        simulator.resize(2400, 1200)
+        simulator.resize(1600, 900)
         
         # Initialize variables
         simulator.components = []

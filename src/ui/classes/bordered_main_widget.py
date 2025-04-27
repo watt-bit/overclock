@@ -202,7 +202,7 @@ class BorderedMainWidget(QWidget):
                 self.is_flashing = False
                 self.flash_timer.stop()
         # Handle single dark gray flash (1 step, 250ms)
-        elif self.colors[0] == self.flash_gray_colors[0] and all(color == self.colors[0] for color in self.colors) and self.flash_step == 1:
+        elif self.colors[0] == self.flash_gray_colors[0] and all(color == self.colors[0] for color in self.colors) and self.flash_step == 1 and self.flash_timer.interval() == 250:
             # Single dark gray flash is done, return to normal colors
             self.colors = self.original_colors.copy()
             self.is_flashing = False

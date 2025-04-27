@@ -44,6 +44,20 @@ class SimulationController:
             if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'animation_speed'):
                 self.main_window.centralWidget().animation_speed = 3
             
+            # Increase border width, corner radius and content margins when simulation starts
+            if hasattr(self.main_window, 'centralWidget'):
+                main_widget = self.main_window.centralWidget()
+                if hasattr(main_widget, 'border_width') and hasattr(main_widget, 'corner_radius'):
+                    main_widget.border_width = 6
+                    main_widget.corner_radius = 6
+                    main_widget.update()  # Trigger repaint
+                
+                # Update layout margins
+                if hasattr(main_widget, 'layout'):
+                    main_layout = main_widget.layout()
+                    if main_layout:
+                        main_layout.setContentsMargins(6, 6, 6, 6)
+            
             # Disable delete button in properties manager
             if hasattr(self.main_window, 'properties_manager'):
                 self.main_window.properties_manager.update_delete_button_state()
@@ -69,6 +83,20 @@ class SimulationController:
             # Slow down the border animation when simulation is stopped
             if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'animation_speed'):
                 self.main_window.centralWidget().animation_speed = 1
+            
+            # Reset border width, corner radius and content margins when simulation stops
+            if hasattr(self.main_window, 'centralWidget'):
+                main_widget = self.main_window.centralWidget()
+                if hasattr(main_widget, 'border_width') and hasattr(main_widget, 'corner_radius'):
+                    main_widget.border_width = 4
+                    main_widget.corner_radius = 4
+                    main_widget.update()  # Trigger repaint
+                
+                # Update layout margins
+                if hasattr(main_widget, 'layout'):
+                    main_layout = main_widget.layout()
+                    if main_layout:
+                        main_layout.setContentsMargins(4, 4, 4, 4)
             
             # Re-enable delete button in properties manager
             if hasattr(self.main_window, 'properties_manager'):
@@ -103,6 +131,20 @@ class SimulationController:
             self.main_window.play_btn.setText("Run (Space)")
             self.main_window.sim_timer.stop()
             self.main_window.disable_component_buttons(False)
+            
+            # Reset border width, corner radius and content margins
+            if hasattr(self.main_window, 'centralWidget'):
+                main_widget = self.main_window.centralWidget()
+                if hasattr(main_widget, 'border_width') and hasattr(main_widget, 'corner_radius'):
+                    main_widget.border_width = 4
+                    main_widget.corner_radius = 4
+                    main_widget.update()  # Trigger repaint
+                
+                # Update layout margins
+                if hasattr(main_widget, 'layout'):
+                    main_layout = main_widget.layout()
+                    if main_layout:
+                        main_layout.setContentsMargins(4, 4, 4, 4)
             
             # Re-enable delete button in properties manager
             if hasattr(self.main_window, 'properties_manager'):
@@ -172,6 +214,20 @@ class SimulationController:
         
         # Reset the gross revenue data
         self.main_window.simulation_engine.gross_revenue_data = [0.0] * 8761
+        
+        # Reset border width, corner radius and content margins
+        if hasattr(self.main_window, 'centralWidget'):
+            main_widget = self.main_window.centralWidget()
+            if hasattr(main_widget, 'border_width') and hasattr(main_widget, 'corner_radius'):
+                main_widget.border_width = 4
+                main_widget.corner_radius = 4
+                main_widget.update()  # Trigger repaint
+            
+            # Update layout margins
+            if hasattr(main_widget, 'layout'):
+                main_layout = main_widget.layout()
+                if main_layout:
+                    main_layout.setContentsMargins(4, 4, 4, 4)
         
         # Also reset accumulated revenue in all load components
         for item in self.main_window.scene.items():
