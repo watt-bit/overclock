@@ -29,6 +29,10 @@ class SimulationController:
         if not self.main_window.simulation_engine.simulation_running:
             self.main_window.simulation_engine.is_scrubbing = False
             
+        # Trigger dark gray flash animation when toggling simulation
+        if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'trigger_dark_gray_flash'):
+            self.main_window.centralWidget().trigger_dark_gray_flash()
+            
         self.main_window.simulation_engine.simulation_running = not self.main_window.simulation_engine.simulation_running
         if self.main_window.simulation_engine.simulation_running:
             interval = int(100 / self.main_window.simulation_speed)

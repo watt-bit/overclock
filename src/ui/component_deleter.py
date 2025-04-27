@@ -84,8 +84,8 @@ class ComponentDeleter:
         # Trigger red flash on the border when a component is deleted
         if hasattr(self.main_window, 'centralWidget') and self.main_window.centralWidget():
             central_widget = self.main_window.centralWidget()
-            if hasattr(central_widget, 'trigger_red_flash'):
-                central_widget.trigger_red_flash()
+            if hasattr(central_widget, 'trigger_gray_flash'):
+                central_widget.trigger_gray_flash()
         
         return True
     

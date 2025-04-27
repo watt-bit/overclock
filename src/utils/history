@@ -804,3 +804,10 @@
 - Cleared properties manager's current_component reference after deletion
 - Added scene.clearSelection() to ensure no lingering selection references remain
 - Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation

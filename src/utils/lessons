@@ -2470,3 +2470,6 @@ When implementing component deletion, it's critical to clear all references to t
 3. Check if a component is still in the scene with component.scene() before attempting to delete it
 4. Use defensive programming to prevent deleting already-deleted components
 These steps prevent multiple deletion attempts on the same component, which can cause UI glitches like repeated flash animations and potential crashes.
+
+## Border Animation Patterns (2024-04-09)
+BorderedMainWidget uses different flash patterns to provide visual feedback for different actions. A single-color dark gray flash for 250ms provides subtle feedback for simulation toggling, while other patterns (red/black sequence, gold sequence, gray sequence) provide feedback for other events. When implementing new visual feedback, maintain consistency with existing patterns and ensure they're properly handled in the update_flash method.

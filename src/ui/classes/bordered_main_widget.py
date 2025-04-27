@@ -58,14 +58,14 @@ class BorderedMainWidget(QWidget):
         
         # Gray color list for gray flash
         self.flash_gray_colors = [
-            QColor(110, 110, 110),  # Light gray
-            QColor(100, 100, 100),  # Medium light gray
-            QColor(90, 90, 90),     # Medium gray
-            QColor(80, 80, 80),     # Medium dark gray
-            QColor(70, 70, 70),     # Dark gray
-            QColor(60, 60, 60),     # Darker gray
             QColor(50, 50, 50),     # Darkest gray
-            QColor(110, 110, 110),  # Back to light gray (for rhythm)
+            QColor(60, 60, 60),     # Darker gray
+            QColor(60, 60, 60),     # Dark gray
+            QColor(80, 80, 80),     # Medium dark gray
+            QColor(70, 70, 70),     # Medium gray
+            QColor(100, 100, 100),  # Medium light gray
+            QColor(110, 110, 110),  # Light gray
+            QColor(50, 50, 50),     # Back to darkest gray (for rhythm)
         ]
         
         # Black color list for black flash
@@ -122,7 +122,7 @@ class BorderedMainWidget(QWidget):
             # Force update to reflect the new border style
             self.update()
         
-    def trigger_red_flash(self):
+    def trigger_gray_flash(self):
         """Start the gray flash animation sequence with the same pattern as gold flash"""
         # Only trigger flash if not in autocomplete mode
         if self.is_autocompleting:
@@ -130,8 +130,8 @@ class BorderedMainWidget(QWidget):
             
         self.is_flashing = True
         self.flash_step = 0
-        # Start with the lightest gray color
-        self.colors = [self.flash_gray_colors[0]] * len(self.colors)  # Light gray
+        # Start with the darkest gray color
+        self.colors = [self.flash_gray_colors[0]] * len(self.colors)  # Darkest gray
         self.flash_timer.start(83)  # Flash each color for ~83ms (250ms / 3)
         
         # Force update to show the flash immediately
@@ -163,6 +163,21 @@ class BorderedMainWidget(QWidget):
         # Force update to show the flash immediately
         self.update()
         
+    def trigger_dark_gray_flash(self):
+        """Start a single dark gray flash for 250ms"""
+        # Only trigger flash if not in autocomplete mode
+        if self.is_autocompleting:
+            return
+            
+        self.is_flashing = True
+        self.flash_step = 0
+        # Use the darkest gray color for the entire flash
+        self.colors = [self.flash_gray_colors[0]] * len(self.colors)  # Darkest gray
+        self.flash_timer.start(250)  # Flash for 250ms
+        
+        # Force update to show the flash immediately
+        self.update()
+        
     def update_flash(self):
         """Progress through the flash animation steps"""
         # If we entered autocomplete mode, stop flashing
@@ -186,13 +201,19 @@ class BorderedMainWidget(QWidget):
                 self.colors = self.original_colors.copy()
                 self.is_flashing = False
                 self.flash_timer.stop()
-        # Handle the red flash sequence (3 steps)
+        # Handle single dark gray flash (1 step, 250ms)
+        elif self.colors[0] == self.flash_gray_colors[0] and all(color == self.colors[0] for color in self.colors) and self.flash_step == 1:
+            # Single dark gray flash is done, return to normal colors
+            self.colors = self.original_colors.copy()
+            self.is_flashing = False
+            self.flash_timer.stop()
+        # Handle the gray flash sequence (3 steps)
         elif self.colors[0] == self.flash_gray_colors[0] or self.colors[0] == self.flash_gray_colors[2] or self.colors[0] == self.flash_gray_colors[4]:
             if self.flash_step == 1:
-                # First gray color (Light gray) is done, switch to Medium gray
+                # First gray color (Darkest gray) is done, switch to Dark gray
                 self.colors = [self.flash_gray_colors[2]] * len(self.colors)
             elif self.flash_step == 2:
-                # Second gray color (Medium gray) is done, switch to Dark gray
+                # Second gray color (Dark gray) is done, switch to Medium gray
                 self.colors = [self.flash_gray_colors[4]] * len(self.colors)
             elif self.flash_step == 3:
                 # Gray flash sequence is done, return to normal colors
