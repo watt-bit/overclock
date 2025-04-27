@@ -478,8 +478,8 @@ class PowerSystemSimulator(QMainWindow):
             # Calculate the new position 
             panel_width = self.properties_dock.width()
             panel_height = self.properties_dock.height()
-            new_x = screen_center.x() + 525 - panel_width // 2
-            new_y = screen_center.y() - 475 - panel_height // 2
+            new_x = screen_center.x() + 325 - panel_width // 2
+            new_y = screen_center.y() - 175 - panel_height // 2
             
             # Ensure the panel stays within the screen boundaries
             new_x = max(0, min(new_x, screen_rect.width() - panel_width))
@@ -517,15 +517,6 @@ class PowerSystemSimulator(QMainWindow):
             self.analytics_action.setText("Hide Analytics (P)anel")
         else:
             self.analytics_action.setText("Show Analytics (P)anel")
-
-    def show_properties_panel(self):
-        """Show the properties panel if it's hidden"""
-        # When in fullscreen mode, don't use floating properties panel
-        if self.isFullScreen() and self.properties_dock.isFloating():
-            self.properties_dock.setFloating(False)
-        
-        self.properties_dock.setVisible(True)
-        self.position_properties_panel_if_needed()
     
     def show_analytics_panel(self):
         """Show the analytics panel if it's hidden"""

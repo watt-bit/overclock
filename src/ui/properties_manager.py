@@ -79,11 +79,6 @@ class ComponentPropertiesManager:
         if self.main_window.creating_connection:
             return
             
-        # Make properties panel visible if it's currently hidden
-        if not self.main_window.properties_dock.isVisible():
-            self.main_window.properties_dock.setVisible(True)
-            self.main_window.position_properties_panel_if_needed()
-            
         # Clear existing properties
         while self.properties_layout.count():
             item = self.properties_layout.takeAt(0)
@@ -208,6 +203,11 @@ class ComponentPropertiesManager:
         # Force the properties dock to resize to its minimum size
         self.properties_widget.adjustSize()
         self.main_window.properties_dock.adjustSize()
+
+        # Make properties panel visible if it's currently hidden
+        if not self.main_window.properties_dock.isVisible():
+            self.main_window.properties_dock.setVisible(True)
+            self.main_window.position_properties_panel_if_needed()
     
     def update_delete_button_state(self):
         """

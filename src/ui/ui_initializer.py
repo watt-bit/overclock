@@ -718,7 +718,7 @@ class UIInitializer:
         # Create actions for toggling panel visibility - store references for later updates
         main_window.properties_action = QAction("Show Properties Panel", main_window)
         main_window.properties_action.triggered.connect(main_window.toggle_properties_panel)
-
+        
         main_window.analytics_action = QAction("Show Analytics (P)anel", main_window)
         main_window.analytics_action.triggered.connect(main_window.toggle_analytics_panel)
         view_menu.addAction(main_window.analytics_action)
