@@ -2824,4 +2824,10 @@ Modified historian_manager.py to make only the total_generation series visible b
 - Makes the UI more visually intuitive
 - Maintains the existing functionality while enhancing visual clarity
 
-## 2025-03-28 23:15 - Added Title Screen
+## 2025-03-29 10:00 - Extracted BorderedMainWidget to Separate File
+- Moved BorderedMainWidget class from ui_initializer.py to ui/classes/bordered_main_widget.py
+- Added necessary imports to the new class file
+- Updated ui_initializer.py to import BorderedMainWidget from its new location
+- No changes to class functionality or implementation
+- Improved code organization and maintainability by separating UI components
+- Reduced size of ui_initializer.py file
