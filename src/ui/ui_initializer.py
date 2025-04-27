@@ -169,8 +169,8 @@ class BorderedMainWidget(QWidget):
         # Animation properties
         self.animation_offset = 0
         self.animation_speed = 0.5
-        self.border_width = 3
-        self.corner_radius = 3
+        self.border_width = 4
+        self.corner_radius = 4
         
         # Set up animation timer
         self.timer = QTimer()
@@ -251,7 +251,7 @@ class UIInitializer:
         main_widget = BorderedMainWidget()  # Use our custom widget with border
         main_window.setCentralWidget(main_widget)
         main_layout = QHBoxLayout(main_widget)
-        main_layout.setContentsMargins(3, 3, 3, 3)  # Use 10px margins to account for the border
+        main_layout.setContentsMargins(4, 4, 4, 4)  # Use 10px margins to account for the border
         
         # Set the corners to give priority to left and right dock areas
         main_window.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
