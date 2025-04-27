@@ -6,6 +6,7 @@ from src.components.bus import BusComponent
 from .ui_initializer import GradientBorderText
 from .simulator_initializer import SimulatorInitializer
 from .capex_manager import CapexManager
+from .component_deleter import ComponentDeleter
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -13,6 +14,7 @@ class PowerSystemSimulator(QMainWindow):
     def __init__(self):
         super().__init__()
         SimulatorInitializer.initialize(self)
+        self.component_deleter = ComponentDeleter(self)  # Initialize the component deleter
         self.previous_capex = 0  # Initialize previous CAPEX for tracking changes
         self.capex_manager = CapexManager(self)  # Initialize the CAPEX manager
         self.reset_simulation()  # Reset the simulation to the initial state

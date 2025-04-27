@@ -64,6 +64,18 @@ class BorderedMainWidget(QWidget):
             QColor(0, 0, 0),    # Black
         ]
         
+        # Gold color list for gold flash
+        self.flash_gold_colors = [
+            QColor("#FFCA28"),    # Base gold color
+            QColor("#FFD54F"),    # Lighter gold
+            QColor("#FFB300"),    # Darker gold
+            QColor("#FFC107"),    # Amber
+            QColor("#FFD740"),    # Light amber
+            QColor("#FFAB00"),    # Dark amber
+            QColor("#FFC400"),    # Amber accent
+            QColor("#FFCA28"),    # Base gold color (for rhythm)
+        ]
+        
         # Store the original colors for restoration
         self.original_colors = self.colors.copy()
         
@@ -109,6 +121,21 @@ class BorderedMainWidget(QWidget):
         self.colors = self.flash_red_colors.copy()  # Start with red
         self.flash_timer.start(250)  # First flash for 250ms
         
+    def trigger_gold_flash(self):
+        """Start the gold flash animation sequence"""
+        # Only trigger flash if not in autocomplete mode
+        if self.is_autocompleting:
+            return
+            
+        self.is_flashing = True
+        self.flash_step = 0
+        # Start with the 3rd color in the gold list
+        self.colors = [self.flash_gold_colors[2]] * len(self.colors)  # Fill with the 3rd gold color
+        self.flash_timer.start(83)  # Flash each color for ~83ms (250ms / 3)
+        
+        # Force update to show the flash immediately
+        self.update()
+        
     def update_flash(self):
         """Progress through the flash animation steps"""
         # If we entered autocomplete mode, stop flashing
@@ -119,18 +146,29 @@ class BorderedMainWidget(QWidget):
             
         self.flash_step += 1
         
-        if self.flash_step == 1:
+        # Handle the gold flash sequence (3 steps)
+        if self.colors[0] == self.flash_gold_colors[2] or self.colors[0] == self.flash_gold_colors[0] or self.colors[0] == self.flash_gold_colors[1]:
+            if self.flash_step == 1:
+                # First gold color (3rd in list) is done, switch to second gold color (1st in list)
+                self.colors = [self.flash_gold_colors[0]] * len(self.colors)
+            elif self.flash_step == 2:
+                # Second gold color (1st in list) is done, switch to third gold color (2nd in list)
+                self.colors = [self.flash_gold_colors[1]] * len(self.colors)
+            elif self.flash_step == 3:
+                # Gold flash sequence is done, return to normal colors
+                self.colors = self.original_colors.copy()
+                self.is_flashing = False
+                self.flash_timer.stop()
+        # Handle the regular red/black flash sequence
+        elif self.flash_step == 1:
             # First red flash is done, switch to black
             self.colors = self.flash_black_colors.copy()
-            
         elif self.flash_step == 2:
             # Black flash is done, switch to red again
             self.colors = self.flash_red_colors.copy()
-            
         elif self.flash_step == 3:
             # Second red flash is done, switch to black again
             self.colors = self.flash_black_colors.copy()
-            
         elif self.flash_step == 4:
             # Final black flash is done, return to normal colors
             self.colors = self.original_colors.copy()

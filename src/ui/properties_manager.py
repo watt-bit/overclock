@@ -1420,50 +1420,8 @@ class ComponentPropertiesManager:
         """Delete the selected component from the scene"""
         component = self.current_component
         if component:
-            # Find and remove all connections associated with this component
-            connections_to_remove = [conn for conn in self.main_window.connections 
-                                if conn.source == component or conn.target == component]
-            
-            for connection in connections_to_remove:
-                connection.cleanup()
-                self.main_window.scene.removeItem(connection)
-                self.main_window.connections.remove(connection)
-            
-            # Remove component's historian keys
-            self.main_window.simulation_engine.remove_component_historian_keys(component)
-            
-            # Remove the component from the scene and list
-            self.main_window.scene.removeItem(component)
-            
-            # Only remove from components list if it's a functional component (not a decorative one)
-            # and if it's actually in the components list (to prevent the "x not in list" error)
-            if (not isinstance(component, (TreeComponent, BushComponent, PondComponent, 
-                           House1Component, House2Component, FactoryComponent, 
-                           TraditionalDataCenterComponent, DistributionPoleComponent)) and 
-                component in self.main_window.components):
-                self.main_window.components.remove(component)
-            
-            # Clear the properties panel
-            while self.properties_layout.count():
-                item = self.properties_layout.takeAt(0)
-                if item.widget():
-                    item.widget().deleteLater()
-                elif item.layout():
-                    # Clear sub-layouts
-                    while item.layout().count():
-                        sub_item = item.layout().takeAt(0)
-                        if sub_item.widget():
-                            sub_item.widget().deleteLater()
-                    item.layout().deleteLater()
+            # Use the component deleter to handle deletion
+            self.main_window.component_deleter.delete_component(component)
             
             # Clear the current component reference to prevent repeated deletion attempts
-            self.current_component = None
-            
-            # Update simulation state
-            self.main_window.update_simulation()
-            
-            # Update the CAPEX display
-            self.main_window.update_capex_display()
-            
-            # Hide the properties panel
-            self.main_window.properties_dock.setVisible(False) 
+            self.current_component = None 

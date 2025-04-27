@@ -55,53 +55,10 @@ class KeyHandler(QObject):
                 # Don't process delete key if simulation is running or autocompleting
                 if self.main_window.simulation_engine.simulation_running or self.main_window.is_autocompleting:
                     return True
-                    
-                # Process deletion for selected items in the scene
-                selected_items = [item for item in self.main_window.scene.selectedItems() if hasattr(item, 'connections')]
                 
-                if selected_items:
-                    # Delete all selected components
-                    for component in selected_items:
-                        # Find and remove all connections associated with this component
-                        connections_to_remove = [conn for conn in self.main_window.connections 
-                                        if conn.source == component or conn.target == component]
-                        
-                        for connection in connections_to_remove:
-                            connection.cleanup()
-                            self.main_window.scene.removeItem(connection)
-                            if connection in self.main_window.connections:
-                                self.main_window.connections.remove(connection)
-                        
-                        # Remove component's historian keys
-                        self.main_window.simulation_engine.remove_component_historian_keys(component)
-                        
-                        # Remove the component from the scene
-                        self.main_window.scene.removeItem(component)
-                        
-                        # Only remove from components list if it's a functional component and in the list
-                        if (not isinstance(component, (TreeComponent, BushComponent, PondComponent, 
-                                                      House1Component, House2Component, FactoryComponent,
-                                                      TraditionalDataCenterComponent, DistributionPoleComponent)) and 
-                            component in self.main_window.components):
-                            self.main_window.components.remove(component)
-                    
-                    # Clear the properties panel
-                    self.main_window.properties_dock.setVisible(False)
-                    
-                    # Update simulation state
-                    self.main_window.update_simulation()
-                    
-                    # Update the CAPEX display after deleting components
-                    self.main_window.update_capex_display()
-                    
-                    return True
-                # Handle property panel component
-                elif hasattr(self.main_window.properties_manager, 'current_component') and self.main_window.properties_manager.current_component:
-                    # Only delete the component if it's still selected in the scene
-                    if self.main_window.properties_manager.current_component.isSelected():
-                        self.main_window.properties_manager.delete_component()
-                        self.main_window.properties_dock.setVisible(False)
-                        return True
+                # Use the component deleter to handle deletion
+                deleted = self.main_window.component_deleter.delete_selected_components()
+                return deleted
         
         # Let the event continue to be processed
         return False
@@ -141,53 +98,10 @@ class KeyHandler(QObject):
             if self.main_window.simulation_engine.simulation_running or self.main_window.is_autocompleting:
                 return True
                 
-            # Check if any components are selected in the scene
-            selected_items = [item for item in self.main_window.scene.selectedItems() if hasattr(item, 'connections')]
-            
-            if selected_items:
-                # Delete all selected components
-                for component in selected_items:
-                    # Find and remove all connections associated with this component
-                    connections_to_remove = [conn for conn in self.main_window.connections 
-                                    if conn.source == component or conn.target == component]
-                    
-                    for connection in connections_to_remove:
-                        connection.cleanup()
-                        self.main_window.scene.removeItem(connection)
-                        if connection in self.main_window.connections:
-                            self.main_window.connections.remove(connection)
-                    
-                    # Remove component's historian keys
-                    self.main_window.simulation_engine.remove_component_historian_keys(component)
-                    
-                    # Remove the component from the scene
-                    self.main_window.scene.removeItem(component)
-                    
-                    # Only remove from components list if it's a functional component and in the list
-                    if (not isinstance(component, (TreeComponent, BushComponent, PondComponent, 
-                                                  House1Component, House2Component, FactoryComponent,
-                                                  TraditionalDataCenterComponent, DistributionPoleComponent)) and 
-                        component in self.main_window.components):
-                        self.main_window.components.remove(component)
-                
-                # Clear the properties panel
-                self.main_window.properties_dock.setVisible(False)
-                
-                # Update simulation state
-                self.main_window.update_simulation()
-                
-                # Update the CAPEX display after deleting components
-                self.main_window.update_capex_display()
-                
-                return True
-            # If no scene items are selected, check if properties manager has a current component
-            elif hasattr(self.main_window.properties_manager, 'current_component') and self.main_window.properties_manager.current_component:
-                # Only delete the component if it's still selected in the scene
-                if self.main_window.properties_manager.current_component.isSelected():
-                    self.main_window.properties_manager.delete_component()
-                    self.main_window.properties_dock.setVisible(False)
-                    return True
-                
+            # Use the component deleter to handle deletion
+            deleted = self.main_window.component_deleter.delete_selected_components()
+            return deleted
+        
         # R key for reset simulation - always active regardless of mode
         if key == Qt.Key_R:
             self.main_window.reset_simulation()

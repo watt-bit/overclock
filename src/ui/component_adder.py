@@ -136,3 +136,9 @@ class ComponentAdder:
             
             # Create particle effect
             self.main_window.particle_system.create_puff(center_x, center_y, num_particles=200) 
+            
+        # Trigger gold flash on the border when a component is added
+        if hasattr(self.main_window, 'centralWidget') and self.main_window.centralWidget():
+            central_widget = self.main_window.centralWidget()
+            if hasattr(central_widget, 'trigger_gold_flash'):
+                central_widget.trigger_gold_flash() 

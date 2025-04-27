@@ -2458,3 +2458,5 @@ Key insights from modifying the welcome text initialization to center the view o
    - Centering the view affects how users perceive distance and scale in the simulation
    - Starting at the origin provides a neutral reference point for the spatial model
    - This careful attention to spatial context improves overall usability
+
+Component deletion was implemented in two different places (KeyHandler and PropertiesManager) with nearly identical code. This is a classic example of code duplication that should be avoided. By extracting the common logic into a dedicated ComponentDeleter class, we've improved maintainability while ensuring consistent behavior. The ComponentDeleter.delete_component method now handles the complete deletion process including removing connections, cleaning up historian keys, updating the simulation state, and more. This pattern of extracting duplicate functionality into a shared service class is a good practice for keeping code DRY (Don't Repeat Yourself).
