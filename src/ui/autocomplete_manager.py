@@ -29,7 +29,8 @@ class AutocompleteManager:
         """Run the simulation from the current time to the end asynchronously"""
         
         # Reset the simulation first to ensure we capture the entire timeline
-        self.main_window.reset_simulation()
+        # Skip the flash animation to prevent it from interfering with autocomplete state
+        self.main_window.reset_simulation(skip_flash=True)
         
         # Check if already running
         if self.main_window.simulation_engine.simulation_running or self.is_autocompleting:
@@ -64,6 +65,10 @@ class AutocompleteManager:
         self.is_autocompleting = True
         # Ensure main window has same autocomplete state
         self.main_window.is_autocompleting = True
+        
+        # Update bordered widget to use solid border during autocomplete
+        if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'set_autocomplete_state'):
+            self.main_window.centralWidget().set_autocomplete_state(True)
         
         # Update delete button state in properties manager
         if hasattr(self.main_window, 'properties_manager'):
@@ -120,6 +125,10 @@ class AutocompleteManager:
             self.is_autocompleting = False
             # Ensure main window also has autocomplete flag set to false
             self.main_window.is_autocompleting = False
+            
+            # Restore normal border animation
+            if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'set_autocomplete_state'):
+                self.main_window.centralWidget().set_autocomplete_state(False)
             
             # Update delete button state in properties manager
             if hasattr(self.main_window, 'properties_manager'):
@@ -319,6 +328,10 @@ class AutocompleteManager:
             self.is_autocompleting = False
             # Ensure main window also has autocomplete flag set to false
             self.main_window.is_autocompleting = False
+            
+            # Restore normal border animation
+            if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'set_autocomplete_state'):
+                self.main_window.centralWidget().set_autocomplete_state(False)
             
             # Update delete button state in properties manager
             if hasattr(self.main_window, 'properties_manager'):

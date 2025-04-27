@@ -2831,3 +2831,14 @@ Modified historian_manager.py to make only the total_generation series visible b
 - No changes to class functionality or implementation
 - Improved code organization and maintainability by separating UI components
 - Reduced size of ui_initializer.py file
+
+## 2025-04-08 15:00 - Added Visual Reset Indicator Animation
+- Enhanced BorderedMainWidget to support flash animation effects
+- Added sequence of darkmode red/black/red/black/normal color transitions
+- Implemented flash animation with 250ms intervals for each color state
+- Modified SimulationController to trigger the flash effect when resetting a simulation
+- Added flash_red_colors and flash_black_colors lists with appropriate darkmode values
+- Created trigger_flash() method to initiate the animation sequence
+- Implemented update_flash() method to progress through animation steps
+- Added method for preserving original colors to restore at animation end
+- Provides clear visual feedback when simulation is reset

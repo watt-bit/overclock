@@ -36,6 +36,10 @@ class SimulationController:
             self.main_window.play_btn.setText("Pause (Space)")
             self.main_window.disable_component_buttons(True)
             
+            # Speed up the border animation when simulation is running
+            if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'animation_speed'):
+                self.main_window.centralWidget().animation_speed = 3
+            
             # Disable delete button in properties manager
             if hasattr(self.main_window, 'properties_manager'):
                 self.main_window.properties_manager.update_delete_button_state()
@@ -57,6 +61,10 @@ class SimulationController:
             self.main_window.sim_timer.stop()
             self.main_window.play_btn.setText("Run (Space)")
             self.main_window.disable_component_buttons(False)
+            
+            # Slow down the border animation when simulation is stopped
+            if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'animation_speed'):
+                self.main_window.centralWidget().animation_speed = 1
             
             # Re-enable delete button in properties manager
             if hasattr(self.main_window, 'properties_manager'):
@@ -131,7 +139,7 @@ class SimulationController:
     def update_simulation(self):
         self.main_window.simulation_engine.update_simulation()
     
-    def reset_simulation(self):
+    def reset_simulation(self, skip_flash=False):
         # Check if simulation was running and stop it
         was_running = self.main_window.simulation_engine.simulation_running
         
@@ -146,6 +154,10 @@ class SimulationController:
             self.main_window.is_autocompleting = self.main_window.autocomplete_manager.is_autocompleting
             self.main_window.autocomplete_timer = self.main_window.autocomplete_manager.autocomplete_timer
             print("Autocomplete interrupted by reset.")
+        
+        # Trigger the red flash animation in the main border (unless skipped)
+        if not skip_flash and hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'trigger_flash'):
+            self.main_window.centralWidget().trigger_flash()
         
         # Set simulation state variables
         self.main_window.simulation_engine.current_time_step = 0

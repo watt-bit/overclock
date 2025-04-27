@@ -238,8 +238,8 @@ class PowerSystemSimulator(QMainWindow):
     def update_simulation(self):
         self.simulation_controller.update_simulation()
     
-    def reset_simulation(self):
-        self.simulation_controller.reset_simulation()
+    def reset_simulation(self, skip_flash=False):
+        self.simulation_controller.reset_simulation(skip_flash=skip_flash)
         # Update the CAPEX display after resetting
         self.update_capex_display()
         # Reset the IRR display
