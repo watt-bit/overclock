@@ -46,14 +46,26 @@ class BorderedMainWidget(QWidget):
         
         # Dark red gradient colors for flash
         self.flash_red_colors = [
-            QColor(178, 58, 58),    # Dark red
-            QColor(175, 46, 46),    # Darker red
-            QColor(155, 30, 30),    # Deep red
-            QColor(195, 75, 75),    # Medium red
-            QColor(190, 18, 18),    # Bright red
-            QColor(175, 55, 55),    # Moderate red
-            QColor(150, 40, 40),    # Steel red
-            QColor(178, 58, 58),    # Dark red (for rhythm)
+            QColor(120, 42, 50),    # Deep burgundy
+            QColor(98, 32, 48),     # Dark wine red
+            QColor(82, 28, 42),     # Shadowy crimson
+            QColor(140, 52, 62),    # Muted raspberry
+            QColor(108, 30, 52),    # Dark ruby
+            QColor(90, 38, 58),     # Plum red
+            QColor(72, 25, 45),     # Deep maroon
+            QColor(120, 42, 50),    # Deep burgundy (for rhythm)
+        ]
+        
+        # Gray color list for gray flash
+        self.flash_gray_colors = [
+            QColor(110, 110, 110),  # Light gray
+            QColor(100, 100, 100),  # Medium light gray
+            QColor(90, 90, 90),     # Medium gray
+            QColor(80, 80, 80),     # Medium dark gray
+            QColor(70, 70, 70),     # Dark gray
+            QColor(60, 60, 60),     # Darker gray
+            QColor(50, 50, 50),     # Darkest gray
+            QColor(110, 110, 110),  # Back to light gray (for rhythm)
         ]
         
         # Black color list for black flash
@@ -110,6 +122,21 @@ class BorderedMainWidget(QWidget):
             # Force update to reflect the new border style
             self.update()
         
+    def trigger_red_flash(self):
+        """Start the gray flash animation sequence with the same pattern as gold flash"""
+        # Only trigger flash if not in autocomplete mode
+        if self.is_autocompleting:
+            return
+            
+        self.is_flashing = True
+        self.flash_step = 0
+        # Start with the lightest gray color
+        self.colors = [self.flash_gray_colors[0]] * len(self.colors)  # Light gray
+        self.flash_timer.start(83)  # Flash each color for ~83ms (250ms / 3)
+        
+        # Force update to show the flash immediately
+        self.update()
+        
     def trigger_flash(self):
         """Start the flash animation sequence"""
         # Only trigger flash if not in autocomplete mode
@@ -156,6 +183,19 @@ class BorderedMainWidget(QWidget):
                 self.colors = [self.flash_gold_colors[1]] * len(self.colors)
             elif self.flash_step == 3:
                 # Gold flash sequence is done, return to normal colors
+                self.colors = self.original_colors.copy()
+                self.is_flashing = False
+                self.flash_timer.stop()
+        # Handle the red flash sequence (3 steps)
+        elif self.colors[0] == self.flash_gray_colors[0] or self.colors[0] == self.flash_gray_colors[2] or self.colors[0] == self.flash_gray_colors[4]:
+            if self.flash_step == 1:
+                # First gray color (Light gray) is done, switch to Medium gray
+                self.colors = [self.flash_gray_colors[2]] * len(self.colors)
+            elif self.flash_step == 2:
+                # Second gray color (Medium gray) is done, switch to Dark gray
+                self.colors = [self.flash_gray_colors[4]] * len(self.colors)
+            elif self.flash_step == 3:
+                # Gray flash sequence is done, return to normal colors
                 self.colors = self.original_colors.copy()
                 self.is_flashing = False
                 self.flash_timer.stop()

@@ -37,6 +37,10 @@ class ComponentDeleter:
         if not component:
             return False
             
+        # Check if component is still in the scene
+        if not component.scene():
+            return False
+            
         # Find and remove all connections associated with this component
         connections_to_remove = [conn for conn in self.main_window.connections 
                         if conn.source == component or conn.target == component]
@@ -64,11 +68,24 @@ class ComponentDeleter:
         # Clear the properties panel
         self.main_window.properties_dock.setVisible(False)
         
+        # Clear the current component reference in the properties manager
+        if hasattr(self.main_window.properties_manager, 'current_component'):
+            self.main_window.properties_manager.current_component = None
+        
+        # Clear selection in the scene to prevent lingering references
+        self.main_window.scene.clearSelection()
+        
         # Update simulation state
         self.main_window.update_simulation()
         
         # Update the CAPEX display
         self.main_window.update_capex_display()
+        
+        # Trigger red flash on the border when a component is deleted
+        if hasattr(self.main_window, 'centralWidget') and self.main_window.centralWidget():
+            central_widget = self.main_window.centralWidget()
+            if hasattr(central_widget, 'trigger_red_flash'):
+                central_widget.trigger_red_flash()
         
         return True
     
@@ -82,17 +99,20 @@ class ComponentDeleter:
         # Get selected items from the scene that have a connections attribute
         selected_items = [item for item in self.main_window.scene.selectedItems() if hasattr(item, 'connections')]
         
+        deleted_any = False
         if selected_items:
             # Delete all selected components
-            for component in selected_items:
-                self.delete_component(component)
-            return True
+            for component in selected_items.copy():  # Use a copy to avoid modifying during iteration
+                if self.delete_component(component):
+                    deleted_any = True
+            return deleted_any
         
         # If no scene items are selected, check if properties manager has a current component
         elif hasattr(self.main_window.properties_manager, 'current_component') and self.main_window.properties_manager.current_component:
-            # Only delete the component if it's still selected in the scene
-            if self.main_window.properties_manager.current_component.isSelected():
-                self.delete_component(self.main_window.properties_manager.current_component)
-                return True
+            # Only delete the component if it's still valid and in the scene
+            component = self.main_window.properties_manager.current_component
+            if component and component.scene() and component.isSelected():
+                deleted_any = self.delete_component(component)
+                return deleted_any
         
         return False 

@@ -2460,3 +2460,13 @@ Key insights from modifying the welcome text initialization to center the view o
    - This careful attention to spatial context improves overall usability
 
 Component deletion was implemented in two different places (KeyHandler and PropertiesManager) with nearly identical code. This is a classic example of code duplication that should be avoided. By extracting the common logic into a dedicated ComponentDeleter class, we've improved maintainability while ensuring consistent behavior. The ComponentDeleter.delete_component method now handles the complete deletion process including removing connections, cleaning up historian keys, updating the simulation state, and more. This pattern of extracting duplicate functionality into a shared service class is a good practice for keeping code DRY (Don't Repeat Yourself).
+
+## Flash animation in BorderedMainWidget has pattern-based systems (red/gold/gray) which use 3-step sequence with timer at 83ms intervals.
+
+## Component Deletion Reference Management
+When implementing component deletion, it's critical to clear all references to the deleted component. After removing a component from the scene and component lists:
+1. Clear any stored reference in the properties manager (current_component = None)
+2. Call scene.clearSelection() to ensure no lingering selection references
+3. Check if a component is still in the scene with component.scene() before attempting to delete it
+4. Use defensive programming to prevent deleting already-deleted components
+These steps prevent multiple deletion attempts on the same component, which can cause UI glitches like repeated flash animations and potential crashes.
