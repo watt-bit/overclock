@@ -150,7 +150,7 @@ class GridImportComponent(ComponentBase):
         
         # Draw the cost text if price is set
         if self.cost_per_kwh > 0 or self.market_prices_mode != "None":
-            cost_text = f"Cost: ${self.accumulated_cost:.2f}"
+            cost_text = f"Cost: ${int(self.accumulated_cost):,}"
             painter.drawText(cost_rect, Qt.AlignCenter, cost_text)
         
         # Restore painter state

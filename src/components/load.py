@@ -195,7 +195,7 @@ class LoadComponent(ComponentBase):
         painter.drawText(demand_rect, Qt.AlignCenter, demand_text)
         
         # Draw the revenue text
-        revenue_text = f"Revenue: ${self.accumulated_revenue:.2f}"
+        revenue_text = f"Revenue: ${int(self.accumulated_revenue):,}"
         painter.drawText(revenue_rect, Qt.AlignCenter, revenue_text)
     
     def update(self):

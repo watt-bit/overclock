@@ -149,7 +149,7 @@ class GridExportComponent(ComponentBase):
         
         # Draw the revenue text if either bulk PPA price or market price is set
         if self.bulk_ppa_price > 0 or self.market_prices_mode != "None":
-            revenue_text = f"Revenue: ${self.accumulated_revenue:.2f}"
+            revenue_text = f"Revenue: ${int(self.accumulated_revenue):,}"
             painter.drawText(revenue_rect, Qt.AlignCenter, revenue_text)
         
         # Restore painter state

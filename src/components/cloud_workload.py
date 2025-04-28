@@ -114,7 +114,7 @@ class CloudWorkloadComponent(ComponentBase):
         
         # Draw the revenue text if in revenue-generating mode
         if self.operating_mode in ["Multi-Cloud Spot", "Dedicated Capacity"]:
-            revenue_text = f"Revenue: ${self.accumulated_revenue:.2f}"
+            revenue_text = f"Revenue: ${int(self.accumulated_revenue):,}"
             painter.drawText(revenue_rect, Qt.AlignCenter, revenue_text)
         
         # Restore painter state

@@ -132,7 +132,7 @@ class GeneratorComponent(ComponentBase):
         painter.drawText(text_rect, Qt.AlignCenter, capacity_text)
         
         # Add cost display (always visible, even when cost is 0)
-        cost_text = f"Cost: ${self.accumulated_cost:.2f}"
+        cost_text = f"Cost: ${int(self.accumulated_cost):,}"
         cost_rect = QRectF(
             rect.x(),
             rect.y() + rect.height() + 5,  # Position at bottom with margin
