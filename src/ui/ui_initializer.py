@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
                             QToolBar, 
                             QAction, QMenu, QShortcut, QFrame,
                             QToolButton, QSizePolicy, QGraphicsTextItem)
-from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime, QObject
+from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime
 from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics
 import math
 
@@ -447,42 +447,13 @@ class UIInitializer:
         main_window.properties_dock = QDockWidget("Properties", main_window)
         main_window.properties_dock.setObjectName("properties_dock")
         main_window.properties_dock.setWidget(main_window.properties_manager.properties_widget)
-        # Only allow the dock widget to be moved, not resized
-        main_window.properties_dock.setFeatures(QDockWidget.DockWidgetMovable)
+        # Allow the dock widget to resize when its contents change
+        main_window.properties_dock.setFeatures(QDockWidget.DockWidgetFloatable | 
+                                        QDockWidget.DockWidgetMovable)
         # Prevent the properties panel from being docked
         main_window.properties_dock.setAllowedAreas(Qt.NoDockWidgetArea)
-        # Set fixed size policy to prevent resizing
-        main_window.properties_dock.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-
-        # Create a custom title bar widget with only centered text
-        custom_title_widget = QWidget()
-        title_layout = QHBoxLayout(custom_title_widget)
-        title_layout.setContentsMargins(0, 0, 0, 0)
-        title_label = QLabel("Properties")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setStyleSheet("color: white; font-weight: bold; background-color: #2A2A2A; padding: 5px;")
-        title_layout.addWidget(title_label)
-        custom_title_widget.setFixedHeight(25)  # Match the height specified in dock_title_style
-        custom_title_widget.setStyleSheet("background-color: #2A2A2A; border-bottom: 1px solid #555555;")
-
-        # Set the custom title bar widget (removes default buttons)
-        main_window.properties_dock.setTitleBarWidget(custom_title_widget)
-
-        # Install event filter to make sure resize events are blocked
-        class ResizeBlocker(QObject):
-            def eventFilter(self, obj, event):
-                if event.type() == event.Resize:
-                    # Get the current size
-                    size = main_window.properties_manager.properties_widget.sizeHint()
-                    # Keep the dock at this size
-                    main_window.properties_dock.resize(size)
-                    return True
-                return False
-
-        resize_blocker = ResizeBlocker(main_window)
-        main_window.properties_dock.installEventFilter(resize_blocker)
-        main_window.properties_dock_resize_blocker = resize_blocker  # Store reference
-
+        # Ensure the dock resizes to the minimum size of its contents
+        main_window.properties_dock.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         main_window.addDockWidget(Qt.RightDockWidgetArea, main_window.properties_dock)
         # Make properties panel floating and hidden by default
         main_window.properties_dock.setFloating(True)
