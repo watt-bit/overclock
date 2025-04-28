@@ -169,7 +169,7 @@ class BatteryComponent(ComponentBase):
             charge_percent_display = 0  # Default to 0% if energy capacity is zero
         
         # Draw the battery information
-        battery_text = f"{self.power_capacity} kW (battery) | {charge_percent_display}% charge"
+        battery_text = f"{self.power_capacity/1000:.1f} MW (battery) | {charge_percent_display}% charge"
         painter.drawText(text_rect, Qt.AlignCenter, battery_text)
     
     def has_energy(self):

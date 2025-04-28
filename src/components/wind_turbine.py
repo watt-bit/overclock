@@ -132,7 +132,7 @@ class WindTurbineComponent(ComponentBase):
             output_percentage = 0
         
         # Draw the operating mode text
-        status_text = f"{self.capacity} kW (wind) | {output_percentage}%"
+        status_text = f"{self.capacity/1000:.1f} MW (wind) | {output_percentage}%"
         painter.drawText(text_rect, Qt.AlignCenter, status_text)
     
     def load_capacity_factors(self):

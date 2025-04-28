@@ -144,7 +144,7 @@ class GridExportComponent(ComponentBase):
         painter.setFont(font)
         
         # Draw the capacity text
-        capacity_text = f"{self.capacity} kW (export)"
+        capacity_text = f"{self.capacity/1000:.1f} MW (export)"
         painter.drawText(capacity_rect, Qt.AlignCenter, capacity_text)
         
         # Draw the revenue text if either bulk PPA price or market price is set

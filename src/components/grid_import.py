@@ -145,7 +145,7 @@ class GridImportComponent(ComponentBase):
         painter.setFont(font)
         
         # Draw the capacity text
-        capacity_text = f"{self.capacity} kW (import)"
+        capacity_text = f"{self.capacity/1000:.1f} MW (import)"
         painter.drawText(capacity_rect, Qt.AlignCenter, capacity_text)
         
         # Draw the cost text if price is set

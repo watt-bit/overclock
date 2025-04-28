@@ -114,7 +114,7 @@ class GeneratorComponent(ComponentBase):
         if self.is_in_maintenance:
             output_percentage = 0  # Output is 0 during maintenance
             # Draw capacity info with maintenance status
-            capacity_text = f"{self.capacity} kW (gas) | MAINTENANCE ({self.maintenance_time_remaining}h)"
+            capacity_text = f"{self.capacity/1000:.1f} MW (gas) | MAINTENANCE ({self.maintenance_time_remaining}h)"
         else:
             # In Static (Auto) mode, use output_level as percentage
             # In BTF Unit Commitment (Auto) mode, calculate actual output based on system load
@@ -127,7 +127,7 @@ class GeneratorComponent(ComponentBase):
                 output_percentage = int((self.last_output / self.capacity) * 100) if self.capacity > 0 else 0
             
             # Draw the capacity, generation level and type text centered below the image
-            capacity_text = f"{self.capacity} kW (gas) | {output_percentage}%"
+            capacity_text = f"{self.capacity/1000:.1f} MW (gas) | {output_percentage}%"
         
         painter.drawText(text_rect, Qt.AlignCenter, capacity_text)
         

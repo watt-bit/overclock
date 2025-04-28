@@ -45,7 +45,7 @@ class AnalyticsPanel(QWidget):
         
         # Set up the plot
         self.ax.set_xlabel('Time Step (hour)', color='#B5BEDF')
-        self.ax.set_ylabel('Power (kW)', color='#B5BEDF')
+        self.ax.set_ylabel('Power (MW)', color='#B5BEDF')
         self.ax.tick_params(colors='#B5BEDF')  # Soft powdery blue-lavender for tick labels
         self.ax.grid(True, color='#2A334F', linestyle='-')  # Major gridlines
         self.ax.grid(True, which='minor', color='#2A334F', linestyle='--', alpha=0.5)  # Minor gridlines
@@ -659,6 +659,13 @@ class AnalyticsPanel(QWidget):
             )
             min_val = min(min(self.surplus_data) if self.surplus_data else 0, -1000)
             self.ax.set_ylim(min_val * 1.1, max_val * 1.1)
+            
+            # Format y-axis ticks to show values in MW with one significant figure
+            def format_mw(x, pos):
+                # Convert kW to MW and format with one significant figure
+                return f"{x/1000:.1f}"
+            
+            self.ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_mw))
         
         # Update the revenue chart if gross_revenue_data is provided
         if gross_revenue_data is not None:

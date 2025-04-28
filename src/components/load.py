@@ -191,7 +191,7 @@ class LoadComponent(ComponentBase):
         current_demand = self.calculate_demand(current_time)
         demand_percentage = int((current_demand / self.demand) * 100) if self.demand > 0 else 0
         
-        demand_text = f"{self.demand} kW (Load) | {demand_percentage}%"
+        demand_text = f"{self.demand/1000:.1f} MW (Load) | {demand_percentage}%"
         painter.drawText(demand_rect, Qt.AlignCenter, demand_text)
         
         # Draw the revenue text

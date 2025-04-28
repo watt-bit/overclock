@@ -323,15 +323,18 @@ class ComponentPropertiesManager:
         layout.addRow("Load State:", state_toggle)
     
     def _add_generator_properties(self, component, layout):
-        capacity_edit = QLineEdit(str(component.capacity))
+        # Display capacity in MW in the edit field
+        capacity_edit = QLineEdit(str(component.capacity / 1000))
         capacity_edit.setStyleSheet(INPUT_STYLE)
         
         def update_capacity(value):
-            setattr(component, 'capacity', value)
+            # Convert back to kW for internal storage
+            kw_value = value * 1000
+            setattr(component, 'capacity', kw_value)
             # Update CAPEX display when capacity changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(capacity_edit, update_capacity, min_value=25, max_value=5000000)
+        self._set_up_numeric_field(capacity_edit, update_capacity, min_value=0.025, max_value=5000)
         
         # Add operating mode selector
         mode_selector = QComboBox()
@@ -505,7 +508,7 @@ class ComponentPropertiesManager:
                                   is_float=False, min_value=1, max_value=10000)
         
         # Add all controls to properties layout
-        layout.addRow("Capacity (kW):", capacity_edit)
+        layout.addRow("Capacity (MW):", capacity_edit)
         layout.addRow("Operating Mode:", mode_selector)
         layout.addRow("Output Level:", output_level_widget)
         layout.addRow("Ramp Rate Limiter:", ramp_rate_widget)
@@ -520,9 +523,9 @@ class ComponentPropertiesManager:
         layout.addRow("Cooldown Time (hrs):", cooldown_edit)
     
     def _add_grid_import_properties(self, component, layout):
-        capacity_edit = QLineEdit(str(component.capacity))
+        capacity_edit = QLineEdit(str(component.capacity / 1000))
         capacity_edit.setStyleSheet(INPUT_STYLE)
-        self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value), min_value=25, max_value=5000000)
+        self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value * 1000), min_value=0.025, max_value=5000)
         
         # Add cost per kWh field
         cost_edit = QLineEdit(str(component.cost_per_kwh))
@@ -594,7 +597,7 @@ class ComponentPropertiesManager:
         
         auto_charging_btn.clicked.connect(toggle_auto_charging)
         
-        layout.addRow("Max Capacity (kW):", capacity_edit)
+        layout.addRow("Max Capacity (MW):", capacity_edit)
         layout.addRow("Bulk Import PPA ($/kWh):", cost_edit)
         layout.addRow("Market Import Prices ($/kWh):", market_prices_widget)
         layout.addRow("", profile_info)
@@ -602,9 +605,9 @@ class ComponentPropertiesManager:
         layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
     
     def _add_grid_export_properties(self, component, layout):
-        capacity_edit = QLineEdit(str(component.capacity))
+        capacity_edit = QLineEdit(str(component.capacity / 1000))
         capacity_edit.setStyleSheet(INPUT_STYLE)
-        self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value), min_value=25, max_value=5000000)
+        self._set_up_numeric_field(capacity_edit, lambda value: setattr(component, 'capacity', value * 1000), min_value=0.025, max_value=5000)
         
         # Add price per kWh field
         price_edit = QLineEdit(str(component.bulk_ppa_price))
@@ -657,7 +660,7 @@ class ComponentPropertiesManager:
         
         market_prices_selector.currentTextChanged.connect(on_market_prices_mode_changed)
         
-        layout.addRow("Max Capacity (kW):", capacity_edit)
+        layout.addRow("Max Capacity (MW):", capacity_edit)
         layout.addRow("Bulk Export PPA ($/kWh):", price_edit)
         layout.addRow("Market Export Prices ($/kWh):", market_prices_widget)
         layout.addRow("", profile_info)
@@ -684,15 +687,18 @@ class ComponentPropertiesManager:
         return False
     
     def _add_load_properties(self, component, layout):
-        demand_edit = QLineEdit(str(component.demand))
+        # Display demand in MW in the edit field
+        demand_edit = QLineEdit(str(component.demand / 1000))
         demand_edit.setStyleSheet(INPUT_STYLE)
         
         def update_demand(value):
-            setattr(component, 'demand', value)
+            # Convert back to kW for internal storage
+            kw_value = value * 1000
+            setattr(component, 'demand', kw_value)
             # Update CAPEX display when demand changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(demand_edit, update_demand, min_value=25, max_value=5000000)
+        self._set_up_numeric_field(demand_edit, update_demand, min_value=0.025, max_value=5000)
         
         # Add price per kWh field
         price_edit = QLineEdit(str(component.price_per_kwh))
@@ -981,7 +987,7 @@ class ComponentPropertiesManager:
         
         profile_type.currentTextChanged.connect(on_profile_changed)
         
-        layout.addRow("Demand (kW):", demand_edit)
+        layout.addRow("Demand (MW):", demand_edit)
         layout.addRow("Price per kWh ($):", price_edit)
         layout.addRow("CAPEX per kW ($):", capex_edit)
         layout.addRow("Operating Mode:", operating_mode_label)
@@ -995,16 +1001,18 @@ class ComponentPropertiesManager:
         layout.addRow("Frequency:", frequency_widget)
     
     def _add_battery_properties(self, component, layout):
-        # Power capacity field
-        power_capacity_edit = QLineEdit(str(component.power_capacity))
+        # Power capacity field in MW
+        power_capacity_edit = QLineEdit(str(component.power_capacity / 1000))
         power_capacity_edit.setStyleSheet(INPUT_STYLE)
         
         def update_power_capacity(value):
-            setattr(component, 'power_capacity', value)
+            # Convert back to kW for internal storage
+            kw_value = value * 1000
+            setattr(component, 'power_capacity', kw_value)
             # Update CAPEX display when power capacity changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(power_capacity_edit, update_power_capacity, min_value=25, max_value=5000000)
+        self._set_up_numeric_field(power_capacity_edit, update_power_capacity, min_value=0.025, max_value=5000)
         
         # Energy capacity field
         energy_capacity_edit = QLineEdit(str(component.energy_capacity))
@@ -1062,7 +1070,7 @@ class ComponentPropertiesManager:
         self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
         
         # Add controls to layout
-        layout.addRow("Power Capacity (kW):", power_capacity_edit)
+        layout.addRow("Power Capacity (MW):", power_capacity_edit)
         layout.addRow("Energy Capacity (kWh):", energy_capacity_edit)
         layout.addRow("Charge Level:", charge_label)
         layout.addRow("Operating Mode:", mode_selector)
@@ -1236,22 +1244,22 @@ class ComponentPropertiesManager:
         layout.addRow("", profile_info)
         
         # Add capacity field
-        capacity_field = QLineEdit(str(component.capacity))
+        capacity_field = QLineEdit(str(component.capacity / 1000))
         capacity_field.setStyleSheet(INPUT_STYLE)
         
         def update_capacity(value):
             try:
-                component.capacity = float(value)
+                component.capacity = float(value) * 1000  # Convert MW to kW
                 component.update()  # Refresh the component display
                 self.main_window.update_simulation()
                 # Update CAPEX display when capacity changes
                 self.main_window.update_capex_display()
             except (ValueError, TypeError):
                 # Restore previous value if input is invalid
-                capacity_field.setText(str(component.capacity))
+                capacity_field.setText(str(component.capacity / 1000))
         
         # Set up numeric validation for the capacity field
-        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=25, max_value=5000000)
+        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=0.025, max_value=5000)
         
         # Add CAPEX per kW field
         capex_edit = QLineEdit(str(component.capex_per_kw))
@@ -1264,7 +1272,7 @@ class ComponentPropertiesManager:
             
         self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
         
-        layout.addRow("Capacity (kW):", capacity_field)
+        layout.addRow("Capacity (MW):", capacity_field)
         layout.addRow("CAPEX per kW ($):", capex_edit)
     
     def _add_wind_turbine_properties(self, component, layout):
@@ -1318,22 +1326,22 @@ class ComponentPropertiesManager:
         layout.addRow("", profile_info)
         
         # Add capacity field
-        capacity_field = QLineEdit(str(component.capacity))
+        capacity_field = QLineEdit(str(component.capacity / 1000))
         capacity_field.setStyleSheet(INPUT_STYLE)
         
         def update_capacity(value):
             try:
-                component.capacity = float(value)
+                component.capacity = float(value) * 1000  # Convert MW to kW
                 component.update()  # Refresh the component display
                 self.main_window.update_simulation()
                 # Update CAPEX display when capacity changes
                 self.main_window.update_capex_display()
             except (ValueError, TypeError):
                 # Restore previous value if input is invalid
-                capacity_field.setText(str(component.capacity))
+                capacity_field.setText(str(component.capacity / 1000))
         
         # Set up numeric validation for the capacity field
-        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=25, max_value=5000000)
+        self._set_up_numeric_field(capacity_field, update_capacity, is_float=True, min_value=0.025, max_value=5000)
         
         # Add CAPEX per kW field
         capex_edit = QLineEdit(str(component.capex_per_kw))
@@ -1346,7 +1354,7 @@ class ComponentPropertiesManager:
             
         self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
         
-        layout.addRow("Capacity (kW):", capacity_field)
+        layout.addRow("Capacity (MW):", capacity_field)
         layout.addRow("CAPEX per kW ($):", capex_edit)
     
     def _load_custom_profile(self, component):
