@@ -87,6 +87,11 @@ class ComponentPropertiesManager:
         
         self.current_component = component
         
+        # Make properties panel visible if it's currently hidden
+        if not self.main_window.properties_dock.isVisible():
+            self.main_window.properties_dock.setVisible(True)
+            self.main_window.position_properties_panel_if_needed()
+        
         # Create a layout for the component properties
         main_layout = QHBoxLayout()
         main_layout.setContentsMargins(5, 5, 5, 5)  # Reduce margins
@@ -203,11 +208,6 @@ class ComponentPropertiesManager:
         # Force the properties dock to resize to its minimum size
         self.properties_widget.adjustSize()
         self.main_window.properties_dock.adjustSize()
-
-        # Make properties panel visible if it's currently hidden
-        if not self.main_window.properties_dock.isVisible():
-            self.main_window.properties_dock.setVisible(True)
-            self.main_window.position_properties_panel_if_needed()
     
     def update_delete_button_state(self):
         """

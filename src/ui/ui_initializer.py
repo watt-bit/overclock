@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
                             QToolBar, 
                             QAction, QMenu, QShortcut, QFrame,
                             QToolButton, QSizePolicy, QGraphicsTextItem)
-from PyQt5.QtCore import Qt, QRectF, QRect, QTimer
+from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime
 from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics
 import math
 
@@ -730,6 +730,24 @@ class UIInitializer:
         view_button.setPopupMode(QToolButton.InstantPopup)  # Show menu when clicking anywhere on button
         toolbar.addWidget(view_button)
 
+        # Add spacer to push clock to the right side of toolbar
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        toolbar.addWidget(spacer)
+        
+        # Add clock display
+        main_window.clock_label = QLabel()
+        main_window.clock_label.setStyleSheet("QLabel { color: white; font-size: 14pt; margin-right: 15px; }")
+        toolbar.addWidget(main_window.clock_label)
+        
+        # Set up timer to update clock every second
+        main_window.clock_timer = QTimer(main_window)
+        main_window.clock_timer.timeout.connect(lambda: UIInitializer.update_clock(main_window))
+        main_window.clock_timer.start(1000)  # Update every second
+        
+        # Initialize clock immediately
+        UIInitializer.update_clock(main_window)
+
         # Connect visibility changed signals to update menu text
         main_window.properties_dock.visibilityChanged.connect(main_window.update_properties_menu_text)
         main_window.analytics_dock.visibilityChanged.connect(main_window.update_analytics_menu_text)
@@ -773,6 +791,32 @@ class UIInitializer:
         else:
             # Call base QGraphicsView implementation
             QGraphicsView.resizeEvent(self.view, event)
+
+    @staticmethod
+    def update_clock(main_window):
+        """Update the clock label with current time in 12-hour format"""
+        current_time = QTime.currentTime()
+        # Use h for hour without leading zero in 12-hour format
+        # Use AP for AM/PM indicator
+        hour = current_time.hour()
+        # Convert to 12-hour format
+        if hour == 0:
+            hour_12 = 12
+        elif hour > 12:
+            hour_12 = hour - 12
+        else:
+            hour_12 = hour
+            
+        minute = current_time.toString("mm")
+        am_pm = "AM" if hour < 12 else "PM"
+        
+        # Flash the colon (visible on even seconds, hidden on odd seconds)
+        seconds = current_time.second()
+        colon = ":" if seconds % 2 == 0 else " "
+        
+        # Combine parts to create the time string
+        time_text = f"{hour_12}{colon}{minute} {am_pm}"
+        main_window.clock_label.setText(time_text)
 
 # Import TiledBackgroundWidget from main_window.py to avoid circular imports
 

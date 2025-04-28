@@ -2473,3 +2473,56 @@ These steps prevent multiple deletion attempts on the same component, which can 
 
 ## Border Animation Patterns (2024-04-09)
 BorderedMainWidget uses different flash patterns to provide visual feedback for different actions. A single-color dark gray flash for 250ms provides subtle feedback for simulation toggling, while other patterns (red/black sequence, gold sequence, gray sequence) provide feedback for other events. When implementing new visual feedback, maintain consistency with existing patterns and ensure they're properly handled in the update_flash method.
+
+## QTimer for Real-Time Display (2024-08-07)
+Key insights from implementing a real-time clock in the toolbar:
+
+1. QTimer Usage for Periodic Updates
+   - QTimer provides a clean way to implement recurring events like clock updates
+   - Setting the interval to 1000ms creates a standard second-by-second update
+   - The timer should be stored as an instance variable to prevent garbage collection
+   - Connecting the timeout signal to a method using lambda preserves access to the main window
+
+2. Cross-Object Method Access
+   - Using static methods in the UIInitializer class with the main_window parameter maintains clean architecture
+   - This approach allows UI initialization code to be separate while still accessing main window methods and properties
+   - Lambda functions provide a convenient way to pass parameters to slots
+
+3. Time Formatting in Qt
+   - QTime.currentTime() provides the current system time in a Qt-friendly format
+   - The toString method with format string "hh:mm:ss AP" creates a 12-hour time format with AM/PM
+   - Format specifiers follow Qt's pattern system (different from Python's strftime)
+   - This approach is cross-platform compatible
+
+4. UI Layout Considerations
+   - Using a spacer widget with QSizePolicy.Expanding pushes the clock to the right side of the toolbar
+   - This technique is more reliable than manual positioning for responsive layouts
+   - Adding margin-right in the stylesheet creates appropriate spacing from the window edge
+   - Font size matching in the stylesheet ensures visual consistency with other toolbar elements
+
+## Time Display Customization Techniques (2024-08-07)
+Key insights from customizing the clock display format:
+
+1. Granular Time Component Extraction
+   - Instead of using a single format string, extract individual components for maximum flexibility
+   - QTime.toString() with single-character formats ("h", "mm", "AP") gives precise control
+   - This allows custom formatting beyond what Qt's built-in format strings provide
+   - Individual components can be combined with custom separators and spacing
+
+2. Visual Indicator Implementation
+   - Flashing elements (like a blinking colon) provide intuitive passage-of-time feedback
+   - Using modulo operations (seconds % 2) creates simple alternating patterns
+   - The flashing element preserves time awareness without displaying the exact seconds count
+   - This reduces visual clutter while maintaining time change indication
+
+3. String Format Customization
+   - Python's f-strings provide a clean way to combine time components with custom formatting
+   - Conditional elements can be included using ternary expressions within f-strings
+   - This approach gives more flexibility than Qt's built-in format strings
+   - Custom separators and spacing can be precisely controlled
+
+4. UI Design Principles
+   - Removing leading zeros reduces visual noise and improves readability
+   - Omitting seconds count simplifies the display while maintaining essential information
+   - Visual indicators (flashing colon) provide feedback without adding complexity
+   - These changes follow the design principle of displaying only what's necessary

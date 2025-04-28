@@ -68,12 +68,12 @@
 - Created SimulationEngine class in src/simulation/engine.py
 - Moved all simulation logic from main_window.py to SimulationEngine
 - Preserved exact behavior of:
-  * Time step calculations
-  * Component state updates
-  * Battery logic
-  * Power flow calculations
-  * Energy accounting
-  * Analytics updates
+ * Time step calculations
+ * Component state updates
+ * Battery logic
+ * Power flow calculations
+ * Energy accounting
+ * Analytics updates
 - Updated main_window.py to delegate to SimulationEngine
 - Verified functionality through test run
 - No changes to UI or component behavior
@@ -811,3 +811,17 @@
 - Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
 - QColor objects are not hashable, so replaced len(set()) with all() condition
 - Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
