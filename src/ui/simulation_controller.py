@@ -48,15 +48,15 @@ class SimulationController:
             if hasattr(self.main_window, 'centralWidget'):
                 main_widget = self.main_window.centralWidget()
                 if hasattr(main_widget, 'border_width') and hasattr(main_widget, 'corner_radius'):
-                    main_widget.border_width = 6
-                    main_widget.corner_radius = 6
+                    main_widget.border_width = 8
+                    main_widget.corner_radius = 8
                     main_widget.update()  # Trigger repaint
                 
                 # Update layout margins
                 if hasattr(main_widget, 'layout'):
                     main_layout = main_widget.layout()
                     if main_layout:
-                        main_layout.setContentsMargins(6, 6, 6, 6)
+                        main_layout.setContentsMargins(8, 8, 8, 8)
             
             # Disable delete button in properties manager
             if hasattr(self.main_window, 'properties_manager'):
