@@ -38,6 +38,12 @@ class ModelManager:
     
     def new_scenario(self):
         """Create a new blank scenario by clearing the scene and resetting all state"""
+        # First, ensure we're in model view
+        if hasattr(self.main_window, 'is_model_view') and not self.main_window.is_model_view:
+            # We're in historian view, switch back to model view
+            # Using toggle_mode_button instead of switch_to_model_view to ensure complete UI update
+            self.main_window.mode_toggle_manager.toggle_mode_button()
+        
         # Safely handle welcome text before clearing the scene
         if hasattr(self.main_window, 'welcome_text') and self.main_window.welcome_text:
             if self.main_window.welcome_text.scene():

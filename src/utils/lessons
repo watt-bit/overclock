@@ -2526,3 +2526,7 @@ Key insights from customizing the clock display format:
    - Omitting seconds count simplifies the display while maintaining essential information
    - Visual indicators (flashing colon) provide feedback without adding complexity
    - These changes follow the design principle of displaying only what's necessary
+
+When performing state-changing operations like new scenario, it's important to ensure consistent view state first.
+
+When switching between application modes (like historian to model view), always use the complete toggle function (toggle_mode_button) rather than direct view switching (switch_to_model_view) to ensure all UI elements are properly updated.

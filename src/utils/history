@@ -825,3 +825,10 @@
 - Added flashing colon to indicate passage of seconds
 - Maintained 12-hour format with AM/PM indicator
 - Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
