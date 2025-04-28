@@ -87,6 +87,10 @@ class SimulationController:
             # Reset border width, corner radius and content margins when simulation stops
             if hasattr(self.main_window, 'centralWidget'):
                 main_widget = self.main_window.centralWidget()
+                # Reset animation speed to slow when simulation is reset
+                if hasattr(main_widget, 'animation_speed'):
+                    main_widget.animation_speed = 1
+                
                 if hasattr(main_widget, 'border_width') and hasattr(main_widget, 'corner_radius'):
                     main_widget.border_width = 4
                     main_widget.corner_radius = 4
@@ -218,6 +222,10 @@ class SimulationController:
         # Reset border width, corner radius and content margins
         if hasattr(self.main_window, 'centralWidget'):
             main_widget = self.main_window.centralWidget()
+            # Reset animation speed to slow when simulation is reset
+            if hasattr(main_widget, 'animation_speed'):
+                main_widget.animation_speed = 1
+            
             if hasattr(main_widget, 'border_width') and hasattr(main_widget, 'corner_radius'):
                 main_widget.border_width = 4
                 main_widget.corner_radius = 4
