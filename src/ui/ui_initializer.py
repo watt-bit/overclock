@@ -730,6 +730,25 @@ class UIInitializer:
         view_button.setPopupMode(QToolButton.InstantPopup)  # Show menu when clicking anywhere on button
         toolbar.addWidget(view_button)
 
+        # Create Window menu for window size control
+        window_menu = QMenu("Window", main_window)
+        
+        # Create actions for window size control
+        maximize_action = QAction("Maximize", main_window)
+        maximize_action.triggered.connect(main_window.showMaximized)
+        window_menu.addAction(maximize_action)
+        
+        restore_default_action = QAction("Restore Default", main_window)
+        restore_default_action.triggered.connect(lambda: main_window.resize(1600, 900))
+        window_menu.addAction(restore_default_action)
+        
+        # Use QToolButton for Window menu
+        window_button = QToolButton()
+        window_button.setText("Window")
+        window_button.setMenu(window_menu)
+        window_button.setPopupMode(QToolButton.InstantPopup)
+        toolbar.addWidget(window_button)
+
         # Add spacer to push clock to the right side of toolbar
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)

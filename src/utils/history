@@ -8,6 +8,7 @@
 - Modified main.py to create the Augur title screen and connect it in the transition sequence
 - Used augurtitle.png image from src/ui/assets directory
 - Maintained consistent behavior with the other title screens
+- Resized the AugurTitleScreen to 0.9x of its original size to better accommodate different screen sizes.
 
 ## 2024-07-06: Added "powered by" Label to Title Screen
 - Added a "powered by" text label to the original title screen (title_screen.py)
@@ -21,6 +22,7 @@
 - Modified main.py to show WBR title screen first, then transition to original title screen
 - Used WBRtitle.png image from src/ui/assets directory
 - Maintained same functionality of key press detection (Enter/Space/Escape) to transition to next screen
+- Resized the WBRTitleScreen to 0.9x of its original size to better accommodate different screen sizes.
 
 ## 2024-07-05: Code Cleanup and Repository Update
 - Deleted test save files (newsavetest1connect.json and newsavetest2.json)
@@ -832,3 +834,2406 @@
 - Ensures proper UI restoration including re-enabling component buttons
 - Fixed issue where component buttons remained disabled after creating a new scenario
 - Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-enabling component buttons
+- Fixed issue where component buttons remained disabled after creating a new scenario
+- Provides more consistent user experience when transitioning between views
+
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
+## 2025-04-16 12:00 - Fixed UI update issue when creating new scenario from historian view
+- Modified ModelManager.new_scenario() to use toggle_mode_button instead of switch_to_model_view
+- Ensures proper UI restoration including re-en

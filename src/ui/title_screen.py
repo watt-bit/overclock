@@ -23,6 +23,12 @@ class TitleScreen(QWidget):
         title_image = QLabel()
         pixmap = QPixmap(resource_path("src/ui/assets/demotitle6.png"))
         if not pixmap.isNull():
+            # Scale the pixmap to 90% of its original size
+            original_width = pixmap.width()
+            original_height = pixmap.height()
+            scaled_width = int(original_width * 0.9)
+            scaled_height = int(original_height * 0.9)
+            pixmap = pixmap.scaled(scaled_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             title_image.setPixmap(pixmap)
         else:
             # Fallback if image is not found
@@ -34,7 +40,7 @@ class TitleScreen(QWidget):
         title_image.setAlignment(Qt.AlignCenter)
         layout.addWidget(title_image)
         
-        # Set the window size to match the image size
+        # Set the window size to match the scaled image size
         self.setFixedSize(pixmap.width(), pixmap.height())
         
         # Add Exit button

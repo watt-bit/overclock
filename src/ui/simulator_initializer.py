@@ -24,6 +24,7 @@ class SimulatorInitializer:
         # Set window properties
         simulator.setWindowTitle("OVERCLOCK | Watt-Bit Research | https://watt-bit.com | research preview presented by Augur VC | https://augurvc.com")
         simulator.resize(1600, 900)
+        simulator.setMinimumSize(1600, 900)
         
         # Initialize variables
         simulator.components = []

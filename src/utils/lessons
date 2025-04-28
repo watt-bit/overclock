@@ -2530,3 +2530,5 @@ Key insights from customizing the clock display format:
 When performing state-changing operations like new scenario, it's important to ensure consistent view state first.
 
 When switching between application modes (like historian to model view), always use the complete toggle function (toggle_mode_button) rather than direct view switching (switch_to_model_view) to ensure all UI elements are properly updated.
+
+PyQt5 images can be scaled with pixmap.scaled() using Qt.KeepAspectRatio and Qt.SmoothTransformation for better quality resizing.
