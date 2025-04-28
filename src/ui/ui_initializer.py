@@ -449,12 +449,26 @@ class UIInitializer:
         main_window.properties_dock.setWidget(main_window.properties_manager.properties_widget)
         # Allow the dock widget to resize when its contents change
         main_window.properties_dock.setFeatures(QDockWidget.DockWidgetFloatable | 
-                                        QDockWidget.DockWidgetMovable | 
-                                        QDockWidget.DockWidgetClosable)
+                                        QDockWidget.DockWidgetMovable)
         # Prevent the properties panel from being docked
         main_window.properties_dock.setAllowedAreas(Qt.NoDockWidgetArea)
         # Ensure the dock resizes to the minimum size of its contents
         main_window.properties_dock.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+
+        # Create a custom title bar widget with only centered text
+        custom_title_widget = QWidget()
+        title_layout = QHBoxLayout(custom_title_widget)
+        title_layout.setContentsMargins(0, 0, 0, 0)
+        title_label = QLabel("Properties")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("color: white; font-weight: bold; background-color: #2A2A2A; padding: 5px;")
+        title_layout.addWidget(title_label)
+        custom_title_widget.setFixedHeight(25)  # Match the height specified in dock_title_style
+        custom_title_widget.setStyleSheet("background-color: #2A2A2A; border-bottom: 1px solid #555555;")
+
+        # Set the custom title bar widget (removes default buttons)
+        main_window.properties_dock.setTitleBarWidget(custom_title_widget)
+
         main_window.addDockWidget(Qt.RightDockWidgetArea, main_window.properties_dock)
         # Make properties panel floating and hidden by default
         main_window.properties_dock.setFloating(True)

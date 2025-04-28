@@ -92,17 +92,21 @@ class ComponentPropertiesManager:
             self.main_window.properties_dock.setVisible(True)
             self.main_window.position_properties_panel_if_needed()
         
-        # Create a layout for the component properties
-        main_layout = QHBoxLayout()
+        # Create a vertical layout for the component properties
+        main_layout = QVBoxLayout()
         main_layout.setContentsMargins(5, 5, 5, 5)  # Reduce margins
-        left_column = QFormLayout()
-        left_column.setContentsMargins(0, 0, 0, 0)  # Minimal margins
-        left_column.setLabelAlignment(Qt.AlignLeft)
-        left_column.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
-        right_column = QVBoxLayout()
-        right_column.setContentsMargins(0, 0, 0, 0)  # Minimal margins
         
-        # Add common buttons to the right column
+        # Create the main content area (previously left column)
+        content_layout = QFormLayout()
+        content_layout.setContentsMargins(0, 0, 0, 0)  # Minimal margins
+        content_layout.setLabelAlignment(Qt.AlignLeft)
+        content_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
+        
+        # Create bottom button area
+        bottom_layout = QVBoxLayout()
+        bottom_layout.setContentsMargins(0, 10, 0, 0)  # Add some top padding
+        
+        # Add delete button to bottom layout
         delete_btn = QPushButton("Delete (DEL)")
         delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; font-weight: bold; }")
         delete_btn.clicked.connect(self.delete_component)
@@ -113,7 +117,7 @@ class ComponentPropertiesManager:
         # Disable delete button if simulation is running or autocompleting
         self.update_delete_button_state()
         
-        right_column.addWidget(delete_btn)
+        bottom_layout.addWidget(delete_btn)
         
         # Add graphics toggle button for load components only
         if isinstance(component, LoadComponent):
@@ -134,69 +138,75 @@ class ComponentPropertiesManager:
             
             graphics_toggle.clicked.connect(toggle_graphics)
             graphics_toggle.setToolTip("Toggle visibility of the load component's image")
-            right_column.addWidget(graphics_toggle)
+            bottom_layout.addWidget(graphics_toggle)
         
-        right_column.addStretch()  # Push everything to the top
-        
-        # Add component-specific properties to the left column
+        # Add component-specific properties to the content layout
         if isinstance(component, BusComponent):
-            self._add_bus_properties(component, left_column)
+            self._add_bus_properties(component, content_layout)
         elif isinstance(component, GeneratorComponent):
-            self._add_generator_properties(component, left_column)
+            self._add_generator_properties(component, content_layout)
         elif isinstance(component, GridImportComponent):
-            self._add_grid_import_properties(component, left_column)
+            self._add_grid_import_properties(component, content_layout)
         elif isinstance(component, GridExportComponent):
-            self._add_grid_export_properties(component, left_column)
+            self._add_grid_export_properties(component, content_layout)
         elif isinstance(component, LoadComponent):
-            self._add_load_properties(component, left_column)
+            self._add_load_properties(component, content_layout)
         elif isinstance(component, BatteryComponent):
-            self._add_battery_properties(component, left_column)
+            self._add_battery_properties(component, content_layout)
         elif isinstance(component, CloudWorkloadComponent):
-            self._add_cloud_workload_properties(component, left_column)
+            self._add_cloud_workload_properties(component, content_layout)
         elif isinstance(component, SolarPanelComponent):
-            self._add_solar_panel_properties(component, left_column)
+            self._add_solar_panel_properties(component, content_layout)
         elif isinstance(component, WindTurbineComponent):
-            self._add_wind_turbine_properties(component, left_column)
+            self._add_wind_turbine_properties(component, content_layout)
         elif isinstance(component, TreeComponent):
             # Trees are decorative with no functional properties
             tree_info = QLabel("Tree Prop")
-            left_column.addRow(tree_info)
+            content_layout.addRow(tree_info)
         elif isinstance(component, BushComponent):
             # Bushes are decorative with no functional properties
             bush_info = QLabel("Bush Prop")
-            left_column.addRow(bush_info)
+            content_layout.addRow(bush_info)
         elif isinstance(component, PondComponent):
             # Ponds are decorative with no functional properties
             pond_info = QLabel("Pond Prop")
-            left_column.addRow(pond_info)
+            content_layout.addRow(pond_info)
         elif isinstance(component, House1Component):
             # Houses are decorative with no functional properties
             house1_info = QLabel("House Prop")
-            left_column.addRow(house1_info)
+            content_layout.addRow(house1_info)
         elif isinstance(component, House2Component):
             # Houses are decorative with no functional properties
             house2_info = QLabel("Greenhouse Prop")
-            left_column.addRow(house2_info)
+            content_layout.addRow(house2_info)
         elif isinstance(component, FactoryComponent):
             # Factories are decorative with no functional properties
             factory_info = QLabel("Factory Prop")
-            left_column.addRow(factory_info)
+            content_layout.addRow(factory_info)
         elif isinstance(component, TraditionalDataCenterComponent):
             # Traditional Data Centers are decorative with no functional properties
             trad_dc_info = QLabel("Traditional Data Center Prop")
-            left_column.addRow(trad_dc_info)
+            content_layout.addRow(trad_dc_info)
         elif isinstance(component, DistributionPoleComponent):
             # Distribution Poles are decorative with no functional properties
             pole_info = QLabel("Distribution Pole Prop")
-            left_column.addRow(pole_info)
+            content_layout.addRow(pole_info)
         else:
             # Add default message
             default_info = QLabel("No specific properties available for this component type")
-            left_column.addRow(default_info)
+            content_layout.addRow(default_info)
         
-        # Set up the main layout with both columns
-        main_layout.addLayout(left_column, 3)  # 3:1 ratio for left:right
-        main_layout.addLayout(right_column, 1)
+        # Create content widget to hold the form layout
+        content_widget = QWidget()
+        content_widget.setLayout(content_layout)
+        
+        # Create button widget to hold the bottom layout
+        bottom_widget = QWidget()
+        bottom_widget.setLayout(bottom_layout)
+        
+        # Add the content and button widgets to the main layout
+        main_layout.addWidget(content_widget)
+        main_layout.addWidget(bottom_widget)
         
         # Create a widget to hold the main layout
         main_widget = QWidget()
