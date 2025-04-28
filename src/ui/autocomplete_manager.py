@@ -282,19 +282,19 @@ class AutocompleteManager:
             color_36 = self._get_irr_color(irr_36)
             
             # Create display text with all IRR values using HTML for color
-            irr_text = f'Refresh Cycle IRR: <span style="color: {color_12}">{irr_12:.2f}%</span> (12 Mo.)'
+            irr_text = f'Refresh Cycle IRR: <span style="color: {color_12}">{irr_12:.1f}%</span> (12 Mo.)'
             
             # Add 18-month value
             if irr_18 is not None:
-                irr_text += f' | <span style="color: {color_18}">{irr_18:.2f}%</span> (18 Mo.)'
+                irr_text += f' | <span style="color: {color_18}">{irr_18:.1f}%</span> (18 Mo.)'
             else:
-                irr_text += ' | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (18 Mo.)'
+                irr_text += ' | <span style="color: rgba(255, 255, 255, 0.8)">--.-</span>% (18 Mo.)'
                 
             # Add 36-month value
             if irr_36 is not None:
-                irr_text += f' | <span style="color: {color_36}">{irr_36:.2f}%</span> (36 Mo.)'
+                irr_text += f' | <span style="color: {color_36}">{irr_36:.1f}%</span> (36 Mo.)'
             else:
-                irr_text += ' | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (36 Mo.)'
+                irr_text += ' | <span style="color: rgba(255, 255, 255, 0.8)">--.-</span>% (36 Mo.)'
                 
             # Check if the irr_label is still valid before setting text
             if self.main_window.irr_label.isVisible():
@@ -304,7 +304,7 @@ class AutocompleteManager:
                 self.main_window.irr_label.setTextFormat(Qt.RichText)
         else:
             # Default placeholder text with standard color
-            irr_text = 'Refresh Cycle IRR: <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (12 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (18 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.--</span>% (36 Mo.)'
+            irr_text = 'Refresh Cycle IRR: <span style="color: rgba(255, 255, 255, 0.8)">--.-</span>% (12 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.-</span>% (18 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.-</span>% (36 Mo.)'
             
             # Check if the irr_label is still valid before setting text
             if self.main_window.irr_label.isVisible():

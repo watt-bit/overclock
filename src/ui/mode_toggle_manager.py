@@ -52,7 +52,7 @@ class ModeToggleManager:
             self.switch_to_historian_view()
         else:
             # Switching back to Model mode
-            self.main_window.mode_toggle_btn.setText("🧩 Model (TAB)")
+            self.main_window.mode_toggle_btn.setText("🏗️ Build (TAB)")
             
             # Show the analytics toggle button when returning to model view
             if hasattr(self.main_window, 'analytics_toggle_btn'):

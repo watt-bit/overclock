@@ -126,7 +126,7 @@ class UIInitializer:
         
         # Create IRR label overlay below CAPEX label
         main_window.irr_label = QLabel(main_window.view)
-        main_window.irr_label.setText("Refresh Cycle IRR: --.--% (12 Mo.) | --.--% (18 Mo.) | --.--% (36 Mo.)")
+        main_window.irr_label.setText("Refresh Cycle IRR: --.-% (12 Mo.) | --.-% (18 Mo.) | --.-% (36 Mo.)")
         main_window.irr_label.setStyleSheet("""
             QLabel {
                 font-weight: bold;
@@ -152,7 +152,7 @@ class UIInitializer:
         main_window.irr_label.show()
         
         # Create Mode/Historian toggle button in top-left corner
-        main_window.mode_toggle_btn = QPushButton("🧩 Model (TAB)", main_window.view)
+        main_window.mode_toggle_btn = QPushButton("🏗️ Build (TAB)", main_window.view)
         main_window.mode_toggle_btn.setStyleSheet("""
             QPushButton { 
                 background-color: #3D3D3D; 
