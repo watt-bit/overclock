@@ -158,6 +158,21 @@ class BatteryComponent(ComponentBase):
             if hasattr(view, 'transform'):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
+        # Adjust text rectangle based on scale factor to prevent text clipping
+        scaled_text_height = text_rect.height() * scale_factor
+        
+        # Calculate the new width while maintaining the center position
+        new_width = text_rect.width() * max(1.0, scale_factor)
+        center_x = text_rect.x() + text_rect.width() / 2
+        
+        # Create the scaled text rectangle
+        scaled_text_rect = QRectF(
+            center_x - new_width / 2,  # Position to maintain center alignment
+            text_rect.y(),
+            new_width,
+            scaled_text_height
+        )
+        
         # Set font with size adjusted for current zoom level
         font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)
@@ -170,7 +185,7 @@ class BatteryComponent(ComponentBase):
         
         # Draw the battery information
         battery_text = f"{self.power_capacity/1000:.1f} MW (battery) | {charge_percent_display}% charge"
-        painter.drawText(text_rect, Qt.AlignCenter, battery_text)
+        painter.drawText(scaled_text_rect, Qt.AlignCenter, battery_text)
     
     def has_energy(self):
         """Check if battery has any stored energy"""

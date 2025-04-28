@@ -176,6 +176,31 @@ class LoadComponent(ComponentBase):
             if hasattr(view, 'transform'):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
+        # Adjust text rectangles based on scale factor to prevent text clipping
+        # Scale vertical spacing based on zoom level
+        vertical_spacing = text_rect.height() * 0.5 * scale_factor
+        
+        # Recalculate text rectangles with adjusted dimensions
+        scaled_text_height = text_rect.height() * scale_factor
+        
+        # Calculate the new width while maintaining the center position
+        new_width = text_rect.width() * max(1.0, scale_factor)
+        center_x = text_rect.x() + text_rect.width() / 2
+        
+        demand_rect = QRectF(
+            center_x - new_width / 2,  # Position to maintain center alignment
+            text_rect.y(),
+            new_width,
+            scaled_text_height * 0.5
+        )
+        
+        revenue_rect = QRectF(
+            center_x - new_width / 2,  # Position to maintain center alignment
+            text_rect.y() + vertical_spacing,
+            new_width,
+            scaled_text_height * 0.5
+        )
+        
         # Set font with size adjusted for current zoom level
         font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)

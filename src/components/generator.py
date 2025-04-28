@@ -98,6 +98,26 @@ class GeneratorComponent(ComponentBase):
             if hasattr(view, 'transform'):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
+        # Adjust text rectangles based on scale factor to prevent text clipping
+        scaled_text_height = text_rect.height() * scale_factor
+        vertical_spacing = 5 * scale_factor
+        
+        # Create scaled text rectangle
+        scaled_text_rect = QRectF(
+            text_rect.x(),
+            text_rect.y(),
+            text_rect.width(),
+            scaled_text_height
+        )
+        
+        # Scale cost rectangle
+        scaled_cost_rect = QRectF(
+            rect.x(),
+            rect.y() + rect.height() + vertical_spacing,  # Position at bottom with margin
+            rect.width(),
+            25 * scale_factor
+        )
+        
         # Set font with size adjusted for current zoom level
         font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)
@@ -129,17 +149,11 @@ class GeneratorComponent(ComponentBase):
             # Draw the capacity, generation level and type text centered below the image
             capacity_text = f"{self.capacity/1000:.1f} MW (gas) | {output_percentage}%"
         
-        painter.drawText(text_rect, Qt.AlignCenter, capacity_text)
+        painter.drawText(scaled_text_rect, Qt.AlignCenter, capacity_text)
         
         # Add cost display (always visible, even when cost is 0)
         cost_text = f"Cost: ${int(self.accumulated_cost):,}"
-        cost_rect = QRectF(
-            rect.x(),
-            rect.y() + rect.height() + 5,  # Position at bottom with margin
-            rect.width(),
-            25
-        )
-        painter.drawText(cost_rect, Qt.AlignCenter, cost_text)
+        painter.drawText(scaled_cost_rect, Qt.AlignCenter, cost_text)
         
         # Calculate and store the smoke emission point (top-center of the image)
         self.smoke_point = QPointF(

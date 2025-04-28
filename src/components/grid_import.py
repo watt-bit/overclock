@@ -140,6 +140,27 @@ class GridImportComponent(ComponentBase):
             if hasattr(view, 'transform'):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
+        # Adjust text rectangles based on scale factor to prevent text clipping
+        # Scale vertical spacing based on zoom level
+        vertical_spacing = 20 * scale_factor
+        
+        # Recalculate text rectangles with adjusted dimensions
+        scaled_text_height = text_rect.height() * scale_factor
+        
+        capacity_rect = QRectF(
+            text_rect.x(),
+            text_rect.y(),
+            text_rect.width(),
+            scaled_text_height * 0.5
+        )
+        
+        cost_rect = QRectF(
+            text_rect.x(),
+            text_rect.y() + (scaled_text_height * 0.5) + vertical_spacing,
+            text_rect.width(), 
+            scaled_text_height * 0.5
+        )
+        
         # Set font with size adjusted for current zoom level
         font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)

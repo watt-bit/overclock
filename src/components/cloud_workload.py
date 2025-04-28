@@ -104,18 +104,41 @@ class CloudWorkloadComponent(ComponentBase):
             if hasattr(view, 'transform'):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
+        # Adjust text rectangles based on scale factor to prevent text clipping
+        # Scale vertical spacing based on zoom level
+        vertical_spacing = text_rect.height() * 0.7 * scale_factor
+        
+        # Calculate the new width while maintaining the center position
+        new_width = text_rect.width() * max(1.0, scale_factor)
+        center_x = text_rect.x() + text_rect.width() / 2
+        
+        # Create scaled text rectangles
+        scaled_main_text_rect = QRectF(
+            center_x - new_width / 2,  # Position to maintain center alignment
+            text_rect.y(),
+            new_width,
+            text_rect.height() * 0.7 * scale_factor
+        )
+        
+        scaled_revenue_rect = QRectF(
+            center_x - new_width / 2,  # Position to maintain center alignment
+            text_rect.y() + vertical_spacing,
+            new_width, 
+            text_rect.height() * 0.3 * scale_factor
+        )
+        
         # Set font with size adjusted for current zoom level
         font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)
         
         # Draw the component main text
         component_text = f"Cloud Workload ({self.operating_mode})"
-        painter.drawText(main_text_rect, Qt.AlignCenter, component_text)
+        painter.drawText(scaled_main_text_rect, Qt.AlignCenter, component_text)
         
         # Draw the revenue text if in revenue-generating mode
         if self.operating_mode in ["Multi-Cloud Spot", "Dedicated Capacity"]:
             revenue_text = f"Revenue: ${int(self.accumulated_revenue):,}"
-            painter.drawText(revenue_rect, Qt.AlignCenter, revenue_text)
+            painter.drawText(scaled_revenue_rect, Qt.AlignCenter, revenue_text)
         
         # Restore painter state
         painter.restore()

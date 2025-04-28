@@ -114,30 +114,36 @@ class GridExportComponent(ComponentBase):
             rect.height() - image_size - (rect.height() * 0.05) + 40  # Add 40 to the height to account for the offset
         )
         
-        # Split the text area into two parts for capacity and revenue
-        capacity_rect = QRectF(
-            text_rect.x(),
-            text_rect.y(),
-            text_rect.width(),
-            text_rect.height() * 0.5
-        )
-        
-        revenue_rect = QRectF(
-            text_rect.x(),
-            text_rect.y() + text_rect.height() * 0.5 + 20,
-            text_rect.width(), 
-            text_rect.height() * 0.5
-        )
-        
-        # Set text color to white
-        painter.setPen(QPen(Qt.white))
-        
         # Get the current view scale factor to adjust text size
         scale_factor = 1.0
         if self.scene() and self.scene().views():
             view = self.scene().views()[0]
             if hasattr(view, 'transform'):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
+        
+        # Adjust text rectangles based on scale factor to prevent text clipping
+        # Scale vertical spacing based on zoom level
+        vertical_spacing = 20 * scale_factor
+        
+        # Recalculate text rectangles with adjusted dimensions
+        scaled_text_height = text_rect.height() * scale_factor
+        
+        capacity_rect = QRectF(
+            text_rect.x(),
+            text_rect.y(),
+            text_rect.width(),
+            scaled_text_height * 0.5
+        )
+        
+        revenue_rect = QRectF(
+            text_rect.x(),
+            text_rect.y() + (scaled_text_height * 0.5) + vertical_spacing,
+            text_rect.width(), 
+            scaled_text_height * 0.5
+        )
+        
+        # Set text color to white
+        painter.setPen(QPen(Qt.white))
         
         # Set font with size adjusted for current zoom level
         font = QFont('Arial', int(14 * scale_factor))

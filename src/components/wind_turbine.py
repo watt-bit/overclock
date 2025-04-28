@@ -121,6 +121,14 @@ class WindTurbineComponent(ComponentBase):
             if hasattr(view, 'transform'):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
+        # Adjust text rectangle based on scale factor to prevent text clipping
+        scaled_text_rect = QRectF(
+            text_rect.x(),
+            text_rect.y(),
+            text_rect.width(),
+            text_rect.height() * scale_factor
+        )
+        
         # Set font with size adjusted for current zoom level
         font = QFont('Arial', int(14 * scale_factor))
         painter.setFont(font)
@@ -133,7 +141,7 @@ class WindTurbineComponent(ComponentBase):
         
         # Draw the operating mode text
         status_text = f"{self.capacity/1000:.1f} MW (wind) | {output_percentage}%"
-        painter.drawText(text_rect, Qt.AlignCenter, status_text)
+        painter.drawText(scaled_text_rect, Qt.AlignCenter, status_text)
     
     def load_capacity_factors(self):
         """Load capacity factors from CSV file"""
