@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
                             QToolBar, 
                             QAction, QMenu, QShortcut, QFrame,
                             QToolButton, QSizePolicy, QGraphicsTextItem)
-from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime
+from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime, QObject
 from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics
 import math
 
@@ -447,13 +447,12 @@ class UIInitializer:
         main_window.properties_dock = QDockWidget("Properties", main_window)
         main_window.properties_dock.setObjectName("properties_dock")
         main_window.properties_dock.setWidget(main_window.properties_manager.properties_widget)
-        # Allow the dock widget to resize when its contents change
-        main_window.properties_dock.setFeatures(QDockWidget.DockWidgetFloatable | 
-                                        QDockWidget.DockWidgetMovable)
+        # Only allow the dock widget to be moved, not resized
+        main_window.properties_dock.setFeatures(QDockWidget.DockWidgetMovable)
         # Prevent the properties panel from being docked
         main_window.properties_dock.setAllowedAreas(Qt.NoDockWidgetArea)
-        # Ensure the dock resizes to the minimum size of its contents
-        main_window.properties_dock.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        # Set fixed size policy to prevent resizing
+        main_window.properties_dock.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         # Create a custom title bar widget with only centered text
         custom_title_widget = QWidget()
@@ -468,6 +467,21 @@ class UIInitializer:
 
         # Set the custom title bar widget (removes default buttons)
         main_window.properties_dock.setTitleBarWidget(custom_title_widget)
+
+        # Install event filter to make sure resize events are blocked
+        class ResizeBlocker(QObject):
+            def eventFilter(self, obj, event):
+                if event.type() == event.Resize:
+                    # Get the current size
+                    size = main_window.properties_manager.properties_widget.sizeHint()
+                    # Keep the dock at this size
+                    main_window.properties_dock.resize(size)
+                    return True
+                return False
+
+        resize_blocker = ResizeBlocker(main_window)
+        main_window.properties_dock.installEventFilter(resize_blocker)
+        main_window.properties_dock_resize_blocker = resize_blocker  # Store reference
 
         main_window.addDockWidget(Qt.RightDockWidgetArea, main_window.properties_dock)
         # Make properties panel floating and hidden by default
