@@ -447,6 +447,27 @@ class UIInitializer:
         main_window.properties_dock = QDockWidget("Properties", main_window)
         main_window.properties_dock.setObjectName("properties_dock")
         main_window.properties_dock.setWidget(main_window.properties_manager.properties_widget)
+        
+        # Create custom title bar with only a centered label
+        custom_title_bar = QWidget()
+        custom_title_bar_layout = QHBoxLayout(custom_title_bar)
+        custom_title_bar_layout.setContentsMargins(0, 0, 0, 0)
+        
+        title_label = QLabel("Properties")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("""
+            color: white;
+            font-weight: bold;
+            background-color: #2A2A2A;
+            height: 25px;
+            border-bottom: 1px solid #555555;
+        """)
+        
+        custom_title_bar_layout.addWidget(title_label)
+        
+        # Set the custom title bar
+        main_window.properties_dock.setTitleBarWidget(custom_title_bar)
+        
         # Allow the dock widget to resize when its contents change
         main_window.properties_dock.setFeatures(QDockWidget.DockWidgetFloatable | 
                                         QDockWidget.DockWidgetMovable)
