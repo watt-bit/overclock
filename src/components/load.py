@@ -410,7 +410,7 @@ class LoadComponent(ComponentBase):
         
         try:
             # Path to the CSV file
-            filepath = "src/data/Powerlandia-Load-60CF.csv"
+            filepath = resource_path("src/data/Powerlandia-Load-60CF.csv")
             
             if not os.path.exists(filepath):
                 print(f"Error: Could not find Powerlandia profile file at {filepath}")

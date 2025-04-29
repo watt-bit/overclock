@@ -147,7 +147,7 @@ class SolarPanelComponent(ComponentBase):
         """Load capacity factors from CSV file"""
         if self.capacity_factors is None:
             # Load data from CSV file
-            csv_path = "src/data/powerlandia-solargen-year1.csv"
+            csv_path = resource_path("src/data/powerlandia-solargen-year1.csv")
             
             if os.path.exists(csv_path):
                 try:

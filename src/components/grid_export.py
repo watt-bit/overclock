@@ -165,7 +165,7 @@ class GridExportComponent(ComponentBase):
         """Load market prices from CSV file"""
         if self.market_prices is None and self.market_prices_mode == "Powerlandia 8760 Wholesale - Year 1":
             # Load data from CSV file
-            csv_path = "src/data/Powerlandia-poolprices-year1.csv"
+            csv_path = resource_path("src/data/Powerlandia-poolprices-year1.csv")
             
             if os.path.exists(csv_path):
                 try:
