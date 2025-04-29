@@ -21,7 +21,7 @@ class ComponentBase(QGraphicsRectItem):
         self.component_id = id(self)  # Use object id as default component_id
         # Remove "Component" suffix if it exists
         class_name = self.__class__.__name__
-        self.component_type = class_name.replace('Component', '') if class_name.endswith('Component') else class_name
+        self.component_type = class_name.replace('Component', ' ID:') if class_name.endswith('Component') else class_name
         
         # Shadow properties
         self.shadow_opacity = 0.2  # Shadow transparency (0-1)

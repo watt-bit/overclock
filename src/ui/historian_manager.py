@@ -130,10 +130,17 @@ class HistorianManager:
         
         # Set up the plot - primary axis
         self.ax.set_xlabel('Time Step (hour)', color='#B5BEDF')
-        self.ax.set_ylabel('Power (kW)', color='#B5BEDF')
+        self.ax.set_ylabel('Power (MW)', color='#B5BEDF')
         self.ax.tick_params(colors='#B5BEDF')  # Soft powdery blue-lavender for tick labels
         self.ax.grid(True, color='#2A334F', linestyle='-')  # Major gridlines
         self.ax.grid(True, which='minor', color='#2A334F', linestyle='--', alpha=0.5)  # Minor gridlines
+        
+        # Format y-axis ticks to show values in MW
+        def format_mw(x, pos):
+            # Convert kW to MW and format with one decimal place
+            return f"{x/1000:.1f}"
+        
+        self.ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_mw))
         
         # Set spines (borders) color
         for spine in self.ax.spines.values():
