@@ -455,6 +455,7 @@ class UIInitializer:
             background-color: #2A2A2A;
             height: 25px;
             border-bottom: 1px solid #555555;
+            padding: 10px
         """)
         
         custom_title_bar_layout.addWidget(title_label)
