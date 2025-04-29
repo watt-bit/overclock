@@ -117,7 +117,6 @@ class KeyHandler(QObject):
         # Only process if not in connection mode, sever mode, and simulation is not running
         if (not self.main_window.creating_connection and 
             self.main_window.connection_btn.isEnabled() and 
-            self.main_window.sever_connection_btn.isEnabled() and
             not self.main_window.simulation_engine.simulation_running):
             # G for generator
             if key == Qt.Key_G:

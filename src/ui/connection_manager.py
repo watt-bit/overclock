@@ -33,7 +33,6 @@ class ConnectionManager:
         
         # Reference to UI elements
         self.connection_btn = main_window.connection_btn
-        self.sever_connection_btn = main_window.sever_connection_btn
         self.cursor_timer = main_window.cursor_timer
         self.cursor_size = main_window.cursor_size
         
@@ -133,99 +132,22 @@ class ConnectionManager:
         else:
             # Second click - create final connection
             if component != self.connection_source:  # Prevent self-connection
-                # Check if these components are already connected
-                already_connected = False
-                for conn in self.connection_source.connections:
-                    if (conn.source == self.connection_source and conn.target == component) or \
-                       (conn.source == component and conn.target == self.connection_source):
-                        already_connected = True
-                        break
+                # Create a temporary set for tracking connections
+                connected_pairs = set()
                 
-                if already_connected:
-                    # Show error message
-                    QMessageBox.warning(self.main_window, "Invalid Connection", 
-                                      "These components are already connected to each other.")
-                    # Clean up and exit connection mode
-                    if self.temp_connection:
-                        self.scene.removeItem(self.temp_connection)
-                    self.temp_connection = None
-                    self.connection_source = None
-                    self.creating_connection = False
-                    self.main_window.creating_connection = False
-                    # Stop cursor animation and restore default cursor
-                    self.cursor_timer.stop()
-                    self.view.setCursor(Qt.ArrowCursor)
-                    self.view.viewport().setCursor(Qt.ArrowCursor)
-                    # Re-enable connection button
-                    self.connection_btn.setEnabled(True)
-                    self.view.setMouseTracking(False)
-                    self.view.viewport().removeEventFilter(self.main_window)
-                    # Restore original click behavior
-                    self.scene.component_clicked.disconnect(self.handle_connection_click)
-                    self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
-                    return
-                
-                # Validate cloud workload connection
-                is_valid, error_message = self.validate_cloud_workload_connection(
-                    self.connection_source, component
+                # Call the shared connection creation method
+                connection_created = self.create_connection_between(
+                    self.connection_source, component, connected_pairs, show_errors=True
                 )
                 
-                if not is_valid:
-                    # Show error message
-                    QMessageBox.warning(self.main_window, "Invalid Connection - Cloud Workload must connect to Data Center Load", error_message)
-                    # Clean up and exit connection mode
-                    if self.temp_connection:
-                        self.scene.removeItem(self.temp_connection)
-                    self.temp_connection = None
-                    self.connection_source = None
-                    self.creating_connection = False
-                    self.main_window.creating_connection = False
-                    # Stop cursor animation and restore default cursor
-                    self.cursor_timer.stop()
-                    self.view.setCursor(Qt.ArrowCursor)
-                    self.view.viewport().setCursor(Qt.ArrowCursor)
-                    # Re-enable connection button
-                    self.connection_btn.setEnabled(True)
-                    self.view.setMouseTracking(False)
-                    self.view.viewport().removeEventFilter(self.main_window)
-                    # Restore original click behavior
-                    self.scene.component_clicked.disconnect(self.handle_connection_click)
-                    self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
-                    return
-                
-                # Valid connection - create it
-                connection = Connection(self.connection_source, component)
-                self.scene.addItem(connection)
-                connection.setup_component_tracking()
-                self.main_window.connections.append(connection)
-                
-                # Validate bus states after creating a connection
-                self.main_window.validate_bus_states()
+                if connection_created:
+                    self.main_window.update_simulation()
+                    
+                    # Validate bus states after creating a connection
+                    self.main_window.validate_bus_states()
             
             # Clean up
-            if self.temp_connection:
-                self.scene.removeItem(self.temp_connection)
-            self.temp_connection = None
-            self.connection_source = None
-            self.creating_connection = False
-            self.main_window.creating_connection = False
-            # Stop cursor animation and restore default cursor
-            self.cursor_timer.stop()
-            # Reset cursor on both view and viewport
-            self.view.setCursor(Qt.ArrowCursor)
-            self.view.viewport().setCursor(Qt.ArrowCursor)
-            # Re-enable connection button
-            self.connection_btn.setEnabled(True)
-            self.view.setMouseTracking(False)
-            self.view.viewport().removeEventFilter(self.main_window)
-            # Restore original click behavior
-            self.scene.component_clicked.disconnect(self.handle_connection_click)
-            self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
-            
-            self.main_window.update_simulation()
-            
-            # Validate bus states after removing connections
-            self.main_window.validate_bus_states()
+            self.cancel_connection()
     
     def handle_mouse_move_for_connection(self, event):
         """Handle mouse movement for the temporary connection line"""
@@ -500,21 +422,29 @@ class ConnectionManager:
             component2 = self.main_window.components[i + 1]
             self.create_connection_between(component1, component2, connected_pairs)
 
-    def create_connection_between(self, source, target, connected_pairs):
+    def create_connection_between(self, source, target, connected_pairs, show_errors=False):
         """Create a connection between two components if not already connected"""
         # Check if this pair is already connected (in either direction)
         if (id(source), id(target)) in connected_pairs or (id(target), id(source)) in connected_pairs:
+            if show_errors:
+                QMessageBox.warning(self.main_window, "Invalid Connection", 
+                                  "These components are already connected to each other.")
             return False
         
         # Check if these components are already connected directly
         for conn in source.connections:
             if (conn.source == source and conn.target == target) or \
                (conn.source == target and conn.target == source):
+                if show_errors:
+                    QMessageBox.warning(self.main_window, "Invalid Connection", 
+                                      "These components are already connected to each other.")
                 return False
         
         # Validate cloud workload connection
-        is_valid, _ = self.validate_cloud_workload_connection(source, target)
+        is_valid, error_message = self.validate_cloud_workload_connection(source, target)
         if not is_valid:
+            if show_errors:
+                QMessageBox.warning(self.main_window, "Invalid Connection - Cloud Workload must connect to Data Center Load", error_message)
             return False
             
         # Safety check for deleted components
@@ -534,78 +464,4 @@ class ConnectionManager:
             return True
         except (RuntimeError, AttributeError):
             # Handle case where C++ objects have been deleted
-            return False
-
-    def start_sever_connection(self):
-        """Start the sever connection mode"""
-        # Clean up any existing state
-        self.cursor_timer.stop()
-        self.view.setCursor(Qt.ArrowCursor)
-        self.view.viewport().setCursor(Qt.ArrowCursor)
-        
-        # If we're already in create connection mode, cancel it
-        if self.creating_connection:
-            self.cancel_connection()
-            
-        # Disable both connection and sever buttons
-        self.connection_btn.setEnabled(False)
-        self.sever_connection_btn.setEnabled(False)
-        
-        # Set cursor to indicate deletion mode
-        self.view.setCursor(Qt.CrossCursor)
-        self.view.viewport().setCursor(Qt.CrossCursor)
-        
-        # Disconnect component clicked from properties
-        self.scene.component_clicked.disconnect(self.main_window.properties_manager.show_component_properties)
-        # Connect to handle_sever_connection instead
-        self.scene.component_clicked.connect(self.handle_sever_connection)
-        
-        # Show message to guide user
-        QMessageBox.information(self.main_window, "Sever Connections", 
-                              "Click on a component to remove all of its connections.\n\n"
-                              "Press ESC to cancel.")
-    
-    def handle_sever_connection(self, component):
-        """Handle clicks on components for connection severing"""
-        # Ignore decorative components
-        if isinstance(component, (TreeComponent, BushComponent, PondComponent, House1Component, House2Component, FactoryComponent, TraditionalDataCenterComponent, DistributionPoleComponent)):
-            return
-            
-        # Find all connections associated with this component
-        connections_to_remove = [conn for conn in self.main_window.connections
-                               if conn.source == component or conn.target == component]
-        
-        if not connections_to_remove:
-            QMessageBox.information(self.main_window, "Sever Connection", 
-                                  "This component has no connections to sever.")
-        else:
-            # Remove connections
-            for connection in connections_to_remove:
-                connection.cleanup()
-                self.scene.removeItem(connection)
-                self.main_window.connections.remove(connection)
-            
-            # Exit sever mode
-            self.cancel_sever_connection()
-            
-            # Validate bus states after removing connections
-            self.main_window.validate_bus_states()
-            self.main_window.update_simulation()
-    
-    def cancel_sever_connection(self):
-        """Cancel the sever connection mode"""
-        # Restore cursor
-        self.view.setCursor(Qt.ArrowCursor)
-        self.view.viewport().setCursor(Qt.ArrowCursor)
-        
-        # Re-enable buttons
-        self.connection_btn.setEnabled(True)
-        self.sever_connection_btn.setEnabled(True)
-        
-        # Restore original click behavior
-        if self.scene.receivers(self.scene.component_clicked) > 0:
-            self.scene.component_clicked.disconnect(self.handle_sever_connection)
-        self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
-        
-        # Update simulation
-        self.main_window.update_simulation() 
+            return False 

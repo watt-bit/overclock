@@ -64,7 +64,6 @@ class ModelManager:
         self.main_window.view.setCursor(Qt.ArrowCursor)
         self.main_window.view.viewport().setCursor(Qt.ArrowCursor)
         self.main_window.connection_btn.setEnabled(True)
-        self.main_window.sever_connection_btn.setEnabled(True)
         
         # Reset simulation components
         self.main_window.components = []

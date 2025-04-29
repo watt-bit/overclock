@@ -352,10 +352,6 @@ class UIInitializer:
         autoconnect_btn.setStyleSheet(opaque_button_style)
         autoconnect_btn.clicked.connect(main_window.autoconnect_all_components)
         
-        main_window.sever_connection_btn = QPushButton("Sever Connections")
-        main_window.sever_connection_btn.setStyleSheet(opaque_button_style)
-        main_window.sever_connection_btn.clicked.connect(main_window.start_sever_connection)
-
         # Add a second horizontal line separator
         separator2 = QFrame()
         separator2.setFrameShape(QFrame.HLine)
@@ -407,7 +403,6 @@ class UIInitializer:
         component_layout.addWidget(separator)
         component_layout.addWidget(main_window.connection_btn)
         component_layout.addWidget(autoconnect_btn)
-        component_layout.addWidget(main_window.sever_connection_btn)
         component_layout.addWidget(separator2)
         component_layout.addWidget(main_window.props_btn)
         component_layout.addStretch()
@@ -436,8 +431,7 @@ class UIInitializer:
             main_window.renewables_btn,
             main_window.props_btn,
             main_window.connection_btn,
-            autoconnect_btn,
-            main_window.sever_connection_btn
+            autoconnect_btn
         ]
         
         main_window.component_dock.setWidget(component_widget)
