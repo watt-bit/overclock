@@ -62,7 +62,7 @@ class KeyHandler(QObject):
         
         # Let the event continue to be processed
         return False
-        
+    
     def handle_key_press(self, event):
         """
         Handle key press events for hotkeys.
@@ -84,8 +84,11 @@ class KeyHandler(QObject):
             self.main_window.toggle_simulation()
             return True
             
-        # Tab is now handled by QShortcut for better reliability
-        
+        # Tab key for switching between views
+        if key == Qt.Key_Tab:
+            self.main_window.cancel_connection_if_active(self.main_window.toggle_mode_button)
+            return True
+            
         # Enter key for autocomplete - active unless simulation is running
         if key == Qt.Key_Return and not self.main_window.simulation_engine.simulation_running:
             self.main_window.run_autocomplete()

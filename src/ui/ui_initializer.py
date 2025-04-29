@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, 
                             QLabel, QPushButton, QSlider, QGraphicsView, QDockWidget, 
                             QToolBar, 
-                            QAction, QMenu, QShortcut, QFrame,
+                            QAction, QMenu, QFrame,
                             QToolButton, QSizePolicy, QGraphicsTextItem)
 from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime
 from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics
@@ -793,10 +793,6 @@ class UIInitializer:
         # Connect visibility changed signals to update menu text
         main_window.properties_dock.visibilityChanged.connect(main_window.update_properties_menu_text)
         main_window.analytics_dock.visibilityChanged.connect(main_window.update_analytics_menu_text)
-        
-        # Create a keyboard shortcut for Tab to switch between views
-        main_window.tab_shortcut = QShortcut(QKeySequence(Qt.Key_Tab), main_window)
-        main_window.tab_shortcut.activated.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_mode_button))
 
     def on_view_resize(self, event):
         """Handle resize events to reposition the logo overlay and historian chart"""
