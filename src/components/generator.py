@@ -100,7 +100,7 @@ class GeneratorComponent(ComponentBase):
         
         # Adjust text rectangles based on scale factor to prevent text clipping
         scaled_text_height = text_rect.height() * scale_factor
-        vertical_spacing = 5 * scale_factor
+        vertical_spacing = 2 * scale_factor
         
         # Create scaled text rectangle
         scaled_text_rect = QRectF(

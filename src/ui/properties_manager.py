@@ -26,13 +26,13 @@ from src.components.wind_turbine import WindTurbineComponent
 from src.components.distribution_pole import DistributionPoleComponent
 
 # Define common styles
-COMMON_BUTTON_STYLE = "QPushButton { border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
-DEFAULT_BUTTON_STYLE = "QPushButton { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
-SLIDER_STYLE = "QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } " \
-              "QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }"
-COMBOBOX_STYLE = "QComboBox { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
-INPUT_STYLE = "QLineEdit { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
-LINEEDIT_STYLE = "QLineEdit { background-color: #3D3D3D; color: white; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
+COMMON_BUTTON_STYLE = "QPushButton { border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
+DEFAULT_BUTTON_STYLE = "QPushButton { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
+SLIDER_STYLE = "QSlider::groove:horizontal { background: rgba(37, 47, 52, 0.75); height: 8px; border-radius: 4px; } " \
+              "QSlider::handle:horizontal { background: #777777; width: 16px; margin: -4px 0; border-radius: 8px; }"
+COMBOBOX_STYLE = "QComboBox { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
+INPUT_STYLE = "QLineEdit { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
+LINEEDIT_STYLE = "QLineEdit { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
 
 class ComponentPropertiesManager:
     def __init__(self, main_window):
@@ -61,10 +61,13 @@ class ComponentPropertiesManager:
                         sub_item.widget().deleteLater()
                 item.layout().deleteLater()
         
+        # Update the component's properties_open state if there's a current component
+        if self.current_component and hasattr(self.current_component, 'set_properties_panel_state'):
+            self.current_component.set_properties_panel_state(False)
+        
         # Clear the current component reference
-        if hasattr(self, 'current_component'):
-            self.current_component = None
-            
+        self.current_component = None
+        
         # Clear the delete button reference
         if hasattr(self, 'delete_btn'):
             self.delete_btn = None
@@ -92,6 +95,10 @@ class ComponentPropertiesManager:
             self.main_window.properties_dock.setVisible(True)
             self.main_window.position_properties_panel_if_needed()
         
+        # Update the component's properties_open state
+        if hasattr(component, 'set_properties_panel_state'):
+            component.set_properties_panel_state(True)
+        
         # Create a vertical layout for the component properties
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)  # Reduce margins
@@ -108,7 +115,20 @@ class ComponentPropertiesManager:
         
         # Add delete button to bottom layout
         delete_btn = QPushButton("Delete (DEL)")
-        delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; font-weight: bold; }")
+        delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
         delete_btn.clicked.connect(self.delete_component)
         
         # Store reference to delete button for later enabling/disabling
@@ -123,17 +143,67 @@ class ComponentPropertiesManager:
         if isinstance(component, LoadComponent):
             graphics_toggle = QPushButton("Graphics " + ("ON" if component.graphics_enabled else "OFF"))
             graphics_toggle.setStyleSheet(
-                COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.graphics_enabled 
-                else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
-            )
+            COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #185D18; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #227D22; 
+            }
+            QPushButton:pressed { 
+                background-color: #103D10; 
+            }
+        """ if component.graphics_enabled 
+            else COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
             
             def toggle_graphics():
                 component.graphics_enabled = not component.graphics_enabled
                 graphics_toggle.setText("Graphics " + ("ON" if component.graphics_enabled else "OFF"))
                 graphics_toggle.setStyleSheet(
-                    COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.graphics_enabled 
-                    else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
-                )
+            COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #185D18; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #227D22; 
+            }
+            QPushButton:pressed { 
+                background-color: #103D10; 
+            }
+        """ if component.graphics_enabled 
+            else COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
                 component.update()  # Redraw the component
             
             graphics_toggle.clicked.connect(toggle_graphics)
@@ -240,7 +310,20 @@ class ComponentPropertiesManager:
                 if not self.delete_btn.isEnabled():
                     self.delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #888888; color: #DDDDDD; font-weight: bold; }")
                 else:
-                    self.delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; font-weight: bold; }")
+                    self.delete_btn.setStyleSheet(COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
             except (RuntimeError, Exception):
                 # The widget has been deleted or is otherwise invalid
                 # Remove our reference to it
@@ -379,9 +462,34 @@ class ComponentPropertiesManager:
         ramp_rate_checkbox.setCheckable(True)
         ramp_rate_checkbox.setChecked(component.ramp_rate_enabled)
         ramp_rate_checkbox.setStyleSheet(
-            COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.ramp_rate_enabled 
-            else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
-        )
+            COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #185D18; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #227D22; 
+            }
+            QPushButton:pressed { 
+                background-color: #103D10; 
+            }
+        """ if component.ramp_rate_enabled 
+            else COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
         ramp_rate_checkbox.setText("ON" if component.ramp_rate_enabled else "OFF")
         
         # Ramp rate slider (1-100% per hour)
@@ -400,9 +508,34 @@ class ComponentPropertiesManager:
             component.ramp_rate_enabled = not component.ramp_rate_enabled
             ramp_rate_checkbox.setText("ON" if component.ramp_rate_enabled else "OFF")
             ramp_rate_checkbox.setStyleSheet(
-                COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.ramp_rate_enabled 
-                else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
-            )
+            COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #185D18; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #227D22; 
+            }
+            QPushButton:pressed { 
+                background-color: #103D10; 
+            }
+        """ if component.ramp_rate_enabled 
+            else COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
             ramp_rate_slider.setEnabled(component.ramp_rate_enabled)
             ramp_rate_label.setEnabled(component.ramp_rate_enabled)
         
@@ -423,17 +556,67 @@ class ComponentPropertiesManager:
         # Add auto-charging toggle button
         auto_charging_btn = QPushButton("ON" if component.auto_charging else "OFF")
         auto_charging_btn.setStyleSheet(
-            COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.auto_charging 
-            else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
-        )
+            COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #185D18; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #227D22; 
+            }
+            QPushButton:pressed { 
+                background-color: #103D10; 
+            }
+        """ if component.auto_charging 
+            else COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
         
         def toggle_auto_charging():
             component.auto_charging = not component.auto_charging
             auto_charging_btn.setText("ON" if component.auto_charging else "OFF")
             auto_charging_btn.setStyleSheet(
-                COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.auto_charging 
-                else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
-            )
+            COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #185D18; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #227D22; 
+            }
+            QPushButton:pressed { 
+                background-color: #103D10; 
+            }
+        """ if component.auto_charging 
+            else COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
         
         auto_charging_btn.clicked.connect(toggle_auto_charging)
         

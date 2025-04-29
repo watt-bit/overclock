@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QGraphicsRectItem
+from PyQt5.QtWidgets import QGraphicsRectItem, QPushButton, QGraphicsProxyWidget
 from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtGui import QBrush, QColor, QPen, QRadialGradient
+from PyQt5.QtGui import QBrush, QColor, QPen, QRadialGradient, QFont
 
 class ComponentBase(QGraphicsRectItem):
     def __init__(self, x, y, width=100, height=60):
@@ -24,6 +24,37 @@ class ComponentBase(QGraphicsRectItem):
         # Selection highlight pen
         self.selection_pen = QPen(QColor(255, 255, 255), 3, Qt.SolidLine)
         self.selection_pen.setCosmetic(True)  # Keep width constant regardless of zoom
+        
+        # Flag to track if properties panel is open for this component
+        self.properties_open = False
+        
+        # Create the open button (initially hidden)
+        self.open_button = QPushButton("Open")
+        font = QFont()
+        font.setPointSize(10)
+        self.open_button.setFont(font)
+        self.open_button.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(37, 47, 52, 1.0); 
+                color: white; 
+                border: 1px solid #777777;
+                border-radius: 5px;
+                padding: 2px 5px;
+            }
+            QPushButton:hover {
+                background-color: #3498db;
+            }
+            QPushButton:pressed {
+                background-color: #1abc9c;
+            }
+        """)
+        self.open_button.setFixedSize(50, 20)  # Small fixed size button
+        self.open_button.clicked.connect(self.open_properties)
+        
+        # Add the button to the scene using a proxy widget
+        self.button_proxy = QGraphicsProxyWidget(self)
+        self.button_proxy.setWidget(self.open_button)
+        self.button_proxy.setVisible(False)  # Initially hidden
     
     def paint(self, painter, option, widget):
         # Save painter state
@@ -79,6 +110,42 @@ class ComponentBase(QGraphicsRectItem):
             painter.drawRect(highlight_rect)
             # Restore the painter state
             painter.restore()
+            
+            # Position and show the Open button above the top-left corner of the selection box
+            self.button_proxy.setPos(highlight_rect.x(), highlight_rect.y() - 25)
+            if not self.button_proxy.isVisible():
+                self.button_proxy.setVisible(True)
+        else:
+            # Hide the button when not selected
+            if self.button_proxy.isVisible():
+                self.button_proxy.setVisible(False)
+    
+    def open_properties(self):
+        """Toggle the properties panel open/closed state"""
+        if self.scene() and hasattr(self.scene(), 'component_clicked'):
+            if not self.properties_open:
+                # Open the properties panel
+                self.scene().component_clicked.emit(self)
+                self.properties_open = True
+                self.open_button.setText("Close")
+            else:
+                # Close the properties panel
+                if self.scene() and hasattr(self.scene(), 'parent'):
+                    scene_parent = self.scene().parent()
+                    if hasattr(scene_parent, 'properties_manager'):
+                        scene_parent.properties_manager.clear_properties_panel()
+                        if hasattr(scene_parent, 'properties_dock'):
+                            scene_parent.properties_dock.setVisible(False)
+                        self.properties_open = False
+                        self.open_button.setText("Open")
+    
+    def set_properties_panel_state(self, is_open):
+        """Update the properties panel state and button text"""
+        self.properties_open = is_open
+        if is_open:
+            self.open_button.setText("Close")
+        else:
+            self.open_button.setText("Open")
     
     def hoverEnterEvent(self, event):
         # Only change cursor if not in connection mode
@@ -111,8 +178,14 @@ class ComponentBase(QGraphicsRectItem):
         # Scale up slightly when clicked
         self.setScale(1.05)
         super().mousePressEvent(event)
+    
+    def mouseDoubleClickEvent(self, event):
+        # Handle double click to show properties panel
+        super().mouseDoubleClickEvent(event)
         if self.scene() and hasattr(self.scene(), 'component_clicked'):
             self.scene().component_clicked.emit(self)
+            self.properties_open = True
+            self.open_button.setText("Close")
     
     def mouseReleaseEvent(self, event):
         # Restore original scale
@@ -127,4 +200,8 @@ class ComponentBase(QGraphicsRectItem):
         elif change == QGraphicsRectItem.ItemSelectedChange:
             # Force a repaint when selection state changes
             self.update()
+            # Reset properties_open state when deselected
+            if not value:
+                self.properties_open = False
+                self.open_button.setText("Open")
         return super().itemChange(change, value) 

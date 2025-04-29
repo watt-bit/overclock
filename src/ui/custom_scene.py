@@ -33,6 +33,11 @@ class CustomScene(QGraphicsScene, QObject):
                 # Also hide the properties panel
                 if hasattr(self.parent(), 'properties_dock'):
                     self.parent().properties_dock.setVisible(False)
+                
+                # Reset the properties_open flag on all components
+                for component in self.parent().components:
+                    if hasattr(component, 'set_properties_panel_state'):
+                        component.set_properties_panel_state(False)
         super().mouseReleaseEvent(event)
     
     def set_background(self, mode):
