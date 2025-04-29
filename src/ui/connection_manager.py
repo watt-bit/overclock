@@ -133,6 +133,38 @@ class ConnectionManager:
         else:
             # Second click - create final connection
             if component != self.connection_source:  # Prevent self-connection
+                # Check if these components are already connected
+                already_connected = False
+                for conn in self.connection_source.connections:
+                    if (conn.source == self.connection_source and conn.target == component) or \
+                       (conn.source == component and conn.target == self.connection_source):
+                        already_connected = True
+                        break
+                
+                if already_connected:
+                    # Show error message
+                    QMessageBox.warning(self.main_window, "Invalid Connection", 
+                                      "These components are already connected to each other.")
+                    # Clean up and exit connection mode
+                    if self.temp_connection:
+                        self.scene.removeItem(self.temp_connection)
+                    self.temp_connection = None
+                    self.connection_source = None
+                    self.creating_connection = False
+                    self.main_window.creating_connection = False
+                    # Stop cursor animation and restore default cursor
+                    self.cursor_timer.stop()
+                    self.view.setCursor(Qt.ArrowCursor)
+                    self.view.viewport().setCursor(Qt.ArrowCursor)
+                    # Re-enable connection button
+                    self.connection_btn.setEnabled(True)
+                    self.view.setMouseTracking(False)
+                    self.view.viewport().removeEventFilter(self.main_window)
+                    # Restore original click behavior
+                    self.scene.component_clicked.disconnect(self.handle_connection_click)
+                    self.scene.component_clicked.connect(self.main_window.properties_manager.show_component_properties)
+                    return
+                
                 # Validate cloud workload connection
                 is_valid, error_message = self.validate_cloud_workload_connection(
                     self.connection_source, component
@@ -473,6 +505,12 @@ class ConnectionManager:
         # Check if this pair is already connected (in either direction)
         if (id(source), id(target)) in connected_pairs or (id(target), id(source)) in connected_pairs:
             return False
+        
+        # Check if these components are already connected directly
+        for conn in source.connections:
+            if (conn.source == source and conn.target == target) or \
+               (conn.source == target and conn.target == source):
+                return False
         
         # Validate cloud workload connection
         is_valid, _ = self.validate_cloud_workload_connection(source, target)
