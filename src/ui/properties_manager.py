@@ -42,7 +42,7 @@ class ComponentPropertiesManager:
         self.properties_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         self.properties_layout = QFormLayout(self.properties_widget)
         # Set layout margins to be minimal
-        self.properties_layout.setContentsMargins(10, 10, 10, 10)
+        self.properties_layout.setContentsMargins(25, 25, 25, 25)
         # Set left alignment for all labels in the form
         self.properties_layout.setLabelAlignment(Qt.AlignLeft)
         self.properties_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
@@ -94,7 +94,7 @@ class ComponentPropertiesManager:
         
         # Create a vertical layout for the component properties
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(5, 5, 5, 5)  # Reduce margins
+        main_layout.setContentsMargins(0, 0, 0, 0)  # Reduce margins
         
         # Create the main content area (previously left column)
         content_layout = QFormLayout()
