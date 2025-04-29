@@ -24,7 +24,17 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller --onefile --windowed --name "OVERCLOCK" --icon "src/ui/assets/appicon.icns" --add-data "src/ui/assets:src/ui/assets" --add-data "src/data:src/data" --hidden-import pyxirr main.py
+        pyinstaller --onefile --windowed --name "OVERCLOCK" \
+          --icon "src/ui/assets/appicon.icns" \
+          --add-data "src/ui/assets:src/ui/assets" \
+          --add-data "src/data:src/data" \
+          --hidden-import pyxirr \
+          main.py
+
+    - name: Check contents of dist folder
+      run: |
+        echo "Listing dist contents before zipping:"
+        ls -l dist
 
     - name: Zip the .app bundle
       run: |
