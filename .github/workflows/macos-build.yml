@@ -1,7 +1,7 @@
 name: Build macOS Executable
 
 on:
-  workflow_dispatch:   # Manual trigger only!
+  workflow_dispatch:
 
 jobs:
   build-macos:
@@ -24,16 +24,15 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller --onefile --windowed \
-          --name "OVERCLOCK" \
-          --icon "src/ui/assets/appicon.icns" \
-          --add-data "src/ui/assets:src/ui/assets" \
-          --add-data "src/data:src/data" \
-          --hidden-import pyxirr \
-          main.py
+        pyinstaller --onefile --windowed --name "OVERCLOCK" --icon "src/ui/assets/appicon.icns" --add-data "src/ui/assets:src/ui/assets" --add-data "src/data:src/data" --hidden-import pyxirr main.py
 
-    - name: Upload built app bundle
+    - name: Zip the .app bundle
+      run: |
+        cd dist
+        ditto -c -k --sequesterRsrc --keepParent "OVERCLOCK.app" "overclock-macos.zip"
+
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: overclock-macos-executable
-        path: dist/OVERCLOCK.app 
+        name: overclock-macos-zip
+        path: dist/overclock-macos.zip
