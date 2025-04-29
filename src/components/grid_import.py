@@ -39,7 +39,7 @@ class GridImportComponent(ComponentBase):
         
         # Calculate image area with 1:1 aspect ratio (square)
         # Using 100% of height for the image
-        image_height = rect.height() * 1.0
+        image_height = rect.height() * 0.8
         image_size = min(rect.width(), image_height)
         
         # Center the image horizontally
@@ -48,7 +48,7 @@ class GridImportComponent(ComponentBase):
         # Create square image rect
         image_rect = QRectF(
             rect.x() + x_offset,
-            rect.y() + (rect.height() * 0.05) - 40,  # Add a small top margin
+            rect.y() + (rect.height() * 0.05) - 10,  # Add a small top margin
             image_size,
             image_size
         )

@@ -454,6 +454,8 @@ class UIInitializer:
             color: white;
             font-weight: bold;
             background-color: rgba(37, 47, 52, 0.75);
+            border: 1px solid rgba(120, 130, 150, 0.75);
+            border-radius: 4px;
             padding: 10px
         """)
         

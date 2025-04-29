@@ -105,7 +105,7 @@ class GeneratorComponent(ComponentBase):
         # Create scaled text rectangle
         scaled_text_rect = QRectF(
             text_rect.x(),
-            text_rect.y(),
+            text_rect.y() - 25,
             text_rect.width(),
             scaled_text_height
         )
@@ -113,7 +113,7 @@ class GeneratorComponent(ComponentBase):
         # Scale cost rectangle
         scaled_cost_rect = QRectF(
             rect.x(),
-            rect.y() + rect.height() + vertical_spacing,  # Position at bottom with margin
+            rect.y() + rect.height() + vertical_spacing - 25,  # Position at bottom with margin
             rect.width(),
             25 * scale_factor
         )

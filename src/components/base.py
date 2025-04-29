@@ -16,6 +16,13 @@ class ComponentBase(QGraphicsRectItem):
         # List to keep track of connected lines
         self.connections = []
         
+        # Hover state tracking
+        self.is_hovered = False
+        self.component_id = id(self)  # Use object id as default component_id
+        # Remove "Component" suffix if it exists
+        class_name = self.__class__.__name__
+        self.component_type = class_name.replace('Component', '') if class_name.endswith('Component') else class_name
+        
         # Shadow properties
         self.shadow_opacity = 0.2  # Shadow transparency (0-1)
         self.shadow_blur = 30      # Shadow blur radius
@@ -122,6 +129,41 @@ class ComponentBase(QGraphicsRectItem):
             # Hide the button when not selected
             if self.button_proxy.isVisible():
                 self.button_proxy.setVisible(False)
+        
+        # Draw hover text if component is being hovered
+        if self.is_hovered:
+            # Get component ID string (last 6 digits)
+            component_id_str = str(self.component_id)[-6:]
+            
+            # Setup text appearance
+            painter.save()
+            font = QFont()
+            font.setPointSize(12)
+            painter.setFont(font)
+            
+
+            type_color = QColor(205, 205, 205)
+            
+            # Darker blue for component ID
+            id_color = QColor(80, 120, 215)  # Darker blue for ID
+            
+            # Position text at top of component
+            text_x = rect.x() + 5  # Small margin from left edge
+            text_y = rect.y() + 15  # Adjust for text height
+            
+            # Draw the component type
+            painter.setPen(type_color)
+            painter.drawText(int(text_x), int(text_y), self.component_type)
+            
+            # Calculate position for ID text (right after component type)
+            metrics = painter.fontMetrics()
+            type_width = metrics.horizontalAdvance(self.component_type + " ")
+            
+            # Draw the ID with darker blue
+            painter.setPen(id_color)
+            painter.drawText(int(text_x + type_width), int(text_y), component_id_str)
+            
+            painter.restore()
     
     def open_properties(self):
         """Toggle the properties panel open/closed state"""
@@ -151,6 +193,9 @@ class ComponentBase(QGraphicsRectItem):
             self.open_button.setText("Open")
     
     def hoverEnterEvent(self, event):
+        # Set hover state flag
+        self.is_hovered = True
+        
         # Only change cursor if not in connection mode
         if not self.scene() or not hasattr(self.scene(), 'parent') or not self.scene().parent().creating_connection:
             self.setCursor(Qt.PointingHandCursor)
@@ -164,9 +209,16 @@ class ComponentBase(QGraphicsRectItem):
         border_color = QColor(100, 200, 255, 180)  # Brighter blue with 70% opacity
         hover_pen = QPen(border_color, 2)  # 2px width
         self.setPen(hover_pen)
+        
+        # Force repaint to show hover text
+        self.update()
+        
         super().hoverEnterEvent(event)
     
     def hoverLeaveEvent(self, event):
+        # Reset hover state flag
+        self.is_hovered = False
+        
         # Only unset cursor if not in connection mode
         if not self.scene() or not hasattr(self.scene(), 'parent') or not self.scene().parent().creating_connection:
             self.unsetCursor()
@@ -175,6 +227,10 @@ class ComponentBase(QGraphicsRectItem):
             self.setBrush(self.original_brush)
         if hasattr(self, 'original_pen'):
             self.setPen(self.original_pen)
+            
+        # Force repaint to remove hover text
+        self.update()
+        
         super().hoverLeaveEvent(event)
     
     def mousePressEvent(self, event):
