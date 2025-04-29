@@ -174,7 +174,7 @@ class UIInitializer:
                 padding: 4px; 
             }
         """)
-        main_window.mode_toggle_btn.clicked.connect(main_window.toggle_mode_button)
+        main_window.mode_toggle_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_mode_button))
         # Position in top left corner with padding
         main_window.mode_toggle_btn.move(10, 10)
         # Make the button visible
@@ -224,7 +224,7 @@ class UIInitializer:
         # Create Analytics toggle button in top-right corner
         main_window.analytics_toggle_btn = AnalyticsToggleButton(main_window.view)
         # Set the click handler
-        main_window.analytics_toggle_btn.on_click = main_window.toggle_analytics_panel
+        main_window.analytics_toggle_btn.on_click = lambda: main_window.cancel_connection_if_active(main_window.toggle_analytics_panel)
         # Position in top right corner with padding
         main_window.analytics_toggle_btn.move(main_window.view.width() - 85, 0)
         # Make the button visible
@@ -291,38 +291,38 @@ class UIInitializer:
         
         generator_btn = QPushButton("🔥 (G)as Generator")
         generator_btn.setStyleSheet(opaque_button_style)
-        generator_btn.clicked.connect(lambda: main_window.add_component("generator"))
+        generator_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "generator"))
         
         battery_btn = QPushButton("🔋 Battery (S)torage")
         battery_btn.setStyleSheet(opaque_button_style)
-        battery_btn.clicked.connect(lambda: main_window.add_component("battery"))
+        battery_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "battery"))
                 
         bus_btn = QPushButton("⚡ Electrical (B)us")
         bus_btn.setStyleSheet(opaque_button_style)
-        bus_btn.clicked.connect(lambda: main_window.add_component("bus"))
+        bus_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "bus"))
 
         load_btn = QPushButton("💡 Electrical (L)oad")
         load_btn.setStyleSheet(opaque_button_style)
-        load_btn.clicked.connect(lambda: main_window.add_component("load"))
+        load_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "load"))
         
         cloud_workload_btn = QPushButton("🌐 Cloud (W)orkload")
         cloud_workload_btn.setStyleSheet(opaque_button_style)
-        cloud_workload_btn.clicked.connect(lambda: main_window.add_component("cloud_workload"))
+        cloud_workload_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "cloud_workload"))
 
         # Create a popup menu for renewables
         renewables_menu = QMenu(main_window)
         
         # Add actions for each renewable type
         solar_panel_action = renewables_menu.addAction("Add Solar Array")
-        solar_panel_action.triggered.connect(lambda: main_window.add_component("solar_panel"))
+        solar_panel_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "solar_panel"))
         
         wind_turbine_action = renewables_menu.addAction("Add Wind Turbine")
-        wind_turbine_action.triggered.connect(lambda: main_window.add_component("wind_turbine"))
+        wind_turbine_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "wind_turbine"))
         
         # Create the Add Renewables button with dropdown menu
         main_window.renewables_btn = QPushButton("🌱 Renewables")
         main_window.renewables_btn.setStyleSheet(opaque_button_style)
-        main_window.renewables_btn.clicked.connect(lambda: renewables_menu.exec_(main_window.renewables_btn.mapToGlobal(main_window.renewables_btn.rect().bottomLeft())))
+        main_window.renewables_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: renewables_menu.exec_(main_window.renewables_btn.mapToGlobal(main_window.renewables_btn.rect().bottomLeft()))))
         
         # Add a third horizontal line separator
         separator3 = QFrame()
@@ -332,11 +332,11 @@ class UIInitializer:
 
         grid_import_btn = QPushButton("⬇ Grid (I)mport Pathway")
         grid_import_btn.setStyleSheet(opaque_button_style)
-        grid_import_btn.clicked.connect(lambda: main_window.add_component("grid_import"))
+        grid_import_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "grid_import"))
         
         grid_export_btn = QPushButton("⬆ Grid (E)xport Pathway")
         grid_export_btn.setStyleSheet(opaque_button_style)
-        grid_export_btn.clicked.connect(lambda: main_window.add_component("grid_export"))
+        grid_export_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "grid_export"))
         
         # Add a horizontal line separator
         separator = QFrame()
@@ -350,7 +350,7 @@ class UIInitializer:
         
         autoconnect_btn = QPushButton("(A)utoconnect All")
         autoconnect_btn.setStyleSheet(opaque_button_style)
-        autoconnect_btn.clicked.connect(main_window.autoconnect_all_components)
+        autoconnect_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.autoconnect_all_components))
         
         # Add a second horizontal line separator
         separator2 = QFrame()
@@ -363,33 +363,33 @@ class UIInitializer:
         
         # Add actions for each prop type
         tree_action = props_menu.addAction("Add Tree")
-        tree_action.triggered.connect(lambda: main_window.add_component("tree"))
+        tree_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "tree"))
         
         bush_action = props_menu.addAction("Add Bush")
-        bush_action.triggered.connect(lambda: main_window.add_component("bush"))
+        bush_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "bush"))
         
         pond_action = props_menu.addAction("Add Pond")
-        pond_action.triggered.connect(lambda: main_window.add_component("pond"))
+        pond_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "pond"))
         
         house1_action = props_menu.addAction("Add House")
-        house1_action.triggered.connect(lambda: main_window.add_component("house1"))
+        house1_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "house1"))
         
         house2_action = props_menu.addAction("Add Greenhouse")
-        house2_action.triggered.connect(lambda: main_window.add_component("house2"))
+        house2_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "house2"))
         
         factory_action = props_menu.addAction("Add Factory")
-        factory_action.triggered.connect(lambda: main_window.add_component("factory"))
+        factory_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "factory"))
         
         trad_data_center_action = props_menu.addAction("Add Data Center")
-        trad_data_center_action.triggered.connect(lambda: main_window.add_component("traditional_data_center"))
+        trad_data_center_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "traditional_data_center"))
         
         distribution_pole_action = props_menu.addAction("Add Distribution Pole")
-        distribution_pole_action.triggered.connect(lambda: main_window.add_component("distribution_pole"))
+        distribution_pole_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "distribution_pole"))
         
         # Create the Add Props button with dropdown menu
         main_window.props_btn = QPushButton("🏡 Add Props")
         main_window.props_btn.setStyleSheet(opaque_button_style)
-        main_window.props_btn.clicked.connect(lambda: props_menu.exec_(main_window.props_btn.mapToGlobal(main_window.props_btn.rect().bottomLeft())))
+        main_window.props_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: props_menu.exec_(main_window.props_btn.mapToGlobal(main_window.props_btn.rect().bottomLeft()))))
         
         component_layout.addWidget(generator_btn)
         component_layout.addWidget(battery_btn)
@@ -543,7 +543,7 @@ class UIInitializer:
         """
         
         main_window.play_btn = QPushButton("Run (Space)")
-        main_window.play_btn.clicked.connect(main_window.toggle_simulation)
+        main_window.play_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_simulation))
         main_window.play_btn.setStyleSheet(common_button_style + """
             QPushButton { 
                 background-color: #003A80; 
@@ -561,7 +561,7 @@ class UIInitializer:
         main_window.play_btn.setFixedWidth(140)
         
         main_window.reset_btn = QPushButton("🔴 (R)eset")
-        main_window.reset_btn.clicked.connect(main_window.reset_simulation)
+        main_window.reset_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.reset_simulation))
         main_window.reset_btn.setStyleSheet(common_button_style + """
             QPushButton { 
                 background-color: #5D1818; 
@@ -581,7 +581,7 @@ class UIInitializer:
         # Add speed control
         speed_label = QLabel("⏩ Speed:")
         main_window.speed_selector = QPushButton("▶▷▷")
-        main_window.speed_selector.clicked.connect(main_window.cycle_simulation_speed)
+        main_window.speed_selector.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.cycle_simulation_speed))
         main_window.speed_selector.setStyleSheet("""
             QPushButton { 
                 background-color: #3D3D3D; 
@@ -611,18 +611,18 @@ class UIInitializer:
         main_window.zoom_slider.setMaximum(100)  # 1.0x zoom
         main_window.zoom_slider.setValue(100)    # Default to 1.0x
         main_window.zoom_slider.setFixedWidth(150)
-        main_window.zoom_slider.valueChanged.connect(main_window.zoom_changed)
+        main_window.zoom_slider.valueChanged.connect(lambda value: main_window.cancel_connection_if_active(main_window.zoom_changed, value))
         main_window.zoom_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
         # Add screenshot button
         main_window.screenshot_btn = QPushButton("📷 Screenshot")
-        main_window.screenshot_btn.clicked.connect(main_window.take_screenshot)
+        main_window.screenshot_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.take_screenshot))
         main_window.screenshot_btn.setFixedWidth(150)
         main_window.screenshot_btn.setStyleSheet(default_button_style)
 
         # Add Autocomplete button
         main_window.autocomplete_btn = QPushButton("🚀 Autocomplete (Enter)")
-        main_window.autocomplete_btn.clicked.connect(main_window.run_autocomplete)
+        main_window.autocomplete_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.run_autocomplete))
         main_window.autocomplete_btn.setStyleSheet(common_button_style + """
             QPushButton { 
                 background-color: #005C5C; 
@@ -641,7 +641,7 @@ class UIInitializer:
 
         # Add background toggle button
         main_window.background_toggle_btn = QPushButton("🌄 Background Off")
-        main_window.background_toggle_btn.clicked.connect(main_window.toggle_background)
+        main_window.background_toggle_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_background))
         main_window.background_toggle_btn.setStyleSheet(default_button_style)
         main_window.background_toggle_btn.setFixedWidth(150)
         
@@ -649,10 +649,10 @@ class UIInitializer:
         main_window.time_slider = QSlider(Qt.Horizontal)
         main_window.time_slider.setMinimum(0)
         main_window.time_slider.setMaximum(8760)  # 8760 hours in a year
-        main_window.time_slider.valueChanged.connect(main_window.time_slider_changed)
+        main_window.time_slider.valueChanged.connect(lambda value: main_window.cancel_connection_if_active(main_window.time_slider_changed, value))
         # Add new connections for scrub mode detection
-        main_window.time_slider.sliderPressed.connect(main_window.start_scrubbing)
-        main_window.time_slider.sliderReleased.connect(main_window.stop_scrubbing)
+        main_window.time_slider.sliderPressed.connect(lambda: main_window.cancel_connection_if_active(main_window.start_scrubbing))
+        main_window.time_slider.sliderReleased.connect(lambda: main_window.cancel_connection_if_active(main_window.stop_scrubbing))
         # Set the time slider to expand horizontally
         main_window.time_slider.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         main_window.time_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::sub-page:horizontal { background: rgb(255, 215, 0); height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
@@ -702,13 +702,13 @@ class UIInitializer:
         
         # Create actions for model operations
         new_action = QAction("New", main_window)
-        new_action.triggered.connect(main_window.new_scenario)
+        new_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.new_scenario))
         
         save_action = QAction("Save", main_window)
-        save_action.triggered.connect(main_window.save_scenario)
+        save_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.save_scenario))
         
         load_action = QAction("Load", main_window)
-        load_action.triggered.connect(main_window.load_scenario)
+        load_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.load_scenario))
         
         # Create Model menu and add actions
         model_menu = QMenu("Model", main_window)
@@ -721,6 +721,8 @@ class UIInitializer:
         model_button.setText("Model")
         model_button.setMenu(model_menu)
         model_button.setPopupMode(QToolButton.InstantPopup)  # Show menu when clicking anywhere on button
+        # Cancel connection mode when the button is clicked
+        model_button.clicked.connect(lambda: main_window.cancel_connection_if_active())
         toolbar.addWidget(model_button)
         
         # Add separator
@@ -731,10 +733,10 @@ class UIInitializer:
         
         # Create actions for toggling panel visibility - store references for later updates
         main_window.properties_action = QAction("Show Properties Panel", main_window)
-        main_window.properties_action.triggered.connect(main_window.toggle_properties_panel)
+        main_window.properties_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_properties_panel))
         
         main_window.analytics_action = QAction("Show Analytics (P)anel", main_window)
-        main_window.analytics_action.triggered.connect(main_window.toggle_analytics_panel)
+        main_window.analytics_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_analytics_panel))
         view_menu.addAction(main_window.analytics_action)
 
         # Use QToolButton instead of QAction for View menu to make text clickable
@@ -742,6 +744,8 @@ class UIInitializer:
         view_button.setText("View")
         view_button.setMenu(view_menu)
         view_button.setPopupMode(QToolButton.InstantPopup)  # Show menu when clicking anywhere on button
+        # Cancel connection mode when the button is clicked
+        view_button.clicked.connect(lambda: main_window.cancel_connection_if_active())
         toolbar.addWidget(view_button)
 
         # Create Window menu for window size control
@@ -749,11 +753,11 @@ class UIInitializer:
         
         # Create actions for window size control
         maximize_action = QAction("Maximize", main_window)
-        maximize_action.triggered.connect(main_window.showMaximized)
+        maximize_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.showMaximized))
         window_menu.addAction(maximize_action)
         
         restore_default_action = QAction("Restore Default", main_window)
-        restore_default_action.triggered.connect(lambda: main_window.resize(1600, 900))
+        restore_default_action.triggered.connect(lambda: main_window.cancel_connection_if_active(lambda: main_window.resize(1600, 900)))
         window_menu.addAction(restore_default_action)
         
         # Use QToolButton for Window menu
@@ -761,6 +765,8 @@ class UIInitializer:
         window_button.setText("Window")
         window_button.setMenu(window_menu)
         window_button.setPopupMode(QToolButton.InstantPopup)
+        # Cancel connection mode when the button is clicked
+        window_button.clicked.connect(lambda: main_window.cancel_connection_if_active())
         toolbar.addWidget(window_button)
 
         # Add spacer to push clock to the right side of toolbar
@@ -787,7 +793,7 @@ class UIInitializer:
         
         # Create a keyboard shortcut for Tab to switch between views
         main_window.tab_shortcut = QShortcut(QKeySequence(Qt.Key_Tab), main_window)
-        main_window.tab_shortcut.activated.connect(main_window.toggle_mode_button)
+        main_window.tab_shortcut.activated.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_mode_button))
 
     def on_view_resize(self, event):
         """Handle resize events to reposition the logo overlay and historian chart"""

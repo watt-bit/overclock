@@ -582,4 +582,20 @@ class PowerSystemSimulator(QMainWindow):
     
     def check_capex_milestone(self, current_capex):
         """Check if CAPEX has crossed a $1,000,000 milestone and create a particle if needed"""
-        self.capex_manager.check_capex_milestone(current_capex) 
+        self.capex_manager.check_capex_milestone(current_capex)
+
+    def cancel_connection_if_active(self, callback=None, *args, **kwargs):
+        """
+        Check if connection mode is active and cancel it.
+        This should be called before processing any UI button clicks.
+        
+        Args:
+            callback: Function to call after cancelling the connection
+            *args, **kwargs: Arguments to pass to the callback function
+        """
+        if self.creating_connection:
+            self.cancel_connection()
+            
+        # If a callback was provided, call it with the provided arguments
+        if callback:
+            return callback(*args, **kwargs) 
