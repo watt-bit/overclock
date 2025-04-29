@@ -44,7 +44,7 @@ class CapexManager:
             
             # Ensure it stays in the correct position
             if hasattr(self.main_window, 'view') and self.main_window.view:
-                self.main_window.capex_label.move(10, self.main_window.view.height() - self.main_window.capex_label.height() - 70)
+                self.main_window.capex_label.move(10, self.main_window.view.height() - self.main_window.capex_label.height() - 65)
     
     def check_capex_milestone(self, current_capex):
         """Check if CAPEX has crossed a $1,000,000 milestone and create a particle if needed"""

@@ -249,7 +249,7 @@ class PowerSystemSimulator(QMainWindow):
             self.irr_label.adjustSize()
             # Ensure it stays in the correct position
             if hasattr(self, 'view') and self.view:
-                self.irr_label.move(10, self.view.height() - self.irr_label.height() - 25)
+                self.irr_label.move(10, self.view.height() - self.irr_label.height() - 20)
     
     def new_scenario(self):
         """Create a new blank scenario"""
@@ -523,10 +523,10 @@ class PowerSystemSimulator(QMainWindow):
             
         # Reposition capex label and irr label in bottom left corner
         if hasattr(self, 'capex_label'):
-            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 70)
+            self.capex_label.move(10, self.view.height() - self.capex_label.height() - 65)
         
         if hasattr(self, 'irr_label'):
-            self.irr_label.move(10, self.view.height() - self.irr_label.height() - 25)
+            self.irr_label.move(10, self.view.height() - self.irr_label.height() - 20)
         
         # Resize historian chart if in historian view
         if not self.is_model_view and hasattr(self, 'historian_manager'):
