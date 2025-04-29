@@ -65,26 +65,8 @@ class BusComponent(ComponentBase):
         # Restore painter state after drawing shadow
         painter.restore()
         
-        # Now call the base class to handle the selection highlight
-        painter.save()
-        super(ComponentBase, self).paint(painter, option, widget)
-        
-        # If selected, draw white highlight box around the component
-        if self.isSelected():
-            # Get the bounding rectangle with a small padding
-            padding = 4
-            highlight_rect = QRectF(
-                rect.x() - padding/2,
-                rect.y() - padding/2,
-                rect.width() + padding,
-                rect.height() + padding
-            )
-            # Set up the painter for the highlight
-            painter.setPen(self.selection_pen)
-            painter.setBrush(Qt.NoBrush)
-            # Draw the highlight rectangle
-            painter.drawRect(highlight_rect)
-        painter.restore()
+        # Call the parent class paint method to handle selection highlight and the open button
+        super().paint(painter, option, widget)
         
         # Get component dimensions
         rect = self.boundingRect()

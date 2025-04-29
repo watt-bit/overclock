@@ -46,6 +46,10 @@ class ComponentPropertiesManager:
         # Set left alignment for all labels in the form
         self.properties_layout.setLabelAlignment(Qt.AlignLeft)
         self.properties_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
+        # Initialize current_component attribute
+        self.current_component = None
+        # Initialize delete_btn attribute
+        self.delete_btn = None
     
     def clear_properties_panel(self):
         """Clear all widgets from the properties panel"""

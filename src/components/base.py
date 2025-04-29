@@ -45,11 +45,14 @@ class ComponentBase(QGraphicsRectItem):
                 background-color: #3498db;
             }
             QPushButton:pressed {
-                background-color: #1abc9c;
+                background-color: #2C80B4;
             }
         """)
         self.open_button.setFixedSize(50, 20)  # Small fixed size button
         self.open_button.clicked.connect(self.open_properties)
+        
+        # Prevent space bar from triggering the button
+        self.open_button.setFocusPolicy(Qt.NoFocus)
         
         # Add the button to the scene using a proxy widget
         self.button_proxy = QGraphicsProxyWidget(self)
@@ -178,6 +181,11 @@ class ComponentBase(QGraphicsRectItem):
         # Scale up slightly when clicked
         self.setScale(1.05)
         super().mousePressEvent(event)
+        
+        # Emit component_clicked signal when in connection mode
+        if self.scene() and hasattr(self.scene(), 'parent') and hasattr(self.scene().parent(), 'creating_connection') and self.scene().parent().creating_connection:
+            if hasattr(self.scene(), 'component_clicked'):
+                self.scene().component_clicked.emit(self)
     
     def mouseDoubleClickEvent(self, event):
         # Handle double click to show properties panel
@@ -204,4 +212,18 @@ class ComponentBase(QGraphicsRectItem):
             if not value:
                 self.properties_open = False
                 self.open_button.setText("Open")
+            # When component is selected, close any open properties panels
+            elif value and self.scene() and hasattr(self.scene(), 'parent'):
+                scene_parent = self.scene().parent()
+                if hasattr(scene_parent, 'properties_manager'):
+                    # Close any open properties panel
+                    scene_parent.properties_manager.clear_properties_panel()
+                    # Hide the properties dock
+                    if hasattr(scene_parent, 'properties_dock'):
+                        scene_parent.properties_dock.setVisible(False)
+                    # Reset properties_open state for all components
+                    if hasattr(scene_parent, 'components'):
+                        for component in scene_parent.components:
+                            if hasattr(component, 'set_properties_panel_state'):
+                                component.set_properties_panel_state(False)
         return super().itemChange(change, value) 
