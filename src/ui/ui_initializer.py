@@ -179,6 +179,7 @@ class UIInitializer:
         main_window.mode_toggle_btn.move(10, 10)
         # Make the button visible
         main_window.mode_toggle_btn.show()
+        main_window.mode_toggle_btn.setFixedWidth(150)
         
         # Create a custom class for the analytics toggle button
         class AnalyticsToggleButton(QLabel):

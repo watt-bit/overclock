@@ -122,7 +122,7 @@ class HistorianManager:
         self.ax2.tick_params(colors='#EC407A')  # Soft pink ticks to match cumulative_revenue color
         
         # Adjust subplot parameters to give specified padding
-        self.figure.subplots_adjust(left=0.05, right=0.95, bottom=0.09, top=0.96)
+        self.figure.subplots_adjust(left=0.05, right=0.95, bottom=0.12, top=0.96)
         
         # Create canvas for the figure
         self.canvas = FigureCanvas(self.figure)
