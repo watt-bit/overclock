@@ -114,7 +114,7 @@ class KeyHandler(QObject):
                 self.main_window.toggle_analytics_panel()
                 return True
         
-        # Only process if not in connection mode, sever mode, and simulation is not running
+        # Only process if not in connection mode, and simulation is not running
         if (not self.main_window.creating_connection and 
             self.main_window.connection_btn.isEnabled() and 
             not self.main_window.simulation_engine.simulation_running):

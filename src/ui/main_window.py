@@ -110,7 +110,7 @@ class PowerSystemSimulator(QMainWindow):
                 if self.creating_connection:
                     self.cancel_connection()
                     return True
-        
+
         # Handle mouse movement for connection line
         if (obj is self.view.viewport() and 
             event.type() == event.MouseMove and 
@@ -151,10 +151,6 @@ class PowerSystemSimulator(QMainWindow):
 
     def start_scrubbing(self):
         """Enter scrub mode when slider is pressed"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         self.is_scrubbing = True
         
         # Cancel any pending scrub timer
@@ -168,10 +164,6 @@ class PowerSystemSimulator(QMainWindow):
         self.update_simulation()
     
     def time_slider_changed(self, value):
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         # Check network connectivity before updating
         if not self.simulation_engine.simulation_running and not self.check_network_connectivity():
             # Show the same warning as when trying to play with unconnected components
@@ -206,10 +198,6 @@ class PowerSystemSimulator(QMainWindow):
     
     def cycle_simulation_speed(self):
         """Cycle through simulation speeds and update the button text"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         # Get current speed setting (default is 1)
         # Map speeds [1, 2, 3] to indices [0, 1, 2]
         current_index = self.simulation_speed - 1
@@ -239,10 +227,6 @@ class PowerSystemSimulator(QMainWindow):
     
     def toggle_simulation(self):
         """Toggle the simulation between running and paused"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         self.simulation_controller.toggle_simulation()
     
     def step_simulation(self, steps):
@@ -252,10 +236,6 @@ class PowerSystemSimulator(QMainWindow):
         self.simulation_controller.update_simulation()
     
     def reset_simulation(self, skip_flash=False):
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         self.simulation_controller.reset_simulation(skip_flash=skip_flash)
         # Update the CAPEX display after resetting
         self.update_capex_display()
@@ -273,10 +253,6 @@ class PowerSystemSimulator(QMainWindow):
     
     def new_scenario(self):
         """Create a new blank scenario"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         # First reset the simulation state
         self.reset_simulation()
         
@@ -298,18 +274,10 @@ class PowerSystemSimulator(QMainWindow):
     
     def save_scenario(self):
         """Save the current scenario to a file"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         self.model_manager.save_scenario()
     
     def load_scenario(self):
         """Load a scenario from a file"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         # Stop autocomplete if it's running before loading
         if self.is_autocompleting:
             self.autocomplete_manager.stop_autocomplete()
@@ -336,10 +304,6 @@ class PowerSystemSimulator(QMainWindow):
 
     def autoconnect_all_components(self):
         """Automatically connect all components in the scene to form a valid network"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         self.connection_manager.autoconnect_all_components()
 
     def keyPressEvent(self, event):
@@ -347,7 +311,7 @@ class PowerSystemSimulator(QMainWindow):
         # Use the KeyHandler class to process the event
         if not self.key_handler.handle_key_press(event):
             # If the event wasn't handled by our key handler, pass it to the parent class
-            super().keyPressEvent(event)
+            super().keyPressEvent(event) 
 
     def disable_component_buttons(self, disabled):
         """Disable or enable all component and connection manipulation buttons"""
@@ -385,10 +349,6 @@ class PowerSystemSimulator(QMainWindow):
 
     def closeEvent(self, event):
         """Handle application close event with confirmation dialogs"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         # First check if simulation is running and confirm exit
         if self.simulation_engine.simulation_running:
             reply = QMessageBox.question(
@@ -429,10 +389,6 @@ class PowerSystemSimulator(QMainWindow):
 
     def zoom_changed(self, value):
         """Handle zoom slider value changes"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         # Convert slider value (40-100) to zoom factor (0.4-1.0)
         zoom_factor = value / 100.0
         
@@ -466,18 +422,10 @@ class PowerSystemSimulator(QMainWindow):
 
     def take_screenshot(self):
         """Take a screenshot of the modeling view area and copy to clipboard"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         self.screenshot_manager.take_screenshot()
 
     def toggle_background(self):
         """Cycle through background options"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         # Cycle through background modes: 0 -> 1 -> 2 -> 0
         self.background_mode = (self.background_mode + 1) % 3
         
@@ -528,20 +476,13 @@ class PowerSystemSimulator(QMainWindow):
     
     def toggle_properties_panel(self):
         """Toggle the properties panel visibility"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
+        
         self.properties_dock.setVisible(not self.properties_dock.isVisible())
         if self.properties_dock.isVisible():
             self.position_properties_panel_if_needed()
 
     def toggle_analytics_panel(self):
         """Toggle the analytics panel visibility"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         self.analytics_dock.setVisible(not self.analytics_dock.isVisible())
         if self.analytics_dock.isVisible():
             self.position_properties_panel_if_needed()
@@ -601,10 +542,6 @@ class PowerSystemSimulator(QMainWindow):
 
     def toggle_mode_button(self):
         """Toggle the mode button text between Model and Historian"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         self.mode_toggle_manager.toggle_mode_button()
 
     def switch_to_historian_view(self):
@@ -617,10 +554,6 @@ class PowerSystemSimulator(QMainWindow):
 
     def run_autocomplete(self):
         """Run the simulation from the current time to the end asynchronously"""
-        # Cancel connection mode if active
-        if self.creating_connection:
-            self.cancel_connection()
-            
         # Update main window state to match autocomplete manager state
         self.is_autocompleting = self.autocomplete_manager.is_autocompleting
         self.autocomplete_timer = self.autocomplete_manager.autocomplete_timer

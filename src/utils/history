@@ -3647,4 +3647,35 @@
 - Fixed issue where component buttons remained disabled after creating a new scenario
 - Provides more consistent user experience when transitioning between views
 
+## 2025-04-08 15:00 - Changed border red flash animation to gray flash in bordered_main_widget.py while preserving the same pattern.
+
+## 2025-04-09 - Fixed Multiple Delete Key Press Bug
+- Modified ComponentDeleter to properly clear references after component deletion
+- Added check to prevent attempting to delete components that are no longer in the scene
+- Cleared properties manager's current_component reference after deletion
+- Added scene.clearSelection() to ensure no lingering selection references remain
+- Fixed issue where pressing delete key multiple times would trigger redundant border flash animations
+
+## 2025-04-09 - Added dark gray flash animation when toggling simulation on/off for better visual feedback
+
+## 2025-04-09 - Fixed border animation TypeError crash
+- Fixed crash in BorderedMainWidget's update_flash method when checking for color equality
+- QColor objects are not hashable, so replaced len(set()) with all() condition
+- Update prevents "TypeError: unhashable type: 'QColor'" when toggling simulation
+
+## 2024-08-07 - Added Clock Widget to Toolbar
+- Added a real-time clock display in the top-right of the toolbar
+- Implemented in 12-hour format with AM/PM indicator
+- Used QTimer to update the clock every second
+- Added spacer widget to push the clock to the right side
+- Enhanced user experience by providing time reference during simulation
+
+## 2024-08-07 - Enhanced Clock Display Format
+- Removed leading zeros from hour display for a cleaner look
+- Removed seconds display to reduce visual noise
+- Added flashing colon to indicate passage of seconds
+- Maintained 12-hour format with AM/PM indicator
+- Improved readability and visual appearance of the clock
+
+## 2025-04-08 15:00 - Changed ModelManager.new_scenario() to switch back to model view first when triggered from historian view.
 - Ensures proper UI restoration including re-en
