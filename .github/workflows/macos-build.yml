@@ -28,6 +28,7 @@ jobs:
           --name "OVERCLOCK" \
           --icon "src/ui/assets/appicon.icns" \
           --add-data "src/ui/assets:src/ui/assets" \
+          --add-data "src/data:src/data" \
           --hidden-import pyxirr \
           main.py
 
