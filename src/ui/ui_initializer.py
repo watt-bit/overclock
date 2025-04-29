@@ -441,6 +441,7 @@ class UIInitializer:
         main_window.properties_dock = QDockWidget("Properties", main_window)
         main_window.properties_dock.setObjectName("properties_dock")
         main_window.properties_dock.setWidget(main_window.properties_manager.properties_widget)
+        main_window.properties_dock.setStyleSheet("QDockWidget { background-color: rgba(210, 235, 255, 25); border: 1px solid rgba(100, 200, 255, 180); }")
         
         # Create custom title bar with only a centered label
         custom_title_bar = QWidget()
