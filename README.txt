@@ -1,6 +1,6 @@
-===================================================================
-⚡️ OVERCLOCK - Watt-Bit Infrastructure Simulator (Alpha Preview) ⚡️
-===================================================================
+=================================================================
+⚡️ OVERCLOCK - Watt-Bit Infrastructure Sandbox (Alpha Preview) ⚡️
+=================================================================
 
 By: Watt-Bit Research (https://watt-bit.com)
 Presented by: Augur VC (https://augurvc.com)
