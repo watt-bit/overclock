@@ -151,6 +151,12 @@ class ConnectionManager:
                     
                     # Validate bus states after creating a connection
                     self.main_window.validate_bus_states()
+                else:
+                    # Connection failed - trigger error flash
+                    # Access the BorderedMainWidget which is the central widget
+                    bordered_widget = self.main_window.centralWidget()
+                    if hasattr(bordered_widget, 'trigger_error_flash'):
+                        bordered_widget.trigger_error_flash()
             
             # Always clean up, whether connection succeeded or failed
             self.cancel_connection()

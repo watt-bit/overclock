@@ -1228,7 +1228,7 @@ class ComponentPropertiesManager:
         layout.addRow("Price per kWh ($):", price_edit)
         layout.addRow("CAPEX per kW ($):", capex_edit)
         layout.addRow("Operating Mode:", operating_mode_label)
-        layout.addRow("Profile Type:", profile_widget)
+        layout.addRow("Demand Mode:", profile_widget)
         layout.addRow("", profile_info)
         layout.addRow("Data Center Type:", data_center_widget)
         layout.addRow("", dc_generate_widget)
@@ -1315,6 +1315,12 @@ class ComponentPropertiesManager:
     
     def _add_cloud_workload_properties(self, component, layout):
         """Add properties for CloudWorkloadComponent"""
+        # Add note label
+        note_label = QLabel("NOTE: Cloud Workload component only connects\nto Load component in Data Center demand mode.")
+        note_label.setStyleSheet("background-color: transparent; color: rgba(200, 255, 255, 0.9); padding: 4px; border-radius: 4px;")
+        note_label.setAlignment(Qt.AlignCenter)
+        note_label.setWordWrap(False)
+        
         # Add operating mode selector
         mode_selector = QComboBox()
         mode_selector.setStyleSheet(COMBOBOX_STYLE + "QComboBox { width: 150px; }")
@@ -1428,6 +1434,7 @@ class ComponentPropertiesManager:
         layout.addRow("Operating Mode:", mode_selector)
         layout.addRow("", multi_cloud_params_widget)
         layout.addRow("", dedicated_params_widget)
+        layout.addRow(note_label)
     
     def _add_solar_panel_properties(self, component, layout):
         """Add properties for SolarPanelComponent"""

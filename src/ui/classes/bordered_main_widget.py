@@ -137,6 +137,21 @@ class BorderedMainWidget(QWidget):
         # Force update to show the flash immediately
         self.update()
         
+    def trigger_error_flash(self):
+        """Start a single red flash for 250ms to indicate an error"""
+        # Only trigger flash if not in autocomplete mode
+        if self.is_autocompleting:
+            return
+            
+        self.is_flashing = True
+        self.flash_step = 0
+        # Use the red colors for error indication
+        self.colors = [self.flash_red_colors[0]] * len(self.colors)  # Deep burgundy
+        self.flash_timer.start(250)  # Flash for 250ms
+        
+        # Force update to show the flash immediately
+        self.update()
+        
     def trigger_flash(self):
         """Start the flash animation sequence"""
         # Only trigger flash if not in autocomplete mode
@@ -204,6 +219,12 @@ class BorderedMainWidget(QWidget):
         # Handle single dark gray flash (1 step, 250ms)
         elif self.colors[0] == self.flash_gray_colors[0] and all(color == self.colors[0] for color in self.colors) and self.flash_step == 1 and self.flash_timer.interval() == 250:
             # Single dark gray flash is done, return to normal colors
+            self.colors = self.original_colors.copy()
+            self.is_flashing = False
+            self.flash_timer.stop()
+        # Handle single error flash (1 step, 250ms)
+        elif self.colors[0] == self.flash_red_colors[0] and all(color == self.colors[0] for color in self.colors) and self.flash_step == 1 and self.flash_timer.interval() == 250:
+            # Single error flash is done, return to normal colors
             self.colors = self.original_colors.copy()
             self.is_flashing = False
             self.flash_timer.stop()
