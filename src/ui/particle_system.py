@@ -315,7 +315,7 @@ class ConnectionSparkParticle(QGraphicsRectItem):
 class ParticleSystem:
     """Manages a set of particles for visual effects"""
     
-    MAX_PARTICLES = 1000  # Maximum number of particles allowed to prevent crashes
+    MAX_PARTICLES = 400  # Maximum number of particles allowed to prevent crashes
     
     def __init__(self, scene):
         self.scene = scene
