@@ -40,7 +40,7 @@ jobs:
       run: |
         cd dist
         cp ../readme.txt .
-        ditto -c -k --sequesterRsrc --keepParent --rsrc "OVERCLOCK.app" "readme.txt" "overclock-macos.zip"
+        zip -r "overclock-macos.zip" "OVERCLOCK.app" "readme.txt"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4

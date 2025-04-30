@@ -23,3 +23,5 @@ README needs sufficient detail on core features like panels, views, Autocomplete
 - Noted that README.txt now utilizes emojis and reorganized sections for better alpha user guidance.
 
 - GitHub Actions workflows should include documentation files (like README.txt) alongside executables in distribution artifacts.
+
+macOS ditto command can't archive multiple source files directly - use zip instead for packaging multiple files together
