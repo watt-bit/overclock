@@ -38,6 +38,7 @@ class ComponentPropertiesManager:
     def __init__(self, main_window):
         self.main_window = main_window
         self.properties_widget = QWidget()
+        self.properties_widget.setStyleSheet('color: white;')
         # Set size policies to allow the widget to shrink to its minimum size
         self.properties_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         self.properties_layout = QFormLayout(self.properties_widget)
