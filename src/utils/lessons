@@ -14,3 +14,10 @@ UI animations with sequential color changes can create a more visually engaging 
 Component initialization order is critical - ensure windows are fully initialized before loading scenarios to prevent display issues
 QTimer.singleShot() can be used to create sequential animations without the need for a dedicated animation framework
 When animating UI components that have functional signals, temporarily disconnect them to prevent unintended side effects during animations
+
+Alpha users need clear instructions on bypassing OS security for unsigned apps (Windows/macOS).
+
+Tab key can cause issues as a global hotkey when compiled on Windows; switched to Backslash.
+README needs sufficient detail on core features like panels, views, Autocomplete, and metrics (CAPEX/IRR) for alpha users.
+
+- Noted that README.txt now utilizes emojis and reorganized sections for better alpha user guidance.

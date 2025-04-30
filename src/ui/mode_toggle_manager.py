@@ -15,7 +15,7 @@ class ModeToggleManager:
         """Toggle the mode button text between Model and Historian"""
         if self.main_window.is_model_view:
             # Switching to Historian mode
-            self.main_window.mode_toggle_btn.setText("💾 Historian (TAB)")
+            self.main_window.mode_toggle_btn.setText("💾 Historian ( \\ )")
             
             # Hide the properties panel if it's open
             if self.main_window.properties_dock.isVisible():
@@ -52,7 +52,7 @@ class ModeToggleManager:
             self.switch_to_historian_view()
         else:
             # Switching back to Model mode
-            self.main_window.mode_toggle_btn.setText("🏗️ Build (TAB)")
+            self.main_window.mode_toggle_btn.setText("🏗️ Build ( \\ )")
             
             # Show the analytics toggle button when returning to model view
             if hasattr(self.main_window, 'analytics_toggle_btn'):

@@ -84,8 +84,8 @@ class KeyHandler(QObject):
             self.main_window.toggle_simulation()
             return True
             
-        # Tab key for switching between views
-        if key == Qt.Key_Tab:
+        # Tab key for switching between views is now Backslash
+        if key == Qt.Key_Backslash:
             self.main_window.cancel_connection_if_active(self.main_window.toggle_mode_button)
             return True
             

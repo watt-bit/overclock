@@ -152,7 +152,7 @@ class UIInitializer:
         main_window.irr_label.show()
         
         # Create Mode/Historian toggle button in top-left corner
-        main_window.mode_toggle_btn = QPushButton("🏗️ Build (TAB)", main_window.view)
+        main_window.mode_toggle_btn = QPushButton("🏗️ Build ( \\ )", main_window.view)
         main_window.mode_toggle_btn.setStyleSheet("""
             QPushButton { 
                 background-color: #3D3D3D; 

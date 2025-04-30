@@ -15,3 +15,8 @@ Improved load transition to use a stored timer object, preventing potential garb
 Added 1000ms delay between startup flash and welcome text in StartupSequence.run() using QTimer.singleShot()
 Added component buttons flashing animation to StartupSequence with alternating normal/hover states at 250ms intervals
 Added time slider animation to StartupSequence that slides from min to max and back over 4 seconds total
+Added README.txt to root directory for alpha users.
+Changed view toggle hotkey from Tab to Backslash (\\) due to Windows compilation bug.
+Added more detail to README.txt regarding panels, views, Autocomplete, CAPEX/IRR, and hotkeys.
+
+2024-09-10: Reformatted README.txt with emojis, sections, and improved readability
