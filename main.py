@@ -24,12 +24,14 @@ class AppManager(QObject):
     title_screen = None
     wbr_title_screen = None
     augur_title_screen = None
+    startup_sequence = None
     
     def __init__(self):
         super().__init__()
         self._cleanup_done = False
         self._is_quitting = False
         self._pending_load_file = None
+        self._load_timer = None
         
     def clean_up_application(self):
         """Safely clean up all application resources"""
@@ -56,6 +58,14 @@ class AppManager(QObject):
         
         # Clean up main window resources
         self._cleanup_main_window()
+        
+        # Clean up startup sequence
+        self.startup_sequence = None
+        
+        # Clean up load timer if it exists
+        if self._load_timer and self._load_timer.isActive():
+            self._load_timer.stop()
+        self._load_timer = None
         
         # Force garbage collection to clean up any lingering objects
         gc.collect()
@@ -193,12 +203,10 @@ def main():
     def handle_new_project_transition():
         # Show the main window first
         app_manager.main_window.show()
-        # Directly add welcome text which will trigger particles and center the text
-        app_manager.main_window.add_welcome_text()
-        # Initialize the startup sequence
-        startup_sequence = StartupSequence(app_manager.main_window)
+        # Initialize the startup sequence and store it in app_manager
+        app_manager.startup_sequence = StartupSequence(app_manager.main_window)
         # Use a timer to ensure the window is fully initialized before running startup sequence
-        QTimer.singleShot(100, startup_sequence.run)
+        QTimer.singleShot(100, app_manager.startup_sequence.run)
     
     app_manager.title_screen.transition_to_main.connect(handle_new_project_transition)
     
@@ -208,8 +216,11 @@ def main():
         app_manager._pending_load_file = filename
         # Show the main window first
         app_manager.main_window.show()
-        # Use a timer to ensure the window is fully initialized before loading
-        QTimer.singleShot(100, app_manager.load_pending_file)
+        # Create a timer to ensure the window is fully initialized before loading
+        app_manager._load_timer = QTimer()
+        app_manager._load_timer.setSingleShot(True)
+        app_manager._load_timer.timeout.connect(app_manager.load_pending_file)
+        app_manager._load_timer.start(50)
     
     app_manager.title_screen.transition_to_main_with_file.connect(handle_load_transition)
     

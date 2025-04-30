@@ -152,6 +152,17 @@ class ConnectionManager:
                     # Validate bus states after creating a connection
                     self.main_window.validate_bus_states()
                     
+                    # Create connection spark effect at the cursor position
+                    if hasattr(self.main_window, 'particle_system'):
+                        # Get the current cursor position in view coordinates
+                        cursor_pos = self.view.mapFromGlobal(QCursor.pos())
+                        # Convert to scene coordinates
+                        scene_pos = self.view.mapToScene(cursor_pos)
+                        # Create spark effect
+                        self.main_window.particle_system.create_connection_success_sparks(
+                            scene_pos.x(), scene_pos.y()
+                        )
+                    
                     # Trigger success flash for successful connection
                     bordered_widget = self.main_window.centralWidget()
                     if hasattr(bordered_widget, 'trigger_success_flash'):

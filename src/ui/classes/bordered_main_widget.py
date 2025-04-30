@@ -8,7 +8,7 @@ class BorderedMainWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         # Initialize gradient colors for a cool, electric darkmode effect (same as GradientBorderText)
-        self.colors = [
+        self.default_colors = [
             QColor(58, 78, 178),    # Bright starlight electric blue
             QColor(46, 135, 175),   # Cool bright cyan
             QColor(30, 155, 145),   # Celestial teal
@@ -88,6 +88,14 @@ class BorderedMainWidget(QWidget):
             QColor(5, 5, 5),    # Very dark
             QColor(0, 0, 0),    # Black
         ]
+
+        # Black color list for black flash
+        self.colors = [
+            QColor(0, 0, 0),    # Black
+            QColor(15, 15, 15), # Nearly black
+            QColor(5, 5, 5),    # Very dark
+            QColor(0, 0, 0),    # Black
+        ]
         
         # Gold color list for gold flash
         self.flash_gold_colors = [
@@ -101,9 +109,8 @@ class BorderedMainWidget(QWidget):
             QColor("#FFCA28"),    # Base gold color (for rhythm)
         ]
         
-        # Store the original colors for restoration
         self.original_colors = self.colors.copy()
-        
+
         # Autocomplete state
         self.is_autocompleting = False
         # Dark green color for autocomplete mode
@@ -111,6 +118,9 @@ class BorderedMainWidget(QWidget):
         
         # Track the success flash sequence
         self.is_success_flash = False
+        
+        # Track the startup flash sequence
+        self.is_startup_flash = False
         
     def animate(self):
         """Update animation and trigger redraw"""
@@ -130,7 +140,7 @@ class BorderedMainWidget(QWidget):
             self.is_autocompleting = is_autocompleting
             
             # Stop any ongoing flash if autocomplete is starting
-            if is_autocompleting and self.is_flashing:
+            if is_autocompleting and self.is_flashing and self.is_startup_flash == False:
                 self.is_flashing = False
                 self.flash_timer.stop()
                 self.colors = self.original_colors.copy()
@@ -228,6 +238,21 @@ class BorderedMainWidget(QWidget):
         # Force update to show the flash immediately
         self.update()
         
+    def trigger_startup_flash(self):
+        """Start the startup flash animation sequence with specific pattern for app startup"""
+        # Only trigger flash if not in autocomplete mode
+        if self.is_autocompleting:
+            return
+            
+        self.is_flashing = True
+        self.is_startup_flash = True
+        self.flash_step = 0
+        
+        self.flash_timer.start(1000)  # First flash for 1000ms
+        
+        # Force update to show the flash immediately
+        self.update()
+        
     def update_flash(self):
         """Progress through the flash animation steps"""
         # If we entered autocomplete mode, stop flashing
@@ -238,8 +263,44 @@ class BorderedMainWidget(QWidget):
             
         self.flash_step += 1
         
+        # Handle the startup flash sequence
+        if self.is_startup_flash:
+            if self.flash_step == 1:
+                # First black flash (1000ms) is done, switch to normal colors
+                self.original_colors=self.default_colors.copy()
+                self.colors = self.original_colors.copy()
+                self.flash_timer.start(500)  # 500ms normal
+            elif self.flash_step == 2:
+                # Normal colors done, switch to random black
+                random_black = random.choice(self.flash_black_colors)
+                self.colors = [random_black] * len(self.colors)
+                self.flash_timer.start(500)  # 500ms black
+            elif self.flash_step == 3:
+                # Black flash done, switch to normal colors
+                self.colors = self.original_colors.copy()
+                self.flash_timer.start(500)  # 500ms normal
+            elif self.flash_step == 4:
+                # Normal colors done, switch to random black
+                random_black = random.choice(self.flash_black_colors)
+                self.colors = [random_black] * len(self.colors)
+                self.flash_timer.start(500)  # 500ms black
+            elif self.flash_step == 5:
+                # Black flash done, switch to normal colors
+                self.colors = self.original_colors.copy()
+                self.flash_timer.start(500)  # 500ms normal
+            elif self.flash_step == 6:
+                # Normal colors done, switch to random black
+                random_black = random.choice(self.flash_black_colors)
+                self.colors = [random_black] * len(self.colors)
+                self.flash_timer.start(500)  # 500ms black
+            elif self.flash_step == 7:
+                # Final black flash is done, return to normal
+                self.colors = self.original_colors.copy()
+                self.is_flashing = False
+                self.is_startup_flash = False
+                self.flash_timer.stop()
         # Handle the success flash sequence (4 steps)
-        if self.is_success_flash:
+        elif self.is_success_flash:
             if self.flash_step == 1:
                 # First green flash is done, switch to another random green
                 random_green = random.choice(self.flash_green_colors)

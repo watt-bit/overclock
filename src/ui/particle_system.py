@@ -1,5 +1,5 @@
 import random
-from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsTextItem, QLabel
+from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsTextItem, QLabel, QGraphicsRectItem
 from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import QPen, QColor, QBrush, QRadialGradient, QFont
 
@@ -58,7 +58,7 @@ class Particle(QGraphicsEllipseItem):
         self.setPen(QPen(Qt.transparent))
     
     def update_particle(self):
-        """Update particle position, size and opacity for animation"""
+        """Update the particle's position, size and opacity for animation"""
         # Move the particle
         self.setPos(self.x() + self.dx, self.y() + self.dy)
         
@@ -230,6 +230,87 @@ class ViewCapexParticle(QLabel):
         
         # Return whether the particle is still visible
         return self.alpha > 0.1
+
+class ConnectionSparkParticle(QGraphicsRectItem):
+    """Square spark particle for connection success effect"""
+    
+    def __init__(self, x, y, size=10, parent=None):
+        super().__init__(0, 0, size, size, parent)
+        self.setPos(x - size/2, y - size/2)
+        
+        # Random velocity with burst up and outward, then fall down
+        angle = random.uniform(0, 2 * 3.14159)  # Random angle in radians
+        speed = random.uniform(4.0, 7.0)  # Random speed
+        
+        # Initial velocity has strong upward component
+        self.dx = speed * random.uniform(0.0, 0.75) * random.choice([-1, 1])
+        self.dy = -speed * random.uniform(1.5, 4.0)  # Strong initial upward velocity
+        
+        # Add gravity for falling effect
+        self.gravity = random.uniform(0.55, 0.72)
+        
+        # Random fade rate
+        self.fade_rate = random.uniform(0.02, 0.07)
+        self.alpha = random.uniform(0.95, 1.0)
+        
+        # Size stays constant but record it
+        self.size = size
+        
+        # Size of the glow (larger than the spark)
+        self.glow_size = size * random.uniform(1.1, 3.5)
+        
+        # Random colors: from amber (#FFCA28) to bright amber-white
+        # Random blend between amber (#FFCA28) and white (#FFFFFF)
+        amber_amount = random.uniform(0.5, 1.0)  # How much amber vs white
+        
+        # Amber base color: #FFCA28 (RGB: 255, 202, 40)
+        r = int(255 * amber_amount + (1.0 - amber_amount) * 255)  # Blend r component 
+        g = int(202 * amber_amount + (1.0 - amber_amount) * 255)  # Blend g component
+        b = int(40 * amber_amount + (1.0 - amber_amount) * 255)   # Blend b component
+        
+        self.color = QColor(r, g, b)
+        
+        # Create the glow rectangle
+        self.glow = QGraphicsRectItem(-(self.glow_size-self.size)/2, -(self.glow_size-self.size)/2, 
+                                      self.glow_size, self.glow_size, self)
+        
+        # Set initial appearance
+        self.updateAppearance()
+    
+    def updateAppearance(self):
+        """Update the particle's visual appearance"""
+        # Set the spark color with current alpha
+        spark_color = QColor(self.color)
+        # Clamp alpha value to valid range [0.0, 1.0]
+        safe_alpha = max(0.0, min(self.alpha, 1.0))
+        spark_color.setAlphaF(safe_alpha)
+        self.setBrush(QBrush(spark_color))
+        self.setPen(QPen(Qt.transparent))
+        
+        # Set the glow with lower alpha
+        glow_color = QColor(self.color)
+        # Clamp alpha value to valid range [0.0, 1.0]
+        glow_alpha = max(0.0, min(self.alpha * 0.5, 1.0))
+        glow_color.setAlphaF(glow_alpha)
+        self.glow.setBrush(QBrush(glow_color))
+        self.glow.setPen(QPen(Qt.transparent))
+    
+    def update_particle(self):
+        """Update particle position, velocity and opacity for animation"""
+        # Apply gravity to vertical velocity
+        self.dy += self.gravity
+        
+        # Move the particle
+        self.setPos(self.x() + self.dx, self.y() + self.dy)
+        
+        # Fade the particle (ensure alpha doesn't go below 0)
+        self.alpha = max(0.0, self.alpha - self.fade_rate)
+        
+        # Update appearance
+        self.updateAppearance()
+        
+        # Return whether the particle is still visible
+        return self.alpha > 0.05
 
 class ParticleSystem:
     """Manages a set of particles for visual effects"""
@@ -420,6 +501,42 @@ class ParticleSystem:
             # Create particle with random size
             size = random.uniform(20, 75)
             particle = Particle(particle_x, particle_y, size)
+            self.scene.addItem(particle)
+            self.particles.append(particle)
+        
+        # Start the animation timer if not already running
+        if not self.timer.isActive():
+            self.timer.start()
+    
+    def create_connection_success_sparks(self, x, y, num_particles=30):
+        """Create spark particles at cursor location when connection is successful
+        
+        Args:
+            x (float): X coordinate for spark origin (cursor position)
+            y (float): Y coordinate for spark origin (cursor position)
+            num_particles (int): Number of spark particles to create
+        """
+        # Skip particle generation during autocomplete
+        if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'is_autocompleting') and self.main_window.is_autocompleting:
+            return
+            
+        # Check if adding these particles would exceed the limit
+        if not self._can_add_particles(num_particles):
+            return
+            
+        # Create particles
+        for _ in range(num_particles):
+            # Small random offset for natural appearance
+            offset_x = random.uniform(-3, 3)
+            offset_y = random.uniform(-3, 3)
+            
+            # Calculate particle position with offset
+            particle_x = x + offset_x
+            particle_y = y + offset_y
+            
+            # Create spark particle with random size between 1-12
+            size = random.uniform(1, 12)
+            particle = ConnectionSparkParticle(particle_x, particle_y, size)
             self.scene.addItem(particle)
             self.particles.append(particle)
         

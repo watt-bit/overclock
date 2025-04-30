@@ -9,3 +9,9 @@ Modified success flash in BorderedMainWidget to show four random green colors in
 Added reset_simulation call to ensure consistent initial conditions when loading scenarios
 Fixed project loading from title screen to ensure simulator fully initializes before loading scenario file
 Added StartupSequence class and framework for custom animation sequence on new project startup
+Moved welcome text initialization into the StartupSequence for better timing control
+Fixed bug where startup sequence was garbage collected before welcome text was displayed
+Improved load transition to use a stored timer object, preventing potential garbage collection issues
+Added 1000ms delay between startup flash and welcome text in StartupSequence.run() using QTimer.singleShot()
+Added component buttons flashing animation to StartupSequence with alternating normal/hover states at 250ms intervals
+Added time slider animation to StartupSequence that slides from min to max and back over 4 seconds total

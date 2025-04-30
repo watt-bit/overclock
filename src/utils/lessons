@@ -12,3 +12,5 @@ BorderedMainWidget uses a flash system with different color palettes for differe
 
 UI animations with sequential color changes can create a more visually engaging effect than alternating patterns
 Component initialization order is critical - ensure windows are fully initialized before loading scenarios to prevent display issues
+QTimer.singleShot() can be used to create sequential animations without the need for a dedicated animation framework
+When animating UI components that have functional signals, temporarily disconnect them to prevent unintended side effects during animations
