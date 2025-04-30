@@ -26,8 +26,14 @@ jobs:
       run: |
         pyinstaller --onefile --windowed --name "OVERCLOCK" --icon "src/ui/assets/appicon.ico" --add-data "src/ui/assets;src/ui/assets" --add-data "src/data;src/data" --hidden-import pyxirr main.py
 
+    - name: Create zip with executable and readme
+      run: |
+        copy readme.txt dist\
+        cd dist
+        powershell Compress-Archive -Path "OVERCLOCK.exe", "readme.txt" -DestinationPath "overclock-windows.zip"
+
     - name: Upload built executable
       uses: actions/upload-artifact@v4
       with:
-        name: overclock-windows-executable
-        path: dist/OVERCLOCK.exe 
+        name: overclock-windows-zip
+        path: dist/overclock-windows.zip 

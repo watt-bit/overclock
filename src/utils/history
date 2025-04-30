@@ -20,3 +20,4 @@ Changed view toggle hotkey from Tab to Backslash (\\) due to Windows compilation
 Added more detail to README.txt regarding panels, views, Autocomplete, CAPEX/IRR, and hotkeys.
 
 2024-09-10: Reformatted README.txt with emojis, sections, and improved readability
+2024-09-12: Modified GitHub Actions workflows to include readme.txt in both macOS and Windows build artifacts

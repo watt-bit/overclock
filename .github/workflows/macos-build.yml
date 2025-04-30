@@ -36,10 +36,11 @@ jobs:
         echo "Listing dist contents before zipping:"
         ls -l dist
 
-    - name: Zip the .app bundle
+    - name: Zip the .app bundle with readme
       run: |
         cd dist
-        ditto -c -k --sequesterRsrc --keepParent "OVERCLOCK.app" "overclock-macos.zip"
+        cp ../readme.txt .
+        ditto -c -k --sequesterRsrc --keepParent --rsrc "OVERCLOCK.app" "readme.txt" "overclock-macos.zip"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4

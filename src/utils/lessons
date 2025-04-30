@@ -21,3 +21,5 @@ Tab key can cause issues as a global hotkey when compiled on Windows; switched t
 README needs sufficient detail on core features like panels, views, Autocomplete, and metrics (CAPEX/IRR) for alpha users.
 
 - Noted that README.txt now utilizes emojis and reorganized sections for better alpha user guidance.
+
+- GitHub Actions workflows should include documentation files (like README.txt) alongside executables in distribution artifacts.
