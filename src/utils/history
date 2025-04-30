@@ -3,3 +3,6 @@
 # This file records important changes and modifications to the codebase
 
 2024-08-XX: Alpha version launched. Moved pre-alpha history to archive directory.
+Modified success flash sequence in BorderedMainWidget to have 4 steps instead of 6 steps.
+Modified BorderedMainWidget to use random colors from the red palette for error flashes instead of always using the first color.
+Modified success flash in BorderedMainWidget to show four random green colors in a row instead of alternating green and black

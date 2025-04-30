@@ -7,3 +7,7 @@
 2. UI components are managed by specialized controller classes
 3. Simulation logic is encapsulated in the SimulationEngine
 4. Component system provides extensible power system modeling
+
+BorderedMainWidget uses a flash system with different color palettes for different types of notifications, with timer-based animations.
+
+UI animations with sequential color changes can create a more visually engaging effect than alternating patterns

@@ -59,14 +59,14 @@ class BorderedMainWidget(QWidget):
         
         # Dark green gradient colors for success flash
         self.flash_green_colors = [
-            QColor(42, 120, 50),    # Deep green
-            QColor(32, 98, 48),     # Dark forest green
-            QColor(28, 82, 42),     # Shadowy emerald
-            QColor(52, 140, 62),    # Muted jade
-            QColor(30, 108, 52),    # Dark woodland
-            QColor(38, 90, 58),     # Forest moss
-            QColor(25, 72, 45),     # Deep green-blue
-            QColor(42, 120, 50),    # Deep green (for rhythm)
+            QColor(0, 120, 80),     # Neon deep green
+            QColor(20, 140, 90),    # Dark neon green
+            QColor(10, 100, 70),    # Shadowy neon emerald
+            QColor(30, 160, 100),   # Bright neon jade
+            QColor(15, 130, 85),    # Dark neon woodland
+            QColor(25, 150, 95),    # Neon forest glow
+            QColor(5, 110, 75),     # Deep neon green-blue
+            QColor(0, 120, 80),     # Neon deep green (for rhythm)
         ]
         
         # Gray color list for gray flash
@@ -161,8 +161,9 @@ class BorderedMainWidget(QWidget):
             
         self.is_flashing = True
         self.flash_step = 0
-        # Use the red colors for error indication
-        self.colors = [self.flash_red_colors[0]] * len(self.colors)  # Deep burgundy
+        # Use a random color from the red palette for error indication
+        random_red = random.choice(self.flash_red_colors)
+        self.colors = [random_red] * len(self.colors)
         self.flash_timer.start(250)  # Flash for 250ms
         
         # Force update to show the flash immediately
@@ -195,7 +196,7 @@ class BorderedMainWidget(QWidget):
         self.update()
         
     def trigger_success_flash(self):
-        """Start a 6-step green-black-green-black-green-black flash sequence for success"""
+        """Start a 4-step sequence showing different green colors for success"""
         # Only trigger flash if not in autocomplete mode
         if self.is_autocompleting:
             return
@@ -237,30 +238,22 @@ class BorderedMainWidget(QWidget):
             
         self.flash_step += 1
         
-        # Handle the success flash sequence (5 steps)
+        # Handle the success flash sequence (4 steps)
         if self.is_success_flash:
             if self.flash_step == 1:
-                # First green flash is done, switch to black
-                random_black = random.choice(self.flash_black_colors)
-                self.colors = [random_black] * len(self.colors)
+                # First green flash is done, switch to another random green
+                random_green = random.choice(self.flash_green_colors)
+                self.colors = [random_green] * len(self.colors)
             elif self.flash_step == 2:
-                # First black flash is done, switch to green
+                # Second green flash is done, switch to another random green
                 random_green = random.choice(self.flash_green_colors)
                 self.colors = [random_green] * len(self.colors)
             elif self.flash_step == 3:
-                # Second green flash is done, switch to black
-                random_black = random.choice(self.flash_black_colors)
-                self.colors = [random_black] * len(self.colors)
-            elif self.flash_step == 4:
-                # Second black flash is done, switch to green
+                # Third green flash is done, switch to another random green
                 random_green = random.choice(self.flash_green_colors)
                 self.colors = [random_green] * len(self.colors)
-            elif self.flash_step == 5:
-                # Third green flash is done, switch to black
-                random_black = random.choice(self.flash_black_colors)
-                self.colors = [random_black] * len(self.colors)
-            elif self.flash_step == 6:
-                # Final black flash is done, return to normal
+            elif self.flash_step == 4:
+                # Final green flash is done, return to normal
                 self.colors = self.original_colors.copy()
                 self.is_flashing = False
                 self.is_success_flash = False
@@ -285,7 +278,7 @@ class BorderedMainWidget(QWidget):
             self.is_flashing = False
             self.flash_timer.stop()
         # Handle single error flash (1 step, 250ms)
-        elif self.colors[0] == self.flash_red_colors[0] and all(color == self.colors[0] for color in self.colors) and self.flash_step == 1 and self.flash_timer.interval() == 250:
+        elif any(self.colors[0] == red_color for red_color in self.flash_red_colors) and all(color == self.colors[0] for color in self.colors) and self.flash_step == 1 and self.flash_timer.interval() == 250:
             # Single error flash is done, return to normal colors
             self.colors = self.original_colors.copy()
             self.is_flashing = False
