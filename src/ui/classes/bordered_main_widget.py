@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt, QRectF, QTimer
 from PyQt5.QtGui import QPainter, QColor, QPainterPath, QLinearGradient
 import math
+import random
 
 class BorderedMainWidget(QWidget):
     def __init__(self, parent=None):
@@ -56,6 +57,18 @@ class BorderedMainWidget(QWidget):
             QColor(120, 42, 50),    # Deep burgundy (for rhythm)
         ]
         
+        # Dark green gradient colors for success flash
+        self.flash_green_colors = [
+            QColor(42, 120, 50),    # Deep green
+            QColor(32, 98, 48),     # Dark forest green
+            QColor(28, 82, 42),     # Shadowy emerald
+            QColor(52, 140, 62),    # Muted jade
+            QColor(30, 108, 52),    # Dark woodland
+            QColor(38, 90, 58),     # Forest moss
+            QColor(25, 72, 45),     # Deep green-blue
+            QColor(42, 120, 50),    # Deep green (for rhythm)
+        ]
+        
         # Gray color list for gray flash
         self.flash_gray_colors = [
             QColor(50, 50, 50),     # Darkest gray
@@ -95,6 +108,9 @@ class BorderedMainWidget(QWidget):
         self.is_autocompleting = False
         # Dark green color for autocomplete mode
         self.autocomplete_color = QColor(0, 92, 92)  # Autocomplete color
+        
+        # Track the success flash sequence
+        self.is_success_flash = False
         
     def animate(self):
         """Update animation and trigger redraw"""
@@ -178,6 +194,24 @@ class BorderedMainWidget(QWidget):
         # Force update to show the flash immediately
         self.update()
         
+    def trigger_success_flash(self):
+        """Start a 6-step green-black-green-black-green-black flash sequence for success"""
+        # Only trigger flash if not in autocomplete mode
+        if self.is_autocompleting:
+            return
+            
+        self.is_flashing = True
+        self.flash_step = 0
+        self.is_success_flash = True
+        
+        # Use a random green color from the flash_green_colors
+        random_green = random.choice(self.flash_green_colors)
+        self.colors = [random_green] * len(self.colors)
+        self.flash_timer.start(125)  # Flash each color for 125ms
+        
+        # Force update to show the flash immediately
+        self.update()
+        
     def trigger_dark_gray_flash(self):
         """Start a single dark gray flash for 250ms"""
         # Only trigger flash if not in autocomplete mode
@@ -203,8 +237,36 @@ class BorderedMainWidget(QWidget):
             
         self.flash_step += 1
         
+        # Handle the success flash sequence (5 steps)
+        if self.is_success_flash:
+            if self.flash_step == 1:
+                # First green flash is done, switch to black
+                random_black = random.choice(self.flash_black_colors)
+                self.colors = [random_black] * len(self.colors)
+            elif self.flash_step == 2:
+                # First black flash is done, switch to green
+                random_green = random.choice(self.flash_green_colors)
+                self.colors = [random_green] * len(self.colors)
+            elif self.flash_step == 3:
+                # Second green flash is done, switch to black
+                random_black = random.choice(self.flash_black_colors)
+                self.colors = [random_black] * len(self.colors)
+            elif self.flash_step == 4:
+                # Second black flash is done, switch to green
+                random_green = random.choice(self.flash_green_colors)
+                self.colors = [random_green] * len(self.colors)
+            elif self.flash_step == 5:
+                # Third green flash is done, switch to black
+                random_black = random.choice(self.flash_black_colors)
+                self.colors = [random_black] * len(self.colors)
+            elif self.flash_step == 6:
+                # Final black flash is done, return to normal
+                self.colors = self.original_colors.copy()
+                self.is_flashing = False
+                self.is_success_flash = False
+                self.flash_timer.stop()
         # Handle the gold flash sequence (3 steps)
-        if self.colors[0] == self.flash_gold_colors[2] or self.colors[0] == self.flash_gold_colors[0] or self.colors[0] == self.flash_gold_colors[1]:
+        elif self.colors[0] == self.flash_gold_colors[2] or self.colors[0] == self.flash_gold_colors[0] or self.colors[0] == self.flash_gold_colors[1]:
             if self.flash_step == 1:
                 # First gold color (3rd in list) is done, switch to second gold color (1st in list)
                 self.colors = [self.flash_gold_colors[0]] * len(self.colors)

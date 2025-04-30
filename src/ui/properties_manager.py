@@ -713,7 +713,7 @@ class ComponentPropertiesManager:
             # Update CAPEX display when CAPEX per kW changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
+        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00, max_value=100000)
         
         # Add maintenance parameters  
         # Frequency per 10,000 hours field
@@ -951,7 +951,7 @@ class ComponentPropertiesManager:
             # Update CAPEX display when CAPEX per kW changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
+        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00, max_value=100000)
         
         # Add operating mode display (not editable)
         operating_mode_label = QLabel(component.operating_mode)
@@ -1304,7 +1304,7 @@ class ComponentPropertiesManager:
             # Update CAPEX display when CAPEX per kW changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
+        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00, max_value=100000)
         
         # Add controls to layout
         layout.addRow("Power Capacity (MW):", power_capacity_edit)
@@ -1514,7 +1514,7 @@ class ComponentPropertiesManager:
             # Update CAPEX display when CAPEX per kW changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
+        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00, max_value=100000)
         
         layout.addRow("Capacity (MW):", capacity_field)
         layout.addRow("CAPEX per kW ($):", capex_edit)
@@ -1596,7 +1596,7 @@ class ComponentPropertiesManager:
             # Update CAPEX display when CAPEX per kW changes
             self.main_window.update_capex_display()
             
-        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00)
+        self._set_up_numeric_field(capex_edit, update_capex, min_value=0.00, max_value=100000)
         
         layout.addRow("Capacity (MW):", capacity_field)
         layout.addRow("CAPEX per kW ($):", capex_edit)

@@ -151,6 +151,11 @@ class ConnectionManager:
                     
                     # Validate bus states after creating a connection
                     self.main_window.validate_bus_states()
+                    
+                    # Trigger success flash for successful connection
+                    bordered_widget = self.main_window.centralWidget()
+                    if hasattr(bordered_widget, 'trigger_success_flash'):
+                        bordered_widget.trigger_success_flash()
                 else:
                     # Connection failed - trigger error flash
                     # Access the BorderedMainWidget which is the central widget
@@ -397,6 +402,11 @@ class ConnectionManager:
             
             # Verify network connectivity
             if self.main_window.check_network_connectivity():
+                # Trigger success flash before showing the success message
+                bordered_widget = self.main_window.centralWidget()
+                if hasattr(bordered_widget, 'trigger_success_flash'):
+                    bordered_widget.trigger_success_flash()
+                
                 QMessageBox.information(self.main_window, "Autoconnect", f"Successfully created {len(self.main_window.connections)} connections.")
             else:
                 # Final fallback: connect everything in a line
