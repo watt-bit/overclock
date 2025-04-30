@@ -10,12 +10,14 @@ This is an early alpha version. You may encounter bugs or incomplete features. Y
 
 🔒 SECURITY WARNINGS (Unsigned Application)
 - **On Windows:** You will see "Windows protected your PC". Click **More info** → **Run anyway**.
-- **On macOS:** You will see "can't be opened because it is from an unidentified developer."
+- **On macOS:** You will see "can't be opened because it is from an unidentified developer." Click "Done", then:
   1. Open System Settings → Privacy & Security.
   2. Scroll to the bottom and find "OVERCLOCK was blocked to protect your Mac".
   3. Click **Open Anyway**, then **Open Anyway** again in the popup.
   4. Enter your system password.
   *This is only needed the first time you run the app.*
+
+  NOTE: For MacOS, OVERCLOCK can take 30-45 seconds to open after its icon first appears in the application dock. Please be patient with it :-)
 
 ✨ WHAT IS OVERCLOCK?
 OVERCLOCK allows you to build, simulate, and learn about watt-bit infrastructure. Drag-and-drop components, connect them, and run time-based simulations to understand energy flow, operations, and project economics.
