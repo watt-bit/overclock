@@ -294,6 +294,15 @@ class BorderedMainWidget(QWidget):
                 self.colors = [random_black] * len(self.colors)
                 self.flash_timer.start(500)  # 500ms black
             elif self.flash_step == 7:
+                # Black flash done, switch to normal colors
+                self.colors = self.original_colors.copy()
+                self.flash_timer.start(500)  # 500ms normal
+            elif self.flash_step == 8:
+                # Normal colors done, switch to random black
+                random_black = random.choice(self.flash_black_colors)
+                self.colors = [random_black] * len(self.colors)
+                self.flash_timer.start(500)  # 500ms black
+            elif self.flash_step == 9:
                 # Final black flash is done, return to normal
                 self.colors = self.original_colors.copy()
                 self.is_flashing = False
