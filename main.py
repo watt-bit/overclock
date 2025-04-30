@@ -9,11 +9,12 @@ matplotlib.rcParams['interactive'] = False
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QObject, Qt
+from PyQt5.QtCore import QObject, Qt, QTimer
 from src.ui.main_window import PowerSystemSimulator
 from src.ui.title_screen import TitleScreen
 from src.ui.wbr_title_screen import WBRTitleScreen
 from src.ui.augur_title_screen import AugurTitleScreen
+from src.ui.startup_sequence import StartupSequence
 from src.utils.resource import resource_path
 
 # Create a dedicated class to manage application lifecycle and cleanup
@@ -28,6 +29,7 @@ class AppManager(QObject):
         super().__init__()
         self._cleanup_done = False
         self._is_quitting = False
+        self._pending_load_file = None
         
     def clean_up_application(self):
         """Safely clean up all application resources"""
@@ -158,6 +160,15 @@ class AppManager(QObject):
         except Exception:
             pass
 
+    def load_pending_file(self):
+        """Load the pending file after the main window is fully initialized"""
+        if self._pending_load_file and self.main_window:
+            filename = self._pending_load_file
+            self._pending_load_file = None
+            self.main_window.model_manager.load_scenario_from_file(filename)
+            # Ensure CAPEX display is updated
+            self.main_window.update_capex_display()
+
 
 def main():
     # Create application with disabled quit on last window closed
@@ -180,16 +191,25 @@ def main():
     # Connect the title screen's transition signal to show the main window
     # with a custom handler to ensure welcome text is centered
     def handle_new_project_transition():
+        # Show the main window first
         app_manager.main_window.show()
         # Directly add welcome text which will trigger particles and center the text
         app_manager.main_window.add_welcome_text()
+        # Initialize the startup sequence
+        startup_sequence = StartupSequence(app_manager.main_window)
+        # Use a timer to ensure the window is fully initialized before running startup sequence
+        QTimer.singleShot(100, startup_sequence.run)
     
     app_manager.title_screen.transition_to_main.connect(handle_new_project_transition)
     
     # Connect the title screen's transition signal with file to load and show the main window
     def handle_load_transition(filename):
+        # Store the filename for loading after the window is shown and initialized
+        app_manager._pending_load_file = filename
+        # Show the main window first
         app_manager.main_window.show()
-        app_manager.main_window.model_manager.load_scenario_from_file(filename)
+        # Use a timer to ensure the window is fully initialized before loading
+        QTimer.singleShot(100, app_manager.load_pending_file)
     
     app_manager.title_screen.transition_to_main_with_file.connect(handle_load_transition)
     

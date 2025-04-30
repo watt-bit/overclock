@@ -455,7 +455,7 @@ class UIInitializer:
             color: white;
             font-weight: bold;
             background-color: rgba(37, 47, 52, 0.75);
-            border: 1px solid rgba(120, 130, 150, 0.75);
+            border: 1px solid rgba(52, 152, 219, 0.75);
             border-radius: 4px;
             padding: 10px
         """)
@@ -620,7 +620,7 @@ class UIInitializer:
         # Add screenshot button
         main_window.screenshot_btn = QPushButton("📷 Screenshot")
         main_window.screenshot_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: (
-            main_window.centralWidget().trigger_success_flash(),
+            main_window.centralWidget().trigger_dark_gray_flash(),
             main_window.take_screenshot()
         )))
         main_window.screenshot_btn.setFixedWidth(150)

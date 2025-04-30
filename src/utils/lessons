@@ -11,3 +11,4 @@
 BorderedMainWidget uses a flash system with different color palettes for different types of notifications, with timer-based animations.
 
 UI animations with sequential color changes can create a more visually engaging effect than alternating patterns
+Component initialization order is critical - ensure windows are fully initialized before loading scenarios to prevent display issues

@@ -550,14 +550,16 @@ class ModelManager:
                     self.main_window.scene.addItem(connection)
                 else:
                     print(f"Warning: Invalid connection indices {source_index} -> {target_index}")
-                    
-            QMessageBox.information(self.main_window, "Load Complete", "Scenario loaded successfully.")
             
             # Update scenario state
             self.main_window.validate_bus_states()  # Ensure buses without load connections are ON
             self.main_window.simulation_engine.time = 0
             self.main_window.time_slider.setValue(0)
             self.main_window.update_simulation()
+            
+            # Reset the simulation state to ensure consistent initial conditions
+            if hasattr(self.main_window, 'simulation_controller'):
+                self.main_window.simulation_controller.reset_simulation(skip_flash=False)
             
         except Exception as e:
             QMessageBox.critical(self.main_window, "Error", f"Failed to load scenario: {str(e)}")

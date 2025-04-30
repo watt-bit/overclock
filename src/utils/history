@@ -6,3 +6,6 @@
 Modified success flash sequence in BorderedMainWidget to have 4 steps instead of 6 steps.
 Modified BorderedMainWidget to use random colors from the red palette for error flashes instead of always using the first color.
 Modified success flash in BorderedMainWidget to show four random green colors in a row instead of alternating green and black
+Added reset_simulation call to ensure consistent initial conditions when loading scenarios
+Fixed project loading from title screen to ensure simulator fully initializes before loading scenario file
+Added StartupSequence class and framework for custom animation sequence on new project startup
