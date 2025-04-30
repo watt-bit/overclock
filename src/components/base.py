@@ -145,7 +145,7 @@ class ComponentBase(QGraphicsRectItem):
             type_color = QColor(205, 205, 205)
             
             # Darker blue for component ID
-            id_color = QColor(80, 120, 215)  # Darker blue for ID
+            id_color = QColor(80, 150, 225)  # Darker blue for ID
             
             # Position text at top of component
             text_x = rect.x() + 5  # Small margin from left edge

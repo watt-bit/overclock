@@ -462,7 +462,7 @@ class PowerSystemSimulator(QMainWindow):
             panel_width = self.properties_dock.width()
             panel_height = self.properties_dock.height()
             new_x = screen_center.x() + 325 - panel_width // 2
-            new_y = screen_center.y() - 175 - panel_height // 2
+            new_y = screen_center.y() - 300 - panel_height // 2
             
             # Ensure the panel stays within the screen boundaries
             new_x = max(0, min(new_x, screen_rect.width() - panel_width))

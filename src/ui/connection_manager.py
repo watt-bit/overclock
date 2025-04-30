@@ -43,6 +43,12 @@ class ConnectionManager:
             self.view.setCursor(Qt.ArrowCursor)
             self.view.viewport().setCursor(Qt.ArrowCursor)
             
+            # Reset all connection state variables
+            self.connection_source = None
+            if self.temp_connection:
+                self.scene.removeItem(self.temp_connection)
+                self.temp_connection = None
+            
             self.creating_connection = True
             self.main_window.creating_connection = True
             # Disable connection button
@@ -146,8 +152,14 @@ class ConnectionManager:
                     # Validate bus states after creating a connection
                     self.main_window.validate_bus_states()
             
-            # Clean up
+            # Always clean up, whether connection succeeded or failed
             self.cancel_connection()
+            
+            # Ensure we reset to initial state completely even after errors
+            self.connection_source = None
+            self.temp_connection = None
+            self.creating_connection = False
+            self.main_window.creating_connection = False
     
     def handle_mouse_move_for_connection(self, event):
         """Handle mouse movement for the temporary connection line"""
@@ -427,8 +439,7 @@ class ConnectionManager:
         # Check if this pair is already connected (in either direction)
         if (id(source), id(target)) in connected_pairs or (id(target), id(source)) in connected_pairs:
             if show_errors:
-                QMessageBox.warning(self.main_window, "Invalid Connection", 
-                                  "These components are already connected to each other.")
+                print("Error: These components are already connected to each other.")
             return False
         
         # Check if these components are already connected directly
@@ -436,15 +447,14 @@ class ConnectionManager:
             if (conn.source == source and conn.target == target) or \
                (conn.source == target and conn.target == source):
                 if show_errors:
-                    QMessageBox.warning(self.main_window, "Invalid Connection", 
-                                      "These components are already connected to each other.")
+                    print("Error: These components are already connected to each other.")
                 return False
         
         # Validate cloud workload connection
         is_valid, error_message = self.validate_cloud_workload_connection(source, target)
         if not is_valid:
             if show_errors:
-                QMessageBox.warning(self.main_window, "Invalid Connection - Cloud Workload must connect to Data Center Load", error_message)
+                print(f"Error: Invalid Connection - {error_message}")
             return False
             
         # Safety check for deleted components
