@@ -10,7 +10,7 @@ class BatteryComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap(resource_path("src/ui/assets/battery.png"))
+        self.image = QPixmap(resource_path("src/ui/assets/battery2.png"))
         
         # Battery properties
         self.power_capacity = 1000  # kW - maximum charge/discharge rate
