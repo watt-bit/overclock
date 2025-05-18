@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QGraphicsRectItem, QPushButton, QGraphicsProxyWidget
 from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtGui import QBrush, QColor, QPen, QRadialGradient, QFont
+from PyQt5.QtGui import QBrush, QColor, QPen, QRadialGradient, QFont, QPainterPath, QPolygonF, QLinearGradient
+import math
 
 class ComponentBase(QGraphicsRectItem):
     def __init__(self, x, y, width=100, height=60):
@@ -65,6 +66,10 @@ class ComponentBase(QGraphicsRectItem):
         self.button_proxy = QGraphicsProxyWidget(self)
         self.button_proxy.setWidget(self.open_button)
         self.button_proxy.setVisible(False)  # Initially hidden
+        
+        # Status Jewel properties
+        self.jewel_size = 20  # Size of the hexagonal jewel
+        self.jewel_active = True  # Whether to show the jewel
     
     def paint(self, painter, option, widget):
         # Save painter state
@@ -164,6 +169,88 @@ class ComponentBase(QGraphicsRectItem):
             painter.drawText(int(text_x + type_width), int(text_y), component_id_str)
             
             painter.restore()
+            
+        # Draw the status jewel if active and scene is available
+        if self.jewel_active and self.scene() and hasattr(self.scene(), 'parent'):
+            main_window = self.scene().parent()
+            if hasattr(main_window, 'centralWidget') and main_window.centralWidget():
+                bordered_widget = main_window.centralWidget()
+                
+                # Position the jewel at top right corner with a small margin
+                jewel_x = rect.right() - self.jewel_size - 5
+                jewel_y = rect.top() + 5
+                
+                # Create a hexagon path
+                hex_path = QPainterPath()
+                polygon = QPolygonF()
+                
+                # Calculate hexagon points
+                center_x = jewel_x + self.jewel_size / 2
+                center_y = jewel_y + self.jewel_size / 2
+                radius = self.jewel_size / 2
+                
+                for i in range(6):
+                    angle = math.pi / 3 * i
+                    x = center_x + radius * math.cos(angle)
+                    y = center_y + radius * math.sin(angle)
+                    polygon.append(QRectF(x, y, 0, 0).center())
+                
+                hex_path.addPolygon(polygon)
+                hex_path.closeSubpath()
+                
+                # Draw the jewel with same colors/effects as the bordered widget
+                painter.save()
+                
+                # Check if autocomplete is active
+                if hasattr(bordered_widget, 'is_autocompleting') and bordered_widget.is_autocompleting:
+                    # Use autocomplete color
+                    painter.setBrush(QBrush(bordered_widget.autocomplete_color))
+                    painter.setPen(QPen(bordered_widget.autocomplete_color.lighter(130), 1))
+                    painter.drawPath(hex_path)
+                else:
+                    # Use current border colors from the bordered widget
+                    # Get gradient colors from the bordered widget
+                    colors = bordered_widget.colors if hasattr(bordered_widget, 'colors') else [QColor(58, 78, 178)]
+                    
+                    # Create a rotating gradient that matches the main widget animation
+                    if len(colors) > 1:
+                        # Get the animation offset from the bordered widget
+                        animation_offset = bordered_widget.animation_offset if hasattr(bordered_widget, 'animation_offset') else 0
+                        
+                        # Calculate rotation angle based on animation offset (same as in bordered_main_widget)
+                        angle = animation_offset * 3.6  # Convert percentage to degrees (0-100 to 0-360)
+                        radians = angle * math.pi / 180.0  # Convert to radians
+                        
+                        # Calculate endpoint based on angle to create rotating linear gradient
+                        length = self.jewel_size * 1.5
+                        center_x = center_x
+                        center_y = center_y
+                        
+                        end_x = center_x + length * math.cos(radians)
+                        end_y = center_y + length * math.sin(radians)
+                        
+                        # Create rotating linear gradient
+                        gradient = QLinearGradient(
+                            center_x - length * math.cos(radians),
+                            center_y - length * math.sin(radians),
+                            end_x, end_y
+                        )
+                        
+                        # Set gradient colors
+                        num_colors = len(colors)
+                        for i in range(num_colors):
+                            pos = i / (num_colors - 1)
+                            gradient.setColorAt(pos, colors[i])
+                            
+                        painter.setBrush(QBrush(gradient))
+                    else:
+                        painter.setBrush(QBrush(colors[0]))
+                    
+                    # Add a subtle border
+                    painter.setPen(QPen(QColor(255, 255, 255, 40), 1))
+                    painter.drawPath(hex_path)
+                
+                painter.restore()
     
     def open_properties(self):
         """Toggle the properties panel open/closed state"""

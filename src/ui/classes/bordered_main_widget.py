@@ -128,6 +128,22 @@ class BorderedMainWidget(QWidget):
         if not self.is_autocompleting:
             self.animation_offset = (self.animation_offset + self.animation_speed) % 100
             self.update()
+            
+            # Update all component jewels in the scene
+            self.update_component_jewels()
+            
+    def update_component_jewels(self):
+        """Update all component status jewels in the scene"""
+        # Find the main window
+        if not hasattr(self, 'parent') or not self.parent():
+            return
+            
+        main_window = self.parent()
+        if hasattr(main_window, 'scene') and main_window.scene:
+            # Force update on all components in the scene
+            for item in main_window.scene.items():
+                if hasattr(item, 'jewel_active') and item.jewel_active:
+                    item.update()
         
     def set_autocomplete_state(self, is_autocompleting):
         """
@@ -147,6 +163,8 @@ class BorderedMainWidget(QWidget):
             
             # Force update to reflect the new border style
             self.update()
+            # Update all component jewels to match the new state
+            self.update_component_jewels()
         
     def trigger_gray_flash(self):
         """Start the gray flash animation sequence with the same pattern as gold flash"""
@@ -162,6 +180,8 @@ class BorderedMainWidget(QWidget):
         
         # Force update to show the flash immediately
         self.update()
+        # Update all component jewels
+        self.update_component_jewels()
         
     def trigger_error_flash(self):
         """Start a single red flash for 250ms to indicate an error"""
@@ -178,6 +198,8 @@ class BorderedMainWidget(QWidget):
         
         # Force update to show the flash immediately
         self.update()
+        # Update all component jewels
+        self.update_component_jewels()
         
     def trigger_flash(self):
         """Start the flash animation sequence"""
@@ -189,6 +211,11 @@ class BorderedMainWidget(QWidget):
         self.flash_step = 0
         self.colors = self.flash_red_colors.copy()  # Start with red
         self.flash_timer.start(250)  # First flash for 250ms
+        
+        # Force update to show the flash immediately
+        self.update()
+        # Update all component jewels
+        self.update_component_jewels()
         
     def trigger_gold_flash(self):
         """Start the gold flash animation sequence"""
@@ -204,6 +231,8 @@ class BorderedMainWidget(QWidget):
         
         # Force update to show the flash immediately
         self.update()
+        # Update all component jewels
+        self.update_component_jewels()
         
     def trigger_success_flash(self):
         """Start a 4-step sequence showing different green colors for success"""
@@ -222,6 +251,8 @@ class BorderedMainWidget(QWidget):
         
         # Force update to show the flash immediately
         self.update()
+        # Update all component jewels
+        self.update_component_jewels()
         
     def trigger_dark_gray_flash(self):
         """Start a single dark gray flash for 250ms"""
@@ -237,6 +268,8 @@ class BorderedMainWidget(QWidget):
         
         # Force update to show the flash immediately
         self.update()
+        # Update all component jewels
+        self.update_component_jewels()
         
     def trigger_startup_flash(self):
         """Start the startup flash animation sequence with specific pattern for app startup"""
@@ -252,6 +285,8 @@ class BorderedMainWidget(QWidget):
         
         # Force update to show the flash immediately
         self.update()
+        # Update all component jewels
+        self.update_component_jewels()
         
     def update_flash(self):
         """Progress through the flash animation steps"""
@@ -383,6 +418,8 @@ class BorderedMainWidget(QWidget):
             self.flash_timer.stop()
             
         self.update()  # Trigger a repaint
+        # Update all component jewels
+        self.update_component_jewels()
         
     def paintEvent(self, event):
         super().paintEvent(event)

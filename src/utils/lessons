@@ -29,3 +29,5 @@ macOS ditto command can't archive multiple source files directly - use zip inste
 Refactoring property handler methods into separate modules improves maintainability while keeping same API for component integration
 
 The pattern for extracting component properties involves creating a dedicated function in a separate file and updating the original method to import and call this function.
+
+For syncing animations between components, it's better to create a central update method than duplicate animation logic.
