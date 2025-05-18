@@ -11,6 +11,7 @@ This code was extracted from the main_window.py file to improve modularity witho
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtWidgets import QMessageBox
 from src.utils.irr_calculator import calculate_irr, calculate_extended_irr
+from src.ui.terminal_widget import TerminalWidget
 
 class AutocompleteManager:
     """
@@ -38,9 +39,10 @@ class AutocompleteManager:
         
         # Check network connectivity first
         if not self.main_window.check_network_connectivity():
-            QMessageBox.warning(self.main_window, "Simulation Error",
-                              "All components must be connected in a single network to run the simulation.\n\n"
-                              "Please ensure all generators and loads are connected before starting.")
+            TerminalWidget.log("ERROR: All components must be connected in a single network to run the simulation. Please ensure all components are connected before starting.")
+            # Trigger error flash if the central widget has that capability
+            if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'trigger_error_flash'):
+                self.main_window.centralWidget().trigger_error_flash()
             return
         
         # Switch to historian view if currently in model view

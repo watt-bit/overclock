@@ -6,6 +6,7 @@ from src.components.battery import BatteryComponent
 from src.components.grid_import import GridImportComponent
 from src.components.grid_export import GridExportComponent
 from src.components.cloud_workload import CloudWorkloadComponent
+from src.ui.terminal_widget import TerminalWidget
 
 class SimulationController:
     """
@@ -20,9 +21,10 @@ class SimulationController:
         """Toggle the simulation between running and paused"""
         # Check network connectivity before starting simulation
         if not self.main_window.simulation_engine.simulation_running and not self.main_window.check_network_connectivity():
-            QMessageBox.warning(self.main_window, "Simulation Error",
-                              "All components must be connected in a single network to run the simulation.\n\n"
-                              "Please ensure all generators and loads are connected before starting.")
+            TerminalWidget.log("ERROR: All components must be connected in a single network to run the simulation. Please ensure all components are connected before starting.")
+            # Trigger error flash if the main window has a central widget with that capability
+            if hasattr(self.main_window, 'centralWidget') and hasattr(self.main_window.centralWidget(), 'trigger_error_flash'):
+                self.main_window.centralWidget().trigger_error_flash()
             return
         
         # Make sure we're not in scrub mode when starting playback
@@ -273,7 +275,11 @@ class SimulationController:
         
         # Update UI to match paused state
         self.main_window.play_btn.setText("Run (Space)")
+        
+        # Set is_resetting flag before changing time slider value
+        self.main_window.is_resetting = True
         self.main_window.time_slider.setValue(0)
+        self.main_window.is_resetting = False
         
         # Re-enable component buttons if they were disabled
         if was_running:

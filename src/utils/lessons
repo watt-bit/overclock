@@ -34,3 +34,5 @@ For syncing animations between components, it's better to create a central updat
 
 Using the singleton pattern with static class variables (_instance) allows accessing UI components from anywhere without passing references.
 The TerminalWidget._instance pattern enables logging from any part of the app without direct references, useful for component addition tracking.
+
+Use TerminalWidget.log() for error messages instead of QMessageBox to show errors in the terminal UI component.

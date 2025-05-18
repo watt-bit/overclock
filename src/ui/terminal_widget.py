@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit, QHBoxLayout, QPushButton, QSizePolicy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
@@ -18,13 +18,47 @@ class TerminalWidget(QWidget):
     def setup_ui(self):
         """Set up the terminal UI elements"""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(5)
+        
+        # Create a header layout
+        header_layout = QHBoxLayout()
+        header_layout.setContentsMargins(0, 0, 0, 0)
         
         # Create a terminal label that floats above the text area
         terminal_label = QLabel("Terminal")
         terminal_label.setStyleSheet("QLabel { color: white; font-weight: bold; font-size: 10px; padding-bottom: 2px; }")
-        layout.addWidget(terminal_label)
+        header_layout.addWidget(terminal_label)
+        
+        # Add spacer to push the button to the right
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        header_layout.addWidget(spacer)
+        
+        # Add a clear button
+        clear_button = QPushButton("+")
+        clear_button.setToolTip("New terminal")
+        clear_button.setFixedSize(20, 20)
+        clear_button.setStyleSheet("""
+            QPushButton {
+                color: #AAAAAA;
+                font-weight: bold;
+                font-size: 14px;
+                background-color: transparent;
+                border: none;
+            }
+            QPushButton:hover {
+                color: #FFFFFF;
+            }
+            QPushButton:pressed {
+                color: #888888;
+            }
+        """)
+        clear_button.clicked.connect(self.clear)
+        header_layout.addWidget(clear_button)
+        
+        # Add header layout to main layout
+        layout.addLayout(header_layout)
         
         # Create the terminal text area
         self.text_area = QTextEdit()

@@ -7,6 +7,7 @@ from .ui_initializer import GradientBorderText
 from .simulator_initializer import SimulatorInitializer
 from .capex_manager import CapexManager
 from .component_deleter import ComponentDeleter
+from src.ui.terminal_widget import TerminalWidget
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -17,6 +18,7 @@ class PowerSystemSimulator(QMainWindow):
         self.component_deleter = ComponentDeleter(self)  # Initialize the component deleter
         self.previous_capex = 0  # Initialize previous CAPEX for tracking changes
         self.capex_manager = CapexManager(self)  # Initialize the CAPEX manager
+        self.is_resetting = False  # Flag to indicate when a reset operation is in progress
         self.reset_simulation()  # Reset the simulation to the initial state
         
     def center_on_screen(self):
@@ -164,12 +166,20 @@ class PowerSystemSimulator(QMainWindow):
         self.update_simulation()
     
     def time_slider_changed(self, value):
+        # Skip connectivity check if we're in the middle of a reset operation
+        if self.is_resetting:
+            self.simulation_engine.current_time_step = value
+            # Update time label in the analytics panel even during resetting
+            self.minimal_analytics_update()
+            return
+            
         # Check network connectivity before updating
         if not self.simulation_engine.simulation_running and not self.check_network_connectivity():
             # Show the same warning as when trying to play with unconnected components
-            QMessageBox.warning(self, "Simulation Error",
-                              "All components must be connected in a single network to run the simulation.\n\n"
-                              "Please ensure all generators and loads are connected before starting.")
+            TerminalWidget.log("ERROR: All components must be connected in a single network to run the simulation. Please ensure all components are connected before starting.")
+            # Trigger error flash if the central widget has that capability
+            if hasattr(self, 'centralWidget') and hasattr(self.centralWidget(), 'trigger_error_flash'):
+                self.centralWidget().trigger_error_flash()
             # Reset the slider to 0 since we can't run the simulation
             self.time_slider.setValue(0)
             return
