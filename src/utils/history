@@ -22,3 +22,10 @@ Added more detail to README.txt regarding panels, views, Autocomplete, CAPEX/IRR
 2024-09-10: Reformatted README.txt with emojis, sections, and improved readability
 2024-09-12: Modified GitHub Actions workflows to include readme.txt in both macOS and Windows build artifacts
 Fixed macOS build workflow by replacing problematic ditto command with zip command to properly handle multiple files in archive
+2024-09-15: Refactored properties_manager.py to extract _add_bus_properties to separate file for better code organization
+2024-09-15: Refactored properties_manager.py to extract _add_generator_properties to separate file for better code organization
+2024-09-15: Refactored properties_manager.py to extract _add_grid_import_properties to separate file for better code organization
+Extracted grid_export_properties logic from properties_manager.py to dedicated file in ui/component_properties/ for better code organization.
+Extracted battery_properties.py from properties_manager.py to improve code organization and maintainability.
+Extracted _add_cloud_workload_properties method from properties_manager.py into cloud_workload_properties.py to improve code organization.
+Extracted _add_solar_panel_properties from properties_manager.py to solar_panel_properties.py to improve modularity

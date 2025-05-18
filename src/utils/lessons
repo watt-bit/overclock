@@ -25,3 +25,7 @@ README needs sufficient detail on core features like panels, views, Autocomplete
 - GitHub Actions workflows should include documentation files (like README.txt) alongside executables in distribution artifacts.
 
 macOS ditto command can't archive multiple source files directly - use zip instead for packaging multiple files together
+
+Refactoring property handler methods into separate modules improves maintainability while keeping same API for component integration
+
+The pattern for extracting component properties involves creating a dedicated function in a separate file and updating the original method to import and call this function.
