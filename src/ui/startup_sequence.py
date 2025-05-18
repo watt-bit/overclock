@@ -42,11 +42,10 @@ class StartupSequence(QObject):
         # Define hover style (same as in ui_initializer but with forced hover state)
         hover_style = """
             QPushButton { 
-                background-color: #5E5E5E; 
+                background-color: #7e7e7e; 
                 color: white; 
-                border: 1px solid #666666; 
+                border: 2px solid #666666; 
                 border-radius: 3px; 
-                padding: 5px; 
             }
         """
         
@@ -172,18 +171,16 @@ class StartupSequence(QObject):
             QPushButton { 
                 background-color: #3D3D3D; 
                 color: white; 
-                border: 1px solid #555555; 
+                border: 2px solid #555555; 
                 border-radius: 3px; 
-                padding: 5px; 
             }
             QPushButton:hover { 
                 background-color: #4D4D4D; 
-                border: 1px solid #666666;
+                border: 2px solid #666666;
             }
             QPushButton:pressed { 
                 background-color: #2D2D2D; 
                 border: 2px solid #777777;
-                padding: 4px; 
             }
         """
         self._apply_style_to_buttons(enabled_button_style) 

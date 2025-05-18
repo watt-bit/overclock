@@ -31,3 +31,4 @@ Extracted _add_cloud_workload_properties method from properties_manager.py into 
 Extracted _add_solar_panel_properties from properties_manager.py to solar_panel_properties.py to improve modularity
 Added animated hexagonal status jewel to ComponentBase that syncs with BorderedMainWidget animations, showing component states
 Enhanced component status jewels to display synchronized rotational gradient animation matching the BorderedMainWidget
+Updated gas generator button to use icon image and added tooltip with global tooltip styles.

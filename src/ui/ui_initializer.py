@@ -3,8 +3,8 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
                             QToolBar, 
                             QAction, QMenu, QFrame,
                             QToolButton, QSizePolicy, QGraphicsTextItem)
-from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime
-from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics
+from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime, QSize
+from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics, QIcon
 import math
 
 # Import or reference modules and classes needed from main_window
@@ -30,7 +30,7 @@ class UIInitializer:
         # Set the corners to give priority to left and right dock areas
         main_window.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
         main_window.setCorner(Qt.TopRightCorner, Qt.RightDockWidgetArea)
-        main_window.setCorner(Qt.BottomLeftCorner, Qt.BottomDockWidgetArea)
+        main_window.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
         main_window.setCorner(Qt.BottomRightCorner, Qt.BottomDockWidgetArea)
         
         # Create a stylesheet for dock widgets to have modern flat dark gray title bars
@@ -62,7 +62,18 @@ class UIInitializer:
         """
         
         # Apply the stylesheet to the application
-        main_window.setStyleSheet(dock_title_style)
+        main_window.setStyleSheet(dock_title_style + """
+        QToolTip { 
+            background-color: #2A2A2A;
+            color: white;
+            border: 1px solid #555555;
+            border-radius: 3px;
+            padding: 5px;
+            font-weight: bold;
+            font-size: 12px;
+            opacity: 255;
+        }
+        """)
         
         # Create canvas for drag and drop
         main_window.view = QGraphicsView(main_window.scene)
@@ -238,7 +249,7 @@ class UIInitializer:
         main_window.component_dock.setTitleBarWidget(QWidget())
         main_window.component_dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
         # Set fixed width to 200px
-        main_window.component_dock.setFixedWidth(200)
+        main_window.component_dock.setFixedWidth(250)
         # Ensure no borders are visible
         main_window.component_dock.setStyleSheet("QDockWidget { border: none; }")
         
@@ -253,111 +264,152 @@ class UIInitializer:
         top_image_label.setStyleSheet("border: none;")
         top_pixmap = QPixmap(resource_path("src/ui/assets/componentspaneltop.png"))
         if not top_pixmap.isNull():
-            # Get the width of the component widget minus layout margins
-            # We'll wait to set the actual image after the first button is created
+            # Will set the actual image after layout is set up
             top_image_label.setAlignment(Qt.AlignCenter)
+            top_image_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
             component_layout.addWidget(top_image_label)
 
-        # Add WBR logo overlay
-        main_window.wbr_logo_label = QLabel(top_image_label)  # Set parent to top_image_label
-        main_window.wbr_logo_label.setStyleSheet("border: none; background: transparent;")
-        wbr_logo_pixmap = QPixmap(resource_path("src/ui/assets/wbrlogo.png"))
-        if not wbr_logo_pixmap.isNull():
-            # Scale to 125px width while preserving aspect ratio
-            aspect_ratio = wbr_logo_pixmap.height() / wbr_logo_pixmap.width()
-            scaled_height = int(125 * aspect_ratio)
-            scaled_logo = wbr_logo_pixmap.scaled(125, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            main_window.wbr_logo_label.setPixmap(scaled_logo)
-            # Will position after top_image_label is sized
+        # # Add WBR logo overlay
+        # main_window.wbr_logo_label = QLabel(top_image_label)  # Set parent to top_image_label
+        # main_window.wbr_logo_label.setStyleSheet("border: none; background: transparent;")
+        # wbr_logo_pixmap = QPixmap(resource_path("src/ui/assets/wbrlogo.png"))
+        # if not wbr_logo_pixmap.isNull():
+        #     # Scale to 125px width while preserving aspect ratio
+        #     aspect_ratio = wbr_logo_pixmap.height() / wbr_logo_pixmap.width()
+        #     scaled_height = int(125 * aspect_ratio)
+        #     scaled_logo = wbr_logo_pixmap.scaled(125, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        #     main_window.wbr_logo_label.setPixmap(scaled_logo)
+        #     # Will position after top_image_label is sized
 
         # Define a common button style with opaque background
         opaque_button_style = """
             QPushButton { 
                 background-color: #3D3D3D; 
                 color: white; 
-                border: 1px solid #555555; 
+                border: 2px solid #555555; 
                 border-radius: 3px; 
-                padding: 5px; 
             }
             QPushButton:hover { 
                 background-color: #4D4D4D; 
-                border: 1px solid #666666;
+                border: 2px solid #666666;
             }
             QPushButton:pressed { 
                 background-color: #2D2D2D; 
                 border: 2px solid #777777;
-                padding: 4px; 
             }
         """
         
-        generator_btn = QPushButton("🔥 (G)as Generator")
+        generator_btn = QPushButton()
+        generator_btn.setToolTip("🔥 (G)as Generator")
+        generator_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/gasgenerator.png"))
+        generator_icon = QIcon(generator_pixmap)
+        generator_btn.setIcon(generator_icon)
+        generator_btn.setIconSize(QSize(50, 50))
+        generator_btn.setFixedSize(50, 50)
         generator_btn.setStyleSheet(opaque_button_style)
         generator_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "generator"))
         
-        battery_btn = QPushButton("🔋 Battery (S)torage")
+        battery_btn = QPushButton()
+        battery_btn.setToolTip("🔋 Battery (S)torage")
+        battery_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/batterystorage.png"))
+        battery_icon = QIcon(battery_pixmap)
+        battery_btn.setIcon(battery_icon)
+        battery_btn.setIconSize(QSize(50, 50))
+        battery_btn.setFixedSize(50, 50)
         battery_btn.setStyleSheet(opaque_button_style)
         battery_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "battery"))
                 
-        bus_btn = QPushButton("⚡ Electrical (B)us")
+        bus_btn = QPushButton()
+        bus_btn.setToolTip("⚡ Electrical (B)us")
+        bus_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/electricalbus.png"))
+        bus_icon = QIcon(bus_pixmap)
+        bus_btn.setIcon(bus_icon)
+        bus_btn.setIconSize(QSize(50, 50))
+        bus_btn.setFixedSize(50, 50)
         bus_btn.setStyleSheet(opaque_button_style)
         bus_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "bus"))
 
-        load_btn = QPushButton("💡 Electrical (L)oad")
+        load_btn = QPushButton()
+        load_btn.setToolTip("💡 Electrical (L)oad")
+        load_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/electricalload.png"))
+        load_icon = QIcon(load_pixmap)
+        load_btn.setIcon(load_icon)
+        load_btn.setIconSize(QSize(50, 50))
+        load_btn.setFixedSize(50, 50)
         load_btn.setStyleSheet(opaque_button_style)
         load_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "load"))
         
-        cloud_workload_btn = QPushButton("🌐 Cloud (W)orkload")
+        cloud_workload_btn = QPushButton()
+        cloud_workload_btn.setToolTip("🌐 Cloud (W)orkload")
+        cloud_workload_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/cloudworkload.png"))
+        cloud_workload_icon = QIcon(cloud_workload_pixmap)
+        cloud_workload_btn.setIcon(cloud_workload_icon)
+        cloud_workload_btn.setIconSize(QSize(50, 50))
+        cloud_workload_btn.setFixedSize(50, 50)
         cloud_workload_btn.setStyleSheet(opaque_button_style)
         cloud_workload_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "cloud_workload"))
 
-        # Create a popup menu for renewables
-        renewables_menu = QMenu(main_window)
+        # Create Solar Array button
+        solar_array_btn = QPushButton()
+        solar_array_btn.setToolTip("Solar Array")
+        solar_array_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/solarpanel.png"))
+        solar_array_icon = QIcon(solar_array_pixmap)
+        solar_array_btn.setIcon(solar_array_icon)
+        solar_array_btn.setIconSize(QSize(50, 50))
+        solar_array_btn.setFixedSize(50, 50)
+        solar_array_btn.setStyleSheet(opaque_button_style)
+        solar_array_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "solar_panel"))
         
-        # Add actions for each renewable type
-        solar_panel_action = renewables_menu.addAction("Add Solar Array")
-        solar_panel_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "solar_panel"))
-        
-        wind_turbine_action = renewables_menu.addAction("Add Wind Turbine")
-        wind_turbine_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "wind_turbine"))
-        
-        # Create the Add Renewables button with dropdown menu
-        main_window.renewables_btn = QPushButton("🌱 Renewables")
-        main_window.renewables_btn.setStyleSheet(opaque_button_style)
-        main_window.renewables_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: renewables_menu.exec_(main_window.renewables_btn.mapToGlobal(main_window.renewables_btn.rect().bottomLeft()))))
-        
-        # Add a third horizontal line separator
-        separator3 = QFrame()
-        separator3.setFrameShape(QFrame.HLine)
-        separator3.setFrameShadow(QFrame.Sunken)
-        separator3.setLineWidth(1)
+        # Create Wind Turbine button
+        wind_turbine_btn = QPushButton()
+        wind_turbine_btn.setToolTip("Wind Turbine")
+        wind_turbine_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/windturbine.png"))
+        wind_turbine_icon = QIcon(wind_turbine_pixmap)
+        wind_turbine_btn.setIcon(wind_turbine_icon)
+        wind_turbine_btn.setIconSize(QSize(50, 50))
+        wind_turbine_btn.setFixedSize(50, 50)
+        wind_turbine_btn.setStyleSheet(opaque_button_style)
+        wind_turbine_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "wind_turbine"))
 
-        grid_import_btn = QPushButton("⬇ Grid (I)mport Pathway")
+        grid_import_btn = QPushButton()
+        grid_import_btn.setToolTip("Grid (I)mport Pathway")
+        grid_import_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/gridimport.png"))
+        grid_import_icon = QIcon(grid_import_pixmap)
+        grid_import_btn.setIcon(grid_import_icon)
+        grid_import_btn.setIconSize(QSize(50, 50))
+        grid_import_btn.setFixedSize(50, 50)
         grid_import_btn.setStyleSheet(opaque_button_style)
         grid_import_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "grid_import"))
         
-        grid_export_btn = QPushButton("⬆ Grid (E)xport Pathway")
+        grid_export_btn = QPushButton()
+        grid_export_btn.setToolTip("Grid (E)xport Pathway")
+        grid_export_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/gridexport.png"))
+        grid_export_icon = QIcon(grid_export_pixmap)
+        grid_export_btn.setIcon(grid_export_icon)
+        grid_export_btn.setIconSize(QSize(50, 50))
+        grid_export_btn.setFixedSize(50, 50)
         grid_export_btn.setStyleSheet(opaque_button_style)
         grid_export_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "grid_export"))
         
-        # Add a horizontal line separator
-        separator = QFrame()
-        separator.setFrameShape(QFrame.HLine)
-        separator.setFrameShadow(QFrame.Sunken)
-        separator.setLineWidth(1)
-        
-        main_window.connection_btn = QPushButton("Create (C)onnection")
+        main_window.connection_btn = QPushButton()
+        main_window.connection_btn.setToolTip("Create (C)onnection")
+        connection_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/createconnection.png"))
+        connection_icon = QIcon(connection_pixmap)
+        main_window.connection_btn.setIcon(connection_icon)
+        main_window.connection_btn.setIconSize(QSize(50, 50))
+        main_window.connection_btn.setFixedSize(50, 50)
         main_window.connection_btn.setStyleSheet(opaque_button_style)
         main_window.connection_btn.clicked.connect(main_window.start_connection)
         
-        autoconnect_btn = QPushButton("(A)utoconnect All")
+        autoconnect_btn = QPushButton()
+        autoconnect_btn.setToolTip("(A)utoconnect All")
+        autoconnect_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/autoconnectall.png"))
+        autoconnect_icon = QIcon(autoconnect_pixmap)
+        autoconnect_btn.setIcon(autoconnect_icon)
+        autoconnect_btn.setIconSize(QSize(50, 50))
+        autoconnect_btn.setFixedSize(50, 50)
         autoconnect_btn.setStyleSheet(opaque_button_style)
         autoconnect_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.autoconnect_all_components))
-        
-        # Add a second horizontal line separator
-        separator2 = QFrame()
-        separator2.setFrameShape(QFrame.HLine)
-        separator2.setFrameShadow(QFrame.Sunken)
-        separator2.setLineWidth(1)
 
         # Create a popup menu for props
         props_menu = QMenu(main_window)
@@ -388,37 +440,66 @@ class UIInitializer:
         distribution_pole_action.triggered.connect(lambda: main_window.cancel_connection_if_active(main_window.add_component, "distribution_pole"))
         
         # Create the Add Props button with dropdown menu
-        main_window.props_btn = QPushButton("🏡 Add Props")
+        main_window.props_btn = QPushButton()
+        main_window.props_btn.setToolTip("🏡 Add Props")
+        props_pixmap = QPixmap(resource_path("src/ui/assets/menu_icons/props.png"))
+        props_icon = QIcon(props_pixmap)
+        main_window.props_btn.setIcon(props_icon)
+        main_window.props_btn.setIconSize(QSize(50, 50))
+        main_window.props_btn.setFixedSize(50, 50)
         main_window.props_btn.setStyleSheet(opaque_button_style)
         main_window.props_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: props_menu.exec_(main_window.props_btn.mapToGlobal(main_window.props_btn.rect().bottomLeft()))))
         
-        component_layout.addWidget(generator_btn)
-        component_layout.addWidget(battery_btn)
-        component_layout.addWidget(bus_btn)
-        component_layout.addWidget(load_btn)
-        component_layout.addWidget(cloud_workload_btn)
-        component_layout.addWidget(main_window.renewables_btn)
-        component_layout.addWidget(separator3)
-        component_layout.addWidget(grid_import_btn)
-        component_layout.addWidget(grid_export_btn)
-        component_layout.addWidget(separator)
-        component_layout.addWidget(main_window.connection_btn)
-        component_layout.addWidget(autoconnect_btn)
-        component_layout.addWidget(separator2)
-        component_layout.addWidget(main_window.props_btn)
+        # Create a horizontal layout for the first row of buttons
+        first_row_layout = QHBoxLayout()
+        first_row_layout.addWidget(generator_btn)
+        first_row_layout.addWidget(battery_btn)
+        first_row_layout.addWidget(bus_btn)
+        first_row_layout.addWidget(load_btn)
+        
+        # Add the horizontal layout to the main component layout
+        component_layout.addLayout(first_row_layout)
+        
+        # Create a horizontal layout for the second row of buttons
+        second_row_layout = QHBoxLayout()
+        second_row_layout.addWidget(cloud_workload_btn)
+        second_row_layout.addWidget(solar_array_btn)
+        second_row_layout.addWidget(wind_turbine_btn)
+        second_row_layout.addWidget(grid_import_btn)
+        
+        # Add the second horizontal layout to the main component layout
+        component_layout.addLayout(second_row_layout)
+        
+        # Create a horizontal layout for the third row of buttons
+        third_row_layout = QHBoxLayout()
+        third_row_layout.addWidget(grid_export_btn)
+        third_row_layout.addWidget(main_window.connection_btn)
+        third_row_layout.addWidget(autoconnect_btn)
+        third_row_layout.addWidget(main_window.props_btn)
+        
+        # Add the third horizontal layout to the main component layout
+        component_layout.addLayout(third_row_layout)
         component_layout.addStretch()
         
-        # Now that we have a button, set the top image size to match component width
+        # Now that we have a button, set the top image size to match the full component width
         if not top_pixmap.isNull():
-            top_aspect_ratio = top_pixmap.height() / top_pixmap.width()
-            top_scaled_height = int(generator_btn.sizeHint().width() + 75 * top_aspect_ratio)
-            scaled_top_pixmap = top_pixmap.scaled(generator_btn.sizeHint().width() + 75, top_scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            top_image_label.setPixmap(scaled_top_pixmap)
+            # Create a timer to update the image once the widget is visible
+            update_timer = QTimer(main_window)
+            update_timer.setSingleShot(True)
             
-            # Position the WBR logo in the bottom left corner of top image
-            if hasattr(main_window, 'wbr_logo_label') and not main_window.wbr_logo_label.pixmap().isNull():
-                main_window.wbr_logo_label.move(0, top_scaled_height - main_window.wbr_logo_label.pixmap().height())
-                main_window.wbr_logo_label.raise_()  # Ensure it renders on top
+            def update_top_image():
+                if component_widget.isVisible() and component_widget.width() > 0:
+                    width = component_widget.width() - component_layout.contentsMargins().left() - component_layout.contentsMargins().right()
+                    top_aspect_ratio = top_pixmap.height() / top_pixmap.width()
+                    top_scaled_height = int(width * top_aspect_ratio)
+                    scaled_top_pixmap = top_pixmap.scaled(width, top_scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    top_image_label.setPixmap(scaled_top_pixmap)
+                else:
+                    # Try again in 100ms if widget not visible yet
+                    update_timer.start(100)
+            
+            update_timer.timeout.connect(update_top_image)
+            update_timer.start(100)  # Start timer to update image after UI is shown
         
         # Store references to all component and connection buttons for later enabling/disabling
         main_window.component_buttons = [
@@ -429,7 +510,8 @@ class UIInitializer:
             load_btn, 
             battery_btn,
             cloud_workload_btn,
-            main_window.renewables_btn,
+            solar_array_btn,
+            wind_turbine_btn,
             main_window.props_btn,
             main_window.connection_btn,
             autoconnect_btn
@@ -663,23 +745,6 @@ class UIInitializer:
         main_window.time_slider.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         main_window.time_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::sub-page:horizontal { background: rgb(255, 215, 0); height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
-        # Add logo on the left side instead of a spacer
-        sim_logo_label = QLabel()
-        sim_logo_pixmap = QPixmap(resource_path("src/ui/assets/augurvibelogosmall.png"))
-        if not sim_logo_pixmap.isNull():
-            # Set fixed width to 175px (same as the left spacer it's replacing)
-            sim_logo_label.setFixedWidth(175)
-            # Calculate the correct height based on aspect ratio
-            aspect_ratio = sim_logo_pixmap.height() / sim_logo_pixmap.width()
-            scaled_width = 175
-            scaled_height = int(scaled_width * aspect_ratio)
-            # Scale the logo while maintaining aspect ratio
-            scaled_logo = sim_logo_pixmap.scaled(scaled_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            sim_logo_label.setPixmap(scaled_logo)
-            # Center the logo vertically in the label
-            sim_logo_label.setAlignment(Qt.AlignCenter)
-        
-        time_controls.addWidget(sim_logo_label)
         time_controls.addWidget(main_window.reset_btn)
         time_controls.addWidget(main_window.play_btn)
         time_controls.addWidget(main_window.speed_selector)
