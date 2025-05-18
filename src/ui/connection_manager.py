@@ -18,6 +18,7 @@ from src.components.factory import FactoryComponent
 from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.traditional_data_center import TraditionalDataCenterComponent
 from src.components.distribution_pole import DistributionPoleComponent
+from src.ui.terminal_widget import TerminalWidget
 
 class ConnectionManager:
     def __init__(self, main_window):
@@ -238,7 +239,7 @@ class ConnectionManager:
     def autoconnect_all_components(self):
         """Automatically connect all components in the scene to form a valid network"""
         if not self.main_window.components:
-            QMessageBox.information(self.main_window, "Autoconnect", "No components available to connect.")
+            TerminalWidget.log("Autoconnect: No components available to connect.")
             return
         
         # Disable the autoconnect button to prevent double-clicks
@@ -261,15 +262,6 @@ class ConnectionManager:
             
             # Clear connections list
             self.main_window.connections.clear()
-            
-            # Show progress dialog for larger networks
-            if len(self.main_window.components) > 10:
-                progress = QMessageBox()
-                progress.setWindowTitle("Autoconnect")
-                progress.setText("Creating connections...\nPlease wait.")
-                progress.setStandardButtons(QMessageBox.NoButton)
-                progress.show()
-                QApplication.processEvents()  # Force UI update
                 
             # Dictionary to track which components are already connected
             connected_pairs = set()
@@ -407,10 +399,6 @@ class ConnectionManager:
                     isolated_component = next(c for c in self.main_window.components if id(c) == isolated_id)
                     self.create_connection_between(anchor_component, isolated_component, connected_pairs)
             
-            # Close progress dialog if it was shown
-            if len(self.main_window.components) > 10:
-                progress.close()
-            
             # Verify network connectivity
             if self.main_window.check_network_connectivity():
                 # Trigger success flash before showing the success message
@@ -418,7 +406,7 @@ class ConnectionManager:
                 if hasattr(bordered_widget, 'trigger_success_flash'):
                     bordered_widget.trigger_success_flash()
                 
-                QMessageBox.information(self.main_window, "Autoconnect", f"Successfully created {len(self.main_window.connections)} connections.")
+                TerminalWidget.log(f"Autoconnect: Successfully created {len(self.main_window.connections)} connections.")
             else:
                 # Final fallback: connect everything in a line
                 if not self.main_window.check_network_connectivity():
@@ -466,7 +454,7 @@ class ConnectionManager:
         # Check if this pair is already connected (in either direction)
         if (id(source), id(target)) in connected_pairs or (id(target), id(source)) in connected_pairs:
             if show_errors:
-                print("Error: These components are already connected to each other.")
+                TerminalWidget.log("Error: These components are already connected to each other.")
             return False
         
         # Check if these components are already connected directly
@@ -474,14 +462,14 @@ class ConnectionManager:
             if (conn.source == source and conn.target == target) or \
                (conn.source == target and conn.target == source):
                 if show_errors:
-                    print("Error: These components are already connected to each other.")
+                    TerminalWidget.log("Error: These components are already connected to each other.")
                 return False
         
         # Validate cloud workload connection
         is_valid, error_message = self.validate_cloud_workload_connection(source, target)
         if not is_valid:
             if show_errors:
-                print(f"Error: Invalid Connection - {error_message}")
+                TerminalWidget.log(f"Error: Invalid Connection - {error_message}")
             return False
             
         # Safety check for deleted components
@@ -495,6 +483,13 @@ class ConnectionManager:
             self.scene.addItem(connection)
             connection.setup_component_tracking()
             self.main_window.connections.append(connection)
+            
+            # Log connection to terminal
+            source_type = source.component_type if hasattr(source, 'component_type') else source.__class__.__name__
+            target_type = target.component_type if hasattr(target, 'component_type') else target.__class__.__name__
+            source_id = str(id(source))[-6:]  # Last 6 digits of source ID
+            target_id = str(id(target))[-6:]  # Last 6 digits of target ID
+            TerminalWidget.log(f"Connected {source_type} {source_id} to {target_type} {target_id}")
             
             # Mark this pair as connected
             connected_pairs.add((id(source), id(target)))

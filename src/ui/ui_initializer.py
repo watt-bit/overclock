@@ -10,6 +10,7 @@ import math
 # Import or reference modules and classes needed from main_window
 from .analytics import AnalyticsPanel
 from .tiled_background_widget import TiledBackgroundWidget
+from .terminal_widget import TerminalWidget
 from src.utils.resource import resource_path
 from .classes.gradient_border_text import GradientBorderText
 from .classes.bordered_main_widget import BorderedMainWidget
@@ -479,7 +480,12 @@ class UIInitializer:
         
         # Add the third horizontal layout to the main component layout
         component_layout.addLayout(third_row_layout)
-        component_layout.addStretch()
+        
+        # Add the terminal widget below the component buttons
+        main_window.terminal_widget = TerminalWidget()
+        # Make the terminal widget expand to fill available space
+        main_window.terminal_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        component_layout.addWidget(main_window.terminal_widget)
         
         # Now that we have a button, set the top image size to match the full component width
         if not top_pixmap.isNull():

@@ -16,6 +16,7 @@ from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
 from src.components.distribution_pole import DistributionPoleComponent
+from src.ui.terminal_widget import TerminalWidget
 
 class ComponentAdder:
     def __init__(self, main_window):
@@ -25,6 +26,7 @@ class ComponentAdder:
     def add_component(self, component_type):
         """Create and add a component of the specified type to the scene"""
         position = None  # Store position for particle effect
+        component = None  # Initialize component variable
         
         # Set fixed position at origin (0,0)
         x_offset = 0
@@ -120,6 +122,14 @@ class ComponentAdder:
             self.main_window.scene.addItem(component)
             position = component.pos()
             # Do not add distribution poles to the components list as they are decorative
+        
+        # Log component addition to terminal
+        if component is not None:
+            # Get component type and ID
+            component_type_name = component.component_type
+            component_id_str = str(component.component_id)[-6:]
+            # Log to terminal
+            TerminalWidget.log(f"Added {component_type_name} {component_id_str}")
         
         # Hide welcome text after adding the first component (if it's not decorative)
         if component_type in ["generator", "grid_import", "grid_export", "bus", "load", "battery", "cloud_workload", "solar_panel", "wind_turbine"]:

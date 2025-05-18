@@ -6,6 +6,7 @@ from src.components.house2 import House2Component
 from src.components.factory import FactoryComponent
 from src.components.traditional_data_center import TraditionalDataCenterComponent
 from src.components.distribution_pole import DistributionPoleComponent
+from src.ui.terminal_widget import TerminalWidget
 
 
 class ComponentDeleter:
@@ -86,6 +87,12 @@ class ComponentDeleter:
             central_widget = self.main_window.centralWidget()
             if hasattr(central_widget, 'trigger_gray_flash'):
                 central_widget.trigger_gray_flash()
+        
+        # Log component deletion to terminal
+        if hasattr(component, 'component_type') and hasattr(component, 'component_id'):
+            component_type_name = component.component_type
+            component_id_str = str(component.component_id)[-6:]
+            TerminalWidget.log(f"Deleted {component_type_name} {component_id_str}")
         
         return True
     

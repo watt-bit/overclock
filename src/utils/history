@@ -32,3 +32,5 @@ Extracted _add_solar_panel_properties from properties_manager.py to solar_panel_
 Added animated hexagonal status jewel to ComponentBase that syncs with BorderedMainWidget animations, showing component states
 Enhanced component status jewels to display synchronized rotational gradient animation matching the BorderedMainWidget
 Updated gas generator button to use icon image and added tooltip with global tooltip styles.
+Added Terminal widget to component dock for displaying application status messages in a terminal-like interface.
+Added component addition logging to Terminal widget, showing component type and ID when components are added to the scene.
