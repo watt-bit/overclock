@@ -223,7 +223,7 @@ class ComponentBase(QGraphicsRectItem):
                         radians = angle * math.pi / 180.0  # Convert to radians
                         
                         # Calculate endpoint based on angle to create rotating linear gradient
-                        length = self.jewel_size * 1.25
+                        length = self.jewel_size * 1.1
                         center_x = center_x
                         center_y = center_y
                         
