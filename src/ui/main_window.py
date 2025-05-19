@@ -19,7 +19,7 @@ class PowerSystemSimulator(QMainWindow):
         self.previous_capex = 0  # Initialize previous CAPEX for tracking changes
         self.capex_manager = CapexManager(self)  # Initialize the CAPEX manager
         self.is_resetting = False  # Flag to indicate when a reset operation is in progress
-        self.reset_simulation()  # Reset the simulation to the initial state
+        self.reset_simulation(is_initial_reset=True)  # Reset the simulation to the initial state
         
     def center_on_screen(self):
         """Center the window on the screen"""
@@ -245,8 +245,8 @@ class PowerSystemSimulator(QMainWindow):
     def update_simulation(self):
         self.simulation_controller.update_simulation()
     
-    def reset_simulation(self, skip_flash=False):
-        self.simulation_controller.reset_simulation(skip_flash=skip_flash)
+    def reset_simulation(self, skip_flash=False, is_initial_reset=False):
+        self.simulation_controller.reset_simulation(skip_flash=skip_flash, is_initial_reset=is_initial_reset)
         # Update the CAPEX display after resetting
         self.update_capex_display()
         # Reset the IRR display

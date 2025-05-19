@@ -37,6 +37,9 @@ class SimulationController:
             
         self.main_window.simulation_engine.simulation_running = not self.main_window.simulation_engine.simulation_running
         if self.main_window.simulation_engine.simulation_running:
+            # Log simulation start message
+            TerminalWidget.log("Running simulation...")
+            
             interval = int(100 / self.main_window.simulation_speed)
             self.main_window.sim_timer.start(interval)
             self.main_window.play_btn.setText("Pause (Space)")
@@ -78,6 +81,9 @@ class SimulationController:
                 }
             """)
         else:
+            # Log simulation pause message
+            TerminalWidget.log("Simulation paused")
+            
             self.main_window.sim_timer.stop()
             self.main_window.play_btn.setText("Run (Space)")
             self.main_window.disable_component_buttons(False)
@@ -191,7 +197,11 @@ class SimulationController:
     def update_simulation(self):
         self.main_window.simulation_engine.update_simulation()
     
-    def reset_simulation(self, skip_flash=False):
+    def reset_simulation(self, skip_flash=False, is_initial_reset=False):
+        # Log reset message (only if not the initial reset)
+        if not is_initial_reset:
+            TerminalWidget.log("Simulation reset")
+        
         # Check if simulation was running and stop it
         was_running = self.main_window.simulation_engine.simulation_running
         
