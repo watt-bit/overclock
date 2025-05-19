@@ -39,6 +39,7 @@ class ComponentBase(QGraphicsRectItem):
         # Create the open button (initially hidden)
         self.open_button = QPushButton("Open")
         font = QFont()
+        font.setFamilies(["Menlo", "Consolas", "Courier", "monospace"])
         font.setPointSize(10)
         self.open_button.setFont(font)
         self.open_button.setStyleSheet("""
@@ -255,8 +256,26 @@ class ComponentBase(QGraphicsRectItem):
         # Draw standardized text box at the bottom of the component
         self.draw_standard_text_box(painter, rect)
     
+    def is_decorative_component(self):
+        """Check if this component is purely decorative"""
+        decorative_types = [
+            "TreeComponent", 
+            "BushComponent", 
+            "PondComponent", 
+            "House1Component", 
+            "House2Component", 
+            "FactoryComponent", 
+            "TraditionalDataCenterComponent", 
+            "DistributionPoleComponent"
+        ]
+        return self.__class__.__name__ in decorative_types
+        
     def draw_standard_text_box(self, painter, rect):
         """Draw the standardized text box at the bottom of the component"""
+        # Skip drawing text box for decorative components
+        if self.is_decorative_component():
+            return
+            
         # Save painter state
         painter.save()
         
@@ -267,20 +286,43 @@ class ComponentBase(QGraphicsRectItem):
             if hasattr(view, 'transform'):
                 scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
         
-        # Fixed text box width of 280px - scale when zoomed out
-        base_text_box_width = 280
-        base_text_box_height = 50  # Height for two lines of text
+        # Set font for text - use same fixed-width fonts as terminal for compatibility
+        font = QFont()
+        font.setFamilies(["Menlo", "Consolas", "Courier", "monospace"])
+        font.setPointSize(int(10 * scale_factor))
+        painter.setFont(font)
         
-        # Scale the text box dimensions when zoomed out (scale_factor > 1)
-        text_box_width = base_text_box_width * max(1.0, scale_factor * 0.8)  # Scale at 80% of the zoom factor
-        text_box_height = base_text_box_height * max(1.0, scale_factor * 0.8)
+        # Get the content for both lines of text
+        first_line = self.get_capacity_and_mode_text()
+        second_line = self.get_cost_or_revenue_text()
         
+        # Calculate width needed for text content
+        metrics = painter.fontMetrics()
+        first_line_width = metrics.horizontalAdvance(first_line)
+        second_line_width = metrics.horizontalAdvance(second_line)
+        
+        # Use the wider of the two lines plus padding
+        content_width = max(first_line_width, second_line_width)
+        
+        # Add padding (scaled with zoom factor)
+        horizontal_padding = 10 * max(1.0, scale_factor * 0.8)  # Left + right padding
+        vertical_padding = 10 * max(1.0, scale_factor * 0.8)  # Top + bottom padding
+        
+        # Minimum width to prevent very narrow boxes
+        min_width = 100 * max(1.0, scale_factor * 0.8)
+        
+        # Calculate final text box width
+        text_box_width = max(min_width, content_width + horizontal_padding)
+        
+        # Fixed height for two lines of text plus vertical padding
+        line_height = metrics.height() + 2  # Add a bit of extra space between lines
+        text_box_height = (line_height * 2) + vertical_padding  # Two lines plus padding
+
         # Calculate relative position from center of component
         # Horizontally centered
         text_box_x = rect.x() + (rect.width() - text_box_width) / 2
         
         # Position vertically relative to component center
-        # Adjust this percentage to move the text box up or down relative to center
         vertical_offset_percent = 0.4  # 40% of height down from center
         center_y = rect.y() + rect.height() / 2
         text_box_y = center_y + (rect.height() * vertical_offset_percent) - (text_box_height / 2)
@@ -293,35 +335,56 @@ class ComponentBase(QGraphicsRectItem):
             text_box_height
         )
         
-        # Set font for text
-        font = QFont('Arial', int(12 * scale_factor))
-        painter.setFont(font)
+        # Draw the rounded rectangle background with specified color
+        corner_radius = 10 * max(1.0, scale_factor * 0.8)  # Scale corner radius
+        background_color = QColor(37, 47, 52, 191)  # rgba(37, 47, 52, 0.75) - 191 is 75% of 255
         
-        # Split the text box into two lines
-        line_height = text_box_height / 2
+        # Create a grayer version of the background color for the border with same transparency
+        border_color = QColor(60, 70, 75, 191)  # Slightly grayer than background but same transparency
+        
+        # Set the brush with background color
+        painter.setBrush(QBrush(background_color))
+        # Set 1px border with the border color
+        painter.setPen(QPen(border_color, 1))
+        
+        # Draw rounded rectangle
+        painter.drawRoundedRect(text_box_rect, corner_radius, corner_radius)
+        
+        # Calculate text positions within the text box
+        vertical_padding_half = vertical_padding / 2
+        
         first_line_rect = QRectF(
-            text_box_x + 5 * max(1.0, scale_factor * 0.8),  # Scale the left margin too
-            text_box_y,
-            text_box_width - 10 * max(1.0, scale_factor * 0.8),  # Scale margin on both sides
-            line_height
+            text_box_x + horizontal_padding/2,  # Left padding
+            text_box_y + vertical_padding_half,  # Top padding
+            text_box_width - horizontal_padding,  # Width - padding
+            line_height  # Line height
         )
         
         second_line_rect = QRectF(
-            text_box_x + 5 * max(1.0, scale_factor * 0.8),  # Scale the left margin too
-            text_box_y + line_height,
-            text_box_width - 10 * max(1.0, scale_factor * 0.8),  # Scale margin on both sides
-            line_height
+            text_box_x + horizontal_padding/2,  # Left padding
+            text_box_y + vertical_padding_half + line_height,  # First line height + top padding
+            text_box_width - horizontal_padding,  # Width - padding
+            line_height  # Line height
         )
         
-        # Draw text with white color
-        painter.setPen(QPen(Qt.white))
+        # Get the two lines of text
         
-        # First line: MW and operating mode
-        first_line = self.get_capacity_and_mode_text()
+        # Draw the first line (capacity and mode) with white color
+        painter.setPen(QPen(Qt.white))
         painter.drawText(first_line_rect, Qt.AlignLeft | Qt.AlignVCenter, first_line)
         
-        # Second line: Cost or revenue
-        second_line = self.get_cost_or_revenue_text()
+        # Set color based on whether showing cost or revenue for the second line
+        # Use the same palette as in AutocompleteManager._get_irr_color
+        if hasattr(self, 'accumulated_revenue') and self.accumulated_revenue > 0:
+            # Green for revenue (same as IRR display)
+            painter.setPen(QPen(QColor(139, 255, 74)))
+        elif hasattr(self, 'accumulated_cost') and self.accumulated_cost > 0:
+            # Red for cost (same as IRR display)
+            painter.setPen(QPen(QColor(255, 50, 50)))
+        else:
+            # Default white for neutral or zero values
+            painter.setPen(QPen(Qt.white))
+            
         painter.drawText(second_line_rect, Qt.AlignLeft | Qt.AlignVCenter, second_line)
         
         # Restore painter state

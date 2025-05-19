@@ -41,3 +41,7 @@ Terminal logging for state changes (simulation starting/pausing) improves UX by 
 Using TerminalWidget.log is preferred over QMessageBox for non-critical notifications as it avoids interrupting the user workflow.
 
 When implementing component maintenance or outage features, all related functions must check the maintenance status, especially when components interact with each other (e.g., generators charging batteries).
+
+Using consistent color coding throughout the UI (green for revenue/profit, red for costs) helps create a cohesive visual language that improves data interpretation.
+
+Decorative components (trees, bushes, ponds, etc.) don't need functional UI elements like info boxes since they're purely visual.

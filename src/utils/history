@@ -43,3 +43,6 @@ Added "Initializing watt-bit components" terminal log message when component but
 2024-09-15: Fixed bug where generators in maintenance mode could still charge batteries if auto-charging was enabled, causing incorrect system stabilization.
 Changed terminal_widget.py fixed-width font from "Courier" to "Menlo" to resolve Qt font warning.
 Updated terminal_widget.py to use cross-platform font fallbacks (Menlo, Consolas, Courier, monospace) for compatibility across operating systems.
+Added 1px gray border to component standard text boxes with same transparency as background for improved visual definition.
+Modified ComponentBase to display revenue in green and cost in red with colors matching IRR display palette for visual consistency.
+Modified ComponentBase to hide standard text box for decorative components (trees, bushes, pond, houses, factory, data center, poles).

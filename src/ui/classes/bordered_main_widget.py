@@ -357,6 +357,11 @@ class BorderedMainWidget(QWidget):
                 self.is_flashing = False
                 self.is_startup_flash = False
                 self.flash_timer.stop()
+                
+                # Re-enable component buttons now that startup sequence is complete
+                if hasattr(self, 'parent') and self.parent():
+                    main_window = self.parent()
+                    main_window.disable_component_buttons(False)
         # Handle the success flash sequence (4 steps)
         elif self.is_success_flash:
             if self.flash_step == 1:

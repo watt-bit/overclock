@@ -21,6 +21,9 @@ class StartupSequence(QObject):
         TerminalWidget.log("2025 Watt-Bit Research Inc.")
         TerminalWidget.log(" ")
         
+        # Disable component buttons until startup sequence completes
+        self.main_window.disable_component_buttons(True)
+        
         # Trigger the startup flash effect on the border
         self.main_window.centralWidget().trigger_startup_flash()
         
