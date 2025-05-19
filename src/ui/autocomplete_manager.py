@@ -63,7 +63,7 @@ class AutocompleteManager:
         if start_time >= self.autocomplete_end_time:
             return
             
-        print("Starting Autocomplete simulation...")
+        TerminalWidget.log("Autocompleting...")
         self.is_autocompleting = True
         # Ensure main window has same autocomplete state
         self.main_window.is_autocompleting = True
@@ -204,7 +204,7 @@ class AutocompleteManager:
             if self.main_window.is_model_view:
                 self.main_window.disable_component_buttons(False)
             
-            print("Autocomplete simulation finished.")
+            TerminalWidget.log("Autocomplete finished")
             
     def _get_irr_color(self, irr_value):
         """
@@ -397,7 +397,7 @@ class AutocompleteManager:
             if self.main_window.is_model_view:
                 self.main_window.disable_component_buttons(False)
                 
-            print("Autocomplete interrupted.")
+            TerminalWidget.log("Autocomplete interrupted")
             
     def cleanup(self):
         """Clean up resources before shutdown - call this when the application is closing"""
