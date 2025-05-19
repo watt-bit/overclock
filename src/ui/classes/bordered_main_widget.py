@@ -348,7 +348,7 @@ class BorderedMainWidget(QWidget):
                 self.flash_timer.start(500)  # 500ms black
             elif self.flash_step == 9:
                 # Final black flash is done, return to normal
-                TerminalWidget.log("OVERCLOCK READY 2 RUMBLE")
+                TerminalWidget.log("OVERCLOCK READY")
                 TerminalWidget.log(" ")
                 self.colors = self.original_colors.copy()
                 self.is_flashing = False
