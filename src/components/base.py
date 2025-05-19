@@ -251,6 +251,128 @@ class ComponentBase(QGraphicsRectItem):
                     painter.drawPath(hex_path)
                 
                 painter.restore()
+        
+        # Draw standardized text box at the bottom of the component
+        self.draw_standard_text_box(painter, rect)
+    
+    def draw_standard_text_box(self, painter, rect):
+        """Draw the standardized text box at the bottom of the component"""
+        # Save painter state
+        painter.save()
+        
+        # Get the current view scale factor to adjust text size
+        scale_factor = 1.0
+        if self.scene() and self.scene().views():
+            view = self.scene().views()[0]
+            if hasattr(view, 'transform'):
+                scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
+        
+        # Fixed text box width of 280px - scale when zoomed out
+        base_text_box_width = 280
+        base_text_box_height = 50  # Height for two lines of text
+        
+        # Scale the text box dimensions when zoomed out (scale_factor > 1)
+        text_box_width = base_text_box_width * max(1.0, scale_factor * 0.8)  # Scale at 80% of the zoom factor
+        text_box_height = base_text_box_height * max(1.0, scale_factor * 0.8)
+        
+        # Calculate relative position from center of component
+        # Horizontally centered
+        text_box_x = rect.x() + (rect.width() - text_box_width) / 2
+        
+        # Position vertically relative to component center
+        # Adjust this percentage to move the text box up or down relative to center
+        vertical_offset_percent = 0.4  # 40% of height down from center
+        center_y = rect.y() + rect.height() / 2
+        text_box_y = center_y + (rect.height() * vertical_offset_percent) - (text_box_height / 2)
+        
+        # Create text box rectangle
+        text_box_rect = QRectF(
+            text_box_x,
+            text_box_y,
+            text_box_width,
+            text_box_height
+        )
+        
+        # Set font for text
+        font = QFont('Arial', int(12 * scale_factor))
+        painter.setFont(font)
+        
+        # Split the text box into two lines
+        line_height = text_box_height / 2
+        first_line_rect = QRectF(
+            text_box_x + 5 * max(1.0, scale_factor * 0.8),  # Scale the left margin too
+            text_box_y,
+            text_box_width - 10 * max(1.0, scale_factor * 0.8),  # Scale margin on both sides
+            line_height
+        )
+        
+        second_line_rect = QRectF(
+            text_box_x + 5 * max(1.0, scale_factor * 0.8),  # Scale the left margin too
+            text_box_y + line_height,
+            text_box_width - 10 * max(1.0, scale_factor * 0.8),  # Scale margin on both sides
+            line_height
+        )
+        
+        # Draw text with white color
+        painter.setPen(QPen(Qt.white))
+        
+        # First line: MW and operating mode
+        first_line = self.get_capacity_and_mode_text()
+        painter.drawText(first_line_rect, Qt.AlignLeft | Qt.AlignVCenter, first_line)
+        
+        # Second line: Cost or revenue
+        second_line = self.get_cost_or_revenue_text()
+        painter.drawText(second_line_rect, Qt.AlignLeft | Qt.AlignVCenter, second_line)
+        
+        # Restore painter state
+        painter.restore()
+    
+    def get_capacity_and_mode_text(self):
+        """Get the text for capacity and operating mode"""
+        # Default implementation - to be overridden by subclasses if needed
+        capacity_text = "MW: -"
+        
+        # Check if this is a component with a capacity property
+        # Handle different capacity properties based on component type
+        class_name = self.__class__.__name__
+        
+        # For battery components, use power_capacity
+        if class_name == "BatteryComponent" and hasattr(self, 'power_capacity'):
+            capacity_mw = self.power_capacity / 1000 if self.power_capacity else 0
+            capacity_text = f"MW: {capacity_mw:.1f}"
+        # For load components, use demand
+        elif class_name == "LoadComponent" and hasattr(self, 'demand'):
+            capacity_mw = self.demand / 1000 if self.demand else 0
+            capacity_text = f"MW: {capacity_mw:.1f}"
+        # For other components, use capacity if available
+        elif hasattr(self, 'capacity'):
+            capacity_mw = self.capacity / 1000 if self.capacity else 0
+            capacity_text = f"MW: {capacity_mw:.1f}"
+        
+        # Check for operating mode
+        mode_text = ""
+        if hasattr(self, 'operating_mode'):
+            mode_text = f"| {self.operating_mode}"
+        elif class_name == "BusComponent":
+            # Special handling for Bus component - check if it has load connections
+            if hasattr(self, 'has_load_connections') and callable(getattr(self, 'has_load_connections')):
+                has_loads = self.has_load_connections()
+                mode_text = "| LOADED" if has_loads else "| AUTO"
+            else:
+                # Fallback to checking is_on if has_load_connections is not available
+                mode_text = "| LOADED" if hasattr(self, 'is_on') and self.is_on else "| AUTO"
+        
+        return f"{capacity_text} {mode_text}"
+    
+    def get_cost_or_revenue_text(self):
+        """Get the text for cost or revenue"""
+        # Default implementation - to be overridden by subclasses if needed
+        if hasattr(self, 'accumulated_cost'):
+            return f"$: {int(self.accumulated_cost):,}"
+        elif hasattr(self, 'accumulated_revenue'):
+            return f"$: {int(self.accumulated_revenue):,}"
+        else:
+            return "$: -"
     
     def open_properties(self):
         """Toggle the properties panel open/closed state"""

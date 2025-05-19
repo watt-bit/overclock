@@ -98,40 +98,6 @@ class BusComponent(ComponentBase):
                 current_image,
                 QRectF(0, 0, current_image.width(), current_image.height())
             )
-        
-        # Calculate text area (remaining space below the image)
-        text_rect = QRectF(
-            rect.x(),
-            rect.y() + image_size + (rect.height() * 0.05),  # Position below image with margin
-            rect.width(),
-            rect.height() - image_size - (rect.height() * 0.05)
-        )
-        
-        # Set text color to white
-        painter.setPen(QPen(Qt.white))
-        
-        # Get the current view scale factor to adjust text size
-        scale_factor = 1.0
-        if self.scene() and self.scene().views():
-            view = self.scene().views()[0]
-            if hasattr(view, 'transform'):
-                scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
-        
-        # Set font with size adjusted for current zoom level
-        font = QFont('Arial', int(14 * scale_factor))
-        painter.setFont(font)
-        
-        # Determine status text based on load connections
-        if not has_loads:
-            # Show AUTO instead of ON for buses with no loads
-            status_text = "AUTO"
-        else:
-            # Show LOAD ON/OFF for buses with loads for clarity
-            status_text = "LOAD ON" if self.is_on else "LOAD OFF"
-            
-        # Draw the name and status text centered below the image
-        combined_text = f"{self.name} ({status_text})"
-        painter.drawText(text_rect, Qt.AlignCenter, combined_text)
     
     def serialize(self):
         return {

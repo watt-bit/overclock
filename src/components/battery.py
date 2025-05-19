@@ -121,53 +121,6 @@ class BatteryComponent(ComponentBase):
         painter.setBrush(QBrush(fill_color))
         fill_width = indicator_width * charge_percent
         painter.drawRect(int(indicator_x), int(indicator_y), int(fill_width), int(indicator_height))
-        
-        # Calculate text area (remaining space below the image)
-        text_rect = QRectF(
-            rect.x(),
-            rect.y() + image_size + (rect.height() * 0.05),  # Position below image with margin
-            rect.width(),
-            rect.height() - image_size - (rect.height() * 0.05)
-        )
-        
-        # Set text color to white
-        painter.setPen(QPen(Qt.white))
-        
-        # Get the current view scale factor to adjust text size
-        scale_factor = 1.0
-        if self.scene() and self.scene().views():
-            view = self.scene().views()[0]
-            if hasattr(view, 'transform'):
-                scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
-        
-        # Adjust text rectangle based on scale factor to prevent text clipping
-        scaled_text_height = text_rect.height() * scale_factor
-        
-        # Calculate the new width while maintaining the center position
-        new_width = text_rect.width() * max(1.0, scale_factor)
-        center_x = text_rect.x() + text_rect.width() / 2
-        
-        # Create the scaled text rectangle
-        scaled_text_rect = QRectF(
-            center_x - new_width / 2,  # Position to maintain center alignment
-            text_rect.y(),
-            new_width,
-            scaled_text_height
-        )
-        
-        # Set font with size adjusted for current zoom level
-        font = QFont('Arial', int(14 * scale_factor))
-        painter.setFont(font)
-        
-        # Calculate charge percentage
-        if self.energy_capacity > 0:
-            charge_percent_display = int((self.current_charge / self.energy_capacity) * 100)
-        else:
-            charge_percent_display = 0  # Default to 0% if energy capacity is zero
-        
-        # Draw the battery information
-        battery_text = f"{self.power_capacity/1000:.1f} MW (battery) | {charge_percent_display}% charge"
-        painter.drawText(scaled_text_rect, Qt.AlignCenter, battery_text)
     
     def has_energy(self):
         """Check if battery has any stored energy"""

@@ -106,58 +106,6 @@ class GridExportComponent(ComponentBase):
             
             painter.drawRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height))
         
-        # Calculate text area (remaining space below the image)
-        text_rect = QRectF(
-            rect.x(),
-            rect.y() + image_size + (rect.height() * 0.05) - 40,  # Adjust position to account for the -40 image offset
-            rect.width(),
-            rect.height() - image_size - (rect.height() * 0.05) + 40  # Add 40 to the height to account for the offset
-        )
-        
-        # Get the current view scale factor to adjust text size
-        scale_factor = 1.0
-        if self.scene() and self.scene().views():
-            view = self.scene().views()[0]
-            if hasattr(view, 'transform'):
-                scale_factor = 1.0 / view.transform().m11()  # Get inverse of horizontal scale
-        
-        # Adjust text rectangles based on scale factor to prevent text clipping
-        # Scale vertical spacing based on zoom level
-        vertical_spacing = 20 * scale_factor
-        
-        # Recalculate text rectangles with adjusted dimensions
-        scaled_text_height = text_rect.height() * scale_factor
-        
-        capacity_rect = QRectF(
-            text_rect.x(),
-            text_rect.y(),
-            text_rect.width(),
-            scaled_text_height * 0.5
-        )
-        
-        revenue_rect = QRectF(
-            text_rect.x(),
-            text_rect.y() + (scaled_text_height * 0.5) + vertical_spacing,
-            text_rect.width(), 
-            scaled_text_height * 0.5
-        )
-        
-        # Set text color to white
-        painter.setPen(QPen(Qt.white))
-        
-        # Set font with size adjusted for current zoom level
-        font = QFont('Arial', int(14 * scale_factor))
-        painter.setFont(font)
-        
-        # Draw the capacity text
-        capacity_text = f"{self.capacity/1000:.1f} MW (export)"
-        painter.drawText(capacity_rect, Qt.AlignCenter, capacity_text)
-        
-        # Draw the revenue text if either bulk PPA price or market price is set
-        if self.bulk_ppa_price > 0 or self.market_prices_mode != "None":
-            revenue_text = f"Revenue: ${int(self.accumulated_revenue):,}"
-            painter.drawText(revenue_rect, Qt.AlignCenter, revenue_text)
-        
         # Restore painter state
         painter.restore()
     
