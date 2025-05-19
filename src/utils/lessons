@@ -37,3 +37,5 @@ The TerminalWidget._instance pattern enables logging from any part of the app wi
 
 Use TerminalWidget.log() for error messages instead of QMessageBox to show errors in the terminal UI component.
 Terminal logging for state changes (simulation starting/pausing) improves UX by providing clear feedback on application state transitions.
+
+Using TerminalWidget.log is preferred over QMessageBox for non-critical notifications as it avoids interrupting the user workflow.

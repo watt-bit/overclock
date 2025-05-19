@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QGraphicsLineItem, QMessageBox, QApplication)
+from PyQt5.QtWidgets import (QGraphicsLineItem, QApplication)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor
 import math

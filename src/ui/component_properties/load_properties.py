@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import (QLineEdit, QLabel, QPushButton, QComboBox, 
                             QHBoxLayout, QWidget, QSlider, QMessageBox)
 from PyQt5.QtCore import Qt
+from src.ui.terminal_widget import TerminalWidget
 
 # Import styles from the parent module
 from src.ui.properties_manager import COMMON_BUTTON_STYLE, INPUT_STYLE, DEFAULT_BUTTON_STYLE, COMBOBOX_STYLE, SLIDER_STYLE
@@ -115,9 +116,8 @@ def add_load_properties(properties_manager, component, layout):
         # Generate new profile based on selected data center type
         component.generate_data_center_profile()
         properties_manager.main_window.update_simulation()
-        # Show popup notification
-        QMessageBox.information(properties_manager.main_window, "Data Center Profile Generated", 
-                              f"Generated 8760 hours of {component.data_center_type} data center profile.")
+        # Log to terminal instead of popup
+        TerminalWidget.log(f"Generated 8760 hours of {component.data_center_type} data center profile.")
     
     dc_generate_btn.clicked.connect(generate_data_center_profile)
     dc_generate_layout.addWidget(dc_generate_btn)
@@ -139,9 +139,8 @@ def add_load_properties(properties_manager, component, layout):
         # Generate new profile
         component.generate_random_profile()
         properties_manager.main_window.update_simulation()
-        # Show popup notification
-        QMessageBox.information(properties_manager.main_window, "Random Profile Generated", 
-                              f"Generated 8760 hours of random load data with {int(component.max_ramp_rate * 100)}% max ramp rate.")
+        # Log to terminal instead of popup
+        TerminalWidget.log(f"Generated 8760 hours of random load data with {int(component.max_ramp_rate * 100)}% max ramp rate.")
     
     generate_btn.clicked.connect(generate_random_data)
     random_profile_layout.addWidget(generate_btn)

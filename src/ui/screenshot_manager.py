@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QMessageBox, QApplication
+from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtCore import Qt
+from .terminal_widget import TerminalWidget
 
 
 class ScreenshotManager:
@@ -74,5 +75,5 @@ class ScreenshotManager:
         clipboard = QApplication.clipboard()
         clipboard.setPixmap(pixmap)
         
-        # Show confirmation to user
-        QMessageBox.information(self.main_window, "Screenshot", "Screenshot copied to clipboard") 
+        # Log confirmation to terminal instead of showing message box
+        TerminalWidget.log("Screenshot copied to clipboard") 

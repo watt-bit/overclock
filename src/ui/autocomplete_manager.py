@@ -9,7 +9,6 @@ This code was extracted from the main_window.py file to improve modularity witho
 """
 
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtWidgets import QMessageBox
 from src.utils.irr_calculator import calculate_irr, calculate_extended_irr
 from src.ui.terminal_widget import TerminalWidget
 

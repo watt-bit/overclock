@@ -37,3 +37,4 @@ Added component addition logging to Terminal widget, showing component type and 
 Modified simulation_controller.py to log connectivity errors to terminal and trigger error flash instead of showing QMessageBox.
 Modified main_window.py and autocomplete_manager.py to use terminal logging instead of QMessageBox for network connectivity errors.
 Added terminal log messages to simulation_controller.py to indicate when simulation starts and pauses, improving user feedback.
+Replaced QMessageBox popups with TerminalWidget.log messages in load_properties.py for a more integrated UI experience.

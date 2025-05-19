@@ -71,8 +71,8 @@ class TerminalWidget(QWidget):
         # Style the text area to look like a terminal
         self.text_area.setStyleSheet("""
             QTextEdit {
-                background-color: #121212;
-                color: #AAAAAA;
+                background-color: rgba(15, 15, 15, 0.85);
+                color: #DDDDDD;
                 border: 1px solid #555555;
                 border-radius: 3px;
                 padding: 5px;

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
                             QPushButton, QSlider, QFileDialog, QFormLayout, 
-                            QLineEdit, QComboBox, QMessageBox, QSizePolicy)
+                            QLineEdit, QComboBox, QSizePolicy)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QDoubleValidator, QIntValidator
 import csv
@@ -409,11 +409,14 @@ class ComponentPropertiesManager:
                 # Refresh properties panel to show loaded profile name
                 self.show_component_properties(component)
                 
-                QMessageBox.information(self.main_window, "Profile Loaded", 
-                                      f"Loaded {len(data)} time steps from {component.profile_name}")
+                # Log success message to terminal
+                from src.ui.terminal_widget import TerminalWidget
+                TerminalWidget.log(f"Profile Loaded: Loaded {len(data)} time steps from {component.profile_name}")
             
             except Exception as e:
-                QMessageBox.critical(self.main_window, "Error Loading Profile", str(e))
+                # Log error message to terminal
+                from src.ui.terminal_widget import TerminalWidget
+                TerminalWidget.log(f"Error Loading Profile: {str(e)}")
                 component.profile_type = "Constant"
                 self.show_component_properties(component)
     
