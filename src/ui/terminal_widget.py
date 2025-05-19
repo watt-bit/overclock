@@ -46,6 +46,7 @@ class TerminalWidget(QWidget):
                 font-size: 14px;
                 background-color: transparent;
                 border: none;
+                padding: 0px;
             }
             QPushButton:hover {
                 color: #FFFFFF;
@@ -64,8 +65,10 @@ class TerminalWidget(QWidget):
         self.text_area = QTextEdit()
         self.text_area.setReadOnly(True)
         
-        # Set a fixed-width font
-        fixed_font = QFont("Courier", 10)
+        # Set a fixed-width font with cross-platform fallbacks
+        fixed_font = QFont()
+        fixed_font.setFamilies(["Menlo", "Consolas", "Courier", "monospace"])
+        fixed_font.setPointSize(10)
         self.text_area.setFont(fixed_font)
         
         # Style the text area to look like a terminal

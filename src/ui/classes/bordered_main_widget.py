@@ -334,11 +334,14 @@ class BorderedMainWidget(QWidget):
                 self.flash_timer.start(500)  # 500ms normal
             elif self.flash_step == 6:
                 # Normal colors done, switch to random black
+                TerminalWidget.log("ANALYTICS ENGINE ONLINE")
                 random_black = random.choice(self.flash_black_colors)
                 self.colors = [random_black] * len(self.colors)
                 self.flash_timer.start(500)  # 500ms black
             elif self.flash_step == 7:
                 # Black flash done, switch to normal colors
+                TerminalWidget.log("POWERLANDIA DATA SETS LOADED")
+                TerminalWidget.log(" ")
                 self.colors = self.original_colors.copy()
                 self.flash_timer.start(500)  # 500ms normal
             elif self.flash_step == 8:

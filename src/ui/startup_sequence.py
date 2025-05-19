@@ -45,7 +45,6 @@ class StartupSequence(QObject):
         TerminalWidget.log("DECORATIVE COMPONENTS: 8")
         TerminalWidget.log("NETWORKING SYSTEM ENABLED")
         TerminalWidget.log("AUTOMATIC OPERATIONS ENABLED")
-        TerminalWidget.log("MODELLING ENGINE ONLINE")
         TerminalWidget.log(" ")
         
         # Store original style sheet for all buttons
@@ -84,7 +83,6 @@ class StartupSequence(QObject):
         # Log initialization message
         TerminalWidget.log("10 STEPS / SEC SIM SPEED")
         TerminalWidget.log("8760 STEPS / SIMULATION")
-        TerminalWidget.log(" ")
        
         # Save original slider value
         self.original_slider_value = slider.value()
