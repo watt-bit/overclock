@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QObject, QTimer
 from PyQt5.QtGui import QColor
+from .terminal_widget import TerminalWidget
 
 class StartupSequence(QObject):
     def __init__(self, main_window):
@@ -16,7 +17,9 @@ class StartupSequence(QObject):
         Run the startup sequence animations for a new project.
         This will be filled with animation code in future implementations.
         """
-        print("Running startup sequence...")
+        TerminalWidget.log("OVERCLOCK v 2025.01.02rp")
+        TerminalWidget.log("2025 Watt-Bit Research Inc.")
+        TerminalWidget.log(" ")
         
         # Trigger the startup flash effect on the border
         self.main_window.centralWidget().trigger_startup_flash()
@@ -27,7 +30,7 @@ class StartupSequence(QObject):
         # Animate time slider after a 1000ms delay
         QTimer.singleShot(1000, self.animate_time_slider)
         
-        # Add welcome text after a 1500ms delay
+        # Add welcome text after a 1000ms delay
         QTimer.singleShot(1000, self.main_window.add_welcome_text)
     
     def flash_component_buttons(self):
@@ -35,6 +38,16 @@ class StartupSequence(QObject):
         Animate the component buttons by flashing their hover state.
         Sequence: normal (250ms) -> hover (250ms) -> normal (250ms) -> hover (250ms) -> normal
         """
+        # Log initialization message
+        TerminalWidget.log("INITIALIZING SIMULATION")
+        TerminalWidget.log("COMPONENTS FOUND: 17")
+        TerminalWidget.log("FUNCTIONAL COMPONENTS: 9")
+        TerminalWidget.log("DECORATIVE COMPONENTS: 8")
+        TerminalWidget.log("NETWORKING SYSTEM ENABLED")
+        TerminalWidget.log("AUTOMATIC OPERATIONS ENABLED")
+        TerminalWidget.log("MODELLING ENGINE ONLINE")
+        TerminalWidget.log(" ")
+        
         # Store original style sheet for all buttons
         if not hasattr(self.main_window, 'component_buttons'):
             return
@@ -68,6 +81,11 @@ class StartupSequence(QObject):
         if not slider:
             return
             
+        # Log initialization message
+        TerminalWidget.log("10 STEPS / SEC SIM SPEED")
+        TerminalWidget.log("8760 STEPS / SIMULATION")
+        TerminalWidget.log(" ")
+       
         # Save original slider value
         self.original_slider_value = slider.value()
         

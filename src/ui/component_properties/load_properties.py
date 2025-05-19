@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QLineEdit, QLabel, QPushButton, QComboBox, 
-                            QHBoxLayout, QWidget, QSlider, QMessageBox)
+                            QHBoxLayout, QWidget, QSlider)
 from PyQt5.QtCore import Qt
 from src.ui.terminal_widget import TerminalWidget
 

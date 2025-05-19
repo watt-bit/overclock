@@ -72,10 +72,21 @@ class TerminalWidget(QWidget):
         self.text_area.setStyleSheet("""
             QTextEdit {
                 background-color: rgba(15, 15, 15, 0.85);
-                color: #DDDDDD;
+                color: #CCCCCC;
                 border: 1px solid #555555;
                 border-radius: 3px;
-                padding: 5px;
+                padding: 2px 5px 2px 2px;  /* top, right, bottom, left */
+            }
+            QScrollBar:vertical {
+                width: 3px;
+                background: rgba(15, 15, 15, 0.85);
+            }
+            QScrollBar::handle:vertical {
+                background: #555555;
+                border-radius: 2px;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
             }
         """)
         

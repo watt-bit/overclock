@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt, QRectF, QTimer
 from PyQt5.QtGui import QPainter, QColor, QPainterPath, QLinearGradient
+from ..terminal_widget import TerminalWidget
 import math
 import random
 
@@ -307,6 +308,11 @@ class BorderedMainWidget(QWidget):
                 self.flash_timer.start(500)  # 500ms normal
             elif self.flash_step == 2:
                 # Normal colors done, switch to random black
+                TerminalWidget.log("SIMULATION INITIALIZED")
+                TerminalWidget.log(" ")
+                TerminalWidget.log("SIMULATION CONTROLLER ENABLED")
+                TerminalWidget.log("BALANCING ENGINE ONLINE")
+                TerminalWidget.log(" ")
                 random_black = random.choice(self.flash_black_colors)
                 self.colors = [random_black] * len(self.colors)
                 self.flash_timer.start(500)  # 500ms black
@@ -321,6 +327,9 @@ class BorderedMainWidget(QWidget):
                 self.flash_timer.start(500)  # 500ms black
             elif self.flash_step == 5:
                 # Black flash done, switch to normal colors
+                TerminalWidget.log("CSV HANDLER ENABLED")
+                TerminalWidget.log("HISTORIAN ONLINE")
+                TerminalWidget.log(" ")
                 self.colors = self.original_colors.copy()
                 self.flash_timer.start(500)  # 500ms normal
             elif self.flash_step == 6:
@@ -339,6 +348,8 @@ class BorderedMainWidget(QWidget):
                 self.flash_timer.start(500)  # 500ms black
             elif self.flash_step == 9:
                 # Final black flash is done, return to normal
+                TerminalWidget.log("OVERCLOCK READY 2 RUMBLE")
+                TerminalWidget.log(" ")
                 self.colors = self.original_colors.copy()
                 self.is_flashing = False
                 self.is_startup_flash = False

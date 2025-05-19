@@ -38,3 +38,5 @@ Modified simulation_controller.py to log connectivity errors to terminal and tri
 Modified main_window.py and autocomplete_manager.py to use terminal logging instead of QMessageBox for network connectivity errors.
 Added terminal log messages to simulation_controller.py to indicate when simulation starts and pauses, improving user feedback.
 Replaced QMessageBox popups with TerminalWidget.log messages in load_properties.py for a more integrated UI experience.
+Updated startup_sequence.py to display BIOS startup message in terminal widget instead of console print statement.
+Added "Initializing watt-bit components" terminal log message when component buttons animation starts in StartupSequence.
