@@ -39,3 +39,5 @@ Use TerminalWidget.log() for error messages instead of QMessageBox to show error
 Terminal logging for state changes (simulation starting/pausing) improves UX by providing clear feedback on application state transitions.
 
 Using TerminalWidget.log is preferred over QMessageBox for non-critical notifications as it avoids interrupting the user workflow.
+
+When implementing component maintenance or outage features, all related functions must check the maintenance status, especially when components interact with each other (e.g., generators charging batteries).

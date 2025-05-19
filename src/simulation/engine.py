@@ -409,7 +409,7 @@ class SimulationEngine(QObject):
             if active_batteries and any(battery.has_capacity() for battery in active_batteries):
                 unused_gen_capacity = 0
                 for item in self.main_window.scene.items():
-                    if isinstance(item, GeneratorComponent) and item.auto_charging:
+                    if isinstance(item, GeneratorComponent) and item.auto_charging and not item.is_in_maintenance:
                         unused_gen_capacity += (item.capacity - item.last_output)
                 
                 if unused_gen_capacity > 0:
