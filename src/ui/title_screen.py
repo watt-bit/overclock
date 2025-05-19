@@ -236,7 +236,7 @@ class TitleScreen(QWidget):
     
     def create_version_label(self):
         """Create and add the version label in the bottom left corner"""
-        version_label = QLabel("OVERCLOCK v 2025.01.02rp | Watt-Bit Research", self)
+        version_label = QLabel("OVERCLOCK v 2025.01.02a | Watt-Bit Research", self)
         version_label.setFixedWidth(350)
         
         # Set font to 12pt normal weight
