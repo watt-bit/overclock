@@ -15,6 +15,24 @@ from src.utils.resource import resource_path
 from .classes.gradient_border_text import GradientBorderText
 from .classes.bordered_main_widget import BorderedMainWidget
 
+# Export this button style as a module-level variable for use in other files
+opaque_button_style = """
+    QPushButton { 
+        background-color: #3D3D3D; 
+        color: white; 
+        border: 1px solid #777777; 
+        border-radius: 3px; 
+    }
+    QPushButton:hover { 
+        background-color: #7D7D7D; 
+        border: 1px solid #BBBBBB;
+    }
+    QPushButton:pressed { 
+        background-color: #2D2D2D; 
+        border: 1px solid #777777;
+    }
+"""
+
 # Custom Widget for Main Layout
 # BorderedMainWidget has been moved to src/ui/classes/bordered_main_widget.py
 
@@ -169,7 +187,7 @@ class UIInitializer:
             QPushButton { 
                 background-color: #3D3D3D; 
                 color: white; 
-                border: 1px solid #555555; 
+                border: 1px solid #777777; 
                 border-radius: 3px; 
                 padding: 5px; 
                 width: 125px; 
@@ -177,12 +195,12 @@ class UIInitializer:
                 font-size: 14px; 
             }
             QPushButton:hover { 
-                background-color: #4D4D4D; 
-                border: 1px solid #666666;
+                background-color: #7D7D7D; 
+                border: 1px solid #BBBBBB;
             }
             QPushButton:pressed { 
                 background-color: #2D2D2D; 
-                border: 2px solid #777777;
+                border: 1px solid #777777;
                 padding: 4px; 
             }
         """)
@@ -282,23 +300,7 @@ class UIInitializer:
         #     main_window.wbr_logo_label.setPixmap(scaled_logo)
         #     # Will position after top_image_label is sized
 
-        # Define a common button style with opaque background
-        opaque_button_style = """
-            QPushButton { 
-                background-color: #3D3D3D; 
-                color: white; 
-                border: 2px solid #555555; 
-                border-radius: 3px; 
-            }
-            QPushButton:hover { 
-                background-color: #4D4D4D; 
-                border: 2px solid #666666;
-            }
-            QPushButton:pressed { 
-                background-color: #2D2D2D; 
-                border: 2px solid #777777;
-            }
-        """
+        # Use the module-level opaque_button_style variable instead of redefining it
         
         generator_btn = QPushButton()
         generator_btn.setToolTip("🔥 (G)as Generator")
@@ -585,13 +587,14 @@ class UIInitializer:
         time_dock.setTitleBarWidget(QWidget())
         time_dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
         # Set fixed height to 70px
-        time_dock.setFixedHeight(70)
+        time_dock.setFixedHeight(45)
         # Ensure no borders are visible
         time_dock.setStyleSheet("QDockWidget { border: none; }")
         
         time_widget = TiledBackgroundWidget()
         time_widget.set_background(resource_path("src/ui/assets/backgroundstars.png"))
         time_layout = QVBoxLayout(time_widget)
+        time_layout.setContentsMargins(0, 0, 0, 0)
         
         time_controls = QHBoxLayout()
         
@@ -633,42 +636,110 @@ class UIInitializer:
             }
         """
         
-        main_window.play_btn = QPushButton("Run (Space)")
-        main_window.play_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_simulation))
-        main_window.play_btn.setStyleSheet(common_button_style + """
-            QPushButton { 
-                background-color: #003A80; 
-                color: white; 
-                font-weight: bold; 
-                font-size: 16px; 
-            }
-            QPushButton:hover { 
-                background-color: #0050AA;
-            }
-            QPushButton:pressed { 
-                background-color: #002A60; 
-            }
-        """)
-        main_window.play_btn.setFixedWidth(140)
+        # Create a custom button class for icon-based buttons that change on hover/press
+        class IconStateButton(QLabel):
+            def __init__(self, normal_icon_path, hover_icon_path=None, pressed_icon_path=None, size=(25, 25), parent=None):
+                super().__init__(parent)
+                
+                # Load the normal icon
+                self.normal_pixmap = QPixmap(resource_path(normal_icon_path))
+                
+                # If hover icon not provided, create a lighter version of the normal icon
+                if hover_icon_path:
+                    self.hover_pixmap = QPixmap(resource_path(hover_icon_path))
+                else:
+                    self.hover_pixmap = self._create_lighter_pixmap(self.normal_pixmap)
+                
+                # If pressed icon not provided, create a darker version of the normal icon
+                if pressed_icon_path:
+                    self.pressed_pixmap = QPixmap(resource_path(pressed_icon_path))
+                else:
+                    self.pressed_pixmap = self._create_darker_pixmap(self.normal_pixmap)
+                
+                # Scale pixmaps if needed
+                if size:
+                    self.normal_pixmap = self.normal_pixmap.scaled(size[0], size[1], Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    self.hover_pixmap = self.hover_pixmap.scaled(size[0], size[1], Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    self.pressed_pixmap = self.pressed_pixmap.scaled(size[0], size[1], Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                
+                # Set the default pixmap
+                self.setPixmap(self.normal_pixmap)
+                self.setFixedSize(size[0], size[1])
+                self.is_pressed = False
+                self.on_click = None
+                
+            def _create_lighter_pixmap(self, original_pixmap, factor=130):
+                # Create a lighter version of the pixmap
+                img = original_pixmap.toImage()
+                for y in range(img.height()):
+                    for x in range(img.width()):
+                        color = QColor(img.pixel(x, y))
+                        # Skip transparent pixels
+                        if color.alpha() > 0:
+                            # Increase brightness by the factor percentage
+                            h, s, l, a = color.getHsl()
+                            l = min(255, int(l * factor / 100))
+                            color.setHsl(h, s, l, a)
+                            img.setPixel(x, y, color.rgba())
+                return QPixmap.fromImage(img)
+            
+            def _create_darker_pixmap(self, original_pixmap, factor=70):
+                # Create a darker version of the pixmap
+                img = original_pixmap.toImage()
+                for y in range(img.height()):
+                    for x in range(img.width()):
+                        color = QColor(img.pixel(x, y))
+                        # Skip transparent pixels
+                        if color.alpha() > 0:
+                            # Decrease brightness by the factor percentage
+                            h, s, l, a = color.getHsl()
+                            l = max(0, int(l * factor / 100))
+                            color.setHsl(h, s, l, a)
+                            img.setPixel(x, y, color.rgba())
+                return QPixmap.fromImage(img)
+                
+            def mousePressEvent(self, event):
+                self.is_pressed = True
+                self.setPixmap(self.pressed_pixmap)
+                super().mousePressEvent(event)
+                
+            def mouseReleaseEvent(self, event):
+                self.is_pressed = False
+                self.setPixmap(self.hover_pixmap if self.underMouse() else self.normal_pixmap)
+                # Emit a fake click signal
+                if self.underMouse() and self.on_click:
+                    self.on_click()
+                super().mouseReleaseEvent(event)
+                
+            def enterEvent(self, event):
+                if not self.is_pressed:
+                    self.setPixmap(self.hover_pixmap)
+                super().enterEvent(event)
+                
+            def leaveEvent(self, event):
+                if not self.is_pressed:
+                    self.setPixmap(self.normal_pixmap)
+                super().leaveEvent(event)
+                
+            def setToolTip(self, text):
+                super().setToolTip(text)
         
-        main_window.reset_btn = QPushButton("🔴 (R)eset")
-        main_window.reset_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.reset_simulation))
-        main_window.reset_btn.setStyleSheet(common_button_style + """
-            QPushButton { 
-                background-color: #5D1818; 
-                color: white; 
-                font-weight: bold; 
-                font-size: 14px; 
-            }
-            QPushButton:hover { 
-                background-color: #7D2222; 
-            }
-            QPushButton:pressed { 
-                background-color: #3D1010; 
-            }
-        """)
-        main_window.reset_btn.setFixedWidth(110)
-
+        # Replace play button with custom button
+        main_window.play_btn = IconStateButton(
+            "src/ui/assets/simulation_controls/playpausebutton.png",
+            size=(40, 40)
+        )
+        main_window.play_btn.setToolTip("Run/Pause (Space)")
+        main_window.play_btn.on_click = lambda: main_window.cancel_connection_if_active(main_window.toggle_simulation)
+        
+        # Replace reset button with custom button
+        main_window.reset_btn = IconStateButton(
+            "src/ui/assets/simulation_controls/resetbutton.png",
+            size=(30, 30)
+        )
+        main_window.reset_btn.setToolTip("🔴 (R)eset")
+        main_window.reset_btn.on_click = lambda: main_window.cancel_connection_if_active(main_window.reset_simulation)
+        
         # Add speed control
         speed_label = QLabel("⏩ Speed:")
         main_window.speed_selector = QPushButton("▶▷▷")
@@ -697,6 +768,7 @@ class UIInitializer:
         
         # Add zoom control to time controls (moved from toolbar)
         zoom_label = QLabel("🔭")
+        zoom_label.setStyleSheet("font-size: 16px;")
         main_window.zoom_slider = QSlider(Qt.Horizontal)
         main_window.zoom_slider.setMinimum(40)  # 0.4x zoom (changed from 20/0.2x)
         main_window.zoom_slider.setMaximum(100)  # 1.0x zoom
@@ -706,32 +778,23 @@ class UIInitializer:
         main_window.zoom_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
         # Add screenshot button
-        main_window.screenshot_btn = QPushButton("📷")
-        main_window.screenshot_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: (
+        main_window.screenshot_btn = IconStateButton(
+            "src/ui/assets/simulation_controls/screenshotbutton.png",
+            size=(40, 40)
+        )
+        main_window.screenshot_btn.setToolTip("📷 Take Screenshot")
+        main_window.screenshot_btn.on_click = lambda: main_window.cancel_connection_if_active(lambda: (
             main_window.centralWidget().trigger_dark_gray_flash(),
             main_window.take_screenshot()
-        )))
-        main_window.screenshot_btn.setFixedWidth(150)
-        main_window.screenshot_btn.setStyleSheet(default_button_style)
+        ))
 
         # Add Autocomplete button
-        main_window.autocomplete_btn = QPushButton("🚀 Autocomplete (Enter)")
-        main_window.autocomplete_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.run_autocomplete))
-        main_window.autocomplete_btn.setStyleSheet(common_button_style + """
-            QPushButton { 
-                background-color: #005C5C; 
-                color: white; 
-                font-weight: bold; 
-                font-size: 16px; 
-            }
-            QPushButton:hover { 
-                background-color: #007878; 
-            }
-            QPushButton:pressed { 
-                background-color: #004040; 
-            }
-        """)
-        main_window.autocomplete_btn.setFixedWidth(250)
+        main_window.autocomplete_btn = IconStateButton(
+            "src/ui/assets/simulation_controls/autocompletebutton.png",
+            size=(40, 40)
+        )
+        main_window.autocomplete_btn.setToolTip("🚀 Autocomplete (Enter)")
+        main_window.autocomplete_btn.on_click = lambda: main_window.cancel_connection_if_active(main_window.run_autocomplete)
 
         # Add background toggle button
         main_window.background_toggle_btn = QPushButton("🌄 Off")
@@ -763,9 +826,9 @@ class UIInitializer:
         # time_controls.addWidget(main_window.speed_selector) // Removed speed selector as it doesnt get a lot of use, but just uncomment this line to add it back
         time_controls.addWidget(main_window.time_slider)
         time_controls.addWidget(main_window.autocomplete_btn)
-        time_controls.addWidget(main_window.background_toggle_btn)
+        # time_controls.addWidget(main_window.background_toggle_btn) // Removed background toggle button as it doesnt get a lot of use, but just uncomment this line to add it back
         time_controls.addWidget(main_window.screenshot_btn)
-        time_controls.addWidget(zoom_label)
+        # time_controls.addWidget(zoom_label)
         time_controls.addWidget(main_window.zoom_slider)
         
         time_layout.addLayout(time_controls)

@@ -1,4 +1,3 @@
-
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent
 from src.components.battery import BatteryComponent
@@ -41,7 +40,6 @@ class SimulationController:
             
             interval = int(100 / self.main_window.simulation_speed)
             self.main_window.sim_timer.start(interval)
-            self.main_window.play_btn.setText("Pause (Space)")
             self.main_window.disable_component_buttons(True)
             
             # Speed up the border animation when simulation is running
@@ -70,7 +68,6 @@ class SimulationController:
             self.main_window.autocomplete_btn.setEnabled(False)
             self.main_window.autocomplete_btn.setStyleSheet("""
                 QPushButton { 
-                    background-color: #005C5C; 
                     color: #99CCCC; 
                     border: 1px solid #555555; 
                     border-radius: 3px; 
@@ -84,7 +81,6 @@ class SimulationController:
             TerminalWidget.log("Simulation paused")
             
             self.main_window.sim_timer.stop()
-            self.main_window.play_btn.setText("Run (Space)")
             self.main_window.disable_component_buttons(False)
             
             # Slow down the border animation when simulation is stopped
@@ -117,9 +113,7 @@ class SimulationController:
             self.main_window.autocomplete_btn.setEnabled(True)
             self.main_window.autocomplete_btn.setStyleSheet("""
                 QPushButton { 
-                    background-color: #005C5C; 
                     color: white; 
-                    border: 1px solid #555555; 
                     border-radius: 3px; 
                     padding: 5px; 
                     font-weight: bold; 
@@ -137,9 +131,8 @@ class SimulationController:
     
     def step_simulation(self, steps):
         # Check if simulation was running but has been stopped (end of timeline)
-        if not self.main_window.simulation_engine.simulation_running and self.main_window.play_btn.text() == "Pause (Space)":
+        if not self.main_window.simulation_engine.simulation_running and self.main_window.simulation_engine.current_time_step >= 8760:
             # Update UI to reflect that simulation has stopped
-            self.main_window.play_btn.setText("Run (Space)")
             self.main_window.sim_timer.stop()
             self.main_window.disable_component_buttons(False)
             
@@ -165,9 +158,7 @@ class SimulationController:
             self.main_window.autocomplete_btn.setEnabled(True)
             self.main_window.autocomplete_btn.setStyleSheet("""
                 QPushButton { 
-                    background-color: #005C5C; 
                     color: white; 
-                    border: 1px solid #555555; 
                     border-radius: 3px; 
                     padding: 5px; 
                     font-weight: bold; 
@@ -283,7 +274,7 @@ class SimulationController:
                 item.update()  # Refresh the visual display
         
         # Update UI to match paused state
-        self.main_window.play_btn.setText("Run (Space)")
+        self.main_window.simulation_engine.simulation_running = False
         
         # Set is_resetting flag before changing time slider value
         self.main_window.is_resetting = True
@@ -309,9 +300,7 @@ class SimulationController:
         self.main_window.autocomplete_btn.setEnabled(True)
         self.main_window.autocomplete_btn.setStyleSheet("""
             QPushButton { 
-                background-color: #005C5C; 
                 color: white; 
-                border: 1px solid #555555; 
                 border-radius: 3px; 
                 padding: 5px; 
                 font-weight: bold; 

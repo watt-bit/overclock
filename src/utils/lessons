@@ -45,3 +45,9 @@ When implementing component maintenance or outage features, all related function
 Using consistent color coding throughout the UI (green for revenue/profit, red for costs) helps create a cohesive visual language that improves data interpretation.
 
 Decorative components (trees, bushes, ponds, etc.) don't need functional UI elements like info boxes since they're purely visual.
+
+The IconStateButton class provides a reusable way to create buttons with different icon states (normal/hover/pressed) by dynamically modifying pixmap brightness.
+
+Following the DRY (Don't Repeat Yourself) principle by importing shared style definitions from a central location improves maintainability and ensures consistency across the UI.
+
+Variables meant to be imported by other modules must be defined at the module level, not inside classes or methods, to be accessible via direct import statements.

@@ -55,7 +55,6 @@ class ModelManager:
         
         # Reset simulation
         self.main_window.simulation_engine.simulation_running = False
-        self.main_window.play_btn.setText("Run (Space)")
         self.main_window.time_slider.setValue(0)
         
         # Reset cursor state and connection mode

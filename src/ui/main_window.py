@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QColor
 
 from src.components.bus import BusComponent
-from .ui_initializer import GradientBorderText
+from .ui_initializer import GradientBorderText, opaque_button_style
 from .simulator_initializer import SimulatorInitializer
 from .capex_manager import CapexManager
 from .component_deleter import ComponentDeleter
@@ -326,27 +326,10 @@ class PowerSystemSimulator(QMainWindow):
     def disable_component_buttons(self, disabled):
         """Disable or enable all component and connection manipulation buttons"""
         # Define disabled button style with grey text
-        disabled_button_style = "QPushButton { background-color: #3D3D3D; color: #999999; border: 1px solid #555555; border-radius: 3px; padding: 5px; }"
+        disabled_button_style = "QPushButton { background-color: #3D3D3D; color: #999999;}"
         
-        # Full enabled button style with hover and pressed states
-        enabled_button_style = """
-            QPushButton { 
-                background-color: #3D3D3D; 
-                color: white; 
-                border: 1px solid #555555; 
-                border-radius: 3px; 
-                padding: 5px; 
-            }
-            QPushButton:hover { 
-                background-color: #4D4D4D; 
-                border: 1px solid #666666;
-            }
-            QPushButton:pressed { 
-                background-color: #2D2D2D; 
-                border: 2px solid #777777;
-                padding: 4px; 
-            }
-        """
+        # Use the imported opaque_button_style rather than redefining it
+        enabled_button_style = opaque_button_style
         
         # Use stored references
         for button in self.component_buttons:

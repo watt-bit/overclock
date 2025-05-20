@@ -46,3 +46,6 @@ Updated terminal_widget.py to use cross-platform font fallbacks (Menlo, Consolas
 Added 1px gray border to component standard text boxes with same transparency as background for improved visual definition.
 Modified ComponentBase to display revenue in green and cost in red with colors matching IRR display palette for visual consistency.
 Modified ComponentBase to hide standard text box for decorative components (trees, bushes, pond, houses, factory, data center, poles).
+Implemented icon state changes for time dock buttons (play, reset, screenshot, autocomplete) to lighten on hover and darken when pressed.
+Modified main_window.py to import opaque_button_style from ui_initializer instead of duplicating the button style definition, improving maintainability.
+Moved opaque_button_style from UIInitializer.initialize_ui method to module level in ui_initializer.py to make it properly importable by other modules.
