@@ -47,7 +47,7 @@ class AutocompleteManager:
         # Switch to historian view if currently in model view
         if self.main_window.is_model_view:
             self.main_window.switch_to_historian_view()
-            self.main_window.mode_toggle_btn.setText("💾 Historian (TAB)")
+            self.main_window.mode_toggle_btn.setText("💾 Historian ( \ )")
             # Ensure component buttons are disabled regardless of how we enter historian view
             self.main_window.disable_component_buttons(True)
         

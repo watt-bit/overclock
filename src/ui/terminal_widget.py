@@ -37,7 +37,7 @@ class TerminalWidget(QWidget):
         
         # Add a clear button
         clear_button = QPushButton("+")
-        clear_button.setToolTip("New terminal")
+        clear_button.setToolTip("Clear terminal")
         clear_button.setFixedSize(20, 20)
         clear_button.setStyleSheet("""
             QPushButton {
