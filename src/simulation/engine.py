@@ -167,6 +167,13 @@ class SimulationEngine(QObject):
             # Initialize load_satisfaction_ratio with default value
             load_satisfaction_ratio = 1.0
             
+            # Reset all grid component indicators to zero at the beginning of each step
+            for item in self.main_window.scene.items():
+                if isinstance(item, GridImportComponent):
+                    item.last_import = 0
+                elif isinstance(item, GridExportComponent):
+                    item.last_export = 0
+            
             # Initialize calculation variables exactly as before
             total_load = 0
             local_generation = 0
