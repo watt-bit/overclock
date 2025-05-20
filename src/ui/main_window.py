@@ -448,7 +448,7 @@ class PowerSystemSimulator(QMainWindow):
         elif self.background_mode == 1:
             self.background_toggle_btn.setText("🌄 Abilene")
         else:  # mode == 2
-            self.background_toggle_btn.setText("🌄 Background Off")
+            self.background_toggle_btn.setText("🌄 Off")
         
         # Trigger dark gray flash animation when toggling background
         if hasattr(self, 'centralWidget') and hasattr(self.centralWidget(), 'trigger_dark_gray_flash'):

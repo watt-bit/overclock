@@ -706,7 +706,7 @@ class UIInitializer:
         main_window.zoom_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
         # Add screenshot button
-        main_window.screenshot_btn = QPushButton("📷 Screenshot")
+        main_window.screenshot_btn = QPushButton("📷")
         main_window.screenshot_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: (
             main_window.centralWidget().trigger_dark_gray_flash(),
             main_window.take_screenshot()
@@ -734,9 +734,16 @@ class UIInitializer:
         main_window.autocomplete_btn.setFixedWidth(250)
 
         # Add background toggle button
-        main_window.background_toggle_btn = QPushButton("🌄 Background Off")
+        main_window.background_toggle_btn = QPushButton("🌄 Off")
         main_window.background_toggle_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_background))
-        main_window.background_toggle_btn.setStyleSheet(default_button_style)
+        # Create a fixed-width font for the button
+        background_button_style = default_button_style + """
+            QPushButton { 
+                font-family: Menlo, Consolas, Courier, monospace;
+                font-size: 12px;
+            }
+        """
+        main_window.background_toggle_btn.setStyleSheet(background_button_style)
         main_window.background_toggle_btn.setFixedWidth(150)
         
         # Create time slider
@@ -753,7 +760,7 @@ class UIInitializer:
         
         time_controls.addWidget(main_window.reset_btn)
         time_controls.addWidget(main_window.play_btn)
-        time_controls.addWidget(main_window.speed_selector)
+        # time_controls.addWidget(main_window.speed_selector) // Removed speed selector as it doesnt get a lot of use, but just uncomment this line to add it back
         time_controls.addWidget(main_window.time_slider)
         time_controls.addWidget(main_window.autocomplete_btn)
         time_controls.addWidget(main_window.background_toggle_btn)
