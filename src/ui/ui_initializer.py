@@ -50,7 +50,7 @@ class UIInitializer:
         main_window.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
         main_window.setCorner(Qt.TopRightCorner, Qt.RightDockWidgetArea)
         main_window.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
-        main_window.setCorner(Qt.BottomRightCorner, Qt.BottomDockWidgetArea)
+        main_window.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
         
         # Create a stylesheet for dock widgets to have modern flat dark gray title bars
         dock_title_style = """
@@ -143,12 +143,13 @@ class UIInitializer:
         main_window.capex_label.setStyleSheet("""
             QLabel {
                 font-weight: bold;
-                font-size: 16px;
+                font-size: 14px;
                 background-color: #262626; 
                 color: rgba(255, 255, 255, 0.8);
                 border-radius: 3px; 
                 padding: 5px;
-                border: 1px solid #555555; 
+                border: 1px solid #555555;
+                font-family: Menlo, Consolas, Courier, monospace; 
             }
         """)
         main_window.capex_label.adjustSize()  # Size to fit content
@@ -160,12 +161,13 @@ class UIInitializer:
         main_window.irr_label.setStyleSheet("""
             QLabel {
                 font-weight: bold;
-                font-size: 16px;
+                font-size: 14px;
                 background-color: #262626; 
                 color: rgba(255, 255, 255, 0.8); 
                 border-radius: 3px; 
                 padding: 5px; 
                 border: 1px solid #555555; 
+                font-family: Menlo, Consolas, Courier, monospace; 
             }
         """)
         main_window.irr_label.adjustSize()  # Size to fit content
@@ -182,7 +184,7 @@ class UIInitializer:
         main_window.irr_label.show()
         
         # Create Mode/Historian toggle button in top-left corner
-        main_window.mode_toggle_btn = QPushButton("🏗️ Build ( \\ )", main_window.view)
+        main_window.mode_toggle_btn = QPushButton("🏗️ Build", main_window.view)
         main_window.mode_toggle_btn.setStyleSheet("""
             QPushButton { 
                 background-color: #3D3D3D; 
@@ -190,12 +192,12 @@ class UIInitializer:
                 border: 1px solid #777777; 
                 border-radius: 3px; 
                 padding: 5px; 
-                width: 125px; 
-                font-weight: bold; 
-                font-size: 14px; 
+                font-family: Menlo, Consolas, Courier, monospace;
+                font-size: 11px; 
+                font-weight: bold;
             }
             QPushButton:hover { 
-                background-color: #7D7D7D; 
+                background-color: #6D6D6D; 
                 border: 1px solid #BBBBBB;
             }
             QPushButton:pressed { 
@@ -205,11 +207,12 @@ class UIInitializer:
             }
         """)
         main_window.mode_toggle_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_mode_button))
+        main_window.mode_toggle_btn.setToolTip("Build / Historian Mode ( \\ )")
         # Position in top left corner with padding
         main_window.mode_toggle_btn.move(10, 10)
         # Make the button visible
         main_window.mode_toggle_btn.show()
-        main_window.mode_toggle_btn.setFixedWidth(150)
+        main_window.mode_toggle_btn.setFixedWidth(100)
         
         # Create a custom class for the analytics toggle button
         class AnalyticsToggleButton(QLabel):
