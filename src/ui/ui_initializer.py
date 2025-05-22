@@ -193,7 +193,7 @@ class UIInitializer:
                 border-radius: 3px; 
                 padding: 5px; 
                 font-family: Menlo, Consolas, Courier, monospace;
-                font-size: 11px; 
+                font-size: 12px; 
                 font-weight: bold;
             }
             QPushButton:hover { 
