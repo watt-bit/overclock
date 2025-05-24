@@ -647,17 +647,16 @@ class UIInitializer:
                 # Load the normal icon
                 self.normal_pixmap = QPixmap(resource_path(normal_icon_path))
                 
-                # If hover icon not provided, create a lighter version of the normal icon
+                # Load hover and pressed icons
                 if hover_icon_path:
                     self.hover_pixmap = QPixmap(resource_path(hover_icon_path))
                 else:
-                    self.hover_pixmap = self._create_lighter_pixmap(self.normal_pixmap)
+                    self.hover_pixmap = self.normal_pixmap  # Fallback to normal if not provided
                 
-                # If pressed icon not provided, create a darker version of the normal icon
                 if pressed_icon_path:
                     self.pressed_pixmap = QPixmap(resource_path(pressed_icon_path))
                 else:
-                    self.pressed_pixmap = self._create_darker_pixmap(self.normal_pixmap)
+                    self.pressed_pixmap = self.normal_pixmap  # Fallback to normal if not provided
                 
                 # Scale pixmaps if needed
                 if size:
@@ -670,36 +669,6 @@ class UIInitializer:
                 self.setFixedSize(size[0], size[1])
                 self.is_pressed = False
                 self.on_click = None
-                
-            def _create_lighter_pixmap(self, original_pixmap, factor=130):
-                # Create a lighter version of the pixmap
-                img = original_pixmap.toImage()
-                for y in range(img.height()):
-                    for x in range(img.width()):
-                        color = QColor(img.pixel(x, y))
-                        # Skip transparent pixels
-                        if color.alpha() > 0:
-                            # Increase brightness by the factor percentage
-                            h, s, l, a = color.getHsl()
-                            l = min(255, int(l * factor / 100))
-                            color.setHsl(h, s, l, a)
-                            img.setPixel(x, y, color.rgba())
-                return QPixmap.fromImage(img)
-            
-            def _create_darker_pixmap(self, original_pixmap, factor=70):
-                # Create a darker version of the pixmap
-                img = original_pixmap.toImage()
-                for y in range(img.height()):
-                    for x in range(img.width()):
-                        color = QColor(img.pixel(x, y))
-                        # Skip transparent pixels
-                        if color.alpha() > 0:
-                            # Decrease brightness by the factor percentage
-                            h, s, l, a = color.getHsl()
-                            l = max(0, int(l * factor / 100))
-                            color.setHsl(h, s, l, a)
-                            img.setPixel(x, y, color.rgba())
-                return QPixmap.fromImage(img)
                 
             def mousePressEvent(self, event):
                 self.is_pressed = True
@@ -730,6 +699,8 @@ class UIInitializer:
         # Replace play button with custom button
         main_window.play_btn = IconStateButton(
             "src/ui/assets/simulation_controls/playpausebutton.png",
+            hover_icon_path="src/ui/assets/simulation_controls/playpausebuttonhover.png",
+            pressed_icon_path="src/ui/assets/simulation_controls/playpausebuttonpress.png",
             size=(40, 40)
         )
         main_window.play_btn.setToolTip("Run/Pause (Space)")
@@ -738,6 +709,8 @@ class UIInitializer:
         # Replace reset button with custom button
         main_window.reset_btn = IconStateButton(
             "src/ui/assets/simulation_controls/resetbutton.png",
+            hover_icon_path="src/ui/assets/simulation_controls/resetbuttonhover.png",
+            pressed_icon_path="src/ui/assets/simulation_controls/resetbuttonpress.png",
             size=(30, 30)
         )
         main_window.reset_btn.setToolTip("🔴 (R)eset")
@@ -783,6 +756,8 @@ class UIInitializer:
         # Add screenshot button
         main_window.screenshot_btn = IconStateButton(
             "src/ui/assets/simulation_controls/screenshotbutton.png",
+            hover_icon_path="src/ui/assets/simulation_controls/screenshotbuttonhover.png",
+            pressed_icon_path="src/ui/assets/simulation_controls/screenshotbuttonpress.png",
             size=(40, 40)
         )
         main_window.screenshot_btn.setToolTip("📷 Take Screenshot")
@@ -794,6 +769,8 @@ class UIInitializer:
         # Add Autocomplete button
         main_window.autocomplete_btn = IconStateButton(
             "src/ui/assets/simulation_controls/autocompletebutton.png",
+            hover_icon_path="src/ui/assets/simulation_controls/autocompletebuttonhover.png",
+            pressed_icon_path="src/ui/assets/simulation_controls/autocompletebuttonpress.png",
             size=(40, 40)
         )
         main_window.autocomplete_btn.setToolTip("🚀 Autocomplete (Enter)")

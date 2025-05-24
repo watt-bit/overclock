@@ -52,3 +52,6 @@ Moved opaque_button_style from UIInitializer.initialize_ui method to module leve
 Replaced static image in AugurTitleScreen with video player that displays titlevideo2.mp4 at 1600x900 pixels for 5 seconds before transitioning.
 Enhanced AugurTitleScreen to use QGraphicsScene with logo overlay - added augurvibelogosmall.png at 300px width in bottom left corner over video.
 Centered augurvibelogosmall.png logo on AugurTitleScreen and increased width from 300px to 700px for better visibility.
+Updated play/pause button to use dedicated hover and press state images (playpausebuttonhover.png, playpausebuttonpress.png) instead of auto-generated states.
+Updated reset, screenshot, and autocomplete buttons to use dedicated hover and press state images instead of auto-generated states.
+Removed unused _create_lighter_pixmap and _create_darker_pixmap methods from IconStateButton class, simplifying the code since all buttons now use dedicated images.
