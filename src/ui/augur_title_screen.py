@@ -28,11 +28,15 @@ class AugurTitleScreen(QWidget):
         
         # Set scene size to match video dimensions (1600x900)
         self.graphics_scene.setSceneRect(0, 0, 1600, 900)
+        self.graphics_view.setStyleSheet("background: black;")
         
         # Remove scroll bars and set view size
         self.graphics_view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.graphics_view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.graphics_view.setFixedSize(1600, 900)
+
+        # Add graphics view to layout
+        layout.addWidget(self.graphics_view)
         
         # Create video item and media player
         self.video_item = QGraphicsVideoItem()
@@ -69,9 +73,6 @@ class AugurTitleScreen(QWidget):
         
         # Center the window on the screen
         self.center_on_screen()
-
-        # Add graphics view to layout
-        layout.addWidget(self.graphics_view)
         
         # Setup auto-transition timer (5 seconds)
         self.timer = QTimer(self)
