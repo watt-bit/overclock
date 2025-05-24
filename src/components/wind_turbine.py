@@ -11,7 +11,7 @@ class WindTurbineComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap(resource_path("src/ui/assets/windturbine.png"))
+        self.image = QPixmap(resource_path("src/ui/assets/windturbine3.png"))
         
         # Wind turbine properties
         self.capacity = 5000  # kW - default capacity

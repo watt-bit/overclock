@@ -10,7 +10,7 @@ class GeneratorComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap(resource_path("src/ui/assets/generator.png"))
+        self.image = QPixmap(resource_path("src/ui/assets/generator2.png"))
         
         self.capacity = 1000  # kW
         self.operating_mode = "BTF Droop (Auto)"  # Static (Auto), BTF Unit Commitment (Auto), or BTF Droop (Auto)

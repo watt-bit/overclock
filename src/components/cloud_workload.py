@@ -10,7 +10,7 @@ class CloudWorkloadComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap(resource_path("src/ui/assets/cloudworkload.png"))
+        self.image = QPixmap(resource_path("src/ui/assets/cloudworkload4.png"))
         
         # Disable shadow effect for this component only
         self.shadow_opacity = 0

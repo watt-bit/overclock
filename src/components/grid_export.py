@@ -11,7 +11,7 @@ class GridExportComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap(resource_path("src/ui/assets/grid_export.png"))
+        self.image = QPixmap(resource_path("src/ui/assets/grid_export2.png"))
         
         self.capacity = 1500  # kW - maximum export capacity
         self.operating_mode = "Last Resort Unit (Auto)"  # Only Auto mode for now

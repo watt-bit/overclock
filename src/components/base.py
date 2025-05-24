@@ -248,7 +248,7 @@ class ComponentBase(QGraphicsRectItem):
                         painter.setBrush(QBrush(colors[0]))
                     
                     # Add a subtle border
-                    painter.setPen(QPen(QColor(255, 255, 255, 80), 2))
+                    painter.setPen(QPen(QColor(255, 255, 255, 140), 2))
                     painter.drawPath(hex_path)
                 
                 painter.restore()

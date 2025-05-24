@@ -11,7 +11,7 @@ class SolarPanelComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap(resource_path("src/ui/assets/solarpanel.png"))
+        self.image = QPixmap(resource_path("src/ui/assets/solarpanel2.png"))
         
         # Solar panel properties
         self.capacity = 1000  # kW - default capacity

@@ -11,7 +11,7 @@ class GridImportComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap(resource_path("src/ui/assets/grid_import.png"))
+        self.image = QPixmap(resource_path("src/ui/assets/grid_import2.png"))
         
         self.capacity = 2000  # kW - maximum import capacity
         self.operating_mode = "Last Resort Unit (Auto)"  # Only Auto mode for now

@@ -1,7 +1,10 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout
-from PyQt5.QtGui import QPixmap, QKeyEvent
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QGraphicsView, QGraphicsScene
+from PyQt5.QtGui import QKeyEvent, QPixmap
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QUrl, QSizeF
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtMultimediaWidgets import QGraphicsVideoItem
+from PyQt5.QtWidgets import QGraphicsPixmapItem
 from src.utils.resource import resource_path
 
 class AugurTitleScreen(QWidget):
@@ -18,46 +21,73 @@ class AugurTitleScreen(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         
-        # Load and display the Augur title image
-        title_image = QLabel()
-        pixmap = QPixmap(resource_path("src/ui/assets/augurtitle2.png"))
-        if not pixmap.isNull():
-            # Scale the pixmap to 90% of its original size
-            original_width = pixmap.width()
-            original_height = pixmap.height()
-            scaled_width = int(original_width * 0.9)
-            scaled_height = int(original_height * 0.9)
-            pixmap = pixmap.scaled(scaled_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            title_image.setPixmap(pixmap)
-        else:
-            # Fallback if image is not found
-            title_image.setText("Augur Title Screen (Image Not Found)")
-            title_image.setStyleSheet("font-size: 24px; color: white;")
-            self.setStyleSheet("background-color: #2A2A2A;")
+        # Create graphics view and scene for layering video and logo
+        self.graphics_view = QGraphicsView()
+        self.graphics_scene = QGraphicsScene()
+        self.graphics_view.setScene(self.graphics_scene)
         
-        # Center the image in the layout
-        title_image.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title_image)
+        # Set scene size to match video dimensions (1600x900)
+        self.graphics_scene.setSceneRect(0, 0, 1600, 900)
         
-        # Set the window size to match the scaled image size
-        self.setFixedSize(pixmap.width(), pixmap.height())
+        # Remove scroll bars and set view size
+        self.graphics_view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphics_view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphics_view.setFixedSize(1600, 900)
+        
+        # Create video item and media player
+        self.video_item = QGraphicsVideoItem()
+        self.video_item.setSize(QSizeF(1600, 900))
+        self.graphics_scene.addItem(self.video_item)
+        
+        self.media_player = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.media_player.setVideoOutput(self.video_item)
+        
+        # Load and add the logo overlay
+        logo_pixmap = QPixmap(resource_path("src/ui/assets/augurvibelogosmall.png"))
+        if not logo_pixmap.isNull():
+            # Scale logo to 700px width while maintaining aspect ratio
+            scaled_logo = logo_pixmap.scaledToWidth(700, Qt.SmoothTransformation)
+            
+            # Create graphics pixmap item for the logo
+            self.logo_item = QGraphicsPixmapItem(scaled_logo)
+            
+            # Center logo on the screen
+            logo_x = (1600 - scaled_logo.width()) / 2  # Center horizontally
+            logo_y = (900 - scaled_logo.height()) / 2  # Center vertically
+            self.logo_item.setPos(logo_x, logo_y)
+            
+            # Add logo to scene (it will be on top of video)
+            self.graphics_scene.addItem(self.logo_item)
+        
+        # Set the window size to match the video size
+        self.setFixedSize(1600, 900)
+        
+        # Load the video
+        video_path = resource_path("src/ui/assets/video/titlevideo2.mp4")
+        video_url = QUrl.fromLocalFile(video_path)
+        self.media_player.setMedia(QMediaContent(video_url))
         
         # Center the window on the screen
         self.center_on_screen()
+
+        # Add graphics view to layout
+        layout.addWidget(self.graphics_view)
         
-        # Setup auto-transition timer (3 seconds)
+        # Setup auto-transition timer (5 seconds)
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
         self.timer.setInterval(5000)  # 5 seconds
         self.timer.timeout.connect(self.auto_transition)
     
     def showEvent(self, event):
-        """Start the timer when the widget is shown"""
+        """Start the video and timer when the widget is shown"""
         super().showEvent(event)
+        self.media_player.play()
         self.timer.start()
     
     def auto_transition(self):
         """Automatically transition to the next screen after timer expires"""
+        self.media_player.stop()
         self.transition_to_next.emit()
         self.close()
     
@@ -75,14 +105,16 @@ class AugurTitleScreen(QWidget):
         """Handle key press events"""
         # Transition to the next screen when Enter is pressed
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
-            # Emit signal before closing
-            self.timer.stop()  # Stop the timer if a key is pressed
+            # Stop video and timer if a key is pressed
+            self.media_player.stop()
+            self.timer.stop()
             self.transition_to_next.emit()
             self.close()
         # Also transition on Escape or Space for user convenience
         elif event.key() in (Qt.Key_Escape, Qt.Key_Space):
-            # Emit signal before closing
-            self.timer.stop()  # Stop the timer if a key is pressed
+            # Stop video and timer if a key is pressed
+            self.media_player.stop()
+            self.timer.stop()
             self.transition_to_next.emit()
             self.close()
         else:

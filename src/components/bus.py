@@ -10,8 +10,8 @@ class BusComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the images
-        self.loaded_image = QPixmap(resource_path("src/ui/assets/busloaded.png"))
-        self.auto_image = QPixmap(resource_path("src/ui/assets/busauto"))  # Remove .png extension
+        self.loaded_image = QPixmap(resource_path("src/ui/assets/busauto3.png"))
+        self.auto_image = QPixmap(resource_path("src/ui/assets/busauto3.png")) 
         
         self.is_on = True  # Default state is on
         self.name = "Bus"  # Default name

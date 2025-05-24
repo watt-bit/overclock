@@ -49,3 +49,6 @@ Modified ComponentBase to hide standard text box for decorative components (tree
 Implemented icon state changes for time dock buttons (play, reset, screenshot, autocomplete) to lighten on hover and darken when pressed.
 Modified main_window.py to import opaque_button_style from ui_initializer instead of duplicating the button style definition, improving maintainability.
 Moved opaque_button_style from UIInitializer.initialize_ui method to module level in ui_initializer.py to make it properly importable by other modules.
+Replaced static image in AugurTitleScreen with video player that displays titlevideo2.mp4 at 1600x900 pixels for 5 seconds before transitioning.
+Enhanced AugurTitleScreen to use QGraphicsScene with logo overlay - added augurvibelogosmall.png at 300px width in bottom left corner over video.
+Centered augurvibelogosmall.png logo on AugurTitleScreen and increased width from 300px to 700px for better visibility.

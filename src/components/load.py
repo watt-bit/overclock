@@ -15,7 +15,7 @@ class LoadComponent(ComponentBase):
         # Make brush transparent (no background)
         self.setBrush(Qt.transparent)
         # Load the image
-        self.image = QPixmap(resource_path("src/ui/assets/load.png"))
+        self.image = QPixmap(resource_path("src/ui/assets/load2.png"))
         
         self.demand = 2000  # kW
         self.price_per_kwh = 0.00  # Default price per kWh in dollars
