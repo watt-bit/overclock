@@ -55,3 +55,6 @@ Centered augurvibelogosmall.png logo on AugurTitleScreen and increased width fro
 Updated play/pause button to use dedicated hover and press state images (playpausebuttonhover.png, playpausebuttonpress.png) instead of auto-generated states.
 Updated reset, screenshot, and autocomplete buttons to use dedicated hover and press state images instead of auto-generated states.
 Removed unused _create_lighter_pixmap and _create_darker_pixmap methods from IconStateButton class, simplifying the code since all buttons now use dedicated images.
+Added black mask overlay to AugurTitleScreen that covers the entire video and logo area (1600x900) positioned on top of all other elements.
+Added fade animation to AugurTitleScreen black mask using QTimer-based approach - fades from opaque to transparent over 250ms when video starts playing.
+Fixed AugurTitleScreen layering by setting explicit Z-values: video (0), logo (1), black mask (2) to ensure mask appears on top of all elements.

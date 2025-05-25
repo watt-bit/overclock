@@ -51,3 +51,5 @@ The IconStateButton class provides a reusable way to create buttons with differe
 Following the DRY (Don't Repeat Yourself) principle by importing shared style definitions from a central location improves maintainability and ensures consistency across the UI.
 
 Variables meant to be imported by other modules must be defined at the module level, not inside classes or methods, to be accessible via direct import statements.
+
+In QGraphicsScene, items added later appear on top of items added earlier - use this layering system to control visual hierarchy (e.g., masks over videos/logos).
