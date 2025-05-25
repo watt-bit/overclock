@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem, QGraphicsRectItem
-from PyQt5.QtGui import QKeyEvent, QPixmap, QBrush, QPen
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QGraphicsView, QGraphicsScene, QGraphicsRectItem
+from PyQt5.QtGui import QKeyEvent, QBrush, QPen
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QUrl, QSizeF
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtMultimediaWidgets import QGraphicsVideoItem
@@ -20,7 +20,7 @@ class AugurTitleScreen(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         
-        # Create graphics view and scene for layering video and logo
+        # Create graphics view and scene for video display
         self.graphics_view = QGraphicsView()
         self.graphics_scene = QGraphicsScene()
         self.graphics_view.setScene(self.graphics_scene)
@@ -46,29 +46,11 @@ class AugurTitleScreen(QWidget):
         self.media_player = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.media_player.setVideoOutput(self.video_item)
         
-        # Load and add the logo overlay
-        logo_pixmap = QPixmap(resource_path("src/ui/assets/augurvibelogosmall.png"))
-        if not logo_pixmap.isNull():
-            # Scale logo to 700px width while maintaining aspect ratio
-            scaled_logo = logo_pixmap.scaledToWidth(700, Qt.SmoothTransformation)
-            
-            # Create graphics pixmap item for the logo
-            self.logo_item = QGraphicsPixmapItem(scaled_logo)
-            
-            # Center logo on the screen
-            logo_x = (1600 - scaled_logo.width()) / 2  # Center horizontally
-            logo_y = (900 - scaled_logo.height()) / 2  # Center vertically
-            self.logo_item.setPos(logo_x, logo_y)
-            self.logo_item.setZValue(1)  # Middle layer
-            
-            # Add logo to scene (it will be on top of video)
-            self.graphics_scene.addItem(self.logo_item)
-        
         # Create and add black mask on top of everything
         self.black_mask = QGraphicsRectItem(0, 0, 1600, 900)
         self.black_mask.setBrush(QBrush(Qt.black))
         self.black_mask.setPen(QPen(Qt.NoPen))  # No border
-        self.black_mask.setZValue(2)  # Top layer - above everything
+        self.black_mask.setZValue(1)  # Top layer - above video
         self.graphics_scene.addItem(self.black_mask)
         
         # Set the window size to match the video size
