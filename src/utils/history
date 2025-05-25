@@ -58,3 +58,4 @@ Removed unused _create_lighter_pixmap and _create_darker_pixmap methods from Ico
 Added black mask overlay to AugurTitleScreen that covers the entire video and logo area (1600x900) positioned on top of all other elements.
 Added fade animation to AugurTitleScreen black mask using QTimer-based approach - fades from opaque to transparent over 250ms when video starts playing.
 Fixed AugurTitleScreen layering by setting explicit Z-values: video (0), logo (1), black mask (2) to ensure mask appears on top of all elements.
+Added fade-to-black animation in AugurTitleScreen that triggers at 9 seconds and fades the mask back to fully opaque over 1 second before transition.

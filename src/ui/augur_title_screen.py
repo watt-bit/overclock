@@ -75,7 +75,7 @@ class AugurTitleScreen(QWidget):
         self.setFixedSize(1600, 900)
         
         # Load the video
-        video_path = resource_path("src/ui/assets/video/titlevideo2.mp4")
+        video_path = resource_path("src/ui/assets/video/titlevideo6small.mp4")
         video_url = QUrl.fromLocalFile(video_path)
         self.media_player.setMedia(QMediaContent(video_url))
         
@@ -85,7 +85,7 @@ class AugurTitleScreen(QWidget):
         # Setup auto-transition timer (5 seconds)
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
-        self.timer.setInterval(5000)  # 5 seconds
+        self.timer.setInterval(10000)  # 5 seconds
         self.timer.timeout.connect(self.auto_transition)
         
         # Setup fade timer for black mask
@@ -93,6 +93,18 @@ class AugurTitleScreen(QWidget):
         self.fade_timer.setInterval(10)  # Update every 10ms for smooth animation
         self.fade_timer.timeout.connect(self.fade_step)
         self.fade_opacity = 1.0  # Start fully opaque
+        
+        # Setup fade-to-black timer (starts at 9 seconds)
+        self.fade_to_black_timer = QTimer(self)
+        self.fade_to_black_timer.setSingleShot(True)
+        self.fade_to_black_timer.setInterval(8500)  # 8.5 seconds
+        self.fade_to_black_timer.timeout.connect(self.start_fade_to_black)
+        
+        # Setup fade-to-black animation timer
+        self.fade_black_timer = QTimer(self)
+        self.fade_black_timer.setInterval(10)  # Update every 10ms for smooth animation
+        self.fade_black_timer.timeout.connect(self.fade_to_black_step)
+        self.is_fading_to_black = False
     
     def showEvent(self, event):
         """Start the video and timer when the widget is shown"""
@@ -101,6 +113,8 @@ class AugurTitleScreen(QWidget):
         self.timer.start()
         # Start the fade animation for the black mask
         self.fade_timer.start()
+        # Start the 9-second timer for fade-to-black
+        self.fade_to_black_timer.start()
     
     def fade_step(self):
         """Handle one step of the fade animation"""
@@ -114,10 +128,31 @@ class AugurTitleScreen(QWidget):
         # Apply the new opacity to the black mask
         self.black_mask.setOpacity(self.fade_opacity)
     
+    def start_fade_to_black(self):
+        """Start the fade-to-black animation at 9 seconds"""
+        self.is_fading_to_black = True
+        self.fade_black_timer.start()
+    
+    def fade_to_black_step(self):
+        """Handle one step of the fade-to-black animation"""
+        # Increase opacity by 0.01 each step (1.0 / 100 steps = 0.01)
+        # 100 steps * 10ms = 1000ms (1 second) total duration
+        self.fade_opacity += 0.01
+        
+        if self.fade_opacity >= 1.0:
+            # Animation complete - make fully opaque and stop timer
+            self.fade_opacity = 1.0
+            self.fade_black_timer.stop()
+        
+        # Apply the new opacity to the black mask
+        self.black_mask.setOpacity(self.fade_opacity)
+    
     def auto_transition(self):
         """Automatically transition to the next screen after timer expires"""
         self.media_player.stop()
         self.fade_timer.stop()  # Stop fade timer when transitioning
+        self.fade_to_black_timer.stop()  # Stop fade-to-black timer
+        self.fade_black_timer.stop()  # Stop fade-to-black animation timer
         self.transition_to_next.emit()
         self.close()
     
@@ -139,6 +174,8 @@ class AugurTitleScreen(QWidget):
             self.media_player.stop()
             self.timer.stop()
             self.fade_timer.stop()  # Stop fade timer when transitioning
+            self.fade_to_black_timer.stop()  # Stop fade-to-black timer
+            self.fade_black_timer.stop()  # Stop fade-to-black animation timer
             self.transition_to_next.emit()
             self.close()
         # Also transition on Escape or Space for user convenience
@@ -147,6 +184,8 @@ class AugurTitleScreen(QWidget):
             self.media_player.stop()
             self.timer.stop()
             self.fade_timer.stop()  # Stop fade timer when transitioning
+            self.fade_to_black_timer.stop()  # Stop fade-to-black timer
+            self.fade_black_timer.stop()  # Stop fade-to-black animation timer
             self.transition_to_next.emit()
             self.close()
         else:
