@@ -85,7 +85,7 @@ class AugurTitleScreen(QWidget):
         # Setup auto-transition timer (5 seconds)
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
-        self.timer.setInterval(10000)  # 5 seconds
+        self.timer.setInterval(5000)  # 5 seconds
         self.timer.timeout.connect(self.auto_transition)
         
         # Setup fade timer for black mask
