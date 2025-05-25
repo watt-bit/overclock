@@ -59,3 +59,4 @@ Added black mask overlay to AugurTitleScreen that covers the entire video and lo
 Added fade animation to AugurTitleScreen black mask using QTimer-based approach - fades from opaque to transparent over 250ms when video starts playing.
 Fixed AugurTitleScreen layering by setting explicit Z-values: video (0), logo (1), black mask (2) to ensure mask appears on top of all elements.
 Added fade-to-black animation in AugurTitleScreen that triggers at 9 seconds and fades the mask back to fully opaque over 1 second before transition.
+Updated component indicators to use 3px rounded corners - modified battery, grid export, grid import, solar panel, wind turbine, and load components.

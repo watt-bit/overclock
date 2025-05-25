@@ -103,7 +103,7 @@ class BatteryComponent(ComponentBase):
         # Draw battery level frame (outline)
         painter.setPen(QPen(Qt.white, 1.5))
         painter.setBrush(Qt.NoBrush)
-        painter.drawRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height))
+        painter.drawRoundedRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height), 3, 3)
         
         # Determine fill color based on charge level
         if charge_percent < 0.25:
@@ -120,7 +120,7 @@ class BatteryComponent(ComponentBase):
         painter.setPen(Qt.NoPen)
         painter.setBrush(QBrush(fill_color))
         fill_width = indicator_width * charge_percent
-        painter.drawRect(int(indicator_x), int(indicator_y), int(fill_width), int(indicator_height))
+        painter.drawRoundedRect(int(indicator_x), int(indicator_y), int(fill_width), int(indicator_height), 3, 3)
     
     def has_energy(self):
         """Check if battery has any stored energy"""

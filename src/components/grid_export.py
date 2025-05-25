@@ -79,7 +79,7 @@ class GridExportComponent(ComponentBase):
             # Draw export indicator frame (outline)
             painter.setPen(QPen(Qt.white, 1.5))
             painter.setBrush(Qt.NoBrush)
-            painter.drawRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height))
+            painter.drawRoundedRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height), 3, 3)
             
             # Determine fill color based on export percentage - use red with varying brightness
             # Darker red for lower export, brighter red for higher export
@@ -104,7 +104,7 @@ class GridExportComponent(ComponentBase):
             # Calculate y-position for fill (starting from bottom of indicator)
             fill_y = indicator_y + (indicator_height - fill_height)
             
-            painter.drawRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height))
+            painter.drawRoundedRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height), 3, 3)
         
         # Restore painter state
         painter.restore()

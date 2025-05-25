@@ -94,7 +94,7 @@ class LoadComponent(ComponentBase):
             # Draw load factor frame (outline)
             painter.setPen(QPen(Qt.white, 1.5))
             painter.setBrush(Qt.NoBrush)
-            painter.drawRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height))
+            painter.drawRoundedRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height), 3, 3)
             
             # Determine fill color based on load factor - use gold with varying brightness
             # Darker gold for lower load, brighter gold for higher load
@@ -119,7 +119,7 @@ class LoadComponent(ComponentBase):
             # Calculate y-position for fill (starting from bottom of indicator)
             fill_y = indicator_y + (indicator_height - fill_height)
             
-            painter.drawRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height))
+            painter.drawRoundedRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height), 3, 3)
             
         else:
             # When graphics are disabled, still handle selection highlight but not shadow

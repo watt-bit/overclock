@@ -80,7 +80,7 @@ class GridImportComponent(ComponentBase):
             # Draw import indicator frame (outline)
             painter.setPen(QPen(Qt.white, 1.5))
             painter.setBrush(Qt.NoBrush)
-            painter.drawRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height))
+            painter.drawRoundedRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height), 3, 3)
             
             # Determine fill color based on import percentage - use blue with varying brightness
             # Darker blue for lower import, brighter blue for higher import
@@ -105,7 +105,7 @@ class GridImportComponent(ComponentBase):
             # Calculate y-position for fill (starting from bottom of indicator)
             fill_y = indicator_y + (indicator_height - fill_height)
             
-            painter.drawRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height))
+            painter.drawRoundedRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height), 3, 3)
         
         # Restore painter state
         painter.restore()

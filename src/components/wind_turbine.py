@@ -76,7 +76,7 @@ class WindTurbineComponent(ComponentBase):
             # Draw output indicator frame (outline)
             painter.setPen(QPen(Qt.white, 1.5))
             painter.setBrush(Qt.NoBrush)
-            painter.drawRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height))
+            painter.drawRoundedRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height), 3, 3)
             
             # Determine fill color based on output percentage - use green with varying brightness
             # Darker green for lower output, brighter green for higher output
@@ -101,7 +101,7 @@ class WindTurbineComponent(ComponentBase):
             # Calculate y-position for fill (starting from bottom of indicator)
             fill_y = indicator_y + (indicator_height - fill_height)
             
-            painter.drawRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height))
+            painter.drawRoundedRect(int(indicator_x), int(fill_y), int(indicator_width), int(fill_height), 3, 3)
     
     def load_capacity_factors(self):
         """Load capacity factors from CSV file"""
