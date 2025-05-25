@@ -75,7 +75,7 @@ class AugurTitleScreen(QWidget):
         self.setFixedSize(1600, 900)
         
         # Load the video
-        video_path = resource_path("src/ui/assets/video/titlevideo2.mp4")
+        video_path = resource_path("src/ui/assets/video/titlevideo3.mp4")
         video_url = QUrl.fromLocalFile(video_path)
         self.media_player.setMedia(QMediaContent(video_url))
         
@@ -85,7 +85,7 @@ class AugurTitleScreen(QWidget):
         # Setup auto-transition timer (5 seconds)
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
-        self.timer.setInterval(5000)  # 5 seconds
+        self.timer.setInterval(10000)  # 5 seconds
         self.timer.timeout.connect(self.auto_transition)
         
         # Setup fade timer for black mask
