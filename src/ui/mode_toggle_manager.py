@@ -25,9 +25,9 @@ class ModeToggleManager:
             if self.main_window.analytics_dock.isVisible():
                 self.main_window.analytics_dock.setVisible(False)
             
-            # Hide the analytics toggle button in historian view
-            if hasattr(self.main_window, 'analytics_toggle_btn'):
-                self.main_window.analytics_toggle_btn.hide()
+            # Hide the analytics container in historian view
+            if hasattr(self.main_window, 'analytics_container'):
+                self.main_window.analytics_container.hide()
             
             # Disable the toolbar menu buttons for properties and analytics
             self.main_window.properties_action.setEnabled(False)
@@ -54,9 +54,9 @@ class ModeToggleManager:
             # Switching back to Model mode
             self.main_window.mode_toggle_btn.setText("🏗️ Build")
             
-            # Show the analytics toggle button when returning to model view
-            if hasattr(self.main_window, 'analytics_toggle_btn'):
-                self.main_window.analytics_toggle_btn.show()
+            # Show the analytics container when returning to model view
+            if hasattr(self.main_window, 'analytics_container'):
+                self.main_window.analytics_container.show()
             
             # Re-enable the toolbar menu buttons
             self.main_window.properties_action.setEnabled(True)
@@ -102,9 +102,9 @@ class ModeToggleManager:
             if self.main_window.analytics_dock.isVisible():
                 self.main_window.analytics_dock.setVisible(False)
             
-            # Hide the analytics toggle button in historian view
-            if hasattr(self.main_window, 'analytics_toggle_btn'):
-                self.main_window.analytics_toggle_btn.hide()
+            # Hide the analytics container in historian view
+            if hasattr(self.main_window, 'analytics_container'):
+                self.main_window.analytics_container.hide()
             
             # Disable the toolbar menu buttons for properties and analytics
             self.main_window.properties_action.setEnabled(False)

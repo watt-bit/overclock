@@ -444,41 +444,13 @@ class PowerSystemSimulator(QMainWindow):
         """Show the components panel if it's hidden"""
         self.component_dock.setVisible(True)
     
-    def position_properties_panel_if_needed(self):
-        """Position the properties panel 475px up and 725px right from the center of the screen if not already positioned"""
-        if not self.properties_panel_positioned and self.properties_dock.isFloating():
-            # Get the screen geometry
-            screen_rect = QApplication.desktop().screenGeometry()
-            screen_center = screen_rect.center()
-            
-            # Calculate the new position 
-            panel_width = self.properties_dock.width()
-            panel_height = self.properties_dock.height()
-            new_x = screen_center.x() + 325 - panel_width // 2
-            new_y = screen_center.y() - 300 - panel_height // 2
-            
-            # Ensure the panel stays within the screen boundaries
-            new_x = max(0, min(new_x, screen_rect.width() - panel_width))
-            new_y = max(0, min(new_y, screen_rect.height() - panel_height))
-            
-            # Set the position
-            self.properties_dock.move(new_x, new_y)
-            
-            # Mark as positioned
-            self.properties_panel_positioned = True
-    
     def toggle_properties_panel(self):
         """Toggle the properties panel visibility"""
-        
         self.properties_dock.setVisible(not self.properties_dock.isVisible())
-        if self.properties_dock.isVisible():
-            self.position_properties_panel_if_needed()
 
     def toggle_analytics_panel(self):
         """Toggle the analytics panel visibility"""
         self.analytics_dock.setVisible(not self.analytics_dock.isVisible())
-        if self.analytics_dock.isVisible():
-            self.position_properties_panel_if_needed()
 
     def update_properties_menu_text(self, visible):
         """Update the properties panel menu text based on visibility"""
@@ -510,9 +482,13 @@ class PowerSystemSimulator(QMainWindow):
         if hasattr(self, 'mode_toggle_btn'):
             self.mode_toggle_btn.move(10, 10)
             
-        # Reposition analytics toggle button in top right corner
-        if hasattr(self, 'analytics_toggle_btn'):
-            self.analytics_toggle_btn.move(self.view.width() - 85, 0)
+        # Reposition analytics container in top right corner
+        if hasattr(self, 'analytics_container'):
+            self.analytics_container.move(self.view.width() - 390, 0)
+            
+        # Reposition properties panel: right edge 90px from right side, top edge 75px from top
+        if hasattr(self, 'properties_dock'):
+            self.properties_dock.move(self.view.width() - 300 - 90, 53)
             
         # Reposition capex label and irr label in bottom left corner
         if hasattr(self, 'capex_label'):

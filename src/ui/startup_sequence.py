@@ -21,6 +21,10 @@ class StartupSequence(QObject):
         TerminalWidget.log("2025 Watt-Bit Research Inc.")
         TerminalWidget.log(" ")
         
+        # Hide the properties panel at startup
+        if hasattr(self.main_window, 'properties_dock'):
+            self.main_window.properties_dock.setVisible(False)
+        
         # Disable component buttons until startup sequence completes
         self.main_window.disable_component_buttons(True)
         

@@ -11,6 +11,7 @@ import math
 from .analytics import AnalyticsPanel
 from .tiled_background_widget import TiledBackgroundWidget
 from .terminal_widget import TerminalWidget
+from .selected_component_display import SelectedComponentDisplay
 from src.utils.resource import resource_path
 from .classes.gradient_border_text import GradientBorderText
 from .classes.bordered_main_widget import BorderedMainWidget
@@ -255,14 +256,28 @@ class UIInitializer:
                     self.setPixmap(self.normal_pixmap)
                 super().leaveEvent(event)
         
-        # Create Analytics toggle button in top-right corner
-        main_window.analytics_toggle_btn = AnalyticsToggleButton(main_window.view)
+        # Create horizontal container for analytics button and future UI components
+        main_window.analytics_container = QWidget(main_window.view)
+        main_window.analytics_container_layout = QHBoxLayout(main_window.analytics_container)
+        main_window.analytics_container_layout.setContentsMargins(0, 0, 0, 0)
+        main_window.analytics_container_layout.setSpacing(5)  # 5px spacing between items
+        
+        # Create Selected Component Display
+        main_window.selected_component_display = SelectedComponentDisplay(main_window.analytics_container)
+        
+        # Create Analytics toggle button
+        main_window.analytics_toggle_btn = AnalyticsToggleButton(main_window.analytics_container)
         # Set the click handler
         main_window.analytics_toggle_btn.on_click = lambda: main_window.cancel_connection_if_active(main_window.toggle_analytics_panel)
-        # Position in top right corner with padding
-        main_window.analytics_toggle_btn.move(main_window.view.width() - 85, 0)
-        # Make the button visible
-        main_window.analytics_toggle_btn.show()
+        
+        # Add the selected component display and analytics button to the container
+        main_window.analytics_container_layout.addWidget(main_window.selected_component_display)
+        main_window.analytics_container_layout.addWidget(main_window.analytics_toggle_btn)
+        
+        # Position container in top right corner with padding (adjusted for wider container)
+        main_window.analytics_container.move(main_window.view.width() - 390, 0)
+        # Make the container visible
+        main_window.analytics_container.show()
         
         # Component palette
         main_window.component_dock = QDockWidget("Components", main_window)
@@ -531,44 +546,26 @@ class UIInitializer:
         main_window.component_dock.setWidget(component_widget)
         main_window.addDockWidget(Qt.LeftDockWidgetArea, main_window.component_dock)
         
-        # Properties panel
-        main_window.properties_dock = QDockWidget("Properties", main_window)
+        # Properties panel - positioned as overlay on view like analytics container
+        main_window.properties_dock = QDockWidget("Properties", main_window.view)
         main_window.properties_dock.setObjectName("properties_dock")
         main_window.properties_dock.setWidget(main_window.properties_manager.properties_widget)
-        main_window.properties_dock.setStyleSheet("QDockWidget { background-color: rgba(37, 47, 52, 0.75); }")
+        main_window.properties_dock.setStyleSheet("QDockWidget { background-color: rgba(37, 47, 52, 0.75); border: none; }")
         
-        # Create custom title bar with only a centered label
-        custom_title_bar = QWidget()
-        custom_title_bar_layout = QHBoxLayout(custom_title_bar)
-        custom_title_bar_layout.setContentsMargins(0, 0, 0, 0)
+        # Remove title bar and prevent undocking/closing
+        main_window.properties_dock.setTitleBarWidget(QWidget())
+        main_window.properties_dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
         
-        title_label = QLabel("Properties")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setStyleSheet("""
-            color: white;
-            font-weight: bold;
-            background-color: rgba(37, 47, 52, 0.75);
-            border: 1px solid rgba(52, 152, 219, 0.75);
-            border-radius: 4px;
-            padding: 10px
-        """)
+        # Set fixed width of 300px while allowing height to adjust to contents
+        main_window.properties_dock.setFixedWidth(300)
+        main_window.properties_dock.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         
-        custom_title_bar_layout.addWidget(title_label)
+        # Position panel: right edge 90px from right side, top edge 75px from top
+        main_window.properties_dock.move(main_window.view.width() - 300 - 90, 53)
         
-        # Set the custom title bar
-        main_window.properties_dock.setTitleBarWidget(custom_title_bar)
-        
-        # Allow the dock widget to resize when its contents change
-        main_window.properties_dock.setFeatures(QDockWidget.DockWidgetFloatable | 
-                                        QDockWidget.DockWidgetMovable)
-        # Prevent the properties panel from being docked
-        main_window.properties_dock.setAllowedAreas(Qt.NoDockWidgetArea)
-        # Ensure the dock resizes to the minimum size of its contents
-        main_window.properties_dock.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        main_window.addDockWidget(Qt.RightDockWidgetArea, main_window.properties_dock)
-        # Make properties panel floating and hidden by default
-        main_window.properties_dock.setFloating(True)
+        # Make properties panel hidden by default
         main_window.properties_dock.setVisible(False)
+        main_window.properties_dock.show()
         
         # Analytics panel
         main_window.analytics_dock = QDockWidget("Analytics", main_window)
@@ -930,9 +927,9 @@ class UIInitializer:
         if hasattr(self, 'mode_toggle_btn'):
             self.mode_toggle_btn.move(10, 10)
             
-        # Reposition analytics toggle button in top right corner
-        if hasattr(self, 'analytics_toggle_btn'):
-            self.analytics_toggle_btn.move(self.view.width() - 85, 0)
+        # Reposition analytics container in top right corner
+        if hasattr(self, 'analytics_container'):
+            self.analytics_container.move(self.view.width() - 340, 0)
             
         # Reposition capex label in bottom left corner
         if hasattr(self, 'capex_label'):

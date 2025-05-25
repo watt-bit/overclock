@@ -38,6 +38,10 @@ class CustomScene(QGraphicsScene, QObject):
                 for component in self.parent().components:
                     if hasattr(component, 'set_properties_panel_state'):
                         component.set_properties_panel_state(False)
+                
+                # Clear the selected component display when clicking on empty space
+                if hasattr(self.parent(), 'selected_component_display'):
+                    self.parent().selected_component_display.update_selected_component(None)
         super().mouseReleaseEvent(event)
     
     def set_background(self, mode):

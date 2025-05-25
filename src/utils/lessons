@@ -53,3 +53,5 @@ Following the DRY (Don't Repeat Yourself) principle by importing shared style de
 Variables meant to be imported by other modules must be defined at the module level, not inside classes or methods, to be accessible via direct import statements.
 
 In QGraphicsScene, items added later appear on top of items added earlier - use this layering system to control visual hierarchy (e.g., masks over videos/logos).
+
+For UI overlays that need fixed positioning relative to screen edges, make them children of the view widget and handle repositioning in the resize event handler, similar to analytics container pattern.

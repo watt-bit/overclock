@@ -554,4 +554,20 @@ class ComponentBase(QGraphicsRectItem):
                         for component in scene_parent.components:
                             if hasattr(component, 'set_properties_panel_state'):
                                 component.set_properties_panel_state(False)
+            
+            # Update the selected component display
+            if self.scene() and hasattr(self.scene(), 'parent'):
+                scene_parent = self.scene().parent()
+                if hasattr(scene_parent, 'selected_component_display'):
+                    if value:  # Component is being selected
+                        scene_parent.selected_component_display.update_selected_component(self)
+                    else:  # Component is being deselected
+                        # Check if any other components are still selected
+                        selected_items = [item for item in self.scene().selectedItems() if hasattr(item, 'component_id')]
+                        if selected_items:
+                            # Update display with the first selected component
+                            scene_parent.selected_component_display.update_selected_component(selected_items[0])
+                        else:
+                            # No components selected, clear display
+                            scene_parent.selected_component_display.update_selected_component(None)
         return super().itemChange(change, value) 

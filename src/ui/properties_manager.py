@@ -38,12 +38,14 @@ class ComponentPropertiesManager:
     def __init__(self, main_window):
         self.main_window = main_window
         self.properties_widget = QWidget()
-        self.properties_widget.setStyleSheet('color: white;')
-        # Set size policies to allow the widget to shrink to its minimum size
-        self.properties_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self.properties_widget.setStyleSheet('color: white; background-color: rgba(37, 47, 52, 0.75); border: none; font-family: Menlo, Consolas, Courier, monospace; font-size: 11px; border-radius: 3px;')
+        # Set size policies to have fixed width but allow height to adjust to contents
+        self.properties_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        # Set fixed width to match the dock widget width
+        self.properties_widget.setFixedWidth(300)
         self.properties_layout = QFormLayout(self.properties_widget)
         # Set layout margins to be minimal
-        self.properties_layout.setContentsMargins(25, 25, 25, 25)
+        self.properties_layout.setContentsMargins(10, 10, 10, 10)
         # Set left alignment for all labels in the form
         self.properties_layout.setLabelAlignment(Qt.AlignLeft)
         self.properties_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
@@ -98,7 +100,6 @@ class ComponentPropertiesManager:
         # Make properties panel visible if it's currently hidden
         if not self.main_window.properties_dock.isVisible():
             self.main_window.properties_dock.setVisible(True)
-            self.main_window.position_properties_panel_if_needed()
         
         # Update the component's properties_open state
         if hasattr(component, 'set_properties_panel_state'):

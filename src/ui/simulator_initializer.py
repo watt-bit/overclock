@@ -44,8 +44,7 @@ class SimulatorInitializer:
         simulator.autocomplete_timer = None
         simulator.autocomplete_end_time = 0
         
-        # Track if the properties panel has been positioned yet
-        simulator.properties_panel_positioned = False
+
         
         # Background mode: 0 = background1, 1 = background2, 2 = solid color
         simulator.background_mode = 2  # Set default to solid color (Background Off)

@@ -60,3 +60,14 @@ Added fade animation to AugurTitleScreen black mask using QTimer-based approach 
 Fixed AugurTitleScreen layering by setting explicit Z-values: video (0), logo (1), black mask (2) to ensure mask appears on top of all elements.
 Added fade-to-black animation in AugurTitleScreen that triggers at 9 seconds and fades the mask back to fully opaque over 1 second before transition.
 Updated component indicators to use 3px rounded corners - modified battery, grid export, grid import, solar panel, wind turbine, and load components.
+Added SelectedComponentDisplay widget to analytics container - 250x25px rounded rectangle with properties panel styling, positioned left of analytics button.
+Fixed analytics container positioning in main_window.py resize handler to match ui_initializer.py (-340px from right edge).
+Implemented selected component display logic - shows "no component selected" by default, updates to show component type + ID when selected, clears on deselection.
+Updated selected component display text styling to match hover display colors - light gray (205,205,205) for component type, darker blue (80,150,225) for ID.
+Resized SelectedComponentDisplay from 250px to 300px width and updated analytics container positioning from -340px to -390px to accommodate wider display.
+Removed title bar from properties panel by replacing custom title bar widget with empty QWidget(), matching analytics and time controls panels.
+Fixed properties panel width at 300px while keeping height dynamic by setting setFixedWidth(300) and setSizePolicy(Fixed, Preferred) on both dock and widget.
+Changed properties panel positioning to fixed overlay system - panel positioned with right edge 90px from screen right and top edge 75px from screen top, repositions automatically on window resize like analytics container.
+Fixed crash in properties_manager.py by removing call to deleted position_properties_panel_if_needed() method.
+Added logic to startup_sequence.py to hide properties panel at the start of the startup sequence for a cleaner initial experience.
+Fixed properties panel width bug by adding setFixedWidth(300) to properties_widget in properties_manager.py to prevent content from shrinking panel below 300px.

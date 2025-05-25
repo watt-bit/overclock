@@ -76,6 +76,10 @@ class ComponentDeleter:
         # Clear selection in the scene to prevent lingering references
         self.main_window.scene.clearSelection()
         
+        # Clear the selected component display since no components are selected
+        if hasattr(self.main_window, 'selected_component_display'):
+            self.main_window.selected_component_display.update_selected_component(None)
+        
         # Update simulation state
         self.main_window.update_simulation()
         
