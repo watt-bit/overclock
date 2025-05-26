@@ -488,7 +488,7 @@ class PowerSystemSimulator(QMainWindow):
             
         # Reposition properties panel: right edge 90px from right side, top edge 75px from top
         if hasattr(self, 'properties_dock'):
-            self.properties_dock.move(self.view.width() - 300 - 90, 53)
+            self.properties_dock.move(self.view.width() - 300 - 90, 52)
             
         # Reposition capex label and irr label in bottom left corner
         if hasattr(self, 'capex_label'):

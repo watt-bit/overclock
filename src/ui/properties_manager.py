@@ -38,7 +38,7 @@ class ComponentPropertiesManager:
     def __init__(self, main_window):
         self.main_window = main_window
         self.properties_widget = QWidget()
-        self.properties_widget.setStyleSheet('color: white; background-color: rgba(37, 47, 52, 0.75); border: none; font-family: Menlo, Consolas, Courier, monospace; font-size: 11px; border-radius: 3px;')
+        self.properties_widget.setStyleSheet('color: white; background-color: rgba(37, 47, 52, 0.75); border: none; font-family: Menlo, Consolas, Courier, monospace; font-size: 10px; border-radius: 3px;')
         # Set size policies to have fixed width but allow height to adjust to contents
         self.properties_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         # Set fixed width to match the dock widget width

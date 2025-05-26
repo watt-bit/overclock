@@ -561,7 +561,7 @@ class UIInitializer:
         main_window.properties_dock.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         
         # Position panel: right edge 90px from right side, top edge 75px from top
-        main_window.properties_dock.move(main_window.view.width() - 300 - 90, 53)
+        main_window.properties_dock.move(main_window.view.width() - 300 - 90, 52)
         
         # Make properties panel hidden by default
         main_window.properties_dock.setVisible(False)
