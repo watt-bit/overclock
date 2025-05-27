@@ -20,7 +20,7 @@ class WBRTitleScreen(QWidget):
         
         # Load and display the WBR title image
         title_image = QLabel()
-        pixmap = QPixmap(resource_path("src/ui/assets/WBRtitle.png"))
+        pixmap = QPixmap(resource_path("src/ui/assets/wbrtitle5.png"))
         if not pixmap.isNull():
             # Scale the pixmap to 90% of its original size
             original_width = pixmap.width()
