@@ -85,6 +85,7 @@ def add_cloud_workload_properties(properties_manager, component, layout):
         min_value=0.00,
         max_value=10.0
     )
+
     dedicated_params_layout.addRow("Price per Resource Hour ($):", price_per_resource_edit)
     
     # Set left alignment for all labels in the forms
@@ -104,11 +105,6 @@ def add_cloud_workload_properties(properties_manager, component, layout):
         # Show/hide appropriate parameters based on mode
         multi_cloud_params_widget.setVisible(text == "Multi-Cloud Spot")
         dedicated_params_widget.setVisible(text == "Dedicated Capacity")
-        # Reset accumulated revenue when switching modes
-        if text != component.operating_mode:
-            component.accumulated_revenue = 0.0
-            revenue_label.setText(f"${component.accumulated_revenue:.2f}")
-            multi_cloud_revenue_label.setText(f"${component.accumulated_revenue:.2f}")
     
     mode_selector.currentTextChanged.connect(on_mode_changed)
     layout.addRow("Operating Mode:", mode_selector)
