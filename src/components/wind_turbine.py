@@ -143,7 +143,7 @@ class WindTurbineComponent(ComponentBase):
             return 0
             
         # If in Powerlandia mode, calculate output based on capacity factors
-        if self.operating_mode == "Powerlandia 8760 - Midwest 1":
+        if self.operating_mode == "Powerlandia 8760-1":
             # Load capacity factors if not already loaded
             if self.capacity_factors is None:
                 self.load_capacity_factors()

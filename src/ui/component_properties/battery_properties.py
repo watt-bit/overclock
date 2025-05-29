@@ -74,8 +74,7 @@ def add_battery_properties(properties_manager, component, layout):
     properties_manager._set_up_numeric_field(capex_edit, update_capex, min_value=0.00, max_value=100000)
     
     # Add controls to layout
+    layout.addRow("Operating Mode:", mode_selector)
     layout.addRow("Power Capacity (MW):", power_capacity_edit)
     layout.addRow("Energy Capacity (kWh):", energy_capacity_edit)
-    layout.addRow("Charge Level:", charge_label)
-    layout.addRow("Operating Mode:", mode_selector)
     layout.addRow("CAPEX per kW ($):", capex_edit) 

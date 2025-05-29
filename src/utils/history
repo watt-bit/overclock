@@ -71,3 +71,10 @@ Changed properties panel positioning to fixed overlay system - panel positioned 
 Fixed crash in properties_manager.py by removing call to deleted position_properties_panel_if_needed() method.
 Added logic to startup_sequence.py to hide properties panel at the start of the startup sequence for a cleaner initial experience.
 Fixed properties panel width bug by adding setFixedWidth(300) to properties_widget in properties_manager.py to prevent content from shrinking panel below 300px.
+Modified grid import properties to move Load Profile button to separate line below dropdown selector, always visible but disabled unless Custom mode selected.
+Enhanced Load Profile button styling to show grayed-out text when disabled for better visual feedback.
+Updated grid import auto-charging button to use same styling as generator component with proper ON/OFF colors and hover states.
+Applied same UI improvements to grid export properties - moved Load button to separate line, always visible but disabled when not Custom mode, with proper disabled styling.
+Applied same UI improvements to wind turbine properties - moved Load Profile button to separate line, always visible but disabled when not Custom mode, with proper disabled styling.
+Applied same UI improvements to solar panel properties - moved Load button to separate line, always visible but disabled when not Custom mode, with proper disabled styling.
+Modified bus properties Load State button to grey out text color (#888888) when disabled due to no load connections for better visual feedback.

@@ -190,9 +190,9 @@ class SimulationEngine(QObject):
                     total_load += item.calculate_demand(current_time)
                 elif isinstance(item, GeneratorComponent):
                     total_capacity += item.capacity
-                elif isinstance(item, SolarPanelComponent) and (item.operating_mode == "Powerlandia 8760 - Midwest 1" or item.operating_mode == "Custom"):
+                elif isinstance(item, SolarPanelComponent) and (item.operating_mode == "Powerlandia 8760-1" or item.operating_mode == "Custom"):
                     total_capacity += item.capacity
-                elif isinstance(item, WindTurbineComponent) and (item.operating_mode == "Powerlandia 8760 - Midwest 1" or item.operating_mode == "Custom"):
+                elif isinstance(item, WindTurbineComponent) and (item.operating_mode == "Powerlandia 8760-1" or item.operating_mode == "Custom"):
                     total_capacity += item.capacity
                 elif isinstance(item, BatteryComponent):
                     total_battery_charge += item.current_charge / 1000.0
@@ -207,7 +207,7 @@ class SimulationEngine(QObject):
             
             # Start with Solar Panel and Wind Turbine generation - highest priority
             for item in self.main_window.scene.items():
-                if isinstance(item, SolarPanelComponent) and (item.operating_mode == "Powerlandia 8760 - Midwest 1" or item.operating_mode == "Custom"):
+                if isinstance(item, SolarPanelComponent) and (item.operating_mode == "Powerlandia 8760-1" or item.operating_mode == "Custom"):
                     output = item.calculate_output(remaining_load)
                     local_generation += output
                     remaining_load = max(0, remaining_load - output)
@@ -215,7 +215,7 @@ class SimulationEngine(QObject):
                     # Track individual component output
                     component_outputs[item] = output
                     
-                elif isinstance(item, WindTurbineComponent) and (item.operating_mode == "Powerlandia 8760 - Midwest 1" or item.operating_mode == "Custom"):
+                elif isinstance(item, WindTurbineComponent) and (item.operating_mode == "Powerlandia 8760-1" or item.operating_mode == "Custom"):
                     output = item.calculate_output(remaining_load)
                     local_generation += output
                     remaining_load = max(0, remaining_load - output)

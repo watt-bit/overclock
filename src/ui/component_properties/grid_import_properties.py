@@ -14,27 +14,18 @@ def add_grid_import_properties(properties_manager, component, layout):
     cost_edit.setStyleSheet(INPUT_STYLE)
     properties_manager._set_up_numeric_field(cost_edit, lambda value: setattr(component, 'cost_per_kwh', value), min_value=0.00)
     
-    # Create market prices selector with dropdown
-    market_prices_layout = QHBoxLayout()
-    market_prices_layout.setContentsMargins(0, 0, 0, 0)
+    # Create market prices selector dropdown (no button on same line)
     market_prices_selector = QComboBox()
     market_prices_selector.setStyleSheet(COMBOBOX_STYLE)
-    market_prices_selector.addItems(["None", "Powerlandia 8760 Wholesale - Year 1", "Custom"])
+    market_prices_selector.addItems(["None", "Powerlandia 8760-1", "Custom"])
     market_prices_selector.setCurrentText(component.market_prices_mode)
-    market_prices_selector.setMinimumWidth(250)
-    market_prices_layout.addWidget(market_prices_selector)
+    market_prices_selector.setMinimumWidth(150)
     
-    # Add load profile button (only visible for Custom type)
-    load_profile_btn = QPushButton("Load Profile")
-    load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
-    load_profile_btn.setVisible(component.market_prices_mode == "Custom")
+    # Create load profile button (always visible, on separate line)
+    load_profile_btn = QPushButton("Load")
+    load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + ("" if component.market_prices_mode == "Custom" else " QPushButton:disabled { color: #888888; }"))
+    load_profile_btn.setEnabled(component.market_prices_mode == "Custom")
     load_profile_btn.clicked.connect(lambda: properties_manager._load_custom_profile(component))
-    market_prices_layout.addWidget(load_profile_btn)
-    
-    # Create a widget to hold the market prices layout
-    market_prices_widget = QWidget()
-    market_prices_widget.setLayout(market_prices_layout)
-    market_prices_widget.setFixedWidth(275)
     
     # Add profile info label
     profile_info = QLabel()
@@ -46,10 +37,15 @@ def add_grid_import_properties(properties_manager, component, layout):
     def on_market_prices_mode_changed(text):
         component.market_prices_mode = text
         # If switching to Powerlandia mode, load market prices
-        if text == "Powerlandia 8760 Wholesale - Year 1":
+        if text == "Powerlandia 8760-1":
             component.load_market_prices()
-        # Show/hide load profile button based on mode
-        load_profile_btn.setVisible(text == "Custom")
+        # Enable/disable load profile button based on mode and update styling
+        is_enabled = text == "Custom"
+        load_profile_btn.setEnabled(is_enabled)
+        if is_enabled:
+            load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+        else:
+            load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + " QPushButton:disabled { color: #888888; }")
         # Update profile info text
         if text == "Custom" and component.profile_name:
             profile_info.setText(f"Loaded: {component.profile_name}")
@@ -63,25 +59,76 @@ def add_grid_import_properties(properties_manager, component, layout):
     # Add auto-charging toggle button
     auto_charging_btn = QPushButton("ON" if component.auto_charge_batteries else "OFF")
     auto_charging_btn.setStyleSheet(
-        COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.auto_charge_batteries 
-        else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
-    )
+        COMMON_BUTTON_STYLE + """
+        QPushButton { 
+            background-color: #185D18; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        QPushButton:hover { 
+            background-color: #227D22; 
+        }
+        QPushButton:pressed { 
+            background-color: #103D10; 
+        }
+    """ if component.auto_charge_batteries 
+        else COMMON_BUTTON_STYLE + """
+        QPushButton { 
+            background-color: #5D1818; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        QPushButton:hover { 
+            background-color: #7D2222; 
+        }
+        QPushButton:pressed { 
+            background-color: #3D1010; 
+        }
+    """)
     
     def toggle_auto_charging():
         component.auto_charge_batteries = not component.auto_charge_batteries
         auto_charging_btn.setText("ON" if component.auto_charge_batteries else "OFF")
         auto_charging_btn.setStyleSheet(
-            COMMON_BUTTON_STYLE + "QPushButton { background-color: #4CAF50; color: white; }" if component.auto_charge_batteries 
-            else COMMON_BUTTON_STYLE + "QPushButton { background-color: #f44336; color: white; }"
-        )
+        COMMON_BUTTON_STYLE + """
+        QPushButton { 
+            background-color: #185D18; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        QPushButton:hover { 
+            background-color: #227D22; 
+        }
+        QPushButton:pressed { 
+            background-color: #103D10; 
+        }
+    """ if component.auto_charge_batteries 
+        else COMMON_BUTTON_STYLE + """
+        QPushButton { 
+            background-color: #5D1818; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        QPushButton:hover { 
+            background-color: #7D2222; 
+        }
+        QPushButton:pressed { 
+            background-color: #3D1010; 
+        }
+    """)
         component.update()
         properties_manager.main_window.update_simulation()
     
     auto_charging_btn.clicked.connect(toggle_auto_charging)
     
-    layout.addRow("Max Capacity (MW):", capacity_edit)
-    layout.addRow("Bulk Import PPA ($/kWh):", cost_edit)
-    layout.addRow("Market Import Prices ($/kWh):", market_prices_widget)
-    layout.addRow("", profile_info)
     layout.addRow("Operating Mode:", QLabel("Last Resort Unit (Auto)"))
-    layout.addRow("Auto-Charge Batteries:", auto_charging_btn) 
+    layout.addRow("Capacity (MW):", capacity_edit)
+    layout.addRow("Bulk PPA ($/kWh):", cost_edit)
+    layout.addRow("Wholesale Prices:", market_prices_selector)
+    layout.addRow("CSV File:", load_profile_btn)
+    layout.addRow("", profile_info)
+    layout.addRow("Auto-Charging:", auto_charging_btn) 

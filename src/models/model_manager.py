@@ -477,7 +477,7 @@ class ModelManager:
                         component.custom_profile = component_data["custom_profile"]
                         component.profile_name = component_data["profile_name"]
                     # Load capacity factors if in active mode
-                    if component.operating_mode == "Powerlandia 8760 - Midwest 1":
+                    if component.operating_mode == "Powerlandia 8760-1":
                         component.load_capacity_factors()
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)
@@ -497,7 +497,7 @@ class ModelManager:
                         component.custom_profile = component_data["custom_profile"]
                         component.profile_name = component_data["profile_name"]
                     # Load capacity factors if in active mode
-                    if component.operating_mode == "Powerlandia 8760 - Midwest 1":
+                    if component.operating_mode == "Powerlandia 8760-1":
                         component.load_capacity_factors()
                     self.main_window.scene.addItem(component)
                     self.main_window.components.append(component)

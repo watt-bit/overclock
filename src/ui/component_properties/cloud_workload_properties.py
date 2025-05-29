@@ -21,7 +21,7 @@ def add_cloud_workload_properties(properties_manager, component, layout):
     # Create a container for resource parameters that will only be visible in Multi-Cloud Spot mode
     multi_cloud_params_widget = QWidget()
     multi_cloud_params_layout = QFormLayout(multi_cloud_params_widget)
-    multi_cloud_params_layout.setContentsMargins(10, 10, 10, 10)
+    multi_cloud_params_layout.setContentsMargins(0, 0, 0, 0)
     
     # Add traditional cloud parameters
     trad_params_label = QLabel(f"Power: {component.traditional_cloud_power} kW\nPrice: ${component.traditional_cloud_price:.2f}")
@@ -38,7 +38,7 @@ def add_cloud_workload_properties(properties_manager, component, layout):
     # Create a container for dedicated capacity parameters
     dedicated_params_widget = QWidget()
     dedicated_params_layout = QFormLayout(dedicated_params_widget)
-    dedicated_params_layout.setContentsMargins(10, 10, 10, 10)
+    dedicated_params_layout.setContentsMargins(0, 0, 0, 0)
     
     # Add power per resource field
     power_per_resource_edit = QLineEdit(str(component.dedicated_power_per_resource))
@@ -87,17 +87,6 @@ def add_cloud_workload_properties(properties_manager, component, layout):
     )
     dedicated_params_layout.addRow("Price per Resource Hour ($):", price_per_resource_edit)
     
-    # Add revenue display to both parameter widgets
-    revenue_label = QLabel(f"${component.accumulated_revenue:.2f}")
-    revenue_label.setStyleSheet("font-weight: bold;")
-    
-    # Create a separate label for multi-cloud params
-    multi_cloud_revenue_label = QLabel(f"${component.accumulated_revenue:.2f}")
-    multi_cloud_revenue_label.setStyleSheet("font-weight: bold;")
-    
-    multi_cloud_params_layout.addRow("Accumulated Revenue:", multi_cloud_revenue_label)
-    dedicated_params_layout.addRow("Accumulated Revenue:", revenue_label)
-    
     # Set left alignment for all labels in the forms
     multi_cloud_params_layout.setLabelAlignment(Qt.AlignLeft)
     multi_cloud_params_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
@@ -123,6 +112,6 @@ def add_cloud_workload_properties(properties_manager, component, layout):
     
     mode_selector.currentTextChanged.connect(on_mode_changed)
     layout.addRow("Operating Mode:", mode_selector)
-    layout.addRow("", multi_cloud_params_widget)
-    layout.addRow("", dedicated_params_widget)
+    layout.addRow(multi_cloud_params_widget)
+    layout.addRow(dedicated_params_widget)
     layout.addRow(note_label) 

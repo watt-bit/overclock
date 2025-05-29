@@ -26,13 +26,13 @@ from src.components.wind_turbine import WindTurbineComponent
 from src.components.distribution_pole import DistributionPoleComponent
 
 # Define common styles
-COMMON_BUTTON_STYLE = "QPushButton { border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
-DEFAULT_BUTTON_STYLE = "QPushButton { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
+COMMON_BUTTON_STYLE = "QPushButton { border: 1px solid #777777; border-radius: 3px; padding: 1px; }"
+DEFAULT_BUTTON_STYLE = "QPushButton { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 1px; }"
 SLIDER_STYLE = "QSlider::groove:horizontal { background: rgba(37, 47, 52, 0.75); height: 8px; border-radius: 4px; } " \
               "QSlider::handle:horizontal { background: #777777; width: 16px; margin: -4px 0; border-radius: 8px; }"
-COMBOBOX_STYLE = "QComboBox { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
-INPUT_STYLE = "QLineEdit { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
-LINEEDIT_STYLE = "QLineEdit { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 5px; }"
+COMBOBOX_STYLE = "QComboBox { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 1px; }"
+INPUT_STYLE = "QLineEdit { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 1px; }"
+LINEEDIT_STYLE = "QLineEdit { background-color: rgba(37, 47, 52, 0.75); color: white; border: 1px solid #777777; border-radius: 3px; padding: 1px; }"
 
 class ComponentPropertiesManager:
     def __init__(self, main_window):

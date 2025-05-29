@@ -45,35 +45,53 @@ def add_bus_properties(properties_manager, component, layout):
     
     # Add on/off toggle - renamed to Load State
     state_toggle = QPushButton("ON" if component.is_on else "OFF")
-    state_toggle.setStyleSheet(
-        COMMON_BUTTON_STYLE + """
-        QPushButton { 
-            background-color: #185D18; 
-            color: white; 
-            font-weight: bold; 
-            font-size: 14px; 
-        }
-        QPushButton:hover { 
-            background-color: #227D22; 
-        }
-        QPushButton:pressed { 
-            background-color: #103D10; 
-        }
-    """ if component.is_on 
-        else COMMON_BUTTON_STYLE + """
-        QPushButton { 
-            background-color: #5D1818; 
-            color: white; 
-            font-weight: bold; 
-            font-size: 14px; 
-        }
-        QPushButton:hover { 
-            background-color: #7D2222; 
-        }
-        QPushButton:pressed { 
-            background-color: #3D1010; 
-        }
-    """)
+    
+    if has_loads:
+        # Normal styling when enabled
+        state_toggle.setStyleSheet(
+            COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #185D18; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #227D22; 
+            }
+            QPushButton:pressed { 
+                background-color: #103D10; 
+            }
+        """ if component.is_on 
+            else COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #5D1818; 
+                color: white; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { 
+                background-color: #7D2222; 
+            }
+            QPushButton:pressed { 
+                background-color: #3D1010; 
+            }
+        """)
+    else:
+        # Disabled styling when no loads connected
+        state_toggle.setStyleSheet(
+            COMMON_BUTTON_STYLE + """
+            QPushButton { 
+                background-color: #185D18; 
+                color: #888888; 
+                font-weight: bold; 
+                font-size: 14px; 
+            }
+            QPushButton:disabled { 
+                background-color: #185D18; 
+                color: #888888; 
+            }
+        """)
     
     # Enable or disable based on load connections
     state_toggle.setEnabled(has_loads)
@@ -85,7 +103,20 @@ def add_bus_properties(properties_manager, component, layout):
         if not component.is_on:
             component.is_on = True
             state_toggle.setText("ON")
-            state_toggle.setStyleSheet(COMMON_BUTTON_STYLE + "QPushButton { background-color: #185D18; color: white; width: 47px; }")
+            # Apply disabled styling since it's forced to be disabled
+            state_toggle.setStyleSheet(
+                COMMON_BUTTON_STYLE + """
+                QPushButton { 
+                    background-color: #185D18; 
+                    color: #888888; 
+                    font-weight: bold; 
+                    font-size: 14px; 
+                }
+                QPushButton:disabled { 
+                    background-color: #185D18; 
+                    color: #888888; 
+                }
+            """)
             component.update()  # Redraw the component
     else:
         state_toggle.setToolTip("Toggle power to connected loads.")

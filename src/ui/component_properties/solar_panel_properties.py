@@ -5,28 +5,18 @@ from src.ui.properties_manager import COMBOBOX_STYLE, DEFAULT_BUTTON_STYLE, INPU
 
 def add_solar_panel_properties(properties_manager, component, layout):
     """Add properties for SolarPanelComponent"""
-    # Add operating mode selector
+    # Add operating mode selector (no button on same line)
     mode_selector = QComboBox()
     mode_selector.setStyleSheet(COMBOBOX_STYLE)
-    mode_selector.addItems(["Disabled", "Powerlandia 8760 - Midwest 1", "Custom"])
+    mode_selector.addItems(["Disabled", "Powerlandia 8760-1", "Custom"])
     mode_selector.setCurrentText(component.operating_mode)
-    mode_selector.setMinimumWidth(250)
+    mode_selector.setMinimumWidth(150)
     
-    # Create a horizontal layout for profile selection and load button
-    profile_layout = QHBoxLayout()
-    profile_layout.setContentsMargins(0, 0, 0, 0)
-    profile_layout.addWidget(mode_selector)
-    
-    # Add load profile button (only visible for Custom type)
-    load_profile_btn = QPushButton("Load Profile")
-    load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
-    load_profile_btn.setVisible(component.operating_mode == "Custom")
+    # Create load profile button (always visible, on separate line)
+    load_profile_btn = QPushButton("Load")
+    load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + ("" if component.operating_mode == "Custom" else " QPushButton:disabled { color: #888888; }"))
+    load_profile_btn.setEnabled(component.operating_mode == "Custom")
     load_profile_btn.clicked.connect(lambda: properties_manager._load_custom_profile(component))
-    profile_layout.addWidget(load_profile_btn)
-    
-    # Create a widget to hold the profile layout
-    profile_widget = QWidget()
-    profile_widget.setLayout(profile_layout)
     
     # Add profile info label
     profile_info = QLabel()
@@ -38,10 +28,15 @@ def add_solar_panel_properties(properties_manager, component, layout):
     def on_mode_changed(text):
         component.operating_mode = text
         # If switching to Powerlandia mode, load capacity factors
-        if text == "Powerlandia 8760 - Midwest 1":
+        if text == "Powerlandia 8760-1":
             component.load_capacity_factors()
-        # Show/hide load profile button based on mode
-        load_profile_btn.setVisible(text == "Custom")
+        # Enable/disable load profile button based on mode and update styling
+        is_enabled = text == "Custom"
+        load_profile_btn.setEnabled(is_enabled)
+        if is_enabled:
+            load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+        else:
+            load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + " QPushButton:disabled { color: #888888; }")
         # Update profile info text
         if text == "Custom" and component.profile_name:
             profile_info.setText(f"Loaded: {component.profile_name}")
@@ -51,7 +46,8 @@ def add_solar_panel_properties(properties_manager, component, layout):
         properties_manager.main_window.update_simulation()  # Update simulation to reflect the change
     
     mode_selector.currentTextChanged.connect(on_mode_changed)
-    layout.addRow("Operating Mode:", profile_widget)
+    layout.addRow("Operating Mode:", mode_selector)
+    layout.addRow("CSV File:", load_profile_btn)
     layout.addRow("", profile_info)
     
     # Add capacity field
