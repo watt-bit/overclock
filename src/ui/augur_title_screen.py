@@ -57,7 +57,7 @@ class AugurTitleScreen(QWidget):
         self.setFixedSize(1600, 900)
         
         # Load the video
-        video_path = resource_path("src/ui/assets/video/titlevideo6small.mp4")
+        video_path = resource_path("src/ui/assets/video/titlevideo6small_faststart.mp4")
         video_url = QUrl.fromLocalFile(video_path)
         self.media_player.setMedia(QMediaContent(video_url))
         
