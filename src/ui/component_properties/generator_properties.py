@@ -21,7 +21,7 @@ def add_generator_properties(properties_manager, component, layout):
     # Add operating mode selector
     mode_selector = QComboBox()
     mode_selector.setStyleSheet(COMBOBOX_STYLE)
-    mode_selector.addItems(["Static (Auto)", "BTF Unit Commitment (Auto)", "BTF Droop (Auto)"])
+    mode_selector.addItems(["Static (Auto)", "BTF Unit Commit (Auto)", "BTF Droop (Auto)"])
     mode_selector.setCurrentText(component.operating_mode)
     
     # Add output level slider for static mode
@@ -45,11 +45,23 @@ def add_generator_properties(properties_manager, component, layout):
     # Show/hide output level based on mode
     output_level_widget = QWidget()
     output_level_widget.setLayout(output_level_layout)
-    output_level_widget.setVisible(component.operating_mode == "Static (Auto)")
+    
+    # Always show output level widget, but enable/disable based on mode
+    def update_control_states(mode):
+        is_static_mode = mode == "Static (Auto)"
+        output_level_widget.setEnabled(is_static_mode)
+        # Update label styling when disabled
+        if is_static_mode:
+            output_level_label.setStyleSheet("color: white;")
+        else:
+            output_level_label.setStyleSheet("color: #888888;")  # Grey out when disabled
+    
+    # Set initial state
+    update_control_states(component.operating_mode)
     
     def on_mode_changed(text):
         component.operating_mode = text
-        output_level_widget.setVisible(text == "Static (Auto)")
+        update_control_states(text)
     
     mode_selector.currentTextChanged.connect(on_mode_changed)
     
@@ -137,6 +149,11 @@ def add_generator_properties(properties_manager, component, layout):
     """)
         ramp_rate_slider.setEnabled(component.ramp_rate_enabled)
         ramp_rate_label.setEnabled(component.ramp_rate_enabled)
+        # Update label styling when disabled
+        if component.ramp_rate_enabled:
+            ramp_rate_label.setStyleSheet("color: white;")
+        else:
+            ramp_rate_label.setStyleSheet("color: #888888;")  # Grey out when disabled
     
     ramp_rate_checkbox.clicked.connect(toggle_ramp_rate)
     ramp_rate_slider.valueChanged.connect(update_ramp_rate)
@@ -144,6 +161,11 @@ def add_generator_properties(properties_manager, component, layout):
     # Set initial state
     ramp_rate_slider.setEnabled(component.ramp_rate_enabled)
     ramp_rate_label.setEnabled(component.ramp_rate_enabled)
+    # Set initial label styling based on enabled state
+    if component.ramp_rate_enabled:
+        ramp_rate_label.setStyleSheet("color: white;")
+    else:
+        ramp_rate_label.setStyleSheet("color: #888888;")  # Grey out when disabled
     
     ramp_rate_layout.addWidget(ramp_rate_checkbox)
     ramp_rate_layout.addWidget(ramp_rate_slider)
@@ -290,16 +312,16 @@ def add_generator_properties(properties_manager, component, layout):
                               is_float=False, min_value=1, max_value=10000)
     
     # Add all controls to properties layout
-    layout.addRow("Capacity (MW):", capacity_edit)
     layout.addRow("Operating Mode:", mode_selector)
-    layout.addRow("Output Level:", output_level_widget)
-    layout.addRow("Ramp Rate Limiter:", ramp_rate_widget)
-    layout.addRow("Auto-Charge Batteries:", auto_charging_btn)
+    layout.addRow("Capacity (MW):", capacity_edit)
+    layout.addRow("Static Output:", output_level_widget)
+    layout.addRow("Ramp Rate Limit:", ramp_rate_widget)
+    layout.addRow("Auto-Charging:", auto_charging_btn)
     layout.addRow("kWh per GJ:", conversion_info)
     layout.addRow("Efficiency:", efficiency_widget)
-    layout.addRow("Gas Cost per GJ ($):", cost_edit)
+    layout.addRow("Gas Cost ($/GJ):", cost_edit)
     layout.addRow("CAPEX per kW ($):", capex_edit)
-    layout.addRow("Outages per 10k Hrs:", frequency_edit)
-    layout.addRow("Min Downtime (hrs):", min_downtime_edit)
-    layout.addRow("Max Downtime (hrs):", max_downtime_edit)
-    layout.addRow("Cooldown Time (hrs):", cooldown_edit) 
+    layout.addRow("Outage (/10k hrs):", frequency_edit)
+    layout.addRow("Min Outage (hrs):", min_downtime_edit)
+    layout.addRow("Max Outage (hrs):", max_downtime_edit)
+    layout.addRow("Cooldown (hrs):", cooldown_edit) 

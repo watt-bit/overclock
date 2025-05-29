@@ -13,7 +13,7 @@ class GeneratorComponent(ComponentBase):
         self.image = QPixmap(resource_path("src/ui/assets/generator2.png"))
         
         self.capacity = 1000  # kW
-        self.operating_mode = "BTF Droop (Auto)"  # Static (Auto), BTF Unit Commitment (Auto), or BTF Droop (Auto)
+        self.operating_mode = "BTF Droop (Auto)"  # Static (Auto), BTF Unit Commit (Auto), or BTF Droop (Auto)
         self.output_level = 1.0  # Fraction of capacity (0-1) for static mode
         self.ramp_rate_enabled = False  # Whether ramp rate limiting is enabled
         self.ramp_rate_limit = 0.2  # Maximum change in output per hour (20% - slowest)
@@ -130,10 +130,10 @@ class GeneratorComponent(ComponentBase):
         # Calculate target output based on operating mode
         if self.operating_mode == "Static (Auto)":
             target_output = self.capacity * self.output_level
-        elif self.operating_mode == "BTF Unit Commitment (Auto)":
+        elif self.operating_mode == "BTF Unit Commit (Auto)":
             # Return the minimum of total load or generator capacity
             target_output = min(total_load, self.capacity)
-            # If in BTF Unit Commitment (Auto) mode and total_load is 0, we should return 0
+            # If in BTF Unit Commit (Auto) mode and total_load is 0, we should return 0
             # This ensures generators correctly report no output when no load remains
             if total_load == 0:
                 target_output = 0

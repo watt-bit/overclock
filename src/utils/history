@@ -78,3 +78,8 @@ Applied same UI improvements to grid export properties - moved Load button to se
 Applied same UI improvements to wind turbine properties - moved Load Profile button to separate line, always visible but disabled when not Custom mode, with proper disabled styling.
 Applied same UI improvements to solar panel properties - moved Load button to separate line, always visible but disabled when not Custom mode, with proper disabled styling.
 Modified bus properties Load State button to grey out text color (#888888) when disabled due to no load connections for better visual feedback.
+Modified generator properties to always show output level controls regardless of operating mode, with inactive controls being disabled/greyed out instead of hidden.
+Enhanced generator properties ramp rate limiter to grey out label text when disabled for consistent visual feedback.
+Modified load properties to always show all controls regardless of demand mode, with inactive controls being disabled/greyed out instead of hidden.
+Modified load properties Load button to be on separate row instead of same line as demand mode dropdown, matching grid import component UI pattern.
+Modified load properties time offset control to use slider and label only (removed text edit), matching frequency control pattern. Range changed to 0-8759.

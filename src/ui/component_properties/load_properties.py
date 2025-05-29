@@ -47,6 +47,7 @@ def add_load_properties(properties_manager, component, layout):
     profile_type.setStyleSheet(COMBOBOX_STYLE + "QComboBox { width: 125px; }")
     profile_type.addItems(["Data Center", "Sine Wave", "Custom", "Random 8760", "Constant", "Powerlandia 60CF"])
     profile_type.setCurrentText(component.profile_type)
+    profile_type.setFixedWidth(150)
     
     # Disable profile switching if connected to cloud workload
     if connected_to_cloud:
@@ -61,21 +62,25 @@ def add_load_properties(properties_manager, component, layout):
         """
         profile_type.setStyleSheet(disabled_combobox_style)
     
-    # Create a horizontal layout for profile selection and load button
+    # Create a horizontal layout for profile selection
     profile_layout = QHBoxLayout()
     profile_layout.setContentsMargins(0, 0, 0, 0)
     profile_layout.addWidget(profile_type)
     
-    # Add load profile button (only visible for Custom type)
-    load_profile_btn = QPushButton("Load Profile")
-    load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
-    load_profile_btn.setVisible(component.profile_type == "Custom")
-    load_profile_btn.clicked.connect(lambda: properties_manager._load_custom_profile(component))
-    profile_layout.addWidget(load_profile_btn)
-    
     # Create a widget to hold the profile layout
     profile_widget = QWidget()
     profile_widget.setLayout(profile_layout)
+    
+    # Create load profile button (always visible but enabled only for Custom type)
+    load_profile_btn = QPushButton("Load")
+    load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+    load_profile_btn.setEnabled(component.profile_type == "Custom")
+    # Set initial styling based on enabled state
+    if component.profile_type == "Custom":
+        load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+    else:
+        load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + "QPushButton { color: #888888; }")
+    load_profile_btn.clicked.connect(lambda: properties_manager._load_custom_profile(component))
     
     # Add profile info label
     profile_info = QLabel()
@@ -94,21 +99,28 @@ def add_load_properties(properties_manager, component, layout):
     data_center_layout.setContentsMargins(0, 0, 0, 0)
     data_center_type = QComboBox()
     data_center_type.setStyleSheet(COMBOBOX_STYLE)
-    data_center_type.addItems(["GPU Dense", "Traditional Cloud", "Crypto ASIC"])
+    data_center_type.addItems(["GPU Dense", "Traditional", "Crypto ASIC"])
     data_center_type.setCurrentText(component.data_center_type)
+    data_center_type.setFixedWidth(150)
     data_center_type.currentTextChanged.connect(lambda text: setattr(component, 'data_center_type', text))
     data_center_layout.addWidget(data_center_type)
     
     # Create a widget to hold the data center type selector
     data_center_widget = QWidget()
     data_center_widget.setLayout(data_center_layout)
-    data_center_widget.setVisible(component.profile_type == "Data Center")
+    data_center_widget.setEnabled(component.profile_type == "Data Center")
     
     # Create data center profile generator button
     dc_generate_layout = QHBoxLayout()
     dc_generate_layout.setContentsMargins(0, 0, 0, 0)
-    dc_generate_btn = QPushButton("Generate Data Center Profile")
+    dc_generate_btn = QPushButton("Generate Data Center 8760")
     dc_generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+    dc_generate_btn.setEnabled(component.profile_type == "Data Center")
+    # Set initial styling based on enabled state
+    if component.profile_type == "Data Center":
+        dc_generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+    else:
+        dc_generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + "QPushButton { color: #888888; }")
     
     def generate_data_center_profile():
         # Clear any existing random profile
@@ -125,13 +137,19 @@ def add_load_properties(properties_manager, component, layout):
     # Create a widget to hold the data center generator controls
     dc_generate_widget = QWidget()
     dc_generate_widget.setLayout(dc_generate_layout)
-    dc_generate_widget.setVisible(component.profile_type == "Data Center")
+    dc_generate_widget.setEnabled(component.profile_type == "Data Center")
     
     # Create random profile generator controls
     random_profile_layout = QHBoxLayout()
     random_profile_layout.setContentsMargins(0, 0, 0, 0)
-    generate_btn = QPushButton("Generate Random Data")
+    generate_btn = QPushButton("Generate Random 8760")
     generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+    generate_btn.setEnabled(component.profile_type == "Random 8760")
+    # Set initial styling based on enabled state
+    if component.profile_type == "Random 8760":
+        generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+    else:
+        generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + "QPushButton { color: #888888; }")
     
     def generate_random_data():
         # Clear any existing random profile
@@ -148,7 +166,7 @@ def add_load_properties(properties_manager, component, layout):
     # Create a widget to hold the random profile controls
     random_profile_widget = QWidget()
     random_profile_widget.setLayout(random_profile_layout)
-    random_profile_widget.setVisible(component.profile_type == "Random 8760")
+    random_profile_widget.setEnabled(component.profile_type == "Random 8760")
     
     # Create max ramp rate control for Random 8760 mode
     ramp_rate_layout = QHBoxLayout()
@@ -162,6 +180,11 @@ def add_load_properties(properties_manager, component, layout):
 
     # Add a ramp rate value label
     ramp_rate_value_label = QLabel(f"{int(component.max_ramp_rate * 100)}%/hr")
+    # Set initial label styling based on enabled state
+    if component.profile_type == "Random 8760":
+        ramp_rate_value_label.setStyleSheet("color: white;")
+    else:
+        ramp_rate_value_label.setStyleSheet("color: #888888;")
 
     # Connect the controls to update the component
     def update_ramp_rate_from_slider(value):
@@ -183,41 +206,41 @@ def add_load_properties(properties_manager, component, layout):
     # Create a widget to hold the ramp rate controls
     ramp_rate_widget = QWidget()
     ramp_rate_widget.setLayout(ramp_rate_layout)
-    ramp_rate_widget.setVisible(component.profile_type == "Random 8760")
+    ramp_rate_widget.setEnabled(component.profile_type == "Random 8760")
     
-    # Create time offset control (spinner and slider)
+    # Create time offset control (slider and label only)
     time_offset_layout = QHBoxLayout()
     time_offset_layout.setContentsMargins(0, 0, 0, 0)
-    time_offset_edit = QLineEdit(str(component.time_offset))
-    time_offset_edit.setMaximumWidth(50)
-    time_offset_edit.setStyleSheet(INPUT_STYLE)
-    properties_manager._set_up_numeric_field(time_offset_edit, 
-                                lambda value: setattr(component, 'time_offset', value),
-                                is_float=False, min_value=0, max_value=8760)
     
     time_offset_slider = QSlider(Qt.Horizontal)
     time_offset_slider.setMinimum(0)
-    time_offset_slider.setMaximum(8760)  # Maximum hours in a year
+    time_offset_slider.setMaximum(8759)  # Maximum hours in a year (0-8759)
     time_offset_slider.setValue(component.time_offset)
     time_offset_slider.setStyleSheet(SLIDER_STYLE)
+
+    # Add a time offset value label
+    time_offset_value_label = QLabel(f"{component.time_offset} hr")
+    # Set initial label styling based on enabled state
+    if component.profile_type in ["Sine Wave", "Custom", "Powerlandia 60CF"]:
+        time_offset_value_label.setStyleSheet("color: white;")
+    else:
+        time_offset_value_label.setStyleSheet("color: #888888;")
     
     # Connect the controls to update the component
     def update_offset_from_slider(value):
         component.time_offset = value
-        # Use blockSignals to prevent recursive updates
-        time_offset_edit.blockSignals(True)
-        time_offset_edit.setText(str(value))
-        time_offset_edit.blockSignals(False)
+        time_offset_value_label.setText(f"{value} hr")
         properties_manager.main_window.update_simulation()
     
     time_offset_slider.valueChanged.connect(update_offset_from_slider)
     
-    time_offset_layout.addWidget(time_offset_edit)
     time_offset_layout.addWidget(time_offset_slider)
+    time_offset_layout.addWidget(time_offset_value_label)
     
     # Create a widget to hold the time offset controls
     time_offset_widget = QWidget()
     time_offset_widget.setLayout(time_offset_layout)
+    time_offset_widget.setEnabled(component.profile_type in ["Sine Wave", "Custom", "Powerlandia 60CF"])
     
     # Create frequency control for Sine Wave mode
     frequency_layout = QHBoxLayout()
@@ -237,6 +260,11 @@ def add_load_properties(properties_manager, component, layout):
     
     # Add a frequency value label
     frequency_value_label = QLabel(f"{component.frequency} cycles/day")
+    # Set initial label styling based on enabled state
+    if component.profile_type == "Sine Wave":
+        frequency_value_label.setStyleSheet("color: white;")
+    else:
+        frequency_value_label.setStyleSheet("color: #888888;")
     
     # Connect the controls to update the component
     def update_frequency_from_slider(value):
@@ -252,19 +280,56 @@ def add_load_properties(properties_manager, component, layout):
     
     frequency_slider.valueChanged.connect(update_frequency_from_slider)
     
-    frequency_layout.addWidget(frequency_edit)
+    # frequency_layout.addWidget(frequency_edit)
     frequency_layout.addWidget(frequency_slider)
     frequency_layout.addWidget(frequency_value_label)
     
     # Create a widget to hold the frequency controls
     frequency_widget = QWidget()
     frequency_widget.setLayout(frequency_layout)
+    frequency_widget.setEnabled(component.profile_type == "Sine Wave")
     
-    # Only show frequency control for Sine Wave profile
-    frequency_widget.setVisible(component.profile_type == "Sine Wave")
+    # Function to update all control states based on profile type
+    def update_control_states(text):
+        # Update enable/disable states
+        load_profile_btn.setEnabled(text == "Custom")
+        data_center_widget.setEnabled(text == "Data Center")
+        dc_generate_widget.setEnabled(text == "Data Center")
+        random_profile_widget.setEnabled(text == "Random 8760")
+        ramp_rate_widget.setEnabled(text == "Random 8760")
+        time_offset_widget.setEnabled(text in ["Sine Wave", "Custom", "Powerlandia 60CF"])
+        frequency_widget.setEnabled(text == "Sine Wave")
+        
+        # Update button styling based on enabled state
+        if text == "Custom":
+            load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+        else:
+            load_profile_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + "QPushButton { color: #888888; }")
+            
+        if text == "Data Center":
+            dc_generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+        else:
+            dc_generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + "QPushButton { color: #888888; }")
+            
+        if text == "Random 8760":
+            generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE)
+            ramp_rate_value_label.setStyleSheet("color: white;")
+        else:
+            generate_btn.setStyleSheet(DEFAULT_BUTTON_STYLE + "QPushButton { color: #888888; }")
+            ramp_rate_value_label.setStyleSheet("color: #888888;")
+            
+        if text == "Sine Wave":
+            frequency_value_label.setStyleSheet("color: white;")
+        else:
+            frequency_value_label.setStyleSheet("color: #888888;")
+            
+        if text in ["Sine Wave", "Custom", "Powerlandia 60CF"]:
+            time_offset_value_label.setStyleSheet("color: white;")
+        else:
+            time_offset_value_label.setStyleSheet("color: #888888;")
     
-    # Only show time offset for Sine Wave and Custom profiles
-    time_offset_widget.setVisible(component.profile_type in ["Sine Wave", "Custom", "Powerlandia 60CF"])
+    # Set initial control states
+    update_control_states(component.profile_type)
     
     def on_profile_changed(text):
         # If connected to a cloud workload, do not allow changing from Data Center
@@ -276,13 +341,7 @@ def add_load_properties(properties_manager, component, layout):
             return
             
         setattr(component, 'profile_type', text)
-        load_profile_btn.setVisible(text == "Custom")
-        time_offset_widget.setVisible(text in ["Sine Wave", "Custom", "Powerlandia 60CF"])
-        frequency_widget.setVisible(text == "Sine Wave")
-        random_profile_widget.setVisible(text == "Random 8760")
-        ramp_rate_widget.setVisible(text == "Random 8760")
-        data_center_widget.setVisible(text == "Data Center")
-        dc_generate_widget.setVisible(text == "Data Center")
+        update_control_states(text)
         
         # Handle special cases for different profile types
         if text == "Random 8760" and not component.random_profile:
@@ -305,11 +364,12 @@ def add_load_properties(properties_manager, component, layout):
     
     profile_type.currentTextChanged.connect(on_profile_changed)
     
+    layout.addRow("Operating Mode:", operating_mode_label)
     layout.addRow("Demand (MW):", demand_edit)
     layout.addRow("Price per kWh ($):", price_edit)
     layout.addRow("CAPEX per kW ($):", capex_edit)
-    layout.addRow("Operating Mode:", operating_mode_label)
     layout.addRow("Demand Mode:", profile_widget)
+    layout.addRow("CSV File:", load_profile_btn)
     layout.addRow("", profile_info)
     layout.addRow("Data Center Type:", data_center_widget)
     layout.addRow("", dc_generate_widget)

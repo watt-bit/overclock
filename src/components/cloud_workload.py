@@ -105,7 +105,7 @@ class CloudWorkloadComponent(ComponentBase):
             
         if self.operating_mode == "Multi-Cloud Spot" and load_component.profile_type == "Data Center":
             # Determine resources used based on data center type
-            if load_component.data_center_type == "Traditional Cloud":
+            if load_component.data_center_type == "Traditional":
                 power_per_resource = self.traditional_cloud_power
                 price_per_resource = self.traditional_cloud_price
             elif load_component.data_center_type == "GPU Dense":

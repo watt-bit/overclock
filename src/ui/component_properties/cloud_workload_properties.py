@@ -23,9 +23,9 @@ def add_cloud_workload_properties(properties_manager, component, layout):
     multi_cloud_params_layout = QFormLayout(multi_cloud_params_widget)
     multi_cloud_params_layout.setContentsMargins(0, 0, 0, 0)
     
-    # Add traditional cloud parameters
+    # Add Traditional parameters
     trad_params_label = QLabel(f"Power: {component.traditional_cloud_power} kW\nPrice: ${component.traditional_cloud_price:.2f}")
-    multi_cloud_params_layout.addRow("Traditional Cloud:", trad_params_label)
+    multi_cloud_params_layout.addRow("Traditional:", trad_params_label)
     
     # Add GPU Dense parameters
     gpu_params_label = QLabel(f"Power: {component.gpu_intensive_power} kW\nPrice: ${component.gpu_intensive_price:.2f}")

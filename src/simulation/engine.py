@@ -233,11 +233,11 @@ class SimulationEngine(QObject):
                     # Track individual component output
                     component_outputs[item] = output
             
-            # Next get generation from BTF Unit Commitment (Auto) generators
+            # Next get generation from BTF Unit Commit (Auto) generators
             # Get all BTF Unit Commitment generators and sort by cost_per_gj in ascending order (lowest cost first)
             unit_commitment_generators = [item for item in self.main_window.scene.items() 
                                          if isinstance(item, GeneratorComponent) and 
-                                         item.operating_mode == "BTF Unit Commitment (Auto)"]
+                                         item.operating_mode == "BTF Unit Commit (Auto)"]
             
             # Sort generators by cost_per_gj (lowest cost first)
             unit_commitment_generators.sort(key=lambda x: x.cost_per_gj)
