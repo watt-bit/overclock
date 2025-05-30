@@ -1,80 +1,107 @@
-=================================================================
-⚡️ OVERCLOCK - Watt-Bit Infrastructure Sandbox (Alpha Preview) ⚡️
-=================================================================
+========================================================================
+⚡️ **OVERCLOCK** – Watt-Bit Infrastructure Sandbox (Alpha 2025.01.02a) ⚡️
+========================================================================
 
-By: Watt-Bit Research (https://watt-bit.com)
-Presented by: Augur VC (https://augurvc.com)
+By **Watt-Bit Research** <https://watt-bit.com>  
+Presented by **Augur VC** <https://augurvc.com>
 
-***ALPHA PREVIEW - IMPORTANT***
-This is an early alpha version. You may encounter bugs or incomplete features. Your feedback is valuable!
+> **EXPANDED ALPHA PREVIEW – READ ME FIRST**  
+> This is pre-beta software. Bugs, missing polish, and rapidly-changing UX are expected. Your feedback shapes the roadmap!
 
-🔒 SECURITY WARNINGS (Unsigned Application)
-- **On Windows:** You will see "Windows protected your PC". Click **More info** → **Run anyway**.
-- **On macOS:** You will see "can't be opened because it is from an unidentified developer." Click "Done", then:
-  1. Open System Settings → Privacy & Security.
-  2. Scroll to the bottom and find "OVERCLOCK was blocked to protect your Mac".
-  3. Click **Open Anyway**, then **Open Anyway** again in the popup.
-  4. Enter your system password.
-  *This is only needed the first time you run the app.*
+---
 
-  NOTE: For MacOS, OVERCLOCK can take 30-45 seconds to open after its icon first appears in the application dock. Please be patient with it :-)
+## 🔒  Security & First-Run
 
-✨ WHAT IS OVERCLOCK?
-OVERCLOCK allows you to build, simulate, and learn about watt-bit infrastructure. Drag-and-drop components, connect them, and run time-based simulations to understand energy flow, operations, and project economics.
+**Unsigned binaries will trigger OS warnings.**
 
-🚀 CORE FEATURES
-1. 🔧 Visual Modeling
-   - Drag-and-drop components from the left-hand "Components" panel.
-   - Components: Gas Generator, Battery Storage, Electrical Bus, Load, Cloud Workload, Grid Import/Export, Solar Array, Wind Turbine, Props.
-   - Create connections with the **C** key or **Create Connection** button; use **A** to Autoconnect All.
-   - Select components to edit parameters (capacity, cost, efficiency) in the floating Properties panel (toggle in **View** menu).
-2. ⏱️ Time-Based Simulation
-   - **Space:** Run/Pause hourly simulation.
-   - **R:** Reset simulation to time 0.
-   - **Time Slider:** Scrub through 8760 hours (1 year).
-   - **Speed Control:** Adjust playback speed (1x, 2x, 3x).
-3. 📈 Analysis & Insights
-   - **CAPEX Display:** Shows total capital expenditure, updated on changes.
-   - **IRR Display:** Calculates Internal Rate of Return for 12, 18, 36-month refresh cycles.
-   - **Analytics Panel (P):** Real-time charts of generation, consumption, capacity.
-   - **Historian View (\\):** Historical time-series charts after Autocomplete.
-4. 🤖 Autocomplete (Enter)
-   - Runs full-year simulation in the background.
-   - Switches to Historian view on completion.
-   - Displays final IRR.
-5. 💾 Scenario Management
-   - **Model → Save/Load/New** to manage designs in JSON format.
-6. 🖼️ Other Features
-   - **Screenshot:** Capture build or historian views.
-   - **Zoom:** Zoom modeling view.
-   - **Background Toggle:** Change canvas background.
-   - **Hotkeys:** See below.
+*Windows*  
+1. Launch installer → **More info** → **Run anyway**.
 
-🎹 HOTKEYS
-```
-G: Add Gas Generator
-B: Add Electrical Bus
-L: Add Load
-I: Add Grid Import
-E: Add Grid Export
-S: Add Battery Storage
-W: Add Cloud Workload
-C: Start Creating Connection
-A: Autoconnect All
-Space: Run/Pause
-R: Reset
-Enter: Autocomplete
-\\: Toggle Build/Historian view
-P: Toggle Analytics
-Delete/Backspace: Delete selection
-```
+*macOS*  
+1. Launch app (Dock icon appears).  
+2. System Settings → Privacy & Security → “OVERCLOCK was blocked …” → **Open Anyway** (twice).  
+3. Enter your macOS password.  
+*Allow 30–45 s for the first start-up.*
 
-🚀 GETTING STARTED
-1. Add components (e.g., Generator, Bus, Load).
-2. Connect them (**C** or **A**).
-3. Edit properties as needed.
-4. Press **Space** to run simulation or **Enter** to Autocomplete.
-5. Explore Analytics and Historian views.
+---
 
-📝 FEEDBACK
-This is an alpha. Please report any bugs or suggestions! Thank you for testing OVERCLOCK. 
+## ✨  What Is OVERCLOCK?
+
+OVERCLOCK lets you model, simulate, and analyze watt-bit infrastructure — everything from natural gas and solar arrays feeding GPU clouds to grid-export revenue plays — over a full 8760-hour year.
+
+---
+
+## 🚀  Core Features
+
+1. **Visual Modeling**  
+   * Drag-and-drop components (Generator, Battery, Grid Import/Export, Bus, Load, Cloud, Solar, Wind, Props).  
+   * **C** to create a connection, **A** to Autoconnect All.  
+   * Properties panel fixed at right for live edits.
+
+2. **Time-Based Simulation**  
+   * **Space** – run/pause; **R** – reset.  
+   * Slider scrubs the full year
+
+3. **Analysis & Insights**  
+   * Live **CAPEX** & **IRR** (12/18/36-mo refresh).  
+   * **Analytics Panel (P)** – real-time charts.  
+   * **Historian (\\)** – full-year data after Autocomplete.
+
+4. **Autocomplete (Enter)**  
+   * Runs the whole year in background, flips to Historian, and shows final IRR.
+
+5. **Scenario Management** – Save/Load/New JSON designs.
+
+6. **New 2025.01.02a**  
+   * **Terminal Panel** in the right dock streams live logs (startup BIOS text, component events, sim status) for better feedback to user.  
+   * **Status Jewels** – every component now shows a tiny animated hexagon reflecting health & state.  
+   * **Improved CSV Import**  
+   * **Component Re-skin & Unified Text** – high-res icons, cleaner fonts, color-coded $$ (green = revenue, red = cost), “MW | Mode” labels.  
+   * **Properties Panel 2.0** – fixed to selected component display, click-to-open logic, sleeker styling, no title bar.  
+   * **Particle FX** – puff on add *and* delete for tactile feedback.  
+   * **Refinements** – improved buttons, widened Build/Historian toggle, export-icon fix, miscellaneous polish.
+
+---
+
+## 🎹  Hotkeys
+
+G  – Add Gas Generator          E  – Add Grid Export
+B  – Add Electrical Bus         S  – Add Battery
+L  – Add Load                   W  – Add Cloud Workload
+I  – Add Grid Import            C  – Start Creating Connection
+A  – Autoconnect All            Space – Run / Pause
+R  – Reset                      Enter – Autocomplete
+\  – Toggle Build / Historian   P  – Toggle Analytics
+Delete – Delete selection
+
+
+## 🚀  Quick Start
+	1.	Drop a Generator, Bus, and Load.
+	2.	A to Autoconnect or C to wire manually.
+	3.	Tweak parameters in the Properties panel.
+	4.	Space to simulate, or Enter to Autocomplete.
+	5.	Explore live charts (P) and Historian (\).
+
+⸻
+
+## 📝  Feedback & Bugs
+
+Open an issue or email alpha@watt-bit.com. Crash logs and screenshots help immensely—thanks for pushing us toward beta!
+
+⸻
+
+## 🗒️  Changelog
+
+2025.01.02a (Expanded Alpha)
+	•	Fixed: Battery charge glitch during gas generator maintenance mode.
+	•	Fixed: Export-connection icon mis-direction.
+	•	Added: Terminal Panel with BIOS-style startup and live sim logs.
+	•	Added: Animated status jewels on every component.
+	•	Added: Tooltip framework (initial rollout).
+	•	Component re-skin, unified fonts/colors, particle effects.
+	•	Add-Component button and simulation controls restyled.
+	•	Properties Panel overhaul + Selected Component display.
+	•	Build/Historian toggle widened for better legibility.
+	•	Robust CSV handler with import-format popup.
+	•	Refactored: Properties Manager isolated; internal code cleanup for maintainability.
+	•	Minor: Smoke particle tweaks, standard text boxes with subtle borders, consistent hover/press states across all icon buttons.
