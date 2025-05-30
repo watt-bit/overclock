@@ -90,3 +90,4 @@ Added blue dot bullet (•) with color #4A90E2 to beginning of all terminal mess
 Modified TerminalWidget.add_message() to skip adding blue dot for empty messages or line breaks, preventing unnecessary dots on blank lines.
 Enhanced TerminalWidget.add_message() to show red dots for messages starting with "ERROR" (case-insensitive), blue dots for normal messages.
 Added platform detection to AugurTitleScreen - Windows systems now play titlevideo6small_win.wmv instead of the default .mp4 file for better compatibility.
+Modified AugurTitleScreen platform detection to default to Windows video file, only using macOS version on Darwin systems instead of defaulting to macOS for all non-Windows platforms.

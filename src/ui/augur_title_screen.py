@@ -58,9 +58,8 @@ class AugurTitleScreen(QWidget):
         self.setFixedSize(1600, 900)
         
         # Load the video - choose file based on platform
-        if platform.system() == "Windows":
-            video_filename = "titlevideo6small_win.wmv"
-        else:
+        video_filename = "titlevideo6small_win.wmv"  # Default to Windows version
+        if platform.system() == "Darwin":
             video_filename = "titlevideo6small_faststart.mp4"
             
         video_path = resource_path(f"src/ui/assets/video/{video_filename}")
