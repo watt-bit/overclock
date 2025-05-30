@@ -41,7 +41,7 @@ class AugurTitleScreen(QWidget):
         
         # Determine if we're on macOS (use video) or Windows (use image)
         # Temporarily forcing image mode for testing
-        self.is_macos = False  # platform.system() == "Darwin"
+        self.is_macos = platform.system() == "Darwin"
         
         if self.is_macos:
             # Create video item and media player for macOS
