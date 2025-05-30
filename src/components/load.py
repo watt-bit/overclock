@@ -22,7 +22,7 @@ class LoadComponent(ComponentBase):
         self.operating_mode = "Demand Droop (Auto)"  # Fixed operating mode
         self.accumulated_revenue = 0.00  # Track accumulated revenue in dollars
         self.previous_revenue = 0.00  # Track previous revenue for milestone detection
-        self.profile_type = "Data Center"  # Constant, Sine Wave, Custom, Random 8760, Data Center, Powerlandia 60CF
+        self.profile_type = "Data Center"  # Constant, Sine Wave, Custom, Random 8760, Data Center, Powerlandia 8760-60CF
         self.custom_profile = None
         self.profile_name = None
         self.time_offset = 0  # Hours to offset the time series
@@ -31,7 +31,7 @@ class LoadComponent(ComponentBase):
         self.max_ramp_rate = 0.25  # Maximum change in output per hour (25% default)
         self.data_center_type = "GPU Dense"  # Traditional, GPU Dense, Crypto ASIC
         self.graphics_enabled = True  # Flag to control whether graphics are shown
-        self.powerlandia_profile = None  # For Powerlandia 60CF profile
+        self.powerlandia_profile = None  # For Powerlandia 8760-60CF profile
         
         # Capital expenditure (CAPEX) property
         self.capex_per_kw = 17000  # $17,000 per kW default for load
@@ -324,7 +324,7 @@ class LoadComponent(ComponentBase):
         return profile
     
     def load_powerlandia_profile(self):
-        """Load the Powerlandia 60CF profile from the CSV file"""
+        """Load the Powerlandia 8760-60CF profile from the CSV file"""
         # Clear any existing profile data
         self.powerlandia_profile = None
         
@@ -367,7 +367,7 @@ class LoadComponent(ComponentBase):
         
         # Apply time offset if using Sine Wave or Custom profile
         adjusted_time_step = time_step
-        if self.profile_type in ["Sine Wave", "Custom", "Powerlandia 60CF"] and self.time_offset != 0:
+        if self.profile_type in ["Sine Wave", "Custom", "Powerlandia 8760-60CF"] and self.time_offset != 0:
             adjusted_time_step = (time_step + self.time_offset) % 8760  # Wrap around at 8760 hours
         
         # Calculate normal demand based on profile
@@ -397,7 +397,7 @@ class LoadComponent(ComponentBase):
             if self.random_profile and time_step < len(self.random_profile):
                 return self.random_profile[time_step] * self.demand
             return self.demand
-        elif self.profile_type == "Powerlandia 60CF":
+        elif self.profile_type == "Powerlandia 8760-60CF":
             # Load Powerlandia profile if not already loaded
             if not self.powerlandia_profile:
                 self.load_powerlandia_profile()

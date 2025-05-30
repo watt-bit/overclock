@@ -45,7 +45,7 @@ def add_load_properties(properties_manager, component, layout):
     
     profile_type = QComboBox()
     profile_type.setStyleSheet(COMBOBOX_STYLE + "QComboBox { width: 125px; }")
-    profile_type.addItems(["Data Center", "Sine Wave", "Custom", "Random 8760", "Constant", "Powerlandia 60CF"])
+    profile_type.addItems(["Data Center", "Sine Wave", "Custom", "Random 8760", "Constant", "Powerlandia 8760-60CF"])
     profile_type.setCurrentText(component.profile_type)
     profile_type.setFixedWidth(150)
     
@@ -86,7 +86,7 @@ def add_load_properties(properties_manager, component, layout):
     profile_info = QLabel()
     if component.profile_type == "Custom" and component.profile_name:
         profile_info.setText(f"Loaded: {component.profile_name}")
-    elif component.profile_type == "Powerlandia 60CF" and component.profile_name:
+    elif component.profile_type == "Powerlandia 8760-60CF" and component.profile_name:
         profile_info.setText(f"Loaded: {component.profile_name}")
     elif connected_to_cloud:
         profile_info.setText("<i>Cloud Workload connected</i>")
@@ -221,7 +221,7 @@ def add_load_properties(properties_manager, component, layout):
     # Add a time offset value label
     time_offset_value_label = QLabel(f"{component.time_offset} hr")
     # Set initial label styling based on enabled state
-    if component.profile_type in ["Sine Wave", "Custom", "Powerlandia 60CF"]:
+    if component.profile_type in ["Sine Wave", "Custom", "Powerlandia 8760-60CF"]:
         time_offset_value_label.setStyleSheet("color: white;")
     else:
         time_offset_value_label.setStyleSheet("color: #888888;")
@@ -240,7 +240,7 @@ def add_load_properties(properties_manager, component, layout):
     # Create a widget to hold the time offset controls
     time_offset_widget = QWidget()
     time_offset_widget.setLayout(time_offset_layout)
-    time_offset_widget.setEnabled(component.profile_type in ["Sine Wave", "Custom", "Powerlandia 60CF"])
+    time_offset_widget.setEnabled(component.profile_type in ["Sine Wave", "Custom", "Powerlandia 8760-60CF"])
     
     # Create frequency control for Sine Wave mode
     frequency_layout = QHBoxLayout()
@@ -297,7 +297,7 @@ def add_load_properties(properties_manager, component, layout):
         dc_generate_widget.setEnabled(text == "Data Center")
         random_profile_widget.setEnabled(text == "Random 8760")
         ramp_rate_widget.setEnabled(text == "Random 8760")
-        time_offset_widget.setEnabled(text in ["Sine Wave", "Custom", "Powerlandia 60CF"])
+        time_offset_widget.setEnabled(text in ["Sine Wave", "Custom", "Powerlandia 8760-60CF"])
         frequency_widget.setEnabled(text == "Sine Wave")
         
         # Update button styling based on enabled state
@@ -323,7 +323,7 @@ def add_load_properties(properties_manager, component, layout):
         else:
             frequency_value_label.setStyleSheet("color: #888888;")
             
-        if text in ["Sine Wave", "Custom", "Powerlandia 60CF"]:
+        if text in ["Sine Wave", "Custom", "Powerlandia 8760-60CF"]:
             time_offset_value_label.setStyleSheet("color: white;")
         else:
             time_offset_value_label.setStyleSheet("color: #888888;")
@@ -350,7 +350,7 @@ def add_load_properties(properties_manager, component, layout):
         elif text == "Data Center" and not component.random_profile:
             # Auto-generate data center profile when mode is selected
             generate_data_center_profile()
-        elif text == "Powerlandia 60CF":
+        elif text == "Powerlandia 8760-60CF":
             # Load the Powerlandia profile
             if not component.powerlandia_profile:
                 component.load_powerlandia_profile()

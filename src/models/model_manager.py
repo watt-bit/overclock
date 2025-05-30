@@ -371,7 +371,7 @@ class ModelManager:
                         component.capex_per_kw = component_data["capex_per_kw"]
                     
                     # Handle Powerlandia profile if needed
-                    if component.profile_type == "Powerlandia 60CF":
+                    if component.profile_type == "Powerlandia 8760-60CF":
                         component.load_powerlandia_profile()
                         
                     self.main_window.scene.addItem(component)
