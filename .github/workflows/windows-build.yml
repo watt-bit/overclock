@@ -25,25 +25,67 @@ jobs:
     - name: Download FFmpeg
       run: |
         Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip -OutFile ffmpeg.zip
-        Expand-Archive ffmpeg.zip -DestinationPath ffmpeg
-        Rename-Item -Path (Get-ChildItem -Directory ffmpeg)[0].FullName -NewName ffmpeg-bin
+        Expand-Archive ffmpeg.zip -DestinationPath ffmpeg-temp
+        $ffmpegDir = Get-ChildItem -Directory ffmpeg-temp | Select-Object -First 1
+        echo "Found FFmpeg directory: $($ffmpegDir.FullName)"
+        Move-Item -Path $ffmpegDir.FullName -Destination ffmpeg-bin
+        echo "Contents of ffmpeg-bin:"
+        Get-ChildItem -Recurse ffmpeg-bin
+        echo "Checking for ffmpeg.exe:"
+        if (Test-Path "ffmpeg-bin\bin\ffmpeg.exe") {
+          echo "ffmpeg.exe found at ffmpeg-bin\bin\ffmpeg.exe"
+        } else {
+          echo "ffmpeg.exe NOT found at expected location"
+          echo "Looking for ffmpeg.exe in all subdirectories:"
+          Get-ChildItem -Recurse ffmpeg-bin -Name "ffmpeg.exe"
+        }
+        if (Test-Path "ffmpeg-bin\bin\ffprobe.exe") {
+          echo "ffprobe.exe found at ffmpeg-bin\bin\ffprobe.exe"
+        } else {
+          echo "ffprobe.exe NOT found at expected location"
+          echo "Looking for ffprobe.exe in all subdirectories:"
+          Get-ChildItem -Recurse ffmpeg-bin -Name "ffprobe.exe"
+        }
+
+    - name: Locate FFmpeg binaries
+      run: |
+        $ffmpegPath = Get-ChildItem -Recurse ffmpeg-bin -Name "ffmpeg.exe" | Select-Object -First 1
+        $ffprobePath = Get-ChildItem -Recurse ffmpeg-bin -Name "ffprobe.exe" | Select-Object -First 1
+        if ($ffmpegPath) {
+          $ffmpegFullPath = Join-Path "ffmpeg-bin" $ffmpegPath
+          echo "ffmpeg.exe found at: $ffmpegFullPath"
+          echo "FFMPEG_PATH=$ffmpegFullPath" >> $env:GITHUB_ENV
+        } else {
+          echo "ERROR: ffmpeg.exe not found!"
+          exit 1
+        }
+        if ($ffprobePath) {
+          $ffprobeFullPath = Join-Path "ffmpeg-bin" $ffprobePath
+          echo "ffprobe.exe found at: $ffprobeFullPath"
+          echo "FFPROBE_PATH=$ffprobeFullPath" >> $env:GITHUB_ENV
+        } else {
+          echo "ERROR: ffprobe.exe not found!"
+          exit 1
+        }
 
     - name: Build with PyInstaller
       run: |
+        echo "Using FFmpeg path: $env:FFMPEG_PATH"
+        echo "Using FFprobe path: $env:FFPROBE_PATH"
         pyinstaller --onefile --windowed --name "OVERCLOCK" `
           --icon "src/ui/assets/appicon.ico" `
           --add-data "src/ui/assets;src/ui/assets" `
           --add-data "src/data;src/data" `
-          --add-binary "ffmpeg-bin\\bin\\ffmpeg.exe;." `
-          --add-binary "ffmpeg-bin\\bin\\ffprobe.exe;." `
+          --add-binary "$env:FFMPEG_PATH;." `
+          --add-binary "$env:FFPROBE_PATH;." `
           --hidden-import pyxirr `
           main.py
 
     - name: Create zip with executable and readme
       run: |
         copy readme.txt dist\
-        copy ffmpeg-bin\bin\ffmpeg.exe dist\
-        copy ffmpeg-bin\bin\ffprobe.exe dist\
+        copy "$env:FFMPEG_PATH" dist\ffmpeg.exe
+        copy "$env:FFPROBE_PATH" dist\ffprobe.exe
         cd dist
         powershell Compress-Archive -Path "OVERCLOCK.exe", "readme.txt", "ffmpeg.exe", "ffprobe.exe" -DestinationPath "overclock-windows.zip"
 
