@@ -396,7 +396,7 @@ class ComponentPropertiesManager:
     def _show_csv_format_dialog(self):
         """Show a dialog explaining the expected CSV format for load profiles"""
         dialog = QDialog(self.main_window)
-        dialog.setWindowTitle("Load Custom Profile")
+        dialog.setWindowTitle("Load CSV File")
         dialog.setModal(True)
         dialog.setFixedSize(350, 400)
         
@@ -480,7 +480,7 @@ class ComponentPropertiesManager:
         if not self._show_csv_format_dialog():
             return  # User cancelled the dialog
             
-        filename, _ = QFileDialog.getOpenFileName(self.main_window, "Load Custom Profile", "", "CSV Files (*.csv)")
+        filename, _ = QFileDialog.getOpenFileName(self.main_window, "Load CSV File", "", "CSV Files (*.csv)")
         if filename:
             try:
                 # Read the CSV file
@@ -500,12 +500,12 @@ class ComponentPropertiesManager:
                 
                 # Log success message to terminal
                 from src.ui.terminal_widget import TerminalWidget
-                TerminalWidget.log(f"Profile Loaded: Loaded {len(data)} time steps from {component.profile_name}")
+                TerminalWidget.log(f"CSV File Loaded: Loaded {len(data)} time steps from {component.profile_name}")
             
             except Exception as e:
                 # Log error message to terminal
                 from src.ui.terminal_widget import TerminalWidget
-                TerminalWidget.log(f"Error Loading Profile: {str(e)}")
+                TerminalWidget.log(f"Error Loading CSV File: {str(e)}")
                 component.profile_type = "Constant"
                 self.show_component_properties(component)
     
