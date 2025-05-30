@@ -59,7 +59,7 @@ class AugurTitleScreen(QWidget):
         
         # Load the video - choose file based on platform
         if platform.system() == "Windows":
-            video_filename = "titlevideo6small_win.avi"
+            video_filename = "titlevideo6small_win.wmv"
         else:
             video_filename = "titlevideo6small_faststart.mp4"
             
