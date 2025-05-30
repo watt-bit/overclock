@@ -1,4 +1,5 @@
 import sys
+import platform
 from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QGraphicsView, QGraphicsScene, QGraphicsRectItem
 from PyQt5.QtGui import QKeyEvent, QBrush, QPen
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QUrl, QSizeF
@@ -56,8 +57,13 @@ class AugurTitleScreen(QWidget):
         # Set the window size to match the video size
         self.setFixedSize(1600, 900)
         
-        # Load the video
-        video_path = resource_path("src/ui/assets/video/titlevideo6small_faststart.mp4")
+        # Load the video - choose file based on platform
+        if platform.system() == "Windows":
+            video_filename = "titlevideo6small_win.avi"
+        else:
+            video_filename = "titlevideo6small_faststart.mp4"
+            
+        video_path = resource_path(f"src/ui/assets/video/{video_filename}")
         video_url = QUrl.fromLocalFile(video_path)
         self.media_player.setMedia(QMediaContent(video_url))
         

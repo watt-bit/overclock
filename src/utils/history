@@ -89,3 +89,4 @@ Added CSV format popup dialog to properties_manager._load_custom_profile() - sho
 Added blue dot bullet (•) with color #4A90E2 to beginning of all terminal messages in TerminalWidget.add_message() for better visual organization.
 Modified TerminalWidget.add_message() to skip adding blue dot for empty messages or line breaks, preventing unnecessary dots on blank lines.
 Enhanced TerminalWidget.add_message() to show red dots for messages starting with "ERROR" (case-insensitive), blue dots for normal messages.
+Added platform detection to AugurTitleScreen - Windows systems now play titlevideo6small_win.wmv instead of the default .mp4 file for better compatibility.
