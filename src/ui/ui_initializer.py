@@ -474,18 +474,18 @@ class UIInitializer:
         # Create a horizontal layout for the first row of buttons
         first_row_layout = QHBoxLayout()
         first_row_layout.addWidget(generator_btn)
-        first_row_layout.addWidget(battery_btn)
-        first_row_layout.addWidget(bus_btn)
         first_row_layout.addWidget(load_btn)
-        
+        first_row_layout.addWidget(battery_btn)
+        first_row_layout.addWidget(cloud_workload_btn)
+
         # Add the horizontal layout to the main component layout
         component_layout.addLayout(first_row_layout)
         
         # Create a horizontal layout for the second row of buttons
         second_row_layout = QHBoxLayout()
-        second_row_layout.addWidget(cloud_workload_btn)
         second_row_layout.addWidget(solar_array_btn)
         second_row_layout.addWidget(wind_turbine_btn)
+        second_row_layout.addWidget(bus_btn)
         second_row_layout.addWidget(grid_import_btn)
         
         # Add the second horizontal layout to the main component layout
