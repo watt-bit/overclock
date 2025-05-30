@@ -86,3 +86,5 @@ Modified load properties time offset control to use slider and label only (remov
 Converted SelectedComponentDisplay from QLabel to QPushButton with hover/pressed styling matching component open buttons, making it clickable to open properties panel.
 Added particle effect (create_puff with 200 particles) to component deletion in ComponentDeleter.delete_component(), matching the effect used when components are added.
 Added CSV format popup dialog to properties_manager._load_custom_profile() - shows spreadsheet.png image (200x200px) and format requirements before file selector opens.
+Added blue dot bullet (•) with color #4A90E2 to beginning of all terminal messages in TerminalWidget.add_message() for better visual organization.
+Modified TerminalWidget.add_message() to skip adding blue dot for empty messages or line breaks, preventing unnecessary dots on blank lines.

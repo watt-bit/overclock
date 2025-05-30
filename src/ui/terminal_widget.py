@@ -98,8 +98,13 @@ class TerminalWidget(QWidget):
         
     def add_message(self, message):
         """Add a message to the terminal"""
-        # Simply append the message
-        self.text_area.append(f'<div>{message}</div>')
+        # Check if message is empty or just whitespace/newlines
+        if not message or message.strip() == "":
+            # For empty messages, just add the message without the dot
+            self.text_area.append(f'<div>{message}</div>')
+        else:
+            # Add a small blue dot at the beginning of each message
+            self.text_area.append(f'<div><span style="color: #4A90E2; font-weight: bold;">•</span> {message}</div>')
             
         # Scroll to the bottom to show the most recent message
         self.text_area.verticalScrollBar().setValue(
