@@ -438,7 +438,7 @@ class ModelManager:
                     if "operating_mode" in component_data:
                         component.operating_mode = component_data["operating_mode"]
                     else:
-                        component.operating_mode = "BTF Basic Unit (Auto)"  # Default mode
+                        component.operating_mode = "BTF ± Unit (Auto)"  # Default mode
                      
                     # Set capex_per_kw if available, otherwise keep default value
                     if "capex_per_kw" in component_data:

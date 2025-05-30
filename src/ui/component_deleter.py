@@ -41,6 +41,13 @@ class ComponentDeleter:
         # Check if component is still in the scene
         if not component.scene():
             return False
+        
+        # Get component position for particle effect before removing it
+        component_position = component.pos()
+        component_width = 300  # Approximate width for most components
+        component_height = 200  # Approximate height for most components
+        center_x = component_position.x() + component_width / 2
+        center_y = component_position.y() + component_height / 2
             
         # Find and remove all connections associated with this component
         connections_to_remove = [conn for conn in self.main_window.connections 
@@ -57,6 +64,10 @@ class ComponentDeleter:
         
         # Remove the component from the scene
         self.main_window.scene.removeItem(component)
+        
+        # Create particle effect at the component's position after removal
+        if not self.main_window.simulation_engine.simulation_running:
+            self.main_window.particle_system.create_puff(center_x, center_y, num_particles=200)
         
         # Only remove from components list if it's a functional component (not a decorative one)
         # and if it's actually in the components list (to prevent the "x not in list" error)

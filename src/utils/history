@@ -84,3 +84,4 @@ Modified load properties to always show all controls regardless of demand mode, 
 Modified load properties Load button to be on separate row instead of same line as demand mode dropdown, matching grid import component UI pattern.
 Modified load properties time offset control to use slider and label only (removed text edit), matching frequency control pattern. Range changed to 0-8759.
 Converted SelectedComponentDisplay from QLabel to QPushButton with hover/pressed styling matching component open buttons, making it clickable to open properties panel.
+Added particle effect (create_puff with 200 particles) to component deletion in ComponentDeleter.delete_component(), matching the effect used when components are added.

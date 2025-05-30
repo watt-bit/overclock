@@ -42,8 +42,9 @@ def add_battery_properties(properties_manager, component, layout):
     # Operating mode selector
     mode_selector = QComboBox()
     mode_selector.setStyleSheet(COMBOBOX_STYLE)
-    mode_selector.addItems(["Off", "BTF Basic Unit (Auto)"])
+    mode_selector.addItems(["Off", "BTF ± Unit (Auto)"]) 
     mode_selector.setCurrentText(component.operating_mode)
+    mode_selector.setFixedWidth(150)
     
     # Connect operating mode change
     def change_mode(text):
@@ -75,6 +76,6 @@ def add_battery_properties(properties_manager, component, layout):
     
     # Add controls to layout
     layout.addRow("Operating Mode:", mode_selector)
-    layout.addRow("Power Capacity (MW):", power_capacity_edit)
-    layout.addRow("Energy Capacity (kWh):", energy_capacity_edit)
-    layout.addRow("CAPEX per kW ($):", capex_edit) 
+    layout.addRow("Power (MW):", power_capacity_edit)
+    layout.addRow("Energy (kWh):", energy_capacity_edit)
+    layout.addRow("CAPEX ($/kW):", capex_edit) 

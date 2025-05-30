@@ -16,7 +16,7 @@ class BatteryComponent(ComponentBase):
         self.power_capacity = 1000  # kW - maximum charge/discharge rate
         self.energy_capacity = 4000  # kWh - total storage capacity
         self.current_charge = self.energy_capacity  # Start at 100% charge
-        self.operating_mode = "BTF Basic Unit (Auto)"  # "Off" or "BTF Basic Unit (Auto)"
+        self.operating_mode = "BTF ± Unit (Auto)"  # "Off" or "BTF ± Unit (Auto)"
         
         # Capital expenditure (CAPEX) property
         self.capex_per_kw = 1500  # $1,500 per kW default for battery

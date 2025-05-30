@@ -55,3 +55,4 @@ Variables meant to be imported by other modules must be defined at the module le
 In QGraphicsScene, items added later appear on top of items added earlier - use this layering system to control visual hierarchy (e.g., masks over videos/logos).
 
 For UI overlays that need fixed positioning relative to screen edges, make them children of the view widget and handle repositioning in the resize event handler, similar to analytics container pattern.
+Particle effects for component lifecycle: capture component position before removing from scene, then create effect at that position after removal for visual consistency.

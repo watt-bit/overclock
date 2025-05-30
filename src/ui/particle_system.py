@@ -315,7 +315,7 @@ class ConnectionSparkParticle(QGraphicsRectItem):
 class ParticleSystem:
     """Manages a set of particles for visual effects"""
     
-    MAX_PARTICLES = 400  # Maximum number of particles allowed to prevent crashes
+    MAX_PARTICLES = 500  # Maximum number of particles allowed to prevent crashes
     
     def __init__(self, scene):
         self.scene = scene
@@ -403,7 +403,7 @@ class ParticleSystem:
             
             # Size based on intensity (bigger particles for higher intensity)
             min_size = 10
-            max_size = 25
+            max_size = 40
             size = random.uniform(min_size, min_size + (max_size - min_size) * intensity)
             
             # Create particle specifically for generator smoke

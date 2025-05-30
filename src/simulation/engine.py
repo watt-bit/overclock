@@ -196,7 +196,7 @@ class SimulationEngine(QObject):
                     total_capacity += item.capacity
                 elif isinstance(item, BatteryComponent):
                     total_battery_charge += item.current_charge / 1000.0
-                    if item.operating_mode == "BTF Basic Unit (Auto)":
+                    if item.operating_mode == "BTF ± Unit (Auto)":
                         active_batteries.append(item)
             
             # Second pass: calculate local generation first (priority)
