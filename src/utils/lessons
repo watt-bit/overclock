@@ -56,3 +56,5 @@ In QGraphicsScene, items added later appear on top of items added earlier - use 
 
 For UI overlays that need fixed positioning relative to screen edges, make them children of the view widget and handle repositioning in the resize event handler, similar to analytics container pattern.
 Particle effects for component lifecycle: capture component position before removing from scene, then create effect at that position after removal for visual consistency.
+
+QDialog styling can match properties panel theme using rgba(37, 47, 52, 0.95) background and consistent fonts/colors - use setFixedSize() for popup dimensions.

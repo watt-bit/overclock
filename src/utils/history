@@ -85,3 +85,4 @@ Modified load properties Load button to be on separate row instead of same line 
 Modified load properties time offset control to use slider and label only (removed text edit), matching frequency control pattern. Range changed to 0-8759.
 Converted SelectedComponentDisplay from QLabel to QPushButton with hover/pressed styling matching component open buttons, making it clickable to open properties panel.
 Added particle effect (create_puff with 200 particles) to component deletion in ComponentDeleter.delete_component(), matching the effect used when components are added.
+Added CSV format popup dialog to properties_manager._load_custom_profile() - shows spreadsheet.png image (200x200px) and format requirements before file selector opens.

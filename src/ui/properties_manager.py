@@ -1,10 +1,11 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
                             QPushButton, QSlider, QFileDialog, QFormLayout, 
-                            QLineEdit, QComboBox, QSizePolicy)
+                            QLineEdit, QComboBox, QSizePolicy, QDialog)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QDoubleValidator, QIntValidator
+from PyQt5.QtGui import QDoubleValidator, QIntValidator, QPixmap
 import csv
 import re
+import os
 
 from src.components.base import ComponentBase
 from src.components.generator import GeneratorComponent
@@ -24,6 +25,7 @@ from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
 from src.components.distribution_pole import DistributionPoleComponent
+from src.utils.resource import resource_path
 
 # Define common styles
 COMMON_BUTTON_STYLE = "QPushButton { border: 1px solid #777777; border-radius: 3px; padding: 1px; }"
@@ -391,7 +393,93 @@ class ComponentPropertiesManager:
         from src.ui.component_properties.wind_turbine_properties import add_wind_turbine_properties
         add_wind_turbine_properties(self, component, layout)
     
+    def _show_csv_format_dialog(self):
+        """Show a dialog explaining the expected CSV format for load profiles"""
+        dialog = QDialog(self.main_window)
+        dialog.setWindowTitle("Load Custom Profile")
+        dialog.setModal(True)
+        dialog.setFixedSize(350, 400)
+        
+        # Match the properties panel styling
+        dialog.setStyleSheet('''
+            QDialog {
+                background-color: rgba(37, 47, 52, 0.95);
+                color: white;
+                font-family: Menlo, Consolas, Courier, monospace;
+                font-size: 10px;
+                border: 1px solid #777777;
+                border-radius: 3px;
+            }
+            QLabel {
+                color: white;
+                background: transparent;
+            }
+            QPushButton {
+                background-color: rgba(37, 47, 52, 0.75);
+                color: white;
+                border: 1px solid #777777;
+                border-radius: 3px;
+                padding: 8px 16px;
+                font-weight: bold;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #227D22;
+            }
+            QPushButton:pressed {
+                background-color: #103D10;
+            }
+        ''')
+        
+        # Create main layout
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(15)
+        
+        # Add spreadsheet image
+        image_label = QLabel()
+        image_path = resource_path("src/ui/assets/spreadsheet.png")
+        if os.path.exists(image_path):
+            pixmap = QPixmap(image_path)
+            # Scale to 200x200 while maintaining aspect ratio
+            scaled_pixmap = pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            image_label.setPixmap(scaled_pixmap)
+        else:
+            image_label.setText("📊 Spreadsheet")
+            image_label.setStyleSheet("font-size: 48px;")
+        
+        image_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(image_label)
+        
+        # Add format explanation
+        format_text = QLabel(
+            "Expected CSV Format for OVERCLOCK:\n\n"
+            "• 1 header row\n"
+            "• 8760 data rows (one for each hour of the year)\n"
+            "• Each row contains a capacity or load factor\n"
+            "• Values must be between 0.0 and 1.0\n\n"
+            "\n"
+            "\n"
+            "\n"
+        )
+        format_text.setAlignment(Qt.AlignLeft)
+        format_text.setWordWrap(True)
+        format_text.setStyleSheet("font-size: 11px; line-height: 1.4;")
+        layout.addWidget(format_text)
+        
+        # Add OK button
+        ok_button = QPushButton("Continue to File Selector")
+        ok_button.clicked.connect(dialog.accept)
+        layout.addWidget(ok_button)
+        
+        # Show dialog and return result
+        return dialog.exec_() == QDialog.Accepted
+
     def _load_custom_profile(self, component):
+        # Show format explanation dialog first
+        if not self._show_csv_format_dialog():
+            return  # User cancelled the dialog
+            
         filename, _ = QFileDialog.getOpenFileName(self.main_window, "Load Custom Profile", "", "CSV Files (*.csv)")
         if filename:
             try:
