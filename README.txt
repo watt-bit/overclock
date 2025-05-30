@@ -53,7 +53,7 @@ OVERCLOCK lets you model, simulate, and analyze watt-bit infrastructure — ever
 5. **Scenario Management** – Save/Load/New JSON designs.
 
 6. **New 2025.01.02a**  
-   * **Terminal Panel** in the right dock streams live logs (startup BIOS text, component events, sim status) for better feedback to user.  
+   * **Smart Terminal Panel** in the left dock streams live logs (startup BIOS text, component events, sim status) for better user understanding and feedback loop.  
    * **Status Jewels** – every component now shows a tiny animated hexagon reflecting health & state.  
    * **Improved CSV Import**  
    * **Component Re-skin & Unified Text** – high-res icons, cleaner fonts, color-coded $$ (green = revenue, red = cost), “MW | Mode” labels.  
