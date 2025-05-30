@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QPainter, QPixmap
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtGui import QPainter, QPixmap
+from PyQt6.QtCore import Qt
 from .terminal_widget import TerminalWidget
 
 
@@ -12,7 +12,7 @@ class ScreenshotManager:
         """Take a screenshot of the modeling view area and copy to clipboard"""
         # Create a pixmap the size of the viewport
         pixmap = QPixmap(self.main_window.view.viewport().size())
-        pixmap.fill(Qt.transparent)
+        pixmap.fill(Qt.GlobalColor.transparent)
         
         # Create painter for the pixmap
         painter = QPainter(pixmap)
@@ -33,7 +33,7 @@ class ScreenshotManager:
         if hasattr(self.main_window, 'mode_toggle_btn'):
             # Create a pixmap from the mode toggle button
             mode_btn_pixmap = QPixmap(self.main_window.mode_toggle_btn.size())
-            mode_btn_pixmap.fill(Qt.transparent)
+            mode_btn_pixmap.fill(Qt.GlobalColor.transparent)
             self.main_window.mode_toggle_btn.render(mode_btn_pixmap)
             
             # Get the button position
@@ -46,7 +46,7 @@ class ScreenshotManager:
         if hasattr(self.main_window, 'capex_label'):
             # Create a pixmap from the CAPEX label
             capex_pixmap = QPixmap(self.main_window.capex_label.size())
-            capex_pixmap.fill(Qt.transparent)
+            capex_pixmap.fill(Qt.GlobalColor.transparent)
             self.main_window.capex_label.render(capex_pixmap)
             
             # Get the label position
@@ -59,7 +59,7 @@ class ScreenshotManager:
         if hasattr(self.main_window, 'irr_label'):
             # Create a pixmap from the IRR label
             irr_pixmap = QPixmap(self.main_window.irr_label.size())
-            irr_pixmap.fill(Qt.transparent)
+            irr_pixmap.fill(Qt.GlobalColor.transparent)
             self.main_window.irr_label.render(irr_pixmap)
             
             # Get the label position

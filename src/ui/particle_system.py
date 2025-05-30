@@ -1,7 +1,7 @@
 import random
-from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsTextItem, QLabel, QGraphicsRectItem
-from PyQt5.QtCore import Qt, QTimer, QPoint
-from PyQt5.QtGui import QPen, QColor, QBrush, QRadialGradient, QFont
+from PyQt6.QtWidgets import QGraphicsEllipseItem, QGraphicsTextItem, QLabel, QGraphicsRectItem
+from PyQt6.QtCore import Qt, QTimer, QPoint
+from PyQt6.QtGui import QPen, QColor, QBrush, QRadialGradient, QFont
 
 # Particle system classes for smoke puff effect
 class Particle(QGraphicsEllipseItem):
@@ -55,7 +55,7 @@ class Particle(QGraphicsEllipseItem):
         
         self.setBrush(QBrush(gradient))
         # Create a transparent pen (using QPen) instead of Qt.NoPen
-        self.setPen(QPen(Qt.transparent))
+        self.setPen(QPen(Qt.GlobalColor.transparent))
     
     def update_particle(self):
         """Update the particle's position, size and opacity for animation"""
@@ -285,7 +285,7 @@ class ConnectionSparkParticle(QGraphicsRectItem):
         safe_alpha = max(0.0, min(self.alpha, 1.0))
         spark_color.setAlphaF(safe_alpha)
         self.setBrush(QBrush(spark_color))
-        self.setPen(QPen(Qt.transparent))
+        self.setPen(QPen(Qt.GlobalColor.transparent))
         
         # Set the glow with lower alpha
         glow_color = QColor(self.color)
@@ -293,7 +293,7 @@ class ConnectionSparkParticle(QGraphicsRectItem):
         glow_alpha = max(0.0, min(self.alpha * 0.5, 1.0))
         glow_color.setAlphaF(glow_alpha)
         self.glow.setBrush(QBrush(glow_color))
-        self.glow.setPen(QPen(Qt.transparent))
+        self.glow.setPen(QPen(Qt.GlobalColor.transparent))
     
     def update_particle(self):
         """Update particle position, velocity and opacity for animation"""

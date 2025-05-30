@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QGraphicsTextItem
-from PyQt5.QtCore import Qt, QTimer, QRect, QRectF
-from PyQt5.QtGui import QPainter, QPen, QColor, QPainterPath, QLinearGradient, QFontMetrics
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtWidgets import QGraphicsTextItem
+from PyQt6.QtCore import Qt, QTimer, QRect, QRectF
+from PyQt6.QtGui import QPainter, QPen, QColor, QPainterPath, QLinearGradient, QFontMetrics
 
 class GradientBorderText(QGraphicsTextItem):
     """A text item with animated gradient border for welcome screen"""
@@ -66,7 +67,7 @@ class GradientBorderText(QGraphicsTextItem):
         # Add each line of text as a separate text path
         for line in lines:
             # Center each line
-            text_width = QFontMetrics(font).width(line)
+            text_width = QFontMetrics(font).horizontalAdvance(line)
             x_offset = (700 - text_width) / 2  # 700 is the text width set in add_welcome_text
             
             # Add text to path
@@ -88,7 +89,7 @@ class GradientBorderText(QGraphicsTextItem):
             gradient.setColorAt(pos, self.colors[i])
         
         # Set up the pen for drawing the text outline
-        outline_pen = QPen(gradient, self.border_width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        outline_pen = QPen(gradient, self.border_width, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
         painter.setPen(outline_pen)
         
         # Draw the text outline
@@ -100,8 +101,8 @@ class GradientBorderText(QGraphicsTextItem):
         if self.bg_image and not self.bg_image.isNull():
             # Paint the background image first
             painter = QPainter(self)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setRenderHint(QPainter.SmoothPixmapTransform)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
             
             # Create a rounded rect path for clipping
             rect = QRectF(self.rect())
@@ -115,8 +116,8 @@ class GradientBorderText(QGraphicsTextItem):
             scaled_image = self.bg_image.scaled(
                 self.width(), 
                 self.height(),
-                Qt.KeepAspectRatioByExpanding, 
-                Qt.SmoothTransformation
+                Qt.AspectRatioMode.KeepAspectRatioByExpanding, 
+                Qt.TransformationMode.SmoothTransformation
             )
             
             # Center the image if it's taller than the button

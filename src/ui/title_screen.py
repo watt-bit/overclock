@@ -1,7 +1,14 @@
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+# TODO_PYQT6: verify width()/isType() semantics
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QFileDialog
-from PyQt5.QtGui import QPixmap, QFont, QCursor
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QFileDialog
+from PyQt6.QtGui import QPixmap, QFont, QCursor, QGuiApplication
+from PyQt6.QtCore import Qt, pyqtSignal
 from src.utils.resource import resource_path
 
 class TitleScreen(QWidget):
@@ -13,7 +20,7 @@ class TitleScreen(QWidget):
         super().__init__()
         
         # Set window to be frameless (no title bar)
-        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         
         # Set up the layout
         layout = QVBoxLayout(self)
@@ -28,7 +35,7 @@ class TitleScreen(QWidget):
             original_height = pixmap.height()
             scaled_width = int(original_width * 0.9)
             scaled_height = int(original_height * 0.9)
-            pixmap = pixmap.scaled(scaled_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(scaled_width, scaled_height, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             title_image.setPixmap(pixmap)
         else:
             # Fallback if image is not found
@@ -37,7 +44,7 @@ class TitleScreen(QWidget):
             self.setStyleSheet("background-color: #2A2A2A;")
         
         # Center the image in the layout
-        title_image.setAlignment(Qt.AlignCenter)
+        title_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title_image)
         
         # Set the window size to match the scaled image size
@@ -89,7 +96,7 @@ class TitleScreen(QWidget):
         exit_btn.clicked.connect(self.close_safely)
         
         # Set cursor to hand when hovering over button
-        exit_btn.setCursor(QCursor(Qt.PointingHandCursor))
+        exit_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     
     def close_safely(self):
         """Safely close the window and exit the application"""
@@ -98,7 +105,7 @@ class TitleScreen(QWidget):
         
         # Then quit the entire application
         # We need to use QApplication.instance() to get the current application instance
-        from PyQt5.QtWidgets import QApplication
+        from PyQt6.QtWidgets import QApplication
         app = QApplication.instance()
         if app:
             app.quit()
@@ -118,7 +125,7 @@ class TitleScreen(QWidget):
         img_label = QLabel()
         pixmap = QPixmap(resource_path("src/ui/assets/newproject.png"))
         if not pixmap.isNull():
-            pixmap = pixmap.scaled(20, 20, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             img_label.setPixmap(pixmap)
         else:
             img_label.setText("+")
@@ -130,7 +137,7 @@ class TitleScreen(QWidget):
         # Add to layout
         btn_layout.addWidget(img_label)
         btn_layout.addWidget(text_label)
-        btn_layout.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        btn_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         
         # Style the button
         new_project_btn.setStyleSheet("""
@@ -159,7 +166,7 @@ class TitleScreen(QWidget):
         new_project_btn.clicked.connect(self.handle_new_project_click)
         
         # Set cursor to hand when hovering over button
-        new_project_btn.setCursor(QCursor(Qt.PointingHandCursor))
+        new_project_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     
     def create_load_project_button(self):
         """Create and add the Load Project button"""
@@ -176,7 +183,7 @@ class TitleScreen(QWidget):
         img_label = QLabel()
         pixmap = QPixmap(resource_path("src/ui/assets/loadproject.png"))
         if not pixmap.isNull():
-            pixmap = pixmap.scaled(20, 20, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             img_label.setPixmap(pixmap)
         else:
             img_label.setText("📂")
@@ -188,7 +195,7 @@ class TitleScreen(QWidget):
         # Add to layout
         btn_layout.addWidget(img_label)
         btn_layout.addWidget(text_label)
-        btn_layout.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        btn_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         
         # Style the button (same as New Project button)
         load_project_btn.setStyleSheet("""
@@ -217,7 +224,7 @@ class TitleScreen(QWidget):
         load_project_btn.clicked.connect(self.handle_load_project_click)
         
         # Set cursor to hand when hovering over button
-        load_project_btn.setCursor(QCursor(Qt.PointingHandCursor))
+        load_project_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     
     def handle_load_project_click(self):
         """Handle load project button click by opening file dialog"""
@@ -252,7 +259,7 @@ class TitleScreen(QWidget):
     
     def center_on_screen(self):
         """Center the window on the screen"""
-        screen_geometry = QApplication.desktop().screenGeometry()
+        screen_geometry = QGuiApplication.primaryScreen().availableGeometry()
         window_geometry = self.geometry()
         
         x = (screen_geometry.width() - window_geometry.width()) // 2
@@ -265,4 +272,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     title = TitleScreen()
     title.show()
-    sys.exit(app.exec_()) 
+    sys.exit(app.exec()) 

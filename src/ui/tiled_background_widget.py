@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPainter, QPixmap
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPainter, QPixmap
 from src.utils.resource import resource_path
 
 
@@ -32,7 +32,7 @@ class TiledBackgroundWidget(QWidget):
         rect = self.rect()
         
         # Scale the background image to our fixed tile size
-        scaled_image = self.background_image.scaled(self.tile_size, self.tile_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        scaled_image = self.background_image.scaled(self.tile_size, self.tile_size, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
         
         # Calculate the grid based on the view rect
         left = int(rect.left()) - (int(rect.left()) % self.tile_size)

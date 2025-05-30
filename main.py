@@ -7,9 +7,9 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 matplotlib.rcParams['interactive'] = False
 
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QObject, Qt, QTimer
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QObject, Qt, QTimer
 from src.ui.main_window import PowerSystemSimulator
 from src.ui.title_screen import TitleScreen
 from src.ui.wbr_title_screen import WBRTitleScreen
@@ -237,13 +237,13 @@ def main():
     app_manager.wbr_title_screen.transition_to_next.connect(app_manager.title_screen.show)
     
     # Connect cleanup to application quit - use Qt.DirectConnection to ensure it runs immediately
-    app.aboutToQuit.connect(app_manager.clean_up_application, Qt.DirectConnection)
+    app.aboutToQuit.connect(app_manager.clean_up_application, Qt.ConnectionType.DirectConnection)
     
     # Show the Augur title screen first
     app_manager.augur_title_screen.show()
     
     # Run the application and capture the result
-    result = app.exec_()
+    result = app.exec()
     
     # Force a final garbage collection
     gc.collect()

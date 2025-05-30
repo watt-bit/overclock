@@ -1,5 +1,6 @@
-from PyQt5.QtGui import QPen, QFont, QPixmap
-from PyQt5.QtCore import Qt, QRectF
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtGui import QPen, QFont, QPixmap
+from PyQt6.QtCore import Qt, QRectF
 from .base import ComponentBase
 from src.utils.resource import resource_path
 
@@ -8,7 +9,7 @@ class CloudWorkloadComponent(ComponentBase):
         # Initialize with the same size as other components
         super().__init__(x, y, 300, 220)
         # Make brush transparent (no background)
-        self.setBrush(Qt.transparent)
+        self.setBrush(Qt.GlobalColor.transparent)
         # Load the image
         self.image = QPixmap(resource_path("src/ui/assets/cloudworkload4.png"))
         

@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPainter, QPen, QBrush, QColor
+from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPainter, QPen, QBrush, QColor
 
 class SelectedComponentDisplay(QPushButton):
     def __init__(self, parent=None):

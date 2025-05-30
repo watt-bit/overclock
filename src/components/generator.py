@@ -1,5 +1,6 @@
-from PyQt5.QtGui import QPen, QFont, QPixmap
-from PyQt5.QtCore import Qt, QRectF, QPointF
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtGui import QPen, QFont, QPixmap
+from PyQt6.QtCore import Qt, QRectF, QPointF
 from .base import ComponentBase
 from src.utils.resource import resource_path
 
@@ -8,7 +9,7 @@ class GeneratorComponent(ComponentBase):
         # Initialize with a larger size to accommodate bigger image
         super().__init__(x, y, 300, 220)  # Increase component size
         # Make brush transparent (no background)
-        self.setBrush(Qt.transparent)
+        self.setBrush(Qt.GlobalColor.transparent)
         # Load the image
         self.image = QPixmap(resource_path("src/ui/assets/generator2.png"))
         

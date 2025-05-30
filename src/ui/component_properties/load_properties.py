@@ -1,6 +1,12 @@
-from PyQt5.QtWidgets import (QLineEdit, QLabel, QPushButton, QComboBox, 
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+from PyQt6.QtWidgets import (QLineEdit, QLabel, QPushButton, QComboBox, 
                             QHBoxLayout, QWidget, QSlider)
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 from src.ui.terminal_widget import TerminalWidget
 
 # Import styles from the parent module
@@ -172,7 +178,7 @@ def add_load_properties(properties_manager, component, layout):
     ramp_rate_layout = QHBoxLayout()
     ramp_rate_layout.setContentsMargins(0, 0, 0, 0)
 
-    ramp_rate_slider = QSlider(Qt.Horizontal)
+    ramp_rate_slider = QSlider(Qt.Orientation.Horizontal)
     ramp_rate_slider.setMinimum(1)  # 1% minimum
     ramp_rate_slider.setMaximum(100)  # 100% maximum
     ramp_rate_slider.setValue(int(component.max_ramp_rate * 100))
@@ -212,7 +218,7 @@ def add_load_properties(properties_manager, component, layout):
     time_offset_layout = QHBoxLayout()
     time_offset_layout.setContentsMargins(0, 0, 0, 0)
     
-    time_offset_slider = QSlider(Qt.Horizontal)
+    time_offset_slider = QSlider(Qt.Orientation.Horizontal)
     time_offset_slider.setMinimum(0)
     time_offset_slider.setMaximum(8759)  # Maximum hours in a year (0-8759)
     time_offset_slider.setValue(component.time_offset)
@@ -252,7 +258,7 @@ def add_load_properties(properties_manager, component, layout):
                                 lambda value: setattr(component, 'frequency', value),
                                 min_value=0.1, max_value=5.0)
     
-    frequency_slider = QSlider(Qt.Horizontal)
+    frequency_slider = QSlider(Qt.Orientation.Horizontal)
     frequency_slider.setMinimum(10)  # 0.1 cycles per day
     frequency_slider.setMaximum(500)  # 5 cycles per day
     frequency_slider.setValue(int(component.frequency * 100))

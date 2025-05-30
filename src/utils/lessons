@@ -58,3 +58,53 @@ For UI overlays that need fixed positioning relative to screen edges, make them 
 Particle effects for component lifecycle: capture component position before removing from scene, then create effect at that position after removal for visual consistency.
 
 QDialog styling can match properties panel theme using rgba(37, 47, 52, 0.95) background and consistent fonts/colors - use setFixedSize() for popup dimensions.
+
+- QAction lives in QtGui, not QtWidgets, in PyQt6 – import paths must be updated during migration.
+
+- QMediaContent removed in PyQt6; use QMediaPlayer.setSource(QUrl) instead of setMedia(QMediaContent(url)).
+
+- QSizePolicy enums moved inside QSizePolicy.Policy in PyQt6 – use QSizePolicy.Policy.Fixed/Expanding/Preferred etc.
+
+- Qt.ScrollBarAlwaysOff moved: use Qt.ScrollBarPolicy.ScrollBarAlwaysOff in PyQt6.
+
+- QFrame.HLine now QFrame.Shape.HLine; similarly QFrame.Shadow.* enums in PyQt6.
+
+- Qt.WA_TransparentForMouseEvents now Qt.WidgetAttribute.WA_TransparentForMouseEvents in PyQt6.
+
+- Qt.TopLeftCorner etc. are now Qt.Corner.TopLeftCorner in PyQt6.
+
+- QGraphicsView.ScrollHandDrag / NoDrag now in QGraphicsView.DragMode.* in PyQt6.
+
+- QPainter.Antialiasing now QPainter.RenderHint.Antialiasing; similar for SmoothPixmapTransform.
+
+- QGraphicsView.FullViewportUpdate now QGraphicsView.ViewportUpdateMode.FullViewportUpdate.
+
+- Qt.StrongFocus / NoFocus now Qt.FocusPolicy.StrongFocus / NoFocus.
+
+- event.KeyPress etc. replaced by QEvent.Type.KeyPress etc. in PyQt6.
+
+- Qt.RichText -> Qt.TextFormat.RichText.
+
+- QDockWidget.NoDockWidgetFeatures -> QDockWidget.DockWidgetFeature.NoDockWidgetFeatures in PyQt6.
+
+- QToolButton.InstantPopup now QToolButton.ToolButtonPopupMode.InstantPopup.
+
+- QApplication.desktop() removed; use QGuiApplication.primaryScreen().availableGeometry().
+
+- Qt.FramelessWindowHint -> Qt.WindowType.FramelessWindowHint.
+
+- Qt.ArrowCursor etc. moved to Qt.CursorShape.*
+
+- QMediaPlayer(None, QMediaPlayer.VideoSurface) obsolete; just QMediaPlayer() and setVideoOutput().
+
+- Color constants now in Qt.GlobalColor; pen/brush styles in Qt.PenStyle/BrushStyle; update SolidLine, RoundCap, RoundJoin accordingly.
+
+- Qt.DirectConnection constant is now Qt.ConnectionType.DirectConnection.
+
+- Qt.Key.* enums now Qt.Key.Key_* (e.g., Key_Delete, Key_Return...).
+
+- Qt.IntersectClip -> Qt.ClipOperation.IntersectClip; Qt.transparent constant now Qt.GlobalColor.transparent.
+
+- QMessageBox.Yes/No/Cancel button constants now in QMessageBox.StandardButton.* in PyQt6.
+
+- QDialog.Accepted/Rejected constants now in QDialog.DialogCode.* in PyQt6.

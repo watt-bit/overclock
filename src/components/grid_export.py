@@ -1,5 +1,6 @@
-from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPixmap
-from PyQt5.QtCore import Qt, QRectF
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtGui import QBrush, QColor, QPen, QFont, QPixmap
+from PyQt6.QtCore import Qt, QRectF
 from .base import ComponentBase
 import os
 from src.utils.resource import resource_path
@@ -9,7 +10,7 @@ class GridExportComponent(ComponentBase):
         # Initialize with the same size as other components
         super().__init__(x, y, 300, 220)
         # Make brush transparent (no background)
-        self.setBrush(Qt.transparent)
+        self.setBrush(Qt.GlobalColor.transparent)
         # Load the image
         self.image = QPixmap(resource_path("src/ui/assets/grid_export3.png"))
         
@@ -77,8 +78,8 @@ class GridExportComponent(ComponentBase):
             indicator_y = image_rect.y() + indicator_padding
             
             # Draw export indicator frame (outline)
-            painter.setPen(QPen(Qt.white, 1.5))
-            painter.setBrush(Qt.NoBrush)
+            painter.setPen(QPen(Qt.GlobalColor.white, 1.5))
+            painter.setBrush(Qt.BrushStyle.NoBrush)
             painter.drawRoundedRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height), 3, 3)
             
             # Determine fill color based on export percentage - use red with varying brightness
@@ -97,7 +98,7 @@ class GridExportComponent(ComponentBase):
                 fill_color = QColor("#FF0000")  # Red
             
             # Draw filled portion representing current export percentage (from bottom to top)
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
             painter.setBrush(QBrush(fill_color))
             
             fill_height = indicator_height * export_percentage

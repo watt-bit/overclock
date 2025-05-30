@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QGraphicsScene
-from PyQt5.QtCore import QObject, pyqtSignal, QPointF
-from PyQt5.QtGui import QPen, QPixmap, QColor, QBrush
+from PyQt6.QtWidgets import QGraphicsScene
+from PyQt6.QtCore import QObject, pyqtSignal, QPointF
+from PyQt6.QtGui import QPen, QPixmap, QColor, QBrush
 from src.utils.resource import resource_path
 
 

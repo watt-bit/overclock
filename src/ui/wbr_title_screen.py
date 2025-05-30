@@ -1,7 +1,14 @@
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+# TODO_PYQT6: verify width()/isType() semantics
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout
-from PyQt5.QtGui import QPixmap, QKeyEvent
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout
+from PyQt6.QtGui import QGuiApplication, QPixmap, QKeyEvent
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from src.utils.resource import resource_path
 
 class WBRTitleScreen(QWidget):
@@ -12,7 +19,7 @@ class WBRTitleScreen(QWidget):
         super().__init__()
         
         # Set window to be frameless (no title bar)
-        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         
         # Set up the layout
         layout = QVBoxLayout(self)
@@ -27,7 +34,7 @@ class WBRTitleScreen(QWidget):
             original_height = pixmap.height()
             scaled_width = int(original_width * 0.9)
             scaled_height = int(original_height * 0.9)
-            pixmap = pixmap.scaled(scaled_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(scaled_width, scaled_height, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             title_image.setPixmap(pixmap)
         else:
             # Fallback if image is not found
@@ -36,7 +43,7 @@ class WBRTitleScreen(QWidget):
             self.setStyleSheet("background-color: #2A2A2A;")
         
         # Center the image in the layout
-        title_image.setAlignment(Qt.AlignCenter)
+        title_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title_image)
         
         # Set the window size to match the scaled image size
@@ -63,7 +70,7 @@ class WBRTitleScreen(QWidget):
     
     def center_on_screen(self):
         """Center the window on the screen"""
-        screen_geometry = QApplication.desktop().screenGeometry()
+        screen_geometry = QGuiApplication.primaryScreen().availableGeometry()
         window_geometry = self.geometry()
         
         x = (screen_geometry.width() - window_geometry.width()) // 2
@@ -74,13 +81,13 @@ class WBRTitleScreen(QWidget):
     def keyPressEvent(self, event: QKeyEvent):
         """Handle key press events"""
         # Transition to the next screen when Enter is pressed
-        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+        if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
             # Emit signal before closing
             self.timer.stop()  # Stop the timer if a key is pressed
             self.transition_to_next.emit()
             self.close()
         # Also transition on Escape or Space for user convenience
-        elif event.key() in (Qt.Key_Escape, Qt.Key_Space):
+        elif event.key() in (Qt.Key.Key_Escape, Qt.Key.Key_Space):
             # Emit signal before closing
             self.timer.stop()  # Stop the timer if a key is pressed
             self.transition_to_next.emit()
@@ -93,4 +100,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     title = WBRTitleScreen()
     title.show()
-    sys.exit(app.exec_()) 
+    sys.exit(app.exec()) 

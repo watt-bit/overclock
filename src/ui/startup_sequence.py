@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QObject, QTimer
-from PyQt5.QtGui import QColor
+from PyQt6.QtCore import QObject, QTimer
+from PyQt6.QtGui import QColor
 from .terminal_widget import TerminalWidget
 
 class StartupSequence(QObject):

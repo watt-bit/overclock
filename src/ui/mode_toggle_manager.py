@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QGraphicsView
-from PyQt5.QtCore import Qt
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtWidgets import QGraphicsView
+from PyQt6.QtCore import Qt
 
 class ModeToggleManager:
     """
@@ -121,9 +122,9 @@ class ModeToggleManager:
             self.main_window.view.setTransform(self.main_window.view.transform().scale(1, 1))  # Set to 1:1 scale
             
             # Disable scrolling and movement in historian view
-            self.main_window.view.setDragMode(QGraphicsView.NoDrag)
-            self.main_window.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            self.main_window.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.main_window.view.setDragMode(QGraphicsView.DragMode.NoDrag)
+            self.main_window.view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.main_window.view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             
             # Resize the chart widget to fit the current view size
             view_size = self.main_window.view.viewport().size()
@@ -161,9 +162,9 @@ class ModeToggleManager:
             self.main_window.view.setScene(self.main_window.scene)
             
             # Re-enable scrolling and movement in model view
-            self.main_window.view.setDragMode(QGraphicsView.ScrollHandDrag)
-            self.main_window.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            self.main_window.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.main_window.view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
+            self.main_window.view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.main_window.view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             
             # Re-enable zoom slider and restore previous value
             self.main_window.zoom_slider.setEnabled(True)

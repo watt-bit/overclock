@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import (QGraphicsLineItem, QApplication)
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPainter, QPen, QCursor, QPixmap, QColor
+from PyQt6.QtWidgets import (QGraphicsLineItem, QApplication)
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPainter, QPen, QCursor, QPixmap, QColor
 import math
 
 from src.components.bus import BusComponent
@@ -41,8 +41,8 @@ class ConnectionManager:
         if not self.creating_connection:
             # Clean up any existing state
             self.cursor_timer.stop()
-            self.view.setCursor(Qt.ArrowCursor)
-            self.view.viewport().setCursor(Qt.ArrowCursor)
+            self.view.setCursor(Qt.CursorShape.ArrowCursor)
+            self.view.viewport().setCursor(Qt.CursorShape.ArrowCursor)
             
             # Reset all connection state variables
             self.connection_source = None
@@ -79,8 +79,8 @@ class ConnectionManager:
             self.main_window.creating_connection = False
             # Stop cursor animation and restore default cursor
             self.cursor_timer.stop()
-            self.view.setCursor(Qt.ArrowCursor)
-            self.view.viewport().setCursor(Qt.ArrowCursor)
+            self.view.setCursor(Qt.CursorShape.ArrowCursor)
+            self.view.viewport().setCursor(Qt.CursorShape.ArrowCursor)
             # Re-enable connection button
             self.connection_btn.setEnabled(True)
             self.view.setMouseTracking(False)
@@ -131,7 +131,7 @@ class ConnectionManager:
             self.connection_source = component
             # Create temporary visual connection that follows mouse
             self.temp_connection = QGraphicsLineItem()
-            self.temp_connection.setPen(QPen(Qt.darkGray, 2, Qt.DashLine))
+            self.temp_connection.setPen(QPen(Qt.GlobalColor.darkGray, 2, Qt.PenStyle.DashLine))
             self.scene.addItem(self.temp_connection)
             # Enable mouse tracking
             self.view.setMouseTracking(True)
@@ -201,17 +201,17 @@ class ConnectionManager:
         """Create a custom cursor for connection mode with pulsing effect"""
         size = self.cursor_size
         pixmap = QPixmap(size, size)
-        pixmap.fill(Qt.transparent)
+        pixmap.fill(Qt.GlobalColor.transparent)
         
         painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         
         # Calculate pulse effect (0.0 to 1.0)
         pulse = abs(math.sin(phase))
         
         # Draw outer glow with higher opacity
         glow_color = QColor(255, 215, 0, int(180 * pulse))  # Golden yellow with varying opacity
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(glow_color)
         painter.drawEllipse(4, 4, size-8, size-8)
         

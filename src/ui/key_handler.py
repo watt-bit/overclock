@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt, QObject
-from PyQt5.QtWidgets import QLineEdit, QApplication
+from PyQt6.QtCore import Qt, QObject, QEvent
+from PyQt6.QtWidgets import QLineEdit, QApplication
 
 from src.components.tree import TreeComponent
 from src.components.bush import BushComponent
@@ -45,13 +45,13 @@ class KeyHandler(QObject):
             bool: True if the event was handled, False otherwise
         """
         # Only process KeyPress events
-        if event.type() == event.KeyPress:
+        if event.type() == QEvent.Type.KeyPress:
             # Don't process keystrokes if we're typing in a text field
             if isinstance(QApplication.focusWidget(), QLineEdit):
                 return False
                 
             # Check for the Delete key
-            if event.key() == Qt.Key_Delete:
+            if event.key() == Qt.Key.Key_Delete:
                 # Don't process delete key if simulation is running or autocompleting
                 if self.main_window.simulation_engine.simulation_running or self.main_window.is_autocompleting:
                     return True
@@ -80,23 +80,23 @@ class KeyHandler(QObject):
         key = event.key()
         
         # Space for play/pause - active unless in autocomplete mode
-        if key == Qt.Key_Space and not self.main_window.is_autocompleting:
+        if key == Qt.Key.Key_Space and not self.main_window.is_autocompleting:
             self.main_window.toggle_simulation()
             return True
             
         # Tab key for switching between views is now Backslash
-        if key == Qt.Key_Backslash:
+        if key == Qt.Key.Key_Backslash:
             self.main_window.cancel_connection_if_active(self.main_window.toggle_mode_button)
             return True
             
         # Enter key for autocomplete - active unless simulation is running
-        if key == Qt.Key_Return and not self.main_window.simulation_engine.simulation_running:
+        if key == Qt.Key.Key_Return and not self.main_window.simulation_engine.simulation_running:
             self.main_window.run_autocomplete()
             return True
             
         # Delete key for deleting selected component is now handled by the event filter
         # but kept here for backward compatibility
-        if key == Qt.Key_Delete:
+        if key == Qt.Key.Key_Delete:
             # Don't process delete key if simulation is running or autocompleting
             if self.main_window.simulation_engine.simulation_running or self.main_window.is_autocompleting:
                 return True
@@ -106,12 +106,12 @@ class KeyHandler(QObject):
             return deleted
         
         # R key for reset simulation - always active regardless of mode
-        if key == Qt.Key_R:
+        if key == Qt.Key.Key_R:
             self.main_window.reset_simulation()
             return True
         
         # P key for toggling analytics panel - active only in model view
-        if key == Qt.Key_P:
+        if key == Qt.Key.Key_P:
             # Only process if in model view (not in historian view)
             if self.main_window.is_model_view:
                 self.main_window.toggle_analytics_panel()
@@ -122,39 +122,39 @@ class KeyHandler(QObject):
             self.main_window.connection_btn.isEnabled() and 
             not self.main_window.simulation_engine.simulation_running):
             # G for generator
-            if key == Qt.Key_G:
+            if key == Qt.Key.Key_G:
                 self.main_window.add_component("generator")
                 return True
             # B for bus
-            elif key == Qt.Key_B:
+            elif key == Qt.Key.Key_B:
                 self.main_window.add_component("bus")
                 return True
             # L for load
-            elif key == Qt.Key_L:
+            elif key == Qt.Key.Key_L:
                 self.main_window.add_component("load")
                 return True
             # I for grid import
-            elif key == Qt.Key_I:
+            elif key == Qt.Key.Key_I:
                 self.main_window.add_component("grid_import")
                 return True
             # E for grid export
-            elif key == Qt.Key_E:
+            elif key == Qt.Key.Key_E:
                 self.main_window.add_component("grid_export")
                 return True
             # S for battery storage
-            elif key == Qt.Key_S:
+            elif key == Qt.Key.Key_S:
                 self.main_window.add_component("battery")
                 return True
             # W for cloud workload
-            elif key == Qt.Key_W:
+            elif key == Qt.Key.Key_W:
                 self.main_window.add_component("cloud_workload")
                 return True
             # C for create connection
-            elif key == Qt.Key_C:
+            elif key == Qt.Key.Key_C:
                 self.main_window.start_connection()
                 return True
             # A for autoconnect
-            elif key == Qt.Key_A:
+            elif key == Qt.Key.Key_A:
                 self.main_window.autoconnect_all_components()
                 return True
         

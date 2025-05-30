@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QFormLayout, QLabel, 
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QFormLayout, QLabel, 
                             QProgressBar, QGroupBox, QHBoxLayout)
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas

@@ -91,3 +91,32 @@ Modified TerminalWidget.add_message() to skip adding blue dot for empty messages
 Enhanced TerminalWidget.add_message() to show red dots for messages starting with "ERROR" (case-insensitive), blue dots for normal messages.
 Added platform detection to AugurTitleScreen - Windows systems now play titlevideo6small_win.wmv instead of the default .mp4 file for better compatibility.
 Modified AugurTitleScreen platform detection to default to Windows video file, only using macOS version on Darwin systems instead of defaulting to macOS for all non-Windows platforms.
+2025-05-30: Fixed ui_initializer.py PyQt6 import error by moving QAction from QtWidgets to QtGui after migration script.
+2025-05-30: Replaced deprecated QMediaContent usage in augur_title_screen.py with QMediaPlayer.setSource() under PyQt6.
+2025-05-30: Updated QSizePolicy enum usage to QSizePolicy.Policy.* across multiple files for PyQt6 compatibility.
+2025-05-30: Replaced Qt.ScrollBarAlwaysOff with Qt.ScrollBarPolicy.ScrollBarAlwaysOff across UI files for PyQt6 enums.
+2025-05-30: Updated QFrame.HLine/Sunken to QFrame.Shape.HLine and QFrame.Shadow.Sunken for PyQt6 in historian_manager.py.
+2025-05-30: Replaced Qt.WA_TransparentForMouseEvents with Qt.WidgetAttribute.WA_TransparentForMouseEvents.
+2025-05-30: Updated Qt corner enums to Qt.Corner.* in ui_initializer.py for PyQt6.
+2025-05-30: Updated QGraphicsView drag enums to QGraphicsView.DragMode.* for PyQt6.
+2025-05-30: Replaced QPainter.Antialiasing/SmoothPixmapTransform with QPainter.RenderHint.* across files.
+2025-05-30: Updated QGraphicsView.FullViewportUpdate to QGraphicsView.ViewportUpdateMode.FullViewportUpdate.
+2025-05-30: Replaced Qt.StrongFocus/NoFocus with Qt.FocusPolicy.* enums.
+2025-05-30: Replaced event.KeyPress/MouseMove with QEvent.Type.* and imported QEvent in main_window.py and key_handler.py.
+2025-05-30: Updated RichText enums in autocomplete_manager to Qt.TextFormat.RichText.
+2025-05-30: Updated QDockWidget.NoDockWidgetFeatures to QDockWidget.DockWidgetFeature.NoDockWidgetFeatures.
+2025-05-30: Updated QToolButton.InstantPopup to QToolButton.ToolButtonPopupMode.InstantPopup.
+2025-05-30: Replaced QApplication.desktop() with QGuiApplication.primaryScreen().availableGeometry() across title screens and main window.
+2025-05-30: Updated Qt.FramelessWindowHint to Qt.WindowType.FramelessWindowHint in title screens.
+2025-05-30: Updated cursor enums Qt.ArrowCursor/PointingHandCursor to Qt.CursorShape.* across multiple files.
+2025-05-30: Removed QMediaPlayer.VideoSurface flag; constructed with QMediaPlayer() and setVideoOutput in augur_title_screen.
+2025-05-30: Updated color & pen/brush enums to new Qt.GlobalColor and Qt.PenStyle/BrushStyle paths across many files for PyQt6.
+2025-05-30: Replaced Qt.DirectConnection with Qt.ConnectionType.DirectConnection in main.py.
+2025-05-30: Replaced Qt.Key.* constants with Qt.Key.Key_* across key handlers and title screens for PyQt6.
+2025-05-30: Updated Qt.IntersectClip -> Qt.ClipOperation.IntersectClip and Qt.transparent -> Qt.GlobalColor.transparent in bordered_main_widget.py.
+2025-05-30: Replaced Qt.transparent usages with Qt.GlobalColor.transparent in particle_system and screenshot_manager; connection_manager cursor pixmap.
+2025-05-30: Replaced deprecated QFontMetrics.width with horizontalAdvance in gradient_border_text.py.
+2025-05-30: Updated QGraphicsRectItem item flag/changes to QGraphicsItem.GraphicsItemFlag and GraphicsItemChange in base.py.
+2025-05-30: Replaced remaining Qt.NoPen with Qt.PenStyle.NoPen in decorative component files.
+2025-05-30: Fixed QMessageBox button constants in main_window.py closeEvent - replaced QMessageBox.Yes/No/Cancel with QMessageBox.StandardButton.* for PyQt6.
+2025-05-30: Fixed QDialog.Accepted constant in properties_manager.py - replaced with QDialog.DialogCode.Accepted for PyQt6.

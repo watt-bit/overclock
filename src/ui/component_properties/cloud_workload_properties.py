@@ -1,5 +1,11 @@
-from PyQt5.QtWidgets import (QLabel, QComboBox, QLineEdit, QWidget, QFormLayout, QHBoxLayout, QSlider)
-from PyQt5.QtCore import Qt
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+from PyQt6.QtWidgets import (QLabel, QComboBox, QLineEdit, QWidget, QFormLayout, QHBoxLayout, QSlider)
+from PyQt6.QtCore import Qt
 
 # Import styles from the parent module
 from src.ui.properties_manager import COMBOBOX_STYLE, INPUT_STYLE, SLIDER_STYLE
@@ -9,7 +15,7 @@ def add_cloud_workload_properties(properties_manager, component, layout):
     # Add note label
     note_label = QLabel("NOTE: Cloud Workload component only connects\nto Load component in Data Center demand mode.")
     note_label.setStyleSheet("background-color: transparent; color: rgba(200, 255, 255, 0.9); padding: 4px; border-radius: 4px;")
-    note_label.setAlignment(Qt.AlignCenter)
+    note_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
     note_label.setWordWrap(False)
     
     # Add operating mode selector
@@ -55,7 +61,7 @@ def add_cloud_workload_properties(properties_manager, component, layout):
     efficiency_layout = QHBoxLayout()
     efficiency_layout.setContentsMargins(0, 0, 0, 0)
     
-    efficiency_slider = QSlider(Qt.Horizontal)
+    efficiency_slider = QSlider(Qt.Orientation.Horizontal)
     efficiency_slider.setMinimum(100)  # 1.0
     efficiency_slider.setMaximum(200)  # 2.0
     efficiency_slider.setValue(int(component.dedicated_power_use_efficiency * 100))
@@ -89,10 +95,10 @@ def add_cloud_workload_properties(properties_manager, component, layout):
     dedicated_params_layout.addRow("Price per Resource Hour ($):", price_per_resource_edit)
     
     # Set left alignment for all labels in the forms
-    multi_cloud_params_layout.setLabelAlignment(Qt.AlignLeft)
-    multi_cloud_params_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
-    dedicated_params_layout.setLabelAlignment(Qt.AlignLeft)
-    dedicated_params_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
+    multi_cloud_params_layout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
+    multi_cloud_params_layout.setFormAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+    dedicated_params_layout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
+    dedicated_params_layout.setFormAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
     
     # Set visibility based on current mode
     multi_cloud_params_widget.setVisible(component.operating_mode == "Multi-Cloud Spot")

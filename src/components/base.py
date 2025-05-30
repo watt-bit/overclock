@@ -1,16 +1,23 @@
-from PyQt5.QtWidgets import QGraphicsRectItem, QPushButton, QGraphicsProxyWidget
-from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtGui import QBrush, QColor, QPen, QRadialGradient, QFont, QPainterPath, QPolygonF, QLinearGradient
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtWidgets import QGraphicsRectItem, QGraphicsItem, QPushButton, QGraphicsProxyWidget
+from PyQt6.QtCore import Qt, QRectF
+from PyQt6.QtGui import QBrush, QColor, QPen, QRadialGradient, QFont, QPainterPath, QPolygonF, QLinearGradient
 import math
 
 class ComponentBase(QGraphicsRectItem):
     def __init__(self, x, y, width=100, height=60):
         super().__init__(x, y, width, height)
-        self.setFlag(QGraphicsRectItem.ItemIsMovable)
-        self.setFlag(QGraphicsRectItem.ItemIsSelectable)
-        self.setFlag(QGraphicsRectItem.ItemSendsGeometryChanges)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges)
         self.setBrush(QBrush(QColor(200, 200, 200)))
-        self.setPen(QPen(Qt.NoPen))
+        self.setPen(QPen(Qt.PenStyle.NoPen))
         self.setAcceptHoverEvents(True)
         # Store the original brush for restoration after hover
         self.original_brush = self.brush()
@@ -30,7 +37,7 @@ class ComponentBase(QGraphicsRectItem):
         self.shadow_y_offset = -90   # Shadow offset from component bottom (reduced from 10)
         
         # Selection highlight pen
-        self.selection_pen = QPen(QColor(255, 255, 255), 3, Qt.SolidLine)
+        self.selection_pen = QPen(QColor(255, 255, 255), 3, Qt.PenStyle.SolidLine)
         self.selection_pen.setCosmetic(True)  # Keep width constant regardless of zoom
         
         # Flag to track if properties panel is open for this component
@@ -61,7 +68,7 @@ class ComponentBase(QGraphicsRectItem):
         self.open_button.clicked.connect(self.open_properties)
         
         # Prevent space bar from triggering the button
-        self.open_button.setFocusPolicy(Qt.NoFocus)
+        self.open_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         
         # Add the button to the scene using a proxy widget
         self.button_proxy = QGraphicsProxyWidget(self)
@@ -98,7 +105,7 @@ class ComponentBase(QGraphicsRectItem):
         
         # Draw the shadow
         painter.setBrush(QBrush(gradient))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.drawEllipse(int(shadow_x), int(shadow_y), int(shadow_width), int(shadow_height))
         
         # Restore painter to draw the component
@@ -121,7 +128,7 @@ class ComponentBase(QGraphicsRectItem):
             painter.save()
             # Set up the painter for the highlight
             painter.setPen(self.selection_pen)
-            painter.setBrush(Qt.NoBrush)
+            painter.setBrush(Qt.BrushStyle.NoBrush)
             # Draw the highlight rectangle
             painter.drawRect(highlight_rect)
             # Restore the painter state
@@ -370,8 +377,8 @@ class ComponentBase(QGraphicsRectItem):
         # Get the two lines of text
         
         # Draw the first line (capacity and mode) with white color
-        painter.setPen(QPen(Qt.white))
-        painter.drawText(first_line_rect, Qt.AlignLeft | Qt.AlignVCenter, first_line)
+        painter.setPen(QPen(Qt.GlobalColor.white))
+        painter.drawText(first_line_rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, first_line)
         
         # Set color based on whether showing cost or revenue for the second line
         # Use the same palette as in AutocompleteManager._get_irr_color
@@ -383,9 +390,9 @@ class ComponentBase(QGraphicsRectItem):
             painter.setPen(QPen(QColor(255, 50, 50)))
         else:
             # Default white for neutral or zero values
-            painter.setPen(QPen(Qt.white))
+            painter.setPen(QPen(Qt.GlobalColor.white))
             
-        painter.drawText(second_line_rect, Qt.AlignLeft | Qt.AlignVCenter, second_line)
+        painter.drawText(second_line_rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, second_line)
         
         # Restore painter state
         painter.restore()
@@ -470,7 +477,7 @@ class ComponentBase(QGraphicsRectItem):
         
         # Only change cursor if not in connection mode
         if not self.scene() or not hasattr(self.scene(), 'parent') or not self.scene().parent().creating_connection:
-            self.setCursor(Qt.PointingHandCursor)
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
         # Save the original brush and pen for restoring later
         self.original_brush = self.brush()
         self.original_pen = self.pen()
@@ -529,11 +536,11 @@ class ComponentBase(QGraphicsRectItem):
         super().mouseReleaseEvent(event)
     
     def itemChange(self, change, value):
-        if change == QGraphicsRectItem.ItemPositionChange:
+        if change == QGraphicsItem.GraphicsItemChange.ItemPositionChange:
             # Update all connected lines
             for connection in self.connections:
                 connection.update_position()
-        elif change == QGraphicsRectItem.ItemSelectedChange:
+        elif change == QGraphicsItem.GraphicsItemChange.ItemSelectedChange:
             # Force a repaint when selection state changes
             self.update()
             # Reset properties_open state when deselected

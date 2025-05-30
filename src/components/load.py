@@ -1,9 +1,10 @@
+# TODO_PYQT6: verify width()/isType() semantics
 import numpy as np
 import random
 import csv
 import os
-from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPixmap
-from PyQt5.QtCore import Qt, QRectF
+from PyQt6.QtGui import QBrush, QColor, QPen, QFont, QPixmap
+from PyQt6.QtCore import Qt, QRectF
 from .base import ComponentBase
 from .bus import BusComponent
 from src.utils.resource import resource_path
@@ -13,7 +14,7 @@ class LoadComponent(ComponentBase):
         # Initialize with the same size as the generator component
         super().__init__(x, y, 300, 220)
         # Make brush transparent (no background)
-        self.setBrush(Qt.transparent)
+        self.setBrush(Qt.GlobalColor.transparent)
         # Load the image
         self.image = QPixmap(resource_path("src/ui/assets/load2.png"))
         
@@ -92,8 +93,8 @@ class LoadComponent(ComponentBase):
             indicator_y = image_rect.y() + indicator_padding
             
             # Draw load factor frame (outline)
-            painter.setPen(QPen(Qt.white, 1.5))
-            painter.setBrush(Qt.NoBrush)
+            painter.setPen(QPen(Qt.GlobalColor.white, 1.5))
+            painter.setBrush(Qt.BrushStyle.NoBrush)
             painter.drawRoundedRect(int(indicator_x), int(indicator_y), int(indicator_width), int(indicator_height), 3, 3)
             
             # Determine fill color based on load factor - use gold with varying brightness
@@ -112,7 +113,7 @@ class LoadComponent(ComponentBase):
                 fill_color = QColor("#FFD700")  # Bright gold
             
             # Draw filled portion representing current load factor (from bottom to top)
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
             painter.setBrush(QBrush(fill_color))
             
             fill_height = indicator_height * load_factor
@@ -137,7 +138,7 @@ class LoadComponent(ComponentBase):
                 )
                 # Set up the painter for the highlight
                 painter.setPen(self.selection_pen)
-                painter.setBrush(Qt.NoBrush)
+                painter.setBrush(Qt.BrushStyle.NoBrush)
                 # Draw the highlight rectangle
                 painter.drawRect(highlight_rect)
             

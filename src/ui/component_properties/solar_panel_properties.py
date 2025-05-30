@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QComboBox, QHBoxLayout, QPushButton, QWidget, QLabel, QLineEdit)
+from PyQt6.QtWidgets import (QComboBox, QHBoxLayout, QPushButton, QWidget, QLabel, QLineEdit)
 
 # Import styles from the parent module
 from src.ui.properties_manager import COMBOBOX_STYLE, DEFAULT_BUTTON_STYLE, INPUT_STYLE

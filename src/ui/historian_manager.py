@@ -1,6 +1,12 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsScene, QHBoxLayout, QPushButton, QLabel, QScrollArea, QFrame, QSpacerItem, QSizePolicy
-from PyQt5.QtGui import QColor, QBrush
-from PyQt5.QtCore import Qt
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsScene, QHBoxLayout, QPushButton, QLabel, QScrollArea, QFrame, QSpacerItem, QSizePolicy
+from PyQt6.QtGui import QColor, QBrush
+from PyQt6.QtCore import Qt
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.patheffects as path_effects
@@ -69,7 +75,7 @@ class HistorianManager:
         self.controls_widget = QWidget()
         self.controls_widget.setStyleSheet("background-color: #0A0E22;")
         self.controls_layout = QVBoxLayout(self.controls_widget)
-        self.controls_layout.setAlignment(Qt.AlignTop)
+        self.controls_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         
         # Add a label for the controls section
         controls_label = QLabel("\n\n\nData Series")
@@ -79,7 +85,7 @@ class HistorianManager:
         # Create a scroll area for the buttons (in case there are many)
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.scroll_area.setMinimumWidth(175)  # Set a minimum width
         self.scroll_area.setStyleSheet("background-color: #0A0E22; border: none;")
         
@@ -87,7 +93,7 @@ class HistorianManager:
         self.buttons_widget = QWidget()
         self.buttons_widget.setStyleSheet("background-color: #0A0E22;")
         self.buttons_layout = QVBoxLayout(self.buttons_widget)
-        self.buttons_layout.setAlignment(Qt.AlignTop)
+        self.buttons_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.buttons_layout.setContentsMargins(0, 0, 0, 0)
         self.scroll_area.setWidget(self.buttons_widget)
         
@@ -95,7 +101,7 @@ class HistorianManager:
         self.controls_layout.addWidget(self.scroll_area)
         
         # Add a 100px transparent vertical spacer
-        spacer = QSpacerItem(20, 125, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        spacer = QSpacerItem(20, 125, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.controls_layout.addItem(spacer)
         
         # Create a widget to hold the chart
@@ -592,8 +598,8 @@ class HistorianManager:
                         # Add separator only if this is the first secondary button being added
                         if len(self.secondary_buttons) == 1:
                             separator = QFrame()
-                            separator.setFrameShape(QFrame.HLine)
-                            separator.setFrameShadow(QFrame.Sunken)
+                            separator.setFrameShape(QFrame.Shape.HLine)
+                            separator.setFrameShadow(QFrame.Shadow.Sunken)
                             separator.setStyleSheet("background-color: #555555;")
                             self.buttons_layout.addWidget(separator)
                         
@@ -801,9 +807,8 @@ class HistorianManager:
         # Add separator before secondary buttons
         if default_secondary:
             separator = QFrame()
-            separator.setFrameShape(QFrame.HLine)
-            separator.setFrameShadow(QFrame.Sunken)
-            separator.setStyleSheet("background-color: #555555;")
+            separator.setFrameShape(QFrame.Shape.HLine)
+            separator.setFrameShadow(QFrame.Shadow.Sunken)
             self.buttons_layout.addWidget(separator)
         
         # Create secondary series

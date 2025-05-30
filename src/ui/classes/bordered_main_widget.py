@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt, QRectF, QTimer
-from PyQt5.QtGui import QPainter, QColor, QPainterPath, QLinearGradient
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtCore import Qt, QRectF, QTimer
+from PyQt6.QtGui import QPainter, QColor, QPainterPath, QLinearGradient
 from ..terminal_widget import TerminalWidget
 import math
 import random
@@ -36,7 +37,7 @@ class BorderedMainWidget(QWidget):
         self.timer.start(50)  # Update every 50ms
         
         # Make the widget's border transparent to mouse events
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, False)
         # Set style to ensure proper appearance
         self.setStyleSheet("background: transparent;")
         
@@ -444,8 +445,8 @@ class BorderedMainWidget(QWidget):
         super().paintEvent(event)
         
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         
         # First, fill the entire widget with black background
         painter.fillRect(self.rect(), QColor("#000000"))
@@ -472,8 +473,8 @@ class BorderedMainWidget(QWidget):
             inner_path.addRoundedRect(inner_rect, self.corner_radius-self.border_width, self.corner_radius-self.border_width)
             
             # Set clipping to the inside area to create the border
-            painter.setClipPath(inner_path, Qt.IntersectClip)
-            painter.fillRect(rect, Qt.transparent)  # Clear the inner area
+            painter.setClipPath(inner_path, Qt.ClipOperation.IntersectClip)
+            painter.fillRect(rect, Qt.GlobalColor.transparent)  # Clear the inner area
             painter.restore()
         else:
             # Create gradient for the border - use a rotated linear gradient for better performance
@@ -513,6 +514,6 @@ class BorderedMainWidget(QWidget):
             inner_path.addRoundedRect(inner_rect, self.corner_radius-self.border_width, self.corner_radius-self.border_width)
             
             # Set clipping to the inside area to create the border
-            painter.setClipPath(inner_path, Qt.IntersectClip)
-            painter.fillRect(rect, Qt.transparent)  # Clear the inner area
+            painter.setClipPath(inner_path, Qt.ClipOperation.IntersectClip)
+            painter.fillRect(rect, Qt.GlobalColor.transparent)  # Clear the inner area
             painter.restore() 

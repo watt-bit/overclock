@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import (QMainWindow, QGraphicsView, QMessageBox, QApplication)
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QColor
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtWidgets import (QMainWindow, QGraphicsView, QMessageBox, QApplication)
+from PyQt6.QtCore import Qt, QTimer, QPointF, QRectF, QEvent
+from PyQt6.QtGui import QColor, QGuiApplication
 
 from src.components.bus import BusComponent
 from .ui_initializer import GradientBorderText, opaque_button_style
@@ -23,7 +24,7 @@ class PowerSystemSimulator(QMainWindow):
         
     def center_on_screen(self):
         """Center the window on the screen"""
-        screen_geometry = QApplication.desktop().screenGeometry()
+        screen_geometry = QGuiApplication.primaryScreen().availableGeometry()
         window_geometry = self.geometry()
         
         x = (screen_geometry.width() - window_geometry.width()) // 2
@@ -105,8 +106,8 @@ class PowerSystemSimulator(QMainWindow):
     def eventFilter(self, obj, event):
         # Handle ESC key press
         if (obj is self.view and 
-            event.type() == event.KeyPress and 
-            event.key() == Qt.Key_Escape):
+            event.type() == QEvent.Type.KeyPress and 
+            event.key() == Qt.Key.Key_Escape):
             # Only handle connection-related ESC operations in model view
             if hasattr(self, 'is_model_view') and self.is_model_view:
                 if self.creating_connection:
@@ -115,7 +116,7 @@ class PowerSystemSimulator(QMainWindow):
 
         # Handle mouse movement for connection line
         if (obj is self.view.viewport() and 
-            event.type() == event.MouseMove and 
+            event.type() == QEvent.Type.MouseMove and 
             self.connection_manager.temp_connection and 
             self.connection_manager.connection_source):
             return self.connection_manager.handle_mouse_move_for_connection(event)
@@ -124,8 +125,8 @@ class PowerSystemSimulator(QMainWindow):
     def set_default_cursor(self):
         """Set the default cursor state when not in connection mode"""
         self.cursor_timer.stop()
-        self.view.setCursor(Qt.ArrowCursor)
-        self.view.viewport().setCursor(Qt.ArrowCursor)
+        self.view.setCursor(Qt.CursorShape.ArrowCursor)
+        self.view.viewport().setCursor(Qt.CursorShape.ArrowCursor)
     
     def check_network_connectivity(self):
         """Check if all components are connected in a single network"""
@@ -348,10 +349,10 @@ class PowerSystemSimulator(QMainWindow):
                 self, 
                 "Confirm Exit", 
                 "The simulation is still running. Are you sure you want to quit?",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
             )
-            if reply == QMessageBox.No:
+            if reply == QMessageBox.StandardButton.No:
                 event.ignore()
                 return
                 
@@ -360,20 +361,20 @@ class PowerSystemSimulator(QMainWindow):
             self, 
             "Save Before Exit", 
             "Would you like to save your scenario before exiting?",
-            QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
-            QMessageBox.Yes
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel,
+            QMessageBox.StandardButton.Yes
         )
         
-        if reply == QMessageBox.Cancel:
+        if reply == QMessageBox.StandardButton.Cancel:
             event.ignore()
-        elif reply == QMessageBox.Yes:
+        elif reply == QMessageBox.StandardButton.Yes:
             self.save_scenario()
             # Clean up resources before exiting
             if hasattr(self, 'autocomplete_manager'):
                 self.autocomplete_manager.cleanup()
             event.accept()
             QApplication.quit()
-        else:  # QMessageBox.No
+        else:  # QMessageBox.StandardButton.No
             # Clean up resources before exiting
             if hasattr(self, 'autocomplete_manager'):
                 self.autocomplete_manager.cleanup()

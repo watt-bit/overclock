@@ -8,7 +8,7 @@ of the simulation timeframe asynchronously, while providing appropriate UI feedb
 This code was extracted from the main_window.py file to improve modularity without changing functionality.
 """
 
-from PyQt5.QtCore import QTimer, Qt
+from PyQt6.QtCore import QTimer, Qt
 from src.utils.irr_calculator import calculate_irr, calculate_extended_irr
 from src.ui.terminal_widget import TerminalWidget
 
@@ -302,7 +302,7 @@ class AutocompleteManager:
                 # Set rich text in the label
                 self.main_window.irr_label.setText(irr_text)
                 # Allow HTML formatting in the label
-                self.main_window.irr_label.setTextFormat(Qt.RichText)
+                self.main_window.irr_label.setTextFormat(Qt.TextFormat.RichText)
         else:
             # Default placeholder text with standard color
             irr_text = 'Refresh Cycle IRR: <span style="color: rgba(255, 255, 255, 0.8)">--.-</span>% (12 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.-</span>% (18 Mo.) | <span style="color: rgba(255, 255, 255, 0.8)">--.-</span>% (36 Mo.)'
@@ -310,7 +310,7 @@ class AutocompleteManager:
             # Check if the irr_label is still valid before setting text
             if self.main_window.irr_label.isVisible():
                 self.main_window.irr_label.setText(irr_text)
-                self.main_window.irr_label.setTextFormat(Qt.RichText)
+                self.main_window.irr_label.setTextFormat(Qt.TextFormat.RichText)
         
         # Only adjust size and position if the label is still valid and visible
         if self.main_window.irr_label.isVisible():

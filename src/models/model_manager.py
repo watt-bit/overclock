@@ -1,6 +1,6 @@
 import json
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QFileDialog, QMessageBox
+from PyQt6.QtCore import Qt
 
 from src.components.generator import GeneratorComponent
 from src.components.load import LoadComponent
@@ -60,8 +60,8 @@ class ModelManager:
         # Reset cursor state and connection mode
         self.main_window.creating_connection = False
         self.main_window.cursor_timer.stop()
-        self.main_window.view.setCursor(Qt.ArrowCursor)
-        self.main_window.view.viewport().setCursor(Qt.ArrowCursor)
+        self.main_window.view.setCursor(Qt.CursorShape.ArrowCursor)
+        self.main_window.view.viewport().setCursor(Qt.CursorShape.ArrowCursor)
         self.main_window.connection_btn.setEnabled(True)
         
         # Reset simulation components

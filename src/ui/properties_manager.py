@@ -1,8 +1,14 @@
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
                             QPushButton, QSlider, QFileDialog, QFormLayout, 
                             QLineEdit, QComboBox, QSizePolicy, QDialog)
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QDoubleValidator, QIntValidator, QPixmap
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QDoubleValidator, QIntValidator, QPixmap
 import csv
 import re
 import os
@@ -42,15 +48,15 @@ class ComponentPropertiesManager:
         self.properties_widget = QWidget()
         self.properties_widget.setStyleSheet('color: white; background-color: rgba(37, 47, 52, 0.75); border: none; font-family: Menlo, Consolas, Courier, monospace; font-size: 10px; border-radius: 3px;')
         # Set size policies to have fixed width but allow height to adjust to contents
-        self.properties_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        self.properties_widget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
         # Set fixed width to match the dock widget width
         self.properties_widget.setFixedWidth(300)
         self.properties_layout = QFormLayout(self.properties_widget)
         # Set layout margins to be minimal
         self.properties_layout.setContentsMargins(10, 10, 10, 10)
         # Set left alignment for all labels in the form
-        self.properties_layout.setLabelAlignment(Qt.AlignLeft)
-        self.properties_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.properties_layout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.properties_layout.setFormAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         # Initialize current_component attribute
         self.current_component = None
         # Initialize delete_btn attribute
@@ -114,8 +120,8 @@ class ComponentPropertiesManager:
         # Create the main content area (previously left column)
         content_layout = QFormLayout()
         content_layout.setContentsMargins(0, 0, 0, 0)  # Minimal margins
-        content_layout.setLabelAlignment(Qt.AlignLeft)
-        content_layout.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
+        content_layout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
+        content_layout.setFormAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         
         # Create bottom button area
         bottom_layout = QVBoxLayout()
@@ -442,13 +448,13 @@ class ComponentPropertiesManager:
         if os.path.exists(image_path):
             pixmap = QPixmap(image_path)
             # Scale to 200x200 while maintaining aspect ratio
-            scaled_pixmap = pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            scaled_pixmap = pixmap.scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             image_label.setPixmap(scaled_pixmap)
         else:
             image_label.setText("📊 Spreadsheet")
             image_label.setStyleSheet("font-size: 48px;")
         
-        image_label.setAlignment(Qt.AlignCenter)
+        image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(image_label)
         
         # Add format explanation
@@ -462,7 +468,7 @@ class ComponentPropertiesManager:
             "\n"
             "\n"
         )
-        format_text.setAlignment(Qt.AlignLeft)
+        format_text.setAlignment(Qt.AlignmentFlag.AlignLeft)
         format_text.setWordWrap(True)
         format_text.setStyleSheet("font-size: 11px; line-height: 1.4;")
         layout.addWidget(format_text)
@@ -473,7 +479,7 @@ class ComponentPropertiesManager:
         layout.addWidget(ok_button)
         
         # Show dialog and return result
-        return dialog.exec_() == QDialog.Accepted
+        return dialog.exec() == QDialog.DialogCode.Accepted
 
     def _load_custom_profile(self, component):
         # Show format explanation dialog first

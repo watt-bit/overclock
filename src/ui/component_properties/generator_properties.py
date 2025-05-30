@@ -1,5 +1,11 @@
-from PyQt5.QtWidgets import (QLineEdit, QLabel, QPushButton, QComboBox, QHBoxLayout, QSlider, QWidget)
-from PyQt5.QtCore import Qt
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+from PyQt6.QtWidgets import (QLineEdit, QLabel, QPushButton, QComboBox, QHBoxLayout, QSlider, QWidget)
+from PyQt6.QtCore import Qt
 
 # Import styles from the parent module
 from src.ui.properties_manager import COMMON_BUTTON_STYLE, INPUT_STYLE, COMBOBOX_STYLE, SLIDER_STYLE
@@ -27,7 +33,7 @@ def add_generator_properties(properties_manager, component, layout):
     # Add output level slider for static mode
     output_level_layout = QHBoxLayout()
     output_level_layout.setContentsMargins(0, 0, 0, 0)
-    output_level_slider = QSlider(Qt.Horizontal)
+    output_level_slider = QSlider(Qt.Orientation.Horizontal)
     output_level_slider.setMinimum(0)
     output_level_slider.setMaximum(100)
     output_level_slider.setValue(int(component.output_level * 100))
@@ -104,7 +110,7 @@ def add_generator_properties(properties_manager, component, layout):
     ramp_rate_checkbox.setText("ON" if component.ramp_rate_enabled else "OFF")
     
     # Ramp rate slider (1-100% per hour)
-    ramp_rate_slider = QSlider(Qt.Horizontal)
+    ramp_rate_slider = QSlider(Qt.Orientation.Horizontal)
     ramp_rate_slider.setMinimum(1)
     ramp_rate_slider.setMaximum(100)
     ramp_rate_slider.setValue(int(component.ramp_rate_limit * 100))
@@ -248,7 +254,7 @@ def add_generator_properties(properties_manager, component, layout):
     # Add efficiency field
     efficiency_layout = QHBoxLayout()
     efficiency_layout.setContentsMargins(0, 0, 0, 0)
-    efficiency_slider = QSlider(Qt.Horizontal)
+    efficiency_slider = QSlider(Qt.Orientation.Horizontal)
     efficiency_slider.setMinimum(10)  # 10% minimum
     efficiency_slider.setMaximum(95)  # 95% maximum (practical limit)
     efficiency_slider.setValue(int(component.efficiency * 100))

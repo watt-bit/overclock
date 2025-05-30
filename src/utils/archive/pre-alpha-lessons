@@ -774,7 +774,7 @@ To add a new component:
    - Keep images in a consistent location (e.g., src/ui/assets) for organized asset management
 
 5. **Proper Image Scaling in Qt**:
-   - QPixmap.scaled() with Qt.KeepAspectRatio and Qt.SmoothTransformation provides best quality scaling
+   - QPixmap.scaled() with Qt.AspectRatioMode.KeepAspectRatio and Qt.TransformationMode.SmoothTransformation provides best quality scaling
    - Creating a custom class based on QLabel offers more control over image presentation than stylesheets
    - Implementing mousePressEvent, mouseReleaseEvent, enterEvent, and leaveEvent allows full control over state changes
    - This approach is better than CSS background-image for maintaining image proportions
@@ -1459,7 +1459,7 @@ Key insights from implementing the New Project button on the title screen:
 1. Layout within Buttons
    - Using QHBoxLayout within a QPushButton creates a rich button with both icon and text
    - Content margins and spacing can be adjusted to fine-tune the appearance
-   - Images can be properly scaled using Qt.KeepAspectRatio for consistent appearance
+   - Images can be properly scaled using Qt.AspectRatioMode.KeepAspectRatio for consistent appearance
    - Alignment settings (Qt.AlignLeft | Qt.AlignVCenter) control content positioning
 
 2. Button Styling with QSS
@@ -1626,7 +1626,7 @@ Key insights from adding gas consumption and cost tracking to generators:
 
 5. **Mouse Event Transparency**: Use Qt.WA_TransparentForMouseEvents when needed to ensure decorative elements don't interfere with interactive elements beneath them.
 
-6. **Scale-Aware Rendering**: When working with images in paintEvent, use Qt.KeepAspectRatioByExpanding and Qt.SmoothTransformation to ensure high-quality scaling.
+6. **Scale-Aware Rendering**: When working with images in paintEvent, use Qt.AspectRatioMode.KeepAspectRatioByExpanding and Qt.TransformationMode.SmoothTransformation to ensure high-quality scaling.
 
 7. **Widget vs. Layout Borders**: While layouts themselves don't support image-based borders, a custom widget with its own paintEvent can serve as a container for layouts and implement custom borders.
 
@@ -2531,4 +2531,4 @@ When performing state-changing operations like new scenario, it's important to e
 
 When switching between application modes (like historian to model view), always use the complete toggle function (toggle_mode_button) rather than direct view switching (switch_to_model_view) to ensure all UI elements are properly updated.
 
-PyQt5 images can be scaled with pixmap.scaled() using Qt.KeepAspectRatio and Qt.SmoothTransformation for better quality resizing.
+PyQt5 images can be scaled with pixmap.scaled() using Qt.AspectRatioMode.KeepAspectRatio and Qt.TransformationMode.SmoothTransformation for better quality resizing.

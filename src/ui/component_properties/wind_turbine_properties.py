@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import (QLineEdit, QLabel, QPushButton, QComboBox, QHBoxLayout, QWidget)
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import (QLineEdit, QLabel, QPushButton, QComboBox, QHBoxLayout, QWidget)
+from PyQt6.QtCore import Qt
 import csv
 
 # Import styles from the parent module

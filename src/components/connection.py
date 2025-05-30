@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QGraphicsLineItem
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QPen, QColor
+from PyQt6.QtWidgets import QGraphicsLineItem
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QPen, QColor
 import math
 
 class Connection(QGraphicsLineItem):
@@ -40,7 +40,7 @@ class Connection(QGraphicsLineItem):
         
         # Create yellow dashed pen with wider line
         pen = QPen(QColor(255, 215, 0), 3)  # Golden yellow, 3px wide
-        pen.setStyle(Qt.DashLine)
+        pen.setStyle(Qt.PenStyle.DashLine)
         pen.setDashPattern([8, 4])  # 8px dash, 4px gap
         self.setPen(pen)
         

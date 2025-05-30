@@ -1,10 +1,17 @@
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, 
+# -------- PyQt5→6 shim (auto-inserted) --------------------------
+from PyQt6.QtCore import Qt
+AlignmentFlag = Qt.AlignmentFlag   # backwards-compat alias
+Orientation   = Qt.Orientation
+# ----------------------------------------------------------------
+
+# TODO_PYQT6: verify width()/isType() semantics
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, 
                             QLabel, QPushButton, QSlider, QGraphicsView, QDockWidget, 
                             QToolBar, 
-                            QAction, QMenu, QFrame,
+                            QMenu, QFrame,
                             QToolButton, QSizePolicy, QGraphicsTextItem)
-from PyQt5.QtCore import Qt, QRectF, QRect, QTimer, QTime, QSize
-from PyQt5.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics, QIcon
+from PyQt6.QtCore import Qt, QRectF, QRect, QTimer, QTime, QSize
+from PyQt6.QtGui import QPainter, QPen, QPixmap, QColor, QKeySequence, QPainterPath, QLinearGradient, QFontMetrics, QIcon, QAction
 import math
 
 # Import or reference modules and classes needed from main_window
@@ -48,10 +55,10 @@ class UIInitializer:
         main_layout.setContentsMargins(4, 4, 4, 4)  # Use 10px margins to account for the border
         
         # Set the corners to give priority to left and right dock areas
-        main_window.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
-        main_window.setCorner(Qt.TopRightCorner, Qt.RightDockWidgetArea)
-        main_window.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
-        main_window.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
+        main_window.setCorner(Qt.Corner.TopLeftCorner, Qt.DockWidgetArea.LeftDockWidgetArea)
+        main_window.setCorner(Qt.Corner.TopRightCorner, Qt.DockWidgetArea.RightDockWidgetArea)
+        main_window.setCorner(Qt.Corner.BottomLeftCorner, Qt.DockWidgetArea.LeftDockWidgetArea)
+        main_window.setCorner(Qt.Corner.BottomRightCorner, Qt.DockWidgetArea.RightDockWidgetArea)
         
         # Create a stylesheet for dock widgets to have modern flat dark gray title bars
         dock_title_style = """
@@ -97,11 +104,11 @@ class UIInitializer:
         
         # Create canvas for drag and drop
         main_window.view = QGraphicsView(main_window.scene)
-        main_window.view.setDragMode(QGraphicsView.ScrollHandDrag)
-        main_window.view.setRenderHint(QPainter.Antialiasing)
-        main_window.view.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
-        main_window.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        main_window.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        main_window.view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
+        main_window.view.setRenderHint(QPainter.RenderHint.Antialiasing)
+        main_window.view.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
+        main_window.view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        main_window.view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         
         # Set initial scaling for view
         main_window.current_zoom = 1.0
@@ -112,7 +119,7 @@ class UIInitializer:
         main_window.view.setTransform(transform)
         
         # Enable key events on the view
-        main_window.view.setFocusPolicy(Qt.StrongFocus)
+        main_window.view.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         
         # Install event filter for key events
         main_window.view.installEventFilter(main_window)
@@ -124,9 +131,9 @@ class UIInitializer:
             # Calculate 10% of the original size while maintaining aspect ratio
             scaled_width = int(logo_pixmap.width() * 0.1)
             scaled_height = int(logo_pixmap.height() * 0.1)
-            scaled_logo = logo_pixmap.scaled(scaled_width, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            scaled_logo = logo_pixmap.scaled(scaled_width, scaled_height, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             main_window.logo_overlay.setPixmap(scaled_logo)
-            main_window.logo_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)  # Make it click-through
+            main_window.logo_overlay.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)  # Make it click-through
             
             # Position in bottom right corner with padding
             main_window.logo_overlay.move(main_window.view.width() - scaled_width - 5, main_window.view.height() - scaled_height + 5)
@@ -140,7 +147,7 @@ class UIInitializer:
         # Create CAPEX label overlay in bottom left corner
         main_window.capex_label = QLabel(main_window.view)
         main_window.capex_label.setText("CAPEX <span style='color: #FFCA28;'>$0</span>")
-        main_window.capex_label.setTextFormat(Qt.RichText)
+        main_window.capex_label.setTextFormat(Qt.TextFormat.RichText)
         main_window.capex_label.setStyleSheet("""
             QLabel {
                 font-weight: bold;
@@ -154,7 +161,7 @@ class UIInitializer:
             }
         """)
         main_window.capex_label.adjustSize()  # Size to fit content
-        main_window.capex_label.setAttribute(Qt.WA_TransparentForMouseEvents)  # Make it click-through
+        main_window.capex_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)  # Make it click-through
         
         # Create IRR label overlay below CAPEX label
         main_window.irr_label = QLabel(main_window.view)
@@ -172,7 +179,7 @@ class UIInitializer:
             }
         """)
         main_window.irr_label.adjustSize()  # Size to fit content
-        main_window.irr_label.setAttribute(Qt.WA_TransparentForMouseEvents)  # Make it click-through
+        main_window.irr_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)  # Make it click-through
         
         # Position labels in bottom left corner with padding
         # CAPEX label is positioned 35px up from the bottom
@@ -224,9 +231,9 @@ class UIInitializer:
                 self.clicked_pixmap = QPixmap(resource_path("src/ui/assets/analyticsbuttonclick.png"))
                 
                 # Scale pixmaps to 40x40 while maintaining aspect ratio
-                self.normal_pixmap = self.normal_pixmap.scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                self.hover_pixmap = self.hover_pixmap.scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                self.clicked_pixmap = self.clicked_pixmap.scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                self.normal_pixmap = self.normal_pixmap.scaled(80, 80, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+                self.hover_pixmap = self.hover_pixmap.scaled(80, 80, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+                self.clicked_pixmap = self.clicked_pixmap.scaled(80, 80, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
                 
                 # Set the default pixmap
                 self.setPixmap(self.normal_pixmap)
@@ -284,7 +291,7 @@ class UIInitializer:
         main_window.component_dock.setObjectName("component_dock")
         # Remove title bar and prevent undocking/closing
         main_window.component_dock.setTitleBarWidget(QWidget())
-        main_window.component_dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
+        main_window.component_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
         # Set fixed width to 200px
         main_window.component_dock.setFixedWidth(250)
         # Ensure no borders are visible
@@ -302,8 +309,8 @@ class UIInitializer:
         top_pixmap = QPixmap(resource_path("src/ui/assets/componentspaneltop.png"))
         if not top_pixmap.isNull():
             # Will set the actual image after layout is set up
-            top_image_label.setAlignment(Qt.AlignCenter)
-            top_image_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            top_image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            top_image_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
             component_layout.addWidget(top_image_label)
 
         # # Add WBR logo overlay
@@ -314,7 +321,7 @@ class UIInitializer:
         #     # Scale to 125px width while preserving aspect ratio
         #     aspect_ratio = wbr_logo_pixmap.height() / wbr_logo_pixmap.width()
         #     scaled_height = int(125 * aspect_ratio)
-        #     scaled_logo = wbr_logo_pixmap.scaled(125, scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        #     scaled_logo = wbr_logo_pixmap.scaled(125, scaled_height, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
         #     main_window.wbr_logo_label.setPixmap(scaled_logo)
         #     # Will position after top_image_label is sized
 
@@ -469,7 +476,7 @@ class UIInitializer:
         main_window.props_btn.setIconSize(QSize(50, 50))
         main_window.props_btn.setFixedSize(50, 50)
         main_window.props_btn.setStyleSheet(opaque_button_style)
-        main_window.props_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: props_menu.exec_(main_window.props_btn.mapToGlobal(main_window.props_btn.rect().bottomLeft()))))
+        main_window.props_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(lambda: props_menu.exec(main_window.props_btn.mapToGlobal(main_window.props_btn.rect().bottomLeft()))))
         
         # Create a horizontal layout for the first row of buttons
         first_row_layout = QHBoxLayout()
@@ -504,7 +511,7 @@ class UIInitializer:
         # Add the terminal widget below the component buttons
         main_window.terminal_widget = TerminalWidget()
         # Make the terminal widget expand to fill available space
-        main_window.terminal_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        main_window.terminal_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         component_layout.addWidget(main_window.terminal_widget)
         
         # Now that we have a button, set the top image size to match the full component width
@@ -518,7 +525,7 @@ class UIInitializer:
                     width = component_widget.width() - component_layout.contentsMargins().left() - component_layout.contentsMargins().right()
                     top_aspect_ratio = top_pixmap.height() / top_pixmap.width()
                     top_scaled_height = int(width * top_aspect_ratio)
-                    scaled_top_pixmap = top_pixmap.scaled(width, top_scaled_height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    scaled_top_pixmap = top_pixmap.scaled(width, top_scaled_height, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
                     top_image_label.setPixmap(scaled_top_pixmap)
                 else:
                     # Try again in 100ms if widget not visible yet
@@ -544,7 +551,7 @@ class UIInitializer:
         ]
         
         main_window.component_dock.setWidget(component_widget)
-        main_window.addDockWidget(Qt.LeftDockWidgetArea, main_window.component_dock)
+        main_window.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, main_window.component_dock)
         
         # Properties panel - positioned as overlay on view like analytics container
         main_window.properties_dock = QDockWidget("Properties", main_window.view)
@@ -554,11 +561,11 @@ class UIInitializer:
         
         # Remove title bar and prevent undocking/closing
         main_window.properties_dock.setTitleBarWidget(QWidget())
-        main_window.properties_dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
+        main_window.properties_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
         
         # Set fixed width of 300px while allowing height to adjust to contents
         main_window.properties_dock.setFixedWidth(300)
-        main_window.properties_dock.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        main_window.properties_dock.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
         
         # Position panel: right edge 90px from right side, top edge 75px from top
         main_window.properties_dock.move(main_window.view.width() - 300 - 90, 52)
@@ -572,12 +579,12 @@ class UIInitializer:
         main_window.analytics_dock.setObjectName("analytics_dock")
         # Remove title bar and prevent undocking/closing
         main_window.analytics_dock.setTitleBarWidget(QWidget())
-        main_window.analytics_dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
+        main_window.analytics_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
         # Ensure no borders are visible
         main_window.analytics_dock.setStyleSheet("QDockWidget { border: none; }")
         main_window.analytics_panel = AnalyticsPanel()
         main_window.analytics_dock.setWidget(main_window.analytics_panel)
-        main_window.addDockWidget(Qt.RightDockWidgetArea, main_window.analytics_dock)
+        main_window.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, main_window.analytics_dock)
         # Make analytics panel hidden by default
         main_window.analytics_dock.setVisible(False)
         
@@ -585,7 +592,7 @@ class UIInitializer:
         time_dock = QDockWidget("Simulation Controls", main_window)
         # Remove title bar and prevent undocking/closing
         time_dock.setTitleBarWidget(QWidget())
-        time_dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
+        time_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
         # Set fixed height to 70px
         time_dock.setFixedHeight(45)
         # Ensure no borders are visible
@@ -657,9 +664,9 @@ class UIInitializer:
                 
                 # Scale pixmaps if needed
                 if size:
-                    self.normal_pixmap = self.normal_pixmap.scaled(size[0], size[1], Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                    self.hover_pixmap = self.hover_pixmap.scaled(size[0], size[1], Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                    self.pressed_pixmap = self.pressed_pixmap.scaled(size[0], size[1], Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    self.normal_pixmap = self.normal_pixmap.scaled(size[0], size[1], Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+                    self.hover_pixmap = self.hover_pixmap.scaled(size[0], size[1], Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+                    self.pressed_pixmap = self.pressed_pixmap.scaled(size[0], size[1], Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
                 
                 # Set the default pixmap
                 self.setPixmap(self.normal_pixmap)
@@ -742,7 +749,7 @@ class UIInitializer:
         # Add zoom control to time controls (moved from toolbar)
         zoom_label = QLabel("🔭")
         zoom_label.setStyleSheet("font-size: 16px;")
-        main_window.zoom_slider = QSlider(Qt.Horizontal)
+        main_window.zoom_slider = QSlider(Qt.Orientation.Horizontal)
         main_window.zoom_slider.setMinimum(40)  # 0.4x zoom (changed from 20/0.2x)
         main_window.zoom_slider.setMaximum(100)  # 1.0x zoom
         main_window.zoom_slider.setValue(100)    # Default to 1.0x
@@ -787,7 +794,7 @@ class UIInitializer:
         main_window.background_toggle_btn.setFixedWidth(150)
         
         # Create time slider
-        main_window.time_slider = QSlider(Qt.Horizontal)
+        main_window.time_slider = QSlider(Qt.Orientation.Horizontal)
         main_window.time_slider.setMinimum(0)
         main_window.time_slider.setMaximum(8760)  # 8760 hours in a year
         main_window.time_slider.valueChanged.connect(lambda value: main_window.cancel_connection_if_active(main_window.time_slider_changed, value))
@@ -795,7 +802,7 @@ class UIInitializer:
         main_window.time_slider.sliderPressed.connect(lambda: main_window.cancel_connection_if_active(main_window.start_scrubbing))
         main_window.time_slider.sliderReleased.connect(lambda: main_window.cancel_connection_if_active(main_window.stop_scrubbing))
         # Set the time slider to expand horizontally
-        main_window.time_slider.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        main_window.time_slider.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         main_window.time_slider.setStyleSheet("QSlider::groove:horizontal { background: #3D3D3D; height: 8px; border-radius: 4px; } QSlider::sub-page:horizontal { background: rgb(255, 215, 0); height: 8px; border-radius: 4px; } QSlider::handle:horizontal { background: #5D5D5D; width: 16px; margin: -4px 0; border-radius: 8px; }")
         
         time_controls.addWidget(main_window.reset_btn)
@@ -811,7 +818,7 @@ class UIInitializer:
         time_layout.addLayout(time_controls)
         
         time_dock.setWidget(time_widget)
-        main_window.addDockWidget(Qt.BottomDockWidgetArea, time_dock)
+        main_window.addDockWidget(Qt.DockWidgetArea.BottomDockWidgetArea, time_dock)
         
         # Main canvas in the center
         main_layout.addWidget(main_window.view)
@@ -844,7 +851,7 @@ class UIInitializer:
         model_button = QToolButton()
         model_button.setText("Model")
         model_button.setMenu(model_menu)
-        model_button.setPopupMode(QToolButton.InstantPopup)  # Show menu when clicking anywhere on button
+        model_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)  # Show menu when clicking anywhere on button
         # Cancel connection mode when the button is clicked
         model_button.clicked.connect(lambda: main_window.cancel_connection_if_active())
         toolbar.addWidget(model_button)
@@ -867,7 +874,7 @@ class UIInitializer:
         view_button = QToolButton()
         view_button.setText("View")
         view_button.setMenu(view_menu)
-        view_button.setPopupMode(QToolButton.InstantPopup)  # Show menu when clicking anywhere on button
+        view_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)  # Show menu when clicking anywhere on button
         # Cancel connection mode when the button is clicked
         view_button.clicked.connect(lambda: main_window.cancel_connection_if_active())
         toolbar.addWidget(view_button)
@@ -888,14 +895,14 @@ class UIInitializer:
         window_button = QToolButton()
         window_button.setText("Window")
         window_button.setMenu(window_menu)
-        window_button.setPopupMode(QToolButton.InstantPopup)
+        window_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         # Cancel connection mode when the button is clicked
         window_button.clicked.connect(lambda: main_window.cancel_connection_if_active())
         toolbar.addWidget(window_button)
 
         # Add spacer to push clock to the right side of toolbar
         spacer = QWidget()
-        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         toolbar.addWidget(spacer)
         
         # Add clock display

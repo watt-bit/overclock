@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QTimer, QPointF
+from PyQt6.QtCore import QTimer, QPointF
 
 from src.simulation.engine import SimulationEngine
 from .properties_manager import ComponentPropertiesManager
