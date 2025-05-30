@@ -103,8 +103,13 @@ class TerminalWidget(QWidget):
             # For empty messages, just add the message without the dot
             self.text_area.append(f'<div>{message}</div>')
         else:
-            # Add a small blue dot at the beginning of each message
-            self.text_area.append(f'<div><span style="color: #4A90E2; font-weight: bold;">•</span> {message}</div>')
+            # Check if message starts with "ERROR" (case-insensitive) for red dot
+            if message.strip().upper().startswith("ERROR"):
+                # Add a red dot for error messages
+                self.text_area.append(f'<div><span style="color: #E24A4A; font-weight: bold;">•</span> {message}</div>')
+            else:
+                # Add a small blue dot at the beginning of normal messages
+                self.text_area.append(f'<div><span style="color: #4A90E2; font-weight: bold;">•</span> {message}</div>')
             
         # Scroll to the bottom to show the most recent message
         self.text_area.verticalScrollBar().setValue(

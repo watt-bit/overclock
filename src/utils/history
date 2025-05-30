@@ -88,3 +88,4 @@ Added particle effect (create_puff with 200 particles) to component deletion in 
 Added CSV format popup dialog to properties_manager._load_custom_profile() - shows spreadsheet.png image (200x200px) and format requirements before file selector opens.
 Added blue dot bullet (•) with color #4A90E2 to beginning of all terminal messages in TerminalWidget.add_message() for better visual organization.
 Modified TerminalWidget.add_message() to skip adding blue dot for empty messages or line breaks, preventing unnecessary dots on blank lines.
+Enhanced TerminalWidget.add_message() to show red dots for messages starting with "ERROR" (case-insensitive), blue dots for normal messages.

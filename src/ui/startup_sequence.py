@@ -18,7 +18,8 @@ class StartupSequence(QObject):
         This will be filled with animation code in future implementations.
         """
         TerminalWidget.log("OVERCLOCK v 2025.01.02a")
-        TerminalWidget.log("2025 Watt-Bit Research Inc.")
+        TerminalWidget.log("Expanded Alpha Research Preview")
+        TerminalWidget.log("Open Source Core - 2025 Watt-Bit Research - All Rights Reserved")
         TerminalWidget.log(" ")
         
         # Hide the properties panel at startup
