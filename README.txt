@@ -6,7 +6,7 @@ By **Watt-Bit Research** <https://watt-bit.com>
 Presented by **Augur VC** <https://augurvc.com>
 
 > **EXPANDED ALPHA PREVIEW – READ ME FIRST**  
-> This is pre-beta software. Bugs, missing polish, and rapidly-changing UX are expected. Your feedback shapes the roadmap!
+> This is early alpha / pre-beta software. Bugs, missing polish, and rapidly-changing UX are expected. Your feedback shapes the roadmap! 
 
 ---
 
@@ -27,16 +27,19 @@ Presented by **Augur VC** <https://augurvc.com>
 
 ## ✨  What Is OVERCLOCK?
 
-OVERCLOCK lets you model, simulate, and analyze watt-bit infrastructure — everything from natural gas and solar arrays feeding GPU clouds to grid-export revenue plays — over a full 8760-hour year.
+OVERCLOCK lets you model, simulate, and analyze watt-bit infrastructure — everything from natural gas and solar arrays feeding GPU clouds to grid-export revenue plays — over a full 8760-hour year. 
+
+A rich and high-impact user experience driven by opinionated design and configuration, careful attention to detail, more than 50 original graphics assets, and input from dozens of subject matter experts.
 
 ---
 
 ## 🚀  Core Features
 
 1. **Visual Modeling**  
-   * Drag-and-drop components (Generator, Battery, Grid Import/Export, Bus, Load, Cloud, Solar, Wind, Props).  
+   * Drag-and-drop components (Generator, Battery, Grid Import/Export, Bus, Load, Cloud, Solar, Wind, Props). 
    * **C** to create a connection, **A** to Autoconnect All.  
-   * Properties panel fixed at right for live edits.
+   * Properties panel allows configuration of deep component operational simulation with multiple smart modes per component. Defaults "just work".
+   * Powerlandia data sets offer moderate-fidelity simulations "out of the box".
 
 2. **Time-Based Simulation**  
    * **Space** – run/pause; **R** – reset.  
@@ -53,12 +56,12 @@ OVERCLOCK lets you model, simulate, and analyze watt-bit infrastructure — ever
 5. **Scenario Management** – Save/Load/New JSON designs.
 
 6. **New 2025.01.02a**  
-   * **Smart Terminal Panel** in the left dock streams live logs (startup BIOS text, component events, sim status) for better user understanding and feedback loop.  
-   * **Status Jewels** – every component now shows a tiny animated hexagon reflecting health & state.  
+   * **Terminal Panel** in the left dock streams live logs (startup BIOS text, component events, sim status) for better user understanding and feedback loop.  
+   * **Status Jewels** – every component now shows a tiny animated hexagon reflecting its interaction with the system as it operates.  
    * **Improved CSV Import**  
-   * **Component Re-skin & Unified Text** – high-res icons, cleaner fonts, color-coded $$ (green = revenue, red = cost), “MW | Mode” labels.  
-   * **Properties Panel 2.0** – fixed to selected component display, click-to-open logic, sleeker styling, no title bar.  
-   * **Particle FX** – puff on add *and* delete for tactile feedback.  
+   * **Major Component Re-skin & Unified Text** – high-res, high-tech buttons, components, icons - cleaner fonts, color-coded $$ (green = revenue, red = cost), “MW | Mode” labels.  
+   * **Properties Panel 2.0** – added selected component display, click-to-open logic, sleeker styling, fixed location as anchor of status bar, no more title bar.  
+   * **Particle FX** – puff on add *and* delete for tactile feedback.
    * **Refinements** – improved buttons, widened Build/Historian toggle, export-icon fix, miscellaneous polish.
 
 ---
