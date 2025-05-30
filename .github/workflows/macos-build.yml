@@ -22,12 +22,21 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
 
+    - name: Download FFmpeg
+      run: |
+        brew install ffmpeg
+        mkdir -p ffmpeg-bin
+        cp /opt/homebrew/bin/ffmpeg ffmpeg-bin/
+        cp /opt/homebrew/bin/ffprobe ffmpeg-bin/
+
     - name: Build with PyInstaller
       run: |
         pyinstaller --onefile --windowed --name "OVERCLOCK" \
           --icon "src/ui/assets/appicon.icns" \
           --add-data "src/ui/assets:src/ui/assets" \
           --add-data "src/data:src/data" \
+          --add-binary "ffmpeg-bin/ffmpeg:." \
+          --add-binary "ffmpeg-bin/ffprobe:." \
           --hidden-import pyxirr \
           main.py
 
@@ -40,7 +49,7 @@ jobs:
       run: |
         cd dist
         cp ../readme.txt .
-        zip -r "overclock-macos.zip" "OVERCLOCK.app" "readme.txt"
+        zip -r "overclock-macos.zip" "OVERCLOCK.app" "readme.txt" "ffmpeg" "ffprobe"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4

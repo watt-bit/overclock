@@ -8,6 +8,7 @@ from PyQt6.QtMultimedia import QMediaPlayer
 from PyQt6.QtMultimediaWidgets import QGraphicsVideoItem
 from PyQt6.QtWidgets import QGraphicsPixmapItem
 from src.utils.resource import resource_path
+from src.utils.ffmpeg_utils import setup_ffmpeg_environment
 
 class AugurTitleScreen(QWidget):
     # Add a custom signal to indicate the Augur title screen should transition to the next screen
@@ -16,8 +17,8 @@ class AugurTitleScreen(QWidget):
     def __init__(self):
         super().__init__()
         
-        # Force FFmpeg backend for cross-platform video codec support
-        os.environ['QT_MEDIA_BACKEND'] = 'ffmpeg'
+        # Set up FFmpeg environment for bundled binaries in compiled apps
+        setup_ffmpeg_environment()
         
         # Set window to be frameless (no title bar)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)

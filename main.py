@@ -16,6 +16,7 @@ from src.ui.wbr_title_screen import WBRTitleScreen
 from src.ui.augur_title_screen import AugurTitleScreen
 from src.ui.startup_sequence import StartupSequence
 from src.utils.resource import resource_path
+from src.utils.ffmpeg_utils import setup_ffmpeg_environment
 
 # Create a dedicated class to manage application lifecycle and cleanup
 class AppManager(QObject):
@@ -181,6 +182,9 @@ class AppManager(QObject):
 
 
 def main():
+    # Set up FFmpeg environment for bundled binaries in compiled apps
+    setup_ffmpeg_environment()
+    
     # Create application with disabled quit on last window closed
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)

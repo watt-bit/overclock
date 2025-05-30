@@ -1,7 +1,7 @@
 name: Build Windows Executable
 
 on:
-  workflow_dispatch:   # Manual trigger only!
+  workflow_dispatch:
 
 jobs:
   build-windows:
@@ -14,7 +14,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.13.3'   
+        python-version: '3.13.3'
 
     - name: Install dependencies
       run: |
@@ -22,18 +22,33 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
 
+    - name: Download FFmpeg
+      run: |
+        Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip -OutFile ffmpeg.zip
+        Expand-Archive ffmpeg.zip -DestinationPath ffmpeg
+        Rename-Item -Path (Get-ChildItem -Directory ffmpeg)[0].FullName -NewName ffmpeg-bin
+
     - name: Build with PyInstaller
       run: |
-        pyinstaller --onefile --windowed --name "OVERCLOCK" --icon "src/ui/assets/appicon.ico" --add-data "src/ui/assets;src/ui/assets" --add-data "src/data;src/data" --hidden-import pyxirr main.py
+        pyinstaller --onefile --windowed --name "OVERCLOCK" `
+          --icon "src/ui/assets/appicon.ico" `
+          --add-data "src/ui/assets;src/ui/assets" `
+          --add-data "src/data;src/data" `
+          --add-binary "ffmpeg-bin\\bin\\ffmpeg.exe;." `
+          --add-binary "ffmpeg-bin\\bin\\ffprobe.exe;." `
+          --hidden-import pyxirr `
+          main.py
 
     - name: Create zip with executable and readme
       run: |
         copy readme.txt dist\
+        copy ffmpeg-bin\bin\ffmpeg.exe dist\
+        copy ffmpeg-bin\bin\ffprobe.exe dist\
         cd dist
-        powershell Compress-Archive -Path "OVERCLOCK.exe", "readme.txt" -DestinationPath "overclock-windows.zip"
+        powershell Compress-Archive -Path "OVERCLOCK.exe", "readme.txt", "ffmpeg.exe", "ffprobe.exe" -DestinationPath "overclock-windows.zip"
 
     - name: Upload built executable
       uses: actions/upload-artifact@v4
       with:
         name: overclock-windows-zip
-        path: dist/overclock-windows.zip 
+        path: dist/overclock-windows.zip

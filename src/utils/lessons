@@ -108,3 +108,6 @@ QDialog styling can match properties panel theme using rgba(37, 47, 52, 0.95) ba
 - QMessageBox.Yes/No/Cancel button constants now in QMessageBox.StandardButton.* in PyQt6.
 
 - QDialog.Accepted/Rejected constants now in QDialog.DialogCode.* in PyQt6.
+
+PyInstaller bundles external binaries like FFmpeg in sys._MEIPASS directory when frozen - use getattr(sys, 'frozen', False) to detect compiled state.
+Setting PATH environment variable to include sys._MEIPASS helps Qt find bundled FFmpeg binaries for video playback in compiled applications.

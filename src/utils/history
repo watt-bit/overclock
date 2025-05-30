@@ -120,3 +120,5 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-05-30: Replaced remaining Qt.NoPen with Qt.PenStyle.NoPen in decorative component files.
 2025-05-30: Fixed QMessageBox button constants in main_window.py closeEvent - replaced QMessageBox.Yes/No/Cancel with QMessageBox.StandardButton.* for PyQt6.
 2025-05-30: Fixed QDialog.Accepted constant in properties_manager.py - replaced with QDialog.DialogCode.Accepted for PyQt6.
+2025-01-05: Added ffmpeg_utils.py module with binary path resolution for compiled applications - includes get_ffmpeg_path(), get_ffprobe_path(), and setup_ffmpeg_environment() functions.
+2025-01-05: Updated AugurTitleScreen and main.py to use ffmpeg_utils.setup_ffmpeg_environment() for proper video playback in PyInstaller compiled applications.
