@@ -133,3 +133,4 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-09-06: Refactored sound effects to use QSoundEffect instead of QMediaPlayer for better performance with many concurrent sounds - uses caching for frequently played effects.
 2025-09-06: Implemented precaching system for sound effects - all frequently used sound effects are loaded at application startup to eliminate loading lag during gameplay.
 2025-08-06: Fixed startup SFX cut-offs by retaining temporary QSoundEffect instances in _active_sound_effects and improving cleanup logic.
+2025-01-06: Removed all sound effects from startup sequence (startup1of3.wav, startup2of3.wav, startup3of3.wav) to eliminate performance lag issues.

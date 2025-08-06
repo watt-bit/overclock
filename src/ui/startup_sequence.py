@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QObject, QTimer
 from PyQt6.QtGui import QColor
 from .terminal_widget import TerminalWidget
-from src.utils.audio_utils import play_sound_effect
+
 
 class StartupSequence(QObject):
     def __init__(self, main_window):
@@ -39,11 +39,7 @@ class StartupSequence(QObject):
         # Animate time slider after a 1000ms delay
         QTimer.singleShot(1000, self.animate_time_slider)
         
-        # Play startup2of3.wav at 1000ms (same time as slider animation)
-        QTimer.singleShot(1000, lambda: play_sound_effect("startup2of3.wav"))
-        
-        # Play startup3of3.wav at 2000ms delay
-        QTimer.singleShot(2000, lambda: play_sound_effect("startup3of3.wav"))
+
         
         # Add welcome text after a 1000ms delay
         QTimer.singleShot(1000, self.main_window.add_welcome_text)
@@ -78,11 +74,11 @@ class StartupSequence(QObject):
         
         # Button flash sequences with timing:
         # Default state is already active, wait 125ms
-        QTimer.singleShot(125, lambda: (self._apply_style_to_buttons(hover_style), play_sound_effect("startup1of3.wav")))
+        QTimer.singleShot(125, lambda: self._apply_style_to_buttons(hover_style))
         # After 250ms total (125ms in hover state), set back to original state
         QTimer.singleShot(250, lambda: self._reset_button_styles())
         # After 375ms total (125ms more in original state), set to hover state again
-        QTimer.singleShot(375, lambda: (self._apply_style_to_buttons(hover_style), play_sound_effect("startup1of3.wav")))
+        QTimer.singleShot(375, lambda: self._apply_style_to_buttons(hover_style))
         # After 500ms total (125ms more in hover state), set back to original state
         QTimer.singleShot(500, lambda: self._reset_button_styles())
     

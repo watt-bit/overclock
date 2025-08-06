@@ -87,9 +87,6 @@ class PowerSystemSimulator(QMainWindow):
                 height=200,
                 num_particles=200  # More particles for a better effect
             )
-        
-        # Play place component sound effect when welcome text is displayed
-        play_sound_effect("placecomponent.wav")
     
     def add_component(self, component_type):
         """Delegate to the ComponentAdder to handle component creation and addition"""
