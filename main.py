@@ -17,7 +17,7 @@ from src.ui.augur_title_screen import AugurTitleScreen
 from src.ui.startup_sequence import StartupSequence
 from src.utils.resource import resource_path
 from src.utils.ffmpeg_utils import setup_ffmpeg_environment
-from src.utils.audio_utils import cleanup_audio
+from src.utils.audio_utils import cleanup_audio, precache_sound_effects
 
 # Create a dedicated class to manage application lifecycle and cleanup
 class AppManager(QObject):
@@ -196,6 +196,9 @@ def main():
     # Set application icon
     app_icon = QIcon(resource_path("src/ui/assets/appicon.png"))
     app.setWindowIcon(app_icon)
+    
+    # Precache sound effects for optimal performance
+    precache_sound_effects()
     
     # Create app manager to handle cleanup
     app_manager = AppManager()

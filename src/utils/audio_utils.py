@@ -1,6 +1,6 @@
 import sys
 import os
-from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput, QSoundEffect
 from PyQt6.QtCore import QUrl, QObject, pyqtSignal
 from src.utils.resource import resource_path
 
@@ -196,13 +196,75 @@ def cleanup_audio():
         _global_audio_player = None
 
 # ----- Sound Effect Utilities (multiple overlapping sounds) -----
-_active_sfx_players = []
+# Cache of QSoundEffect objects for frequently used sounds
+_sound_effect_cache = {}
+# Maximum number of cached sound effects
+_MAX_CACHE_SIZE = 50
+
+# -----------------------------
+# Runtime SFX bookkeeping
+# -----------------------------
+# Keep strong references to temporary QSoundEffect instances that are created
+# for overlapping playback. Without this list the Python garbage collector
+# destroyed them mid-playback which resulted in sounds cutting off and UI hitches
+# as new objects were constantly being constructed.
+_active_sound_effects = []
+
+
+def _register_temp_effect(effect):
+    """Register a temporary QSoundEffect instance and ensure it remains alive
+    until playback finishes, then clean it up."""
+    _active_sound_effects.append(effect)
+
+    def _on_state_changed():
+        # When playback stops, remove reference and allow GC
+        if not effect.isPlaying():
+            try:
+                _active_sound_effects.remove(effect)
+            except ValueError:
+                pass
+            effect.deleteLater()
+
+    # PyQt6 provides playingChanged; fall back to statusChanged if necessary
+    try:
+        effect.playingChanged.connect(_on_state_changed)
+    except Exception:
+        try:
+            effect.statusChanged.connect(_on_state_changed)
+        except Exception:
+            pass
+
+# List of sound effects to precache at startup for optimal performance
+# Includes all sound effects (excluding music files) from the audio directory
+_PRECACHE_SOUND_EFFECTS = [
+    # UI sound effects (title screen)
+    "buttonhover.wav",
+    "buttonclick.wav",
+    
+    # Startup sequence sounds
+    "startup1of3.wav", 
+    "startup2of3.wav",
+    "startup3of3.wav",
+    
+    # Component interaction sounds
+    "placecomponent.wav",
+    "deletecomponent.wav",
+    
+    # Simulation control sounds
+    "autocomplete.wav",
+    "simstart.wav",
+    "simend.wav",
+    
+    # Feedback sounds
+    "successchime.wav",
+    "failchime.wav"
+]
 
 def play_sound_effect(filename, volume=0.8):
     """
     Play a one-shot sound effect without interrupting other audio.
-    A new QMediaPlayer instance is created for each trigger, so multiple
-    sound effects can overlap concurrently.
+    Uses QSoundEffect which is designed for low-latency sound effects
+    and can handle many simultaneous sounds more efficiently than QMediaPlayer.
 
     Args:
         filename (str): The audio file name located in src/ui/assets/audio/useable
@@ -217,54 +279,99 @@ def play_sound_effect(filename, volume=0.8):
             print(f"SoundEffect Error: file not found: {audio_path}")
             return False
 
-        player = QMediaPlayer()
-        output = QAudioOutput()
-        output.setVolume(volume)
-        player.setAudioOutput(output)
+        # Check if we have this sound cached
+        if filename in _sound_effect_cache:
+            effect = _sound_effect_cache[filename]
+            # If it's playing, create a new instance for overlapping sounds
+            if effect.isPlaying():
+                effect = QSoundEffect()
+                effect.setSource(QUrl.fromLocalFile(audio_path))
+                # Don't cache this temporary instance
+            else:
+                # Reuse the cached instance
+                pass
+        else:
+            # Create new sound effect and add to cache
+            effect = QSoundEffect()
+            effect.setSource(QUrl.fromLocalFile(audio_path))
+            
+            # Add to cache if we haven't reached the limit
+            if len(_sound_effect_cache) < _MAX_CACHE_SIZE:
+                _sound_effect_cache[filename] = effect
+            # If cache is full, use this instance temporarily without caching
+        
+        # Determine if this effect is part of the shared cache or a temporary instance
+        is_cached_instance = filename in _sound_effect_cache and _sound_effect_cache.get(filename) is effect
+        if not is_cached_instance:
+            _register_temp_effect(effect)
 
-        player.setSource(QUrl.fromLocalFile(audio_path))
-
-        # Keep reference to avoid garbage collection
-        _active_sfx_players.append((player, output))
-
-        def _finalize(status):
-            # Remove and delete when finished
-            if status == QMediaPlayer.MediaStatus.EndOfMedia:
-                try:
-                    player.stop()
-                except Exception:
-                    pass
-                if (player, output) in _active_sfx_players:
-                    _active_sfx_players.remove((player, output))
-                player.deleteLater()
-                output.deleteLater()
-
-        player.mediaStatusChanged.connect(_finalize)
-        player.errorOccurred.connect(lambda error, msg: _finalize(QMediaPlayer.MediaStatus.EndOfMedia))
-        player.play()
+        # Set volume and play
+        effect.setVolume(volume)
+        effect.play()
+        
         return True
     except Exception as e:
         print(f"SoundEffect Error: failed to play {filename}: {e}")
         return False
 
 def stop_all_sound_effects():
-    """Stop and clean up all currently playing sound effects."""
-    for player, output in list(_active_sfx_players):
+    """Stop all currently playing sound effects."""
+    # Stop cached (reusable) effects
+    for filename, effect in _sound_effect_cache.items():
         try:
-            player.stop()
-        except Exception:
+            if effect.isPlaying():
+                effect.stop()
+        except Exception as e:
+            print(f"Error stopping sound effect {filename}: {e}")
+
+    # Stop and clean up temporary effects
+    for effect in _active_sound_effects[:]:
+        try:
+            if effect.isPlaying():
+                effect.stop()
+        except Exception as e:
+            print(f"Error stopping temporary sound effect: {e}")
+        try:
+            _active_sound_effects.remove(effect)
+        except ValueError:
             pass
-        player.deleteLater()
-        output.deleteLater()
-    _active_sfx_players.clear()
+        effect.deleteLater()
+
+def precache_sound_effects():
+    """
+    Precache commonly used sound effects to eliminate loading lag.
+    This should be called during application startup.
+    """
+    print("AudioPlayer: Precaching sound effects...")
+    
+    for filename in _PRECACHE_SOUND_EFFECTS:
+        try:
+            audio_path = resource_path(f"src/ui/assets/audio/useable/{filename}")
+            if os.path.exists(audio_path):
+                effect = QSoundEffect()
+                effect.setSource(QUrl.fromLocalFile(audio_path))
+                _sound_effect_cache[filename] = effect
+                print(f"AudioPlayer: Precached {filename}")
+            else:
+                print(f"AudioPlayer: Warning - precache file not found: {filename}")
+        except Exception as e:
+            print(f"AudioPlayer: Error precaching {filename}: {e}")
+    
+    print(f"AudioPlayer: Precached {len(_sound_effect_cache)} sound effects")
+
+def clear_sound_effect_cache():
+    """Clear the sound effect cache to free memory."""
+    global _sound_effect_cache, _active_sound_effects
+    stop_all_sound_effects()
+    _sound_effect_cache.clear()
+    _active_sound_effects.clear()
 
 def cleanup_audio():
     """
-    Clean up the global audio player resources and any active sound effect players.
-    This overrides the previous cleanup_audio definition.
+    Clean up the global audio player resources and clear the sound effect cache.
     """
     global _global_audio_player
     if _global_audio_player is not None:
         _global_audio_player.cleanup()
         _global_audio_player = None
-    stop_all_sound_effects()
+    clear_sound_effect_cache()

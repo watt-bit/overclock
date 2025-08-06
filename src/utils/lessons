@@ -112,4 +112,6 @@ QDialog styling can match properties panel theme using rgba(37, 47, 52, 0.95) ba
 PyInstaller bundles external binaries like FFmpeg in sys._MEIPASS directory when frozen - use getattr(sys, 'frozen', False) to detect compiled state.
 Setting PATH environment variable to include sys._MEIPASS helps Qt find bundled FFmpeg binaries for video playback in compiled applications.
 Using multiple AudioPlayer instances allows playing sound effects without interrupting background music - create separate instances for music vs sound effects.
-play_sound_effect() spawns independent players so overlapping sound effects can play concurrently without interfering with other audio.
+QSoundEffect is more efficient than QMediaPlayer for sound effects - designed for low-latency, frequently-played sounds; cache instances for better performance.
+Precaching sound effects at application startup eliminates loading lag - create QSoundEffect instances with setSource() during init, then reuse for instant playback.
+Retain temporary QSoundEffect objects in _active_sound_effects until playback finishes to prevent premature garbage collection and audio cut-offs.

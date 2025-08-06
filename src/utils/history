@@ -130,3 +130,6 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-08-06: Implemented play_sound_effect utility for concurrent SFX; StartupSequence plays startup1of3.wav during button hover flashes.
 2025-08-06: Added placecomponent.wav sound effect to startup sequence - plays when welcome text is displayed in add_welcome_text method of main_window.py.
 2025-08-06: Added startup2of3.wav sound effect at 1000ms (concurrent with time slider animation) and startup3of3.wav at 2000ms to startup sequence.
+2025-09-06: Refactored sound effects to use QSoundEffect instead of QMediaPlayer for better performance with many concurrent sounds - uses caching for frequently played effects.
+2025-09-06: Implemented precaching system for sound effects - all frequently used sound effects are loaded at application startup to eliminate loading lag during gameplay.
+2025-08-06: Fixed startup SFX cut-offs by retaining temporary QSoundEffect instances in _active_sound_effects and improving cleanup logic.
