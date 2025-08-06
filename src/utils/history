@@ -127,3 +127,6 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-01-05: Integrated TheAdventureBEGINS.wav audio playback with AugurTitleScreen lifecycle - audio starts on screen display and stops on all transition methods (key press, auto-transition, button clicks).
 2025-01-05: Enhanced audio system for continuous playbook - audio now plays through Augur → WBR → main title screen sequence without interruption, with looping enabled on the main title screen.
 2025-01-05: Added sound effects to title screen buttons - buttonhover.wav plays on hover for all three buttons (exit, new project, load project), buttonclick.wav plays on Load Project button click only, using separate AudioPlayer instance to avoid interrupting background music.
+2025-08-06: Implemented play_sound_effect utility for concurrent SFX; StartupSequence plays startup1of3.wav during button hover flashes.
+2025-08-06: Added placecomponent.wav sound effect to startup sequence - plays when welcome text is displayed in add_welcome_text method of main_window.py.
+2025-08-06: Added startup2of3.wav sound effect at 1000ms (concurrent with time slider animation) and startup3of3.wav at 2000ms to startup sequence.

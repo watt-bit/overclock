@@ -194,3 +194,77 @@ def cleanup_audio():
     if _global_audio_player is not None:
         _global_audio_player.cleanup()
         _global_audio_player = None
+
+# ----- Sound Effect Utilities (multiple overlapping sounds) -----
+_active_sfx_players = []
+
+def play_sound_effect(filename, volume=0.8):
+    """
+    Play a one-shot sound effect without interrupting other audio.
+    A new QMediaPlayer instance is created for each trigger, so multiple
+    sound effects can overlap concurrently.
+
+    Args:
+        filename (str): The audio file name located in src/ui/assets/audio/useable
+        volume (float): Volume level from 0.0 to 1.0 (default 0.8)
+
+    Returns:
+        bool: True if playback started, False otherwise
+    """
+    try:
+        audio_path = resource_path(f"src/ui/assets/audio/useable/{filename}")
+        if not os.path.exists(audio_path):
+            print(f"SoundEffect Error: file not found: {audio_path}")
+            return False
+
+        player = QMediaPlayer()
+        output = QAudioOutput()
+        output.setVolume(volume)
+        player.setAudioOutput(output)
+
+        player.setSource(QUrl.fromLocalFile(audio_path))
+
+        # Keep reference to avoid garbage collection
+        _active_sfx_players.append((player, output))
+
+        def _finalize(status):
+            # Remove and delete when finished
+            if status == QMediaPlayer.MediaStatus.EndOfMedia:
+                try:
+                    player.stop()
+                except Exception:
+                    pass
+                if (player, output) in _active_sfx_players:
+                    _active_sfx_players.remove((player, output))
+                player.deleteLater()
+                output.deleteLater()
+
+        player.mediaStatusChanged.connect(_finalize)
+        player.errorOccurred.connect(lambda error, msg: _finalize(QMediaPlayer.MediaStatus.EndOfMedia))
+        player.play()
+        return True
+    except Exception as e:
+        print(f"SoundEffect Error: failed to play {filename}: {e}")
+        return False
+
+def stop_all_sound_effects():
+    """Stop and clean up all currently playing sound effects."""
+    for player, output in list(_active_sfx_players):
+        try:
+            player.stop()
+        except Exception:
+            pass
+        player.deleteLater()
+        output.deleteLater()
+    _active_sfx_players.clear()
+
+def cleanup_audio():
+    """
+    Clean up the global audio player resources and any active sound effect players.
+    This overrides the previous cleanup_audio definition.
+    """
+    global _global_audio_player
+    if _global_audio_player is not None:
+        _global_audio_player.cleanup()
+        _global_audio_player = None
+    stop_all_sound_effects()

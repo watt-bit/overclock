@@ -9,6 +9,7 @@ from .simulator_initializer import SimulatorInitializer
 from .capex_manager import CapexManager
 from .component_deleter import ComponentDeleter
 from src.ui.terminal_widget import TerminalWidget
+from src.utils.audio_utils import play_sound_effect
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -86,6 +87,9 @@ class PowerSystemSimulator(QMainWindow):
                 height=200,
                 num_particles=200  # More particles for a better effect
             )
+        
+        # Play place component sound effect when welcome text is displayed
+        play_sound_effect("placecomponent.wav")
     
     def add_component(self, component_type):
         """Delegate to the ComponentAdder to handle component creation and addition"""
