@@ -19,6 +19,7 @@ from src.components.cloud_workload import CloudWorkloadComponent
 from src.components.traditional_data_center import TraditionalDataCenterComponent
 from src.components.distribution_pole import DistributionPoleComponent
 from src.ui.terminal_widget import TerminalWidget
+from src.utils.audio_utils import play_sound_effect
 
 class ConnectionManager:
     def __init__(self, main_window):
@@ -168,12 +169,14 @@ class ConnectionManager:
                     bordered_widget = self.main_window.centralWidget()
                     if hasattr(bordered_widget, 'trigger_success_flash'):
                         bordered_widget.trigger_success_flash()
+                        play_sound_effect("successchime.wav")
                 else:
                     # Connection failed - trigger error flash
                     # Access the BorderedMainWidget which is the central widget
                     bordered_widget = self.main_window.centralWidget()
                     if hasattr(bordered_widget, 'trigger_error_flash'):
                         bordered_widget.trigger_error_flash()
+                        play_sound_effect("failchime.wav")
             
             # Always clean up, whether connection succeeded or failed
             self.cancel_connection()
@@ -407,6 +410,7 @@ class ConnectionManager:
                     bordered_widget.trigger_success_flash()
                 
                 TerminalWidget.log(f"Autoconnect: Successfully created {len(self.main_window.connections)} connections.")
+                play_sound_effect("successchime.wav")
             else:
                 # Final fallback: connect everything in a line
                 if not self.main_window.check_network_connectivity():

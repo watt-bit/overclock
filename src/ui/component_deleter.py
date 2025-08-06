@@ -7,6 +7,7 @@ from src.components.factory import FactoryComponent
 from src.components.traditional_data_center import TraditionalDataCenterComponent
 from src.components.distribution_pole import DistributionPoleComponent
 from src.ui.terminal_widget import TerminalWidget
+from src.utils.audio_utils import play_sound_effect
 
 
 class ComponentDeleter:
@@ -108,6 +109,8 @@ class ComponentDeleter:
             component_type_name = component.component_type
             component_id_str = str(component.component_id)[-6:]
             TerminalWidget.log(f"Deleted {component_type_name} {component_id_str}")
+        
+        play_sound_effect("deletecomponent.wav")
         
         return True
     

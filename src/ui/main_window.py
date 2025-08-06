@@ -43,6 +43,7 @@ class PowerSystemSimulator(QMainWindow):
     
     def add_welcome_text(self):
         """Add welcome text with animated rainbow gradient border to the middle of the canvas"""
+        
         # First, center the view at the origin (0,0) where components are added
         self.center_view_on_origin()
         
@@ -93,6 +94,7 @@ class PowerSystemSimulator(QMainWindow):
         self.component_adder.add_component(component_type)
         # Update the CAPEX display after adding a component
         self.update_capex_display()
+        play_sound_effect("placecomponent.wav")
     
     def start_connection(self):
         self.connection_manager.start_connection()

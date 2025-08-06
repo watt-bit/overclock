@@ -1,7 +1,9 @@
 import sys
 import os
+from collections import OrderedDict
+from threading import Lock
 from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput, QSoundEffect
-from PyQt6.QtCore import QUrl, QObject, pyqtSignal
+from PyQt6.QtCore import QUrl, QObject, pyqtSignal, QTimer
 from src.utils.resource import resource_path
 
 class AudioPlayer(QObject):
@@ -196,43 +198,73 @@ def cleanup_audio():
         _global_audio_player = None
 
 # ----- Sound Effect Utilities (multiple overlapping sounds) -----
-# Cache of QSoundEffect objects for frequently used sounds
-_sound_effect_cache = {}
-# Maximum number of cached sound effects
-_MAX_CACHE_SIZE = 50
 
-# -----------------------------
-# Runtime SFX bookkeeping
-# -----------------------------
-# Keep strong references to temporary QSoundEffect instances that are created
-# for overlapping playback. Without this list the Python garbage collector
-# destroyed them mid-playback which resulted in sounds cutting off and UI hitches
-# as new objects were constantly being constructed.
-_active_sound_effects = []
+class SoundEffectPool:
+    """
+    Manages a pool of QSoundEffect instances for each sound file.
+    This prevents lag from creating new instances and allows multiple
+    overlapping plays of the same sound.
+    """
+    
+    def __init__(self, max_instances_per_sound=5):
+        self.pools = {}  # filename -> list of QSoundEffect instances
+        self.max_instances = max_instances_per_sound
+        self.lock = Lock()
+        
+    def get_effect(self, filename, audio_path):
+        """
+        Get an available sound effect instance from the pool.
+        Creates new instances as needed up to max_instances.
+        """
+        with self.lock:
+            if filename not in self.pools:
+                self.pools[filename] = []
+            
+            pool = self.pools[filename]
+            
+            # Find an available (not playing) instance
+            for effect in pool:
+                if not effect.isPlaying():
+                    return effect
+            
+            # If all instances are playing and we haven't reached max, create new one
+            if len(pool) < self.max_instances:
+                effect = QSoundEffect()
+                effect.setSource(QUrl.fromLocalFile(audio_path))
+                pool.append(effect)
+                return effect
+            
+            # All instances are playing and we're at max - reuse the oldest one
+            # This prevents unlimited memory growth but may cut off a sound
+            if pool:
+                return pool[0]
+            
+            return None
+    
+    def stop_all(self):
+        """Stop all sound effects in all pools."""
+        with self.lock:
+            for pool in self.pools.values():
+                for effect in pool:
+                    if effect.isPlaying():
+                        effect.stop()
+    
+    def clear(self):
+        """Clear all pools and delete all QSoundEffect instances."""
+        with self.lock:
+            for pool in self.pools.values():
+                for effect in pool:
+                    if effect.isPlaying():
+                        effect.stop()
+                    effect.deleteLater()
+            self.pools.clear()
 
+# Global sound effect pool
+_sound_effect_pool = SoundEffectPool(max_instances_per_sound=3)
 
-def _register_temp_effect(effect):
-    """Register a temporary QSoundEffect instance and ensure it remains alive
-    until playback finishes, then clean it up."""
-    _active_sound_effects.append(effect)
-
-    def _on_state_changed():
-        # When playback stops, remove reference and allow GC
-        if not effect.isPlaying():
-            try:
-                _active_sound_effects.remove(effect)
-            except ValueError:
-                pass
-            effect.deleteLater()
-
-    # PyQt6 provides playingChanged; fall back to statusChanged if necessary
-    try:
-        effect.playingChanged.connect(_on_state_changed)
-    except Exception:
-        try:
-            effect.statusChanged.connect(_on_state_changed)
-        except Exception:
-            pass
+# LRU cache for precached sound effects (first play)
+_precache_order = OrderedDict()
+_MAX_PRECACHE_SIZE = 50
 
 # List of sound effects to precache at startup for optimal performance
 # Includes all sound effects (excluding music files) from the audio directory
@@ -263,8 +295,7 @@ _PRECACHE_SOUND_EFFECTS = [
 def play_sound_effect(filename, volume=0.8):
     """
     Play a one-shot sound effect without interrupting other audio.
-    Uses QSoundEffect which is designed for low-latency sound effects
-    and can handle many simultaneous sounds more efficiently than QMediaPlayer.
+    Uses a pool-based system for optimal performance and resource management.
 
     Args:
         filename (str): The audio file name located in src/ui/assets/audio/useable
@@ -279,31 +310,23 @@ def play_sound_effect(filename, volume=0.8):
             print(f"SoundEffect Error: file not found: {audio_path}")
             return False
 
-        # Check if we have this sound cached
-        if filename in _sound_effect_cache:
-            effect = _sound_effect_cache[filename]
-            # If it's playing, create a new instance for overlapping sounds
-            if effect.isPlaying():
-                effect = QSoundEffect()
-                effect.setSource(QUrl.fromLocalFile(audio_path))
-                # Don't cache this temporary instance
-            else:
-                # Reuse the cached instance
-                pass
-        else:
-            # Create new sound effect and add to cache
-            effect = QSoundEffect()
-            effect.setSource(QUrl.fromLocalFile(audio_path))
-            
-            # Add to cache if we haven't reached the limit
-            if len(_sound_effect_cache) < _MAX_CACHE_SIZE:
-                _sound_effect_cache[filename] = effect
-            # If cache is full, use this instance temporarily without caching
+        # Get an available effect from the pool
+        effect = _sound_effect_pool.get_effect(filename, audio_path)
+        if effect is None:
+            print(f"SoundEffect Error: could not get effect from pool for {filename}")
+            return False
         
-        # Determine if this effect is part of the shared cache or a temporary instance
-        is_cached_instance = filename in _sound_effect_cache and _sound_effect_cache.get(filename) is effect
-        if not is_cached_instance:
-            _register_temp_effect(effect)
+        # Update precache order for LRU tracking
+        if filename in _precache_order:
+            # Move to end (most recently used)
+            _precache_order.move_to_end(filename)
+        else:
+            # Add to precache order
+            _precache_order[filename] = True
+            # Remove oldest if we exceed max size
+            if len(_precache_order) > _MAX_PRECACHE_SIZE:
+                oldest = next(iter(_precache_order))
+                del _precache_order[oldest]
 
         # Set volume and play
         effect.setVolume(volume)
@@ -316,55 +339,41 @@ def play_sound_effect(filename, volume=0.8):
 
 def stop_all_sound_effects():
     """Stop all currently playing sound effects."""
-    # Stop cached (reusable) effects
-    for filename, effect in _sound_effect_cache.items():
-        try:
-            if effect.isPlaying():
-                effect.stop()
-        except Exception as e:
-            print(f"Error stopping sound effect {filename}: {e}")
-
-    # Stop and clean up temporary effects
-    for effect in _active_sound_effects[:]:
-        try:
-            if effect.isPlaying():
-                effect.stop()
-        except Exception as e:
-            print(f"Error stopping temporary sound effect: {e}")
-        try:
-            _active_sound_effects.remove(effect)
-        except ValueError:
-            pass
-        effect.deleteLater()
+    _sound_effect_pool.stop_all()
 
 def precache_sound_effects():
     """
     Precache commonly used sound effects to eliminate loading lag.
+    Creates initial pool instances for frequently used sounds.
     This should be called during application startup.
     """
     print("AudioPlayer: Precaching sound effects...")
     
+    precached_count = 0
     for filename in _PRECACHE_SOUND_EFFECTS:
         try:
             audio_path = resource_path(f"src/ui/assets/audio/useable/{filename}")
             if os.path.exists(audio_path):
-                effect = QSoundEffect()
-                effect.setSource(QUrl.fromLocalFile(audio_path))
-                _sound_effect_cache[filename] = effect
-                print(f"AudioPlayer: Precached {filename}")
+                # Pre-create one instance in the pool for this sound
+                # This loads the audio data into memory for faster first play
+                effect = _sound_effect_pool.get_effect(filename, audio_path)
+                if effect:
+                    # Add to precache order
+                    _precache_order[filename] = True
+                    precached_count += 1
+                    print(f"AudioPlayer: Precached {filename}")
             else:
                 print(f"AudioPlayer: Warning - precache file not found: {filename}")
         except Exception as e:
             print(f"AudioPlayer: Error precaching {filename}: {e}")
     
-    print(f"AudioPlayer: Precached {len(_sound_effect_cache)} sound effects")
+    print(f"AudioPlayer: Precached {precached_count} sound effects")
 
 def clear_sound_effect_cache():
-    """Clear the sound effect cache to free memory."""
-    global _sound_effect_cache, _active_sound_effects
-    stop_all_sound_effects()
-    _sound_effect_cache.clear()
-    _active_sound_effects.clear()
+    """Clear the sound effect pools and cache to free memory."""
+    global _precache_order
+    _sound_effect_pool.clear()
+    _precache_order.clear()
 
 def cleanup_audio():
     """
