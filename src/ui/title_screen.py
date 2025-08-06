@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushBut
 from PyQt6.QtGui import QPixmap, QFont, QCursor, QGuiApplication
 from PyQt6.QtCore import Qt, pyqtSignal
 from src.utils.resource import resource_path
-from src.utils.audio_utils import get_audio_player
+from src.utils.audio_utils import get_audio_player, AudioPlayer
 
 class TitleScreen(QWidget):
     # Add a custom signal to indicate the title screen should be closed
@@ -19,6 +19,9 @@ class TitleScreen(QWidget):
     
     def __init__(self):
         super().__init__()
+        
+        # Create separate audio player for sound effects (won't interrupt music)
+        self.sound_effects_player = AudioPlayer()
         
         # Set window to be frameless (no title bar)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
@@ -108,11 +111,20 @@ class TitleScreen(QWidget):
         
         # Set cursor to hand when hovering over button
         exit_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        
+        # Add hover sound effect
+        exit_btn.enterEvent = lambda event: self.play_hover_sound()
+        
+        # Store reference to button for cleanup
+        self.exit_btn = exit_btn
     
     def close_safely(self):
         """Safely close the window and exit the application"""
         # Stop any playing audio before exiting
         get_audio_player().stop()
+        
+        # Clean up sound effects
+        self.cleanup_sound_effects()
         
         # First close this window properly
         self.close()
@@ -181,6 +193,12 @@ class TitleScreen(QWidget):
         
         # Set cursor to hand when hovering over button
         new_project_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        
+        # Add hover sound effect
+        new_project_btn.enterEvent = lambda event: self.play_hover_sound()
+        
+        # Store reference to button for cleanup
+        self.new_project_btn = new_project_btn
     
     def create_load_project_button(self):
         """Create and add the Load Project button"""
@@ -239,14 +257,25 @@ class TitleScreen(QWidget):
         
         # Set cursor to hand when hovering over button
         load_project_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        
+        # Add hover sound effect
+        load_project_btn.enterEvent = lambda event: self.play_hover_sound()
+        
+        # Store reference to button for cleanup
+        self.load_project_btn = load_project_btn
     
     def handle_load_project_click(self):
         """Handle load project button click by opening file dialog"""
+        # Play click sound effect
+        self.play_click_sound()
+        
         filename, _ = QFileDialog.getOpenFileName(self, "Load Scenario", "", "JSON Files (*.json)")
         
         if filename:
             # Stop any playing audio before transitioning
             get_audio_player().stop()
+            # Clean up sound effects
+            self.cleanup_sound_effects()
             # Emit signal to transition to main window with the loaded file
             self.transition_to_main_with_file.emit(filename)
             self.close()
@@ -256,6 +285,8 @@ class TitleScreen(QWidget):
         """Handle new project button click"""
         # Stop any playing audio before transitioning
         get_audio_player().stop()
+        # Clean up sound effects
+        self.cleanup_sound_effects()
         self.transition_to_main.emit()
         self.close()
     
@@ -284,6 +315,25 @@ class TitleScreen(QWidget):
         y = (screen_geometry.height() - window_geometry.height()) // 2
         
         self.move(x, y)
+    
+    def play_hover_sound(self):
+        """Play button hover sound effect"""
+        try:
+            self.sound_effects_player.play_audio_file("buttonhover.wav")
+        except Exception as e:
+            print(f"Error playing hover sound: {e}")
+    
+    def play_click_sound(self):
+        """Play button click sound effect"""
+        try:
+            self.sound_effects_player.play_audio_file("buttonclick.wav")
+        except Exception as e:
+            print(f"Error playing click sound: {e}")
+    
+    def cleanup_sound_effects(self):
+        """Clean up sound effects player"""
+        if hasattr(self, 'sound_effects_player'):
+            self.sound_effects_player.cleanup()
 
 # For testing the title screen independently
 if __name__ == "__main__":

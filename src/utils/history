@@ -125,4 +125,5 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-01-05: Fixed Windows build workflow FFmpeg detection - added robust binary location step with debugging output and dynamic path resolution to handle variable FFmpeg archive structures.
 2025-01-05: Added audio_utils.py module with AudioPlayer class for progressive audio functionality - includes play, stop, pause controls and proper resource management using PyQt6 QMediaPlayer.
 2025-01-05: Integrated TheAdventureBEGINS.wav audio playback with AugurTitleScreen lifecycle - audio starts on screen display and stops on all transition methods (key press, auto-transition, button clicks).
-2025-01-05: Enhanced audio system for continuous playback - audio now plays through Augur → WBR → main title screen sequence without interruption, with looping enabled on the main title screen.
+2025-01-05: Enhanced audio system for continuous playbook - audio now plays through Augur → WBR → main title screen sequence without interruption, with looping enabled on the main title screen.
+2025-01-05: Added sound effects to title screen buttons - buttonhover.wav plays on hover for all three buttons (exit, new project, load project), buttonclick.wav plays on Load Project button click only, using separate AudioPlayer instance to avoid interrupting background music.
