@@ -9,6 +9,7 @@ from PyQt6.QtMultimediaWidgets import QGraphicsVideoItem
 from PyQt6.QtWidgets import QGraphicsPixmapItem
 from src.utils.resource import resource_path
 from src.utils.ffmpeg_utils import setup_ffmpeg_environment
+from src.utils.audio_utils import get_audio_player
 
 class AugurTitleScreen(QWidget):
     # Add a custom signal to indicate the Augur title screen should transition to the next screen
@@ -94,10 +95,16 @@ class AugurTitleScreen(QWidget):
         self.fade_black_timer.setInterval(10)  # Update every 10ms for smooth animation
         self.fade_black_timer.timeout.connect(self.fade_to_black_step)
         self.is_fading_to_black = False
+        
+        # Setup audio player for background music
+        self.audio_player = get_audio_player()
     
     def showEvent(self, event):
         """Start the display and timer when the widget is shown"""
         super().showEvent(event)
+        
+        # Start audio playback - TheAdventureBEGINS.wav
+        self.audio_player.play_audio_file("TheAdventureBEGINS.wav")
         
         # Start video playback using FFmpeg backend
         self.media_player.play()
@@ -141,6 +148,7 @@ class AugurTitleScreen(QWidget):
     
     def auto_transition(self):
         """Automatically transition to the next screen after timer expires"""
+        # Stop video playback but keep audio playing
         self.media_player.stop()
         self.fade_timer.stop()  # Stop fade timer when transitioning
         self.fade_to_black_timer.stop()  # Stop fade-to-black timer
@@ -162,7 +170,7 @@ class AugurTitleScreen(QWidget):
         """Handle key press events"""
         # Transition to the next screen when Enter is pressed
         if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
-            # Stop video and timer if a key is pressed
+            # Stop video and timer but keep audio playing
             self.media_player.stop()
             self.timer.stop()
             self.fade_timer.stop()  # Stop fade timer when transitioning
@@ -172,7 +180,7 @@ class AugurTitleScreen(QWidget):
             self.close()
         # Also transition on Escape or Space for user convenience
         elif event.key() in (Qt.Key.Key_Escape, Qt.Key.Key_Space):
-            # Stop video and timer if a key is pressed
+            # Stop video and timer but keep audio playing
             self.media_player.stop()
             self.timer.stop()
             self.fade_timer.stop()  # Stop fade timer when transitioning

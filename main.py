@@ -17,6 +17,7 @@ from src.ui.augur_title_screen import AugurTitleScreen
 from src.ui.startup_sequence import StartupSequence
 from src.utils.resource import resource_path
 from src.utils.ffmpeg_utils import setup_ffmpeg_environment
+from src.utils.audio_utils import cleanup_audio
 
 # Create a dedicated class to manage application lifecycle and cleanup
 class AppManager(QObject):
@@ -67,6 +68,9 @@ class AppManager(QObject):
         if self._load_timer and self._load_timer.isActive():
             self._load_timer.stop()
         self._load_timer = None
+        
+        # Clean up global audio resources
+        cleanup_audio()
         
         # Force garbage collection to clean up any lingering objects
         gc.collect()

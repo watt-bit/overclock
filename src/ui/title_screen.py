@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushBut
 from PyQt6.QtGui import QPixmap, QFont, QCursor, QGuiApplication
 from PyQt6.QtCore import Qt, pyqtSignal
 from src.utils.resource import resource_path
+from src.utils.audio_utils import get_audio_player
 
 class TitleScreen(QWidget):
     # Add a custom signal to indicate the title screen should be closed
@@ -65,6 +66,16 @@ class TitleScreen(QWidget):
         # Center the window on the screen
         self.center_on_screen()
     
+    def showEvent(self, event):
+        """Enable audio looping when the title screen is shown"""
+        super().showEvent(event)
+        # Enable looping for any currently playing audio
+        audio_player = get_audio_player()
+        if audio_player.is_playing() and audio_player._current_file:
+            # If audio is already playing, enable looping
+            audio_player._should_loop = True
+            print(f"AudioPlayer: Enabled looping for {audio_player._current_file}")
+    
     def create_exit_button(self):
         """Create and add the Exit button"""
         # Create button
@@ -100,6 +111,9 @@ class TitleScreen(QWidget):
     
     def close_safely(self):
         """Safely close the window and exit the application"""
+        # Stop any playing audio before exiting
+        get_audio_player().stop()
+        
         # First close this window properly
         self.close()
         
@@ -231,6 +245,8 @@ class TitleScreen(QWidget):
         filename, _ = QFileDialog.getOpenFileName(self, "Load Scenario", "", "JSON Files (*.json)")
         
         if filename:
+            # Stop any playing audio before transitioning
+            get_audio_player().stop()
             # Emit signal to transition to main window with the loaded file
             self.transition_to_main_with_file.emit(filename)
             self.close()
@@ -238,6 +254,8 @@ class TitleScreen(QWidget):
     
     def handle_new_project_click(self):
         """Handle new project button click"""
+        # Stop any playing audio before transitioning
+        get_audio_player().stop()
         self.transition_to_main.emit()
         self.close()
     
