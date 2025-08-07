@@ -140,3 +140,4 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-08-07: Added simple Music toggle button to time controls; uses play_audio/stop_audio to loop bit_forrest_intro.wav for testing.
 2025-08-07: Enabled music by default at app startup via main window initialization (calls toggle_music()).
 2025-08-07: Moved auto-start of music to StartupSequence.run() using QTimer.singleShot(0) to ensure playback after event loop starts.
+2025-08-07: Switched music to playlist (Bit Forrest intro then songs, excluding loop track), auto-advancing on track end.

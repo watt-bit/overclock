@@ -121,3 +121,4 @@ Sound effect calls now use dedicated play_* functions (e.g., play_buttonhover) d
 A minimal music toggle can live in time controls; use global audio utilities and a simple state flag on main window to avoid adding complexity.
 Autostarting music can be done safely in `PowerSystemSimulator.__init__` after reset by calling `toggle_music()` once.
 On some systems, media playback must be started after the Qt event loop begins; starting in `StartupSequence.run()` with `QTimer.singleShot(0, ...)` ensures reliable first-play.
+For background music across multiple tracks, listen to the global audio player's `playback_finished` to advance a playlist and restart from the beginning at the end.

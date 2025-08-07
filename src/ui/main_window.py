@@ -9,7 +9,7 @@ from .simulator_initializer import SimulatorInitializer
 from .capex_manager import CapexManager
 from .component_deleter import ComponentDeleter
 from src.ui.terminal_widget import TerminalWidget
-from src.utils.audio_utils import play_placecomponent, play_audio, stop_audio
+from src.utils.audio_utils import play_placecomponent, play_audio, stop_audio, get_audio_player
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -23,6 +23,8 @@ class PowerSystemSimulator(QMainWindow):
         self.is_resetting = False  # Flag to indicate when a reset operation is in progress
         self.reset_simulation(is_initial_reset=True)  # Reset the simulation to the initial state
         self.music_playing = False  # Simple state for music toggle
+        self._music_playlist = []
+        self._music_index = 0
         
     def center_on_screen(self):
         """Center the window on the screen"""
@@ -425,15 +427,79 @@ class PowerSystemSimulator(QMainWindow):
     def toggle_music(self):
         """Toggle background music playback using global audio utilities."""
         if getattr(self, 'music_playing', False):
+            # Stop and disconnect
+            try:
+                get_audio_player().playback_finished.disconnect(self._on_music_track_finished)
+            except TypeError:
+                pass
             stop_audio()
             self.music_playing = False
             if hasattr(self, 'music_btn'):
                 self.music_btn.setText("🎵 Music")
         else:
-            play_audio("bit_forrest_intro.wav", loop=True)
+            self._start_music_playlist()
             self.music_playing = True
             if hasattr(self, 'music_btn'):
                 self.music_btn.setText("⏸ Music")
+
+    def _get_music_playlist(self):
+        """Return the ordered playlist of song WAV files, starting with Bit Forrest intro."""
+        if not self._music_playlist:
+            # Exclude loop tracks and sound effects
+            self._music_playlist = [
+                "bit_forrest_intro.wav",
+                "Starlight City.wav",
+                "dialup_song.wav",
+                "Mecha Collection.wav",
+                "welcome_to_canida.wav",
+                "eyeless.wav",
+                "chip_language.wav",
+            ]
+        return self._music_playlist
+
+    def _start_music_playlist(self):
+        """Start playing the music playlist from the beginning and connect finish handler."""
+        # Ensure any previous connection is cleared
+        try:
+            get_audio_player().playback_finished.disconnect(self._on_music_track_finished)
+        except TypeError:
+            pass
+        get_audio_player().playback_finished.connect(self._on_music_track_finished)
+        self._music_index = 0
+        self._play_current_track_or_advance()
+
+    def _on_music_track_finished(self):
+        """Advance to the next track, looping back to start after the last track."""
+        if not self.music_playing:
+            return
+        playlist = self._get_music_playlist()
+        if not playlist:
+            return
+        self._music_index = (self._music_index + 1) % len(playlist)
+        self._play_current_track_or_advance()
+
+    def _play_current_track_or_advance(self):
+        """Try to play the current index; if not found, advance until one plays or we looped all."""
+        playlist = self._get_music_playlist()
+        if not playlist:
+            return
+        start_index = self._music_index
+        attempted = 0
+        while attempted < len(playlist):
+            filename = playlist[self._music_index]
+            if play_audio(filename, loop=False):
+                return
+            # If play failed (e.g., missing file), advance to next
+            self._music_index = (self._music_index + 1) % len(playlist)
+            attempted += 1
+        # If none played, stop
+        self.music_playing = False
+        try:
+            get_audio_player().playback_finished.disconnect(self._on_music_track_finished)
+        except TypeError:
+            pass
+        if hasattr(self, 'music_btn'):
+            self.music_btn.setText("🎵 Music")
 
     def toggle_background(self):
         """Cycle through background options"""
