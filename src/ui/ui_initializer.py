@@ -588,6 +588,66 @@ class UIInitializer:
         # Make analytics panel hidden by default
         main_window.analytics_dock.setVisible(False)
         
+        # ----- Music Controls (Floating Top Overlay) -----
+        # Create a floating container centered between the mode button and properties panel
+        main_window.music_container = QWidget(main_window.view)
+        main_window.music_container_layout = QHBoxLayout(main_window.music_container)
+        main_window.music_container_layout.setContentsMargins(0, 0, 0, 0)
+        main_window.music_container_layout.setSpacing(6)
+
+        # Style for default grey buttons (reuse below)
+        default_button_style = """
+            QPushButton { 
+                background-color: #3D3D3D; 
+                color: white; 
+                border: 1px solid #555555; 
+                border-radius: 3px; 
+                padding: 5px;
+                font-size: 14px;
+            }
+            QPushButton:hover { 
+                background-color: #4D4D4D; 
+                border: 1px solid #666666;
+            }
+            QPushButton:pressed { 
+                background-color: #2D2D2D; 
+                border: 2px solid #777777;
+                padding: 4px; 
+            }
+        """
+
+        # Music toggle button
+        main_window.music_btn = QPushButton("🎵 Music")
+        main_window.music_btn.setToolTip("Toggle background music")
+        main_window.music_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_music))
+        main_window.music_btn.setStyleSheet(default_button_style)
+        main_window.music_btn.setFixedWidth(110)
+
+        # Next track button
+        main_window.next_track_btn = QPushButton("⏭ Next")
+        main_window.next_track_btn.setToolTip("Advance to next song")
+        main_window.next_track_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.next_music_track))
+        main_window.next_track_btn.setStyleSheet(default_button_style)
+        main_window.next_track_btn.setFixedWidth(90)
+
+        # Add to container and position initially
+        main_window.music_container_layout.addWidget(main_window.music_btn)
+        main_window.music_container_layout.addWidget(main_window.next_track_btn)
+        main_window.music_container.adjustSize()
+
+        # Initial placement: horizontally centered between mode button and properties panel, at top
+        try:
+            left_edge = main_window.mode_toggle_btn.x() + main_window.mode_toggle_btn.width() + 10
+            right_edge = main_window.properties_dock.x() - 10
+            available = max(0, right_edge - left_edge)
+            x = left_edge + max(0, (available - main_window.music_container.width()) // 2)
+            main_window.music_container.move(x, 10)
+        except Exception:
+            # Fallback: place near top center if positioning dependencies not ready
+            main_window.music_container.move(max(10, (main_window.view.width() - main_window.music_container.width()) // 2), 10)
+
+        main_window.music_container.show()
+
         # Time controls
         time_dock = QDockWidget("Simulation Controls", main_window)
         # Remove title bar and prevent undocking/closing
@@ -622,7 +682,7 @@ class UIInitializer:
                 background-color: rgba(0, 0, 0, 0.1);
             }
         """
-        # Style for default grey buttons
+        # Style for default grey buttons (duplicate kept scoped for time controls)
         default_button_style = """
             QPushButton { 
                 background-color: #3D3D3D; 
@@ -770,19 +830,7 @@ class UIInitializer:
             main_window.take_screenshot()
         ))
 
-        # Add simple Music toggle button
-        main_window.music_btn = QPushButton("🎵 Music")
-        main_window.music_btn.setToolTip("Toggle background music")
-        main_window.music_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_music))
-        main_window.music_btn.setStyleSheet(default_button_style)
-        main_window.music_btn.setFixedWidth(110)
-
-        # Add Next Track button
-        main_window.next_track_btn = QPushButton("⏭ Next")
-        main_window.next_track_btn.setToolTip("Advance to next song")
-        main_window.next_track_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.next_music_track))
-        main_window.next_track_btn.setStyleSheet(default_button_style)
-        main_window.next_track_btn.setFixedWidth(90)
+        # Music controls moved to floating music_container (see above)
 
         # Add Autocomplete button
         main_window.autocomplete_btn = IconStateButton(
@@ -826,8 +874,6 @@ class UIInitializer:
         time_controls.addWidget(main_window.autocomplete_btn)
         # time_controls.addWidget(main_window.background_toggle_btn) // Removed background toggle button as it doesnt get a lot of use, but just uncomment this line to add it back
         time_controls.addWidget(main_window.screenshot_btn)
-        time_controls.addWidget(main_window.music_btn)
-        time_controls.addWidget(main_window.next_track_btn)
         # time_controls.addWidget(zoom_label)
         time_controls.addWidget(main_window.zoom_slider)
         
@@ -937,6 +983,20 @@ class UIInitializer:
         # Connect visibility changed signals to update menu text
         main_window.properties_dock.visibilityChanged.connect(main_window.update_properties_menu_text)
         main_window.analytics_dock.visibilityChanged.connect(main_window.update_analytics_menu_text)
+
+        # Reposition music container when properties panel visibility changes
+        def _reposition_music_container():
+            if hasattr(main_window, 'music_container') and hasattr(main_window, 'mode_toggle_btn') and hasattr(main_window, 'properties_dock'):
+                try:
+                    left_edge = main_window.mode_toggle_btn.x() + main_window.mode_toggle_btn.width() + 10
+                    right_edge = main_window.properties_dock.x() - 10
+                    available = max(0, right_edge - left_edge)
+                    x = left_edge + max(0, (available - main_window.music_container.width()) // 2)
+                    main_window.music_container.move(x, 10)
+                except Exception:
+                    pass
+
+        main_window.properties_dock.visibilityChanged.connect(lambda _v: _reposition_music_container())
 
     def on_view_resize(self, event):
         """Handle resize events to reposition the logo overlay and historian chart"""

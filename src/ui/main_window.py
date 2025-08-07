@@ -613,6 +613,18 @@ class PowerSystemSimulator(QMainWindow):
         # Reposition properties panel: right edge 90px from right side, top edge 75px from top
         if hasattr(self, 'properties_dock'):
             self.properties_dock.move(self.view.width() - 300 - 90, 52)
+
+        # Reposition floating music container centered between mode button and properties panel
+        if hasattr(self, 'music_container') and hasattr(self, 'mode_toggle_btn') and hasattr(self, 'properties_dock'):
+            try:
+                left_edge = self.mode_toggle_btn.x() + self.mode_toggle_btn.width() + 10
+                right_edge = self.properties_dock.x() - 10
+                available = max(0, right_edge - left_edge)
+                x = left_edge + max(0, (available - self.music_container.width()) // 2)
+                self.music_container.move(x, 10)
+            except Exception:
+                # Fallback to top-center
+                self.music_container.move(max(10, (self.view.width() - self.music_container.width()) // 2), 10)
             
         # Reposition capex label and irr label in bottom left corner
         if hasattr(self, 'capex_label'):

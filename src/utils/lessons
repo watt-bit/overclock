@@ -124,3 +124,4 @@ On some systems, media playback must be started after the Qt event loop begins; 
 For background music across multiple tracks, listen to the global audio player's `playback_finished` to advance a playlist and restart from the beginning at the end.
 Also connect to a playback error signal and advance on error so a corrupt/missing track doesn't halt music; disconnect both signals when stopping.
 Providing a dedicated "Next" control is useful for testing and UX; it should start playlist if stopped and then advance the index.
+Floating overlay widgets should be children of `view` and repositioned on resize; containers can be centered between existing anchors by computing left/right bounds every resize.

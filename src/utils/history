@@ -143,3 +143,4 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-08-07: Switched music to playlist (Bit Forrest intro then songs, excluding loop track), auto-advancing on track end.
 2025-08-07: Made playlist robust: advance on playback errors and isolate SFX; connect/disconnect finished/error signals properly.
 2025-08-07: Added Next Track button and handler to advance playlist from UI.
+2025-08-07: Moved music controls out of time dock into a floating top overlay centered between mode button and properties panel.
