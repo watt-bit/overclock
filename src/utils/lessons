@@ -118,3 +118,6 @@ Retain temporary QSoundEffect objects in _active_sound_effects until playback fi
 Pool-based sound effect architecture is superior to on-demand creation - maintains fixed number of instances per sound (3 max) to prevent memory exhaustion while allowing overlaps.
 Thread safety is critical for audio systems - use Lock() for synchronization when multiple UI elements may trigger sounds simultaneously to prevent race conditions.
 Sound effect calls now use dedicated play_* functions (e.g., play_buttonhover) defined in audio_utils for each wav; avoid generic helper for low latency.
+A minimal music toggle can live in time controls; use global audio utilities and a simple state flag on main window to avoid adding complexity.
+Autostarting music can be done safely in `PowerSystemSimulator.__init__` after reset by calling `toggle_music()` once.
+On some systems, media playback must be started after the Qt event loop begins; starting in `StartupSequence.run()` with `QTimer.singleShot(0, ...)` ensures reliable first-play.

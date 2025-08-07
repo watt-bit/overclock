@@ -770,6 +770,13 @@ class UIInitializer:
             main_window.take_screenshot()
         ))
 
+        # Add simple Music toggle button
+        main_window.music_btn = QPushButton("🎵 Music")
+        main_window.music_btn.setToolTip("Toggle background music")
+        main_window.music_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_music))
+        main_window.music_btn.setStyleSheet(default_button_style)
+        main_window.music_btn.setFixedWidth(110)
+
         # Add Autocomplete button
         main_window.autocomplete_btn = IconStateButton(
             "src/ui/assets/simulation_controls/autocompletebutton.png",
@@ -812,6 +819,7 @@ class UIInitializer:
         time_controls.addWidget(main_window.autocomplete_btn)
         # time_controls.addWidget(main_window.background_toggle_btn) // Removed background toggle button as it doesnt get a lot of use, but just uncomment this line to add it back
         time_controls.addWidget(main_window.screenshot_btn)
+        time_controls.addWidget(main_window.music_btn)
         # time_controls.addWidget(zoom_label)
         time_controls.addWidget(main_window.zoom_slider)
         

@@ -137,3 +137,6 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-01-06: Refactored sound effect system to use pool-based architecture - prevents lag from creating new QSoundEffect instances, eliminates memory leaks from signal connections.
 2025-01-06: Implemented thread-safe SoundEffectPool class with max 3 instances per sound - provides concurrent playback without performance degradation or resource exhaustion.
 2025-08-07: Refactored sound effect system to per-file functions in audio_utils; replaced play_sound_effect usages across codebase.
+2025-08-07: Added simple Music toggle button to time controls; uses play_audio/stop_audio to loop bit_forrest_intro.wav for testing.
+2025-08-07: Enabled music by default at app startup via main window initialization (calls toggle_music()).
+2025-08-07: Moved auto-start of music to StartupSequence.run() using QTimer.singleShot(0) to ensure playback after event loop starts.

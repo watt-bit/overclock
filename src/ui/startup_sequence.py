@@ -33,6 +33,9 @@ class StartupSequence(QObject):
         # Trigger the startup flash effect on the border
         self.main_window.centralWidget().trigger_startup_flash()
         
+        # Start background music once the event loop is running
+        QTimer.singleShot(1500, self.main_window.toggle_music)
+
         # Flash component buttons after a 250ms delay
         QTimer.singleShot(250, self.flash_component_buttons)
         

@@ -9,7 +9,7 @@ from .simulator_initializer import SimulatorInitializer
 from .capex_manager import CapexManager
 from .component_deleter import ComponentDeleter
 from src.ui.terminal_widget import TerminalWidget
-from src.utils.audio_utils import play_placecomponent
+from src.utils.audio_utils import play_placecomponent, play_audio, stop_audio
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -22,6 +22,7 @@ class PowerSystemSimulator(QMainWindow):
         self.capex_manager = CapexManager(self)  # Initialize the CAPEX manager
         self.is_resetting = False  # Flag to indicate when a reset operation is in progress
         self.reset_simulation(is_initial_reset=True)  # Reset the simulation to the initial state
+        self.music_playing = False  # Simple state for music toggle
         
     def center_on_screen(self):
         """Center the window on the screen"""
@@ -420,6 +421,19 @@ class PowerSystemSimulator(QMainWindow):
     def take_screenshot(self):
         """Take a screenshot of the modeling view area and copy to clipboard"""
         self.screenshot_manager.take_screenshot()
+
+    def toggle_music(self):
+        """Toggle background music playback using global audio utilities."""
+        if getattr(self, 'music_playing', False):
+            stop_audio()
+            self.music_playing = False
+            if hasattr(self, 'music_btn'):
+                self.music_btn.setText("🎵 Music")
+        else:
+            play_audio("bit_forrest_intro.wav", loop=True)
+            self.music_playing = True
+            if hasattr(self, 'music_btn'):
+                self.music_btn.setText("⏸ Music")
 
     def toggle_background(self):
         """Cycle through background options"""
