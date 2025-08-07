@@ -117,3 +117,4 @@ Precaching sound effects at application startup eliminates loading lag - create 
 Retain temporary QSoundEffect objects in _active_sound_effects until playback finishes to prevent premature garbage collection and audio cut-offs.
 Pool-based sound effect architecture is superior to on-demand creation - maintains fixed number of instances per sound (3 max) to prevent memory exhaustion while allowing overlaps.
 Thread safety is critical for audio systems - use Lock() for synchronization when multiple UI elements may trigger sounds simultaneously to prevent race conditions.
+Sound effect calls now use dedicated play_* functions (e.g., play_buttonhover) defined in audio_utils for each wav; avoid generic helper for low latency.

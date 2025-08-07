@@ -136,3 +136,4 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-01-06: Removed all sound effects from startup sequence (startup1of3.wav, startup2of3.wav, startup3of3.wav) to eliminate performance lag issues.
 2025-01-06: Refactored sound effect system to use pool-based architecture - prevents lag from creating new QSoundEffect instances, eliminates memory leaks from signal connections.
 2025-01-06: Implemented thread-safe SoundEffectPool class with max 3 instances per sound - provides concurrent playback without performance degradation or resource exhaustion.
+2025-08-07: Refactored sound effect system to per-file functions in audio_utils; replaced play_sound_effect usages across codebase.

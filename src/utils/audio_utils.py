@@ -384,3 +384,138 @@ def cleanup_audio():
         _global_audio_player.cleanup()
         _global_audio_player = None
     clear_sound_effect_cache()
+
+# ----- Dedicated Sound Effect Play Functions (one function per WAV file) -----
+
+from PyQt6.QtMultimedia import QSoundEffect  # re-import for frozen environments
+
+def play_buttonhover(volume=0.8):
+    '''Play buttonhover.wav'''
+    try:
+        if not hasattr(play_buttonhover, '_effect'):
+            effect = QSoundEffect()
+            audio_path = resource_path('src/ui/assets/audio/useable/buttonhover.wav')
+            effect.setSource(QUrl.fromLocalFile(audio_path))
+            play_buttonhover._effect = effect
+        effect = play_buttonhover._effect
+        effect.setVolume(volume)
+        effect.play()
+        return True
+    except Exception as e:
+        print('SoundEffect Error (buttonhover):', e)
+        return False
+
+def play_buttonclick(volume=0.8):
+    '''Play buttonclick.wav'''
+    try:
+        if not hasattr(play_buttonclick, '_effect'):
+            effect = QSoundEffect()
+            audio_path = resource_path('src/ui/assets/audio/useable/buttonclick.wav')
+            effect.setSource(QUrl.fromLocalFile(audio_path))
+            play_buttonclick._effect = effect
+        effect = play_buttonclick._effect
+        effect.setVolume(volume)
+        effect.play()
+        return True
+    except Exception as e:
+        print('SoundEffect Error (buttonclick):', e)
+        return False
+
+def play_deletecomponent(volume=0.8):
+    '''Play deletecomponent.wav'''
+    try:
+        if not hasattr(play_deletecomponent, '_effect'):
+            effect = QSoundEffect()
+            audio_path = resource_path('src/ui/assets/audio/useable/deletecomponent.wav')
+            effect.setSource(QUrl.fromLocalFile(audio_path))
+            play_deletecomponent._effect = effect
+        effect = play_deletecomponent._effect
+        effect.setVolume(volume)
+        effect.play()
+        return True
+    except Exception as e:
+        print('SoundEffect Error (deletecomponent):', e)
+        return False
+
+def play_placecomponent(volume=0.8):
+    '''Play placecomponent.wav'''
+    try:
+        if not hasattr(play_placecomponent, '_effect'):
+            effect = QSoundEffect()
+            audio_path = resource_path('src/ui/assets/audio/useable/placecomponent.wav')
+            effect.setSource(QUrl.fromLocalFile(audio_path))
+            play_placecomponent._effect = effect
+        effect = play_placecomponent._effect
+        effect.setVolume(volume)
+        effect.play()
+        return True
+    except Exception as e:
+        print('SoundEffect Error (placecomponent):', e)
+        return False
+
+def play_successchime(volume=0.8):
+    '''Play successchime.wav'''
+    try:
+        if not hasattr(play_successchime, '_effect'):
+            effect = QSoundEffect()
+            audio_path = resource_path('src/ui/assets/audio/useable/successchime.wav')
+            effect.setSource(QUrl.fromLocalFile(audio_path))
+            play_successchime._effect = effect
+        effect = play_successchime._effect
+        effect.setVolume(volume)
+        effect.play()
+        return True
+    except Exception as e:
+        print('SoundEffect Error (successchime):', e)
+        return False
+
+def play_failchime(volume=0.8):
+    '''Play failchime.wav'''
+    try:
+        if not hasattr(play_failchime, '_effect'):
+            effect = QSoundEffect()
+            audio_path = resource_path('src/ui/assets/audio/useable/failchime.wav')
+            effect.setSource(QUrl.fromLocalFile(audio_path))
+            play_failchime._effect = effect
+        effect = play_failchime._effect
+        effect.setVolume(volume)
+        effect.play()
+        return True
+    except Exception as e:
+        print('SoundEffect Error (failchime):', e)
+        return False
+
+def precache_sound_effects():
+    '''Preload all sound effects for low latency'''
+    print('AudioPlayer: Precaching sound effects...')
+    sounds = [
+        play_buttonhover,
+        play_buttonclick,
+        play_deletecomponent,
+        play_placecomponent,
+        play_successchime,
+        play_failchime,
+    ]
+    count = 0
+    for func in sounds:
+        try:
+            func(volume=0.0)
+            count += 1
+        except Exception as e:
+            print('AudioPlayer: Error precaching', func.__name__, e)
+    print(f'AudioPlayer: Precached {count} sound effects')
+
+def stop_all_sound_effects():
+    '''Stop all currently playing sound effects'''
+    for func in [
+        play_buttonhover,
+        play_buttonclick,
+        play_deletecomponent,
+        play_placecomponent,
+        play_successchime,
+        play_failchime,
+    ]:
+        if hasattr(func, '_effect'):
+            eff = func._effect
+            if eff.isPlaying():
+                eff.stop()

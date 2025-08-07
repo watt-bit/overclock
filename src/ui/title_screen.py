@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushBut
 from PyQt6.QtGui import QPixmap, QFont, QCursor, QGuiApplication
 from PyQt6.QtCore import Qt, pyqtSignal
 from src.utils.resource import resource_path
-from src.utils.audio_utils import get_audio_player, play_sound_effect
+from src.utils.audio_utils import get_audio_player, play_buttonhover, play_buttonclick
 
 class TitleScreen(QWidget):
     # Add a custom signal to indicate the title screen should be closed
@@ -309,14 +309,14 @@ class TitleScreen(QWidget):
     def play_hover_sound(self):
         """Play button hover sound effect"""
         try:
-            play_sound_effect("buttonhover.wav")
+            play_buttonhover()
         except Exception as e:
             print(f"Error playing hover sound: {e}")
     
     def play_click_sound(self):
         """Play button click sound effect"""
         try:
-            play_sound_effect("buttonclick.wav")
+            play_buttonclick()
         except Exception as e:
             print(f"Error playing click sound: {e}")
 

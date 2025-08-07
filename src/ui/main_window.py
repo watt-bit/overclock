@@ -9,7 +9,7 @@ from .simulator_initializer import SimulatorInitializer
 from .capex_manager import CapexManager
 from .component_deleter import ComponentDeleter
 from src.ui.terminal_widget import TerminalWidget
-from src.utils.audio_utils import play_sound_effect
+from src.utils.audio_utils import play_placecomponent
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -94,7 +94,7 @@ class PowerSystemSimulator(QMainWindow):
         self.component_adder.add_component(component_type)
         # Update the CAPEX display after adding a component
         self.update_capex_display()
-        play_sound_effect("placecomponent.wav")
+        play_placecomponent()
     
     def start_connection(self):
         self.connection_manager.start_connection()
