@@ -141,3 +141,5 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-08-07: Enabled music by default at app startup via main window initialization (calls toggle_music()).
 2025-08-07: Moved auto-start of music to StartupSequence.run() using QTimer.singleShot(0) to ensure playback after event loop starts.
 2025-08-07: Switched music to playlist (Bit Forrest intro then songs, excluding loop track), auto-advancing on track end.
+2025-08-07: Made playlist robust: advance on playback errors and isolate SFX; connect/disconnect finished/error signals properly.
+2025-08-07: Added Next Track button and handler to advance playlist from UI.

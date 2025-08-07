@@ -122,3 +122,5 @@ A minimal music toggle can live in time controls; use global audio utilities and
 Autostarting music can be done safely in `PowerSystemSimulator.__init__` after reset by calling `toggle_music()` once.
 On some systems, media playback must be started after the Qt event loop begins; starting in `StartupSequence.run()` with `QTimer.singleShot(0, ...)` ensures reliable first-play.
 For background music across multiple tracks, listen to the global audio player's `playback_finished` to advance a playlist and restart from the beginning at the end.
+Also connect to a playback error signal and advance on error so a corrupt/missing track doesn't halt music; disconnect both signals when stopping.
+Providing a dedicated "Next" control is useful for testing and UX; it should start playlist if stopped and then advance the index.

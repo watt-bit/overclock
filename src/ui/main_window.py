@@ -432,6 +432,10 @@ class PowerSystemSimulator(QMainWindow):
                 get_audio_player().playback_finished.disconnect(self._on_music_track_finished)
             except TypeError:
                 pass
+            try:
+                get_audio_player().playback_error.disconnect(self._on_music_error)
+            except TypeError:
+                pass
             stop_audio()
             self.music_playing = False
             if hasattr(self, 'music_btn'):
@@ -449,7 +453,6 @@ class PowerSystemSimulator(QMainWindow):
             self._music_playlist = [
                 "bit_forrest_intro.wav",
                 "Starlight City.wav",
-                "dialup_song.wav",
                 "Mecha Collection.wav",
                 "welcome_to_canida.wav",
                 "eyeless.wav",
@@ -464,7 +467,12 @@ class PowerSystemSimulator(QMainWindow):
             get_audio_player().playback_finished.disconnect(self._on_music_track_finished)
         except TypeError:
             pass
+        try:
+            get_audio_player().playback_error.disconnect(self._on_music_error)
+        except TypeError:
+            pass
         get_audio_player().playback_finished.connect(self._on_music_track_finished)
+        get_audio_player().playback_error.connect(self._on_music_error)
         self._music_index = 0
         self._play_current_track_or_advance()
 
@@ -498,8 +506,40 @@ class PowerSystemSimulator(QMainWindow):
             get_audio_player().playback_finished.disconnect(self._on_music_track_finished)
         except TypeError:
             pass
+        try:
+            get_audio_player().playback_error.disconnect(self._on_music_error)
+        except TypeError:
+            pass
         if hasattr(self, 'music_btn'):
             self.music_btn.setText("🎵 Music")
+
+    def _on_music_error(self, error_message: str):
+        """Handle track playback errors by advancing to the next track."""
+        # Attempt to advance to next track to keep music going
+        if not self.music_playing:
+            return
+        # Advance index and try the next one
+        playlist = self._get_music_playlist()
+        if not playlist:
+            return
+        self._music_index = (self._music_index + 1) % len(playlist)
+        self._play_current_track_or_advance()
+
+    def next_music_track(self):
+        """Advance to the next music track (starts playlist if currently off)."""
+        playlist = self._get_music_playlist()
+        if not playlist:
+            return
+        if not self.music_playing:
+            # Start playlist
+            self._start_music_playlist()
+            self.music_playing = True
+            if hasattr(self, 'music_btn'):
+                self.music_btn.setText("⏸ Music")
+            return
+        # Advance index and play
+        self._music_index = (self._music_index + 1) % len(playlist)
+        self._play_current_track_or_advance()
 
     def toggle_background(self):
         """Cycle through background options"""
