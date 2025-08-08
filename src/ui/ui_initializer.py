@@ -595,6 +595,74 @@ class UIInitializer:
         main_window.music_container_layout.setContentsMargins(0, 0, 0, 0)
         main_window.music_container_layout.setSpacing(6)
 
+        # Simple marquee label for current song title
+        class MarqueeLabel(QLabel):
+            def __init__(self, parent=None):
+                super().__init__(parent)
+                self._full_text = ""
+                self._offset = 0
+                self._spacer = "   "
+                self._ring = ""
+                self._buffer = ""
+                self._window_chars = 0
+                self._timer = QTimer(self)
+                self._timer.timeout.connect(self._tick)
+                self.setFixedHeight(28)
+                self.setFixedWidth(260)
+                self.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+                self.setStyleSheet(
+                    """
+                    QLabel {
+                        font-weight: bold;
+                        font-size: 12px;
+                        background-color: rgba(37, 47, 52, 0.75);
+                        color: rgba(255, 255, 255, 0.9);
+                        border-radius: 3px;
+                        padding: 4px 8px;
+                        border: 1px solid #555555;
+                        font-family: Menlo, Consolas, Courier, monospace;
+                    }
+                    """
+                )
+                self.setText("—")
+
+            def _rebuild_buffer(self):
+                metrics = QFontMetrics(self.font())
+                content_width = max(10, self.width() - 16)
+                char_width = max(1, metrics.horizontalAdvance("M"))
+                self._window_chars = max(1, int(math.ceil(content_width / char_width)) + 2)
+                self._ring = (self._full_text + self._spacer) or ""
+                if not self._ring:
+                    self._buffer = ""
+                    return
+                repeats = max(3, int(math.ceil((self._window_chars + len(self._ring)) / float(len(self._ring)))) + 1)
+                self._buffer = self._ring * repeats
+
+            def set_text(self, text: str):
+                self._full_text = text or ""
+                self._offset = 0
+                if self._full_text:
+                    self._rebuild_buffer()
+                    self._timer.start(120)
+                else:
+                    self._timer.stop()
+                    self.setText("—")
+
+            def _tick(self):
+                if not self._buffer:
+                    return
+                buf_len = len(self._buffer)
+                start = self._offset % buf_len
+                end = start + self._window_chars
+                if end <= buf_len:
+                    display = self._buffer[start:end]
+                else:
+                    tail = end - buf_len
+                    display = self._buffer[start:] + self._buffer[:tail]
+                self.setText(display)
+                ring_len = len(self._ring) if self._ring else buf_len
+                self._offset = (self._offset + 1) % max(1, ring_len)
+
         # Style for default grey buttons (reuse below)
         default_button_style = """
             QPushButton { 
@@ -630,9 +698,13 @@ class UIInitializer:
         main_window.next_track_btn.setStyleSheet(default_button_style)
         main_window.next_track_btn.setFixedWidth(90)
 
+        # Current song marquee (added to the right of music controls)
+        main_window.song_marquee = MarqueeLabel()
+
         # Add to container and position initially
         main_window.music_container_layout.addWidget(main_window.music_btn)
         main_window.music_container_layout.addWidget(main_window.next_track_btn)
+        main_window.music_container_layout.addWidget(main_window.song_marquee)
         main_window.music_container.adjustSize()
 
         # Initial placement: horizontally centered between mode button and properties panel, at top

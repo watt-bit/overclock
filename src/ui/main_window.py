@@ -445,6 +445,7 @@ class PowerSystemSimulator(QMainWindow):
             self.music_playing = True
             if hasattr(self, 'music_btn'):
                 self.music_btn.setText("⏸ Music")
+            # marquee will be updated when playback starts
 
     def _get_music_playlist(self):
         """Return the ordered playlist of song WAV files, starting with Bit Forrest intro."""
@@ -496,6 +497,12 @@ class PowerSystemSimulator(QMainWindow):
         while attempted < len(playlist):
             filename = playlist[self._music_index]
             if play_audio(filename, loop=False):
+                # Update marquee with current filename
+                if hasattr(self, 'song_marquee') and hasattr(self.song_marquee, 'set_text'):
+                    try:
+                        self.song_marquee.set_text(filename)
+                    except Exception:
+                        pass
                 return
             # If play failed (e.g., missing file), advance to next
             self._music_index = (self._music_index + 1) % len(playlist)
@@ -512,6 +519,11 @@ class PowerSystemSimulator(QMainWindow):
             pass
         if hasattr(self, 'music_btn'):
             self.music_btn.setText("🎵 Music")
+        if hasattr(self, 'song_marquee') and hasattr(self.song_marquee, 'set_text'):
+            try:
+                self.song_marquee.set_text("")
+            except Exception:
+                pass
 
     def _on_music_error(self, error_message: str):
         """Handle track playback errors by advancing to the next track."""
