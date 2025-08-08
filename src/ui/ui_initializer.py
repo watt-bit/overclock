@@ -643,7 +643,7 @@ class UIInitializer:
                 self._offset = 0
                 if self._full_text:
                     self._rebuild_buffer()
-                    self._timer.start(120)
+                    self._timer.start(320)
                 else:
                     self._timer.stop()
                     self.setText("—")
@@ -703,8 +703,8 @@ class UIInitializer:
 
         # Add to container and position initially
         main_window.music_container_layout.addWidget(main_window.music_btn)
-        main_window.music_container_layout.addWidget(main_window.next_track_btn)
         main_window.music_container_layout.addWidget(main_window.song_marquee)
+        main_window.music_container_layout.addWidget(main_window.next_track_btn)
         main_window.music_container.adjustSize()
 
         # Initial placement: horizontally centered between mode button and properties panel, at top

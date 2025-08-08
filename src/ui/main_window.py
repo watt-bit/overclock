@@ -446,6 +446,14 @@ class PowerSystemSimulator(QMainWindow):
             if hasattr(self, 'music_btn'):
                 self.music_btn.setText("⏸ Music")
             # marquee will be updated when playback starts
+            
+        # When turning music OFF, reflect state in marquee as "--"
+        if not getattr(self, 'music_playing', False):
+            if hasattr(self, 'song_marquee') and hasattr(self.song_marquee, 'set_text'):
+                try:
+                    self.song_marquee.set_text("--")
+                except Exception:
+                    pass
 
     def _get_music_playlist(self):
         """Return the ordered playlist of song WAV files, starting with Bit Forrest intro."""
@@ -521,7 +529,7 @@ class PowerSystemSimulator(QMainWindow):
             self.music_btn.setText("🎵 Music")
         if hasattr(self, 'song_marquee') and hasattr(self.song_marquee, 'set_text'):
             try:
-                self.song_marquee.set_text("")
+                self.song_marquee.set_text("--")
             except Exception:
                 pass
 

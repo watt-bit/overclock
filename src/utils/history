@@ -145,3 +145,4 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-08-07: Added Next Track button and handler to advance playlist from UI.
 2025-08-07: Moved music controls out of time dock into a floating top overlay centered between mode button and properties panel.
 2025-08-08: Added scrolling song title marquee to floating music controls; updates with current track and matches properties panel styling.
+2025-08-08: Music toggle now sets marquee to "--" when off; also applied when playlist stops with no playable tracks.

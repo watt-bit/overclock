@@ -126,3 +126,4 @@ Also connect to a playback error signal and advance on error so a corrupt/missin
 Providing a dedicated "Next" control is useful for testing and UX; it should start playlist if stopped and then advance the index.
 Floating overlay widgets should be children of `view` and repositioned on resize; containers can be centered between existing anchors by computing left/right bounds every resize.
 Marquee labels are easiest to implement with a simple rotating string and QTimer; keep styling consistent by reusing properties panel aesthetics (rgba(37,47,52,0.75), monospace, 1px #555 border).
+When music is OFF, set the marquee text to "--" to clearly convey state; update this in both manual toggle-off and no-playable-tracks stop paths.
