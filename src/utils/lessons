@@ -1,3 +1,4 @@
+The central widget exposes colors/animation_offset; child overlays can read them to sync animated gradients.
 # ALPHA VERSION CODEBASE LESSONS & INSIGHTS
 # ===================================
 # This file records important learnings about the codebase
@@ -127,3 +128,4 @@ Providing a dedicated "Next" control is useful for testing and UX; it should sta
 Floating overlay widgets should be children of `view` and repositioned on resize; containers can be centered between existing anchors by computing left/right bounds every resize.
 Marquee labels are easiest to implement with a simple rotating string and QTimer; keep styling consistent by reusing properties panel aesthetics (rgba(37,47,52,0.75), monospace, 1px #555 border).
 When music is OFF, set the marquee text to "--" to clearly convey state; update this in both manual toggle-off and no-playable-tracks stop paths.
+Minimal icon-only buttons reduce visual noise and should reuse the properties/control panel style for cohesion; avoid verbose text on playback controls.

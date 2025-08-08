@@ -22,6 +22,7 @@ from .selected_component_display import SelectedComponentDisplay
 from src.utils.resource import resource_path
 from .classes.gradient_border_text import GradientBorderText
 from .classes.bordered_main_widget import BorderedMainWidget
+from .classes.animated_gradient_container import AnimatedGradientContainer
 
 # Export this button style as a module-level variable for use in other files
 opaque_button_style = """
@@ -590,7 +591,8 @@ class UIInitializer:
         
         # ----- Music Controls (Floating Top Overlay) -----
         # Create a floating container centered between the mode button and properties panel
-        main_window.music_container = QWidget(main_window.view)
+        # Use animated gradient background synced with BorderedMainWidget
+        main_window.music_container = AnimatedGradientContainer(main_window.view)
         main_window.music_container_layout = QHBoxLayout(main_window.music_container)
         main_window.music_container_layout.setContentsMargins(0, 0, 0, 0)
         main_window.music_container_layout.setSpacing(6)
@@ -608,7 +610,7 @@ class UIInitializer:
                 self._timer = QTimer(self)
                 self._timer.timeout.connect(self._tick)
                 self.setFixedHeight(28)
-                self.setFixedWidth(260)
+                self.setFixedWidth(130)
                 self.setAlignment(Qt.AlignmentFlag.AlignVCenter)
                 self.setStyleSheet(
                     """
@@ -684,19 +686,43 @@ class UIInitializer:
             }
         """
 
-        # Music toggle button
-        main_window.music_btn = QPushButton("🎵 Music")
+        # Compact style to match properties dock/control panel look
+        compact_button_style = (
+            """
+            QPushButton {
+                background-color: rgba(37, 47, 52, 0.75);
+                color: rgba(255, 255, 255, 0.9);
+                border: 1px solid #555555;
+                border-radius: 3px;
+                padding: 2px 6px;
+                font-size: 12px;
+                font-family: Menlo, Consolas, Courier, monospace;
+            }
+            QPushButton:hover {
+                background-color: rgba(60, 70, 76, 0.85);
+                border: 1px solid #666666;
+            }
+            QPushButton:pressed {
+                background-color: rgba(30, 36, 40, 0.9);
+                border: 2px solid #777777;
+                padding: 1px 5px;
+            }
+            """
+        )
+
+        # Music toggle button (minimal icon-only)
+        main_window.music_btn = QPushButton("🎵")
         main_window.music_btn.setToolTip("Toggle background music")
         main_window.music_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.toggle_music))
-        main_window.music_btn.setStyleSheet(default_button_style)
-        main_window.music_btn.setFixedWidth(110)
+        main_window.music_btn.setStyleSheet(compact_button_style)
+        main_window.music_btn.setFixedHeight(28)
 
-        # Next track button
-        main_window.next_track_btn = QPushButton("⏭ Next")
+        # Next track button (minimal icon-only)
+        main_window.next_track_btn = QPushButton("⏭")
         main_window.next_track_btn.setToolTip("Advance to next song")
         main_window.next_track_btn.clicked.connect(lambda: main_window.cancel_connection_if_active(main_window.next_music_track))
-        main_window.next_track_btn.setStyleSheet(default_button_style)
-        main_window.next_track_btn.setFixedWidth(90)
+        main_window.next_track_btn.setStyleSheet(compact_button_style)
+        main_window.next_track_btn.setFixedHeight(28)
 
         # Current song marquee (added to the right of music controls)
         main_window.song_marquee = MarqueeLabel()

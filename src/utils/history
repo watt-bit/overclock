@@ -1,3 +1,4 @@
+Add AnimatedGradientContainer and switch music overlay to it; background now mirrors BorderedMainWidget colors/animation.
 # ALPHA VERSION HISTORY
 # ==================
 # This file records important changes and modifications to the codebase
@@ -146,3 +147,4 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-08-07: Moved music controls out of time dock into a floating top overlay centered between mode button and properties panel.
 2025-08-08: Added scrolling song title marquee to floating music controls; updates with current track and matches properties panel styling.
 2025-08-08: Music toggle now sets marquee to "--" when off; also applied when playlist stops with no playable tracks.
+2025-08-08: Simplified music controls to minimalist icon-only buttons and matched styling to properties/control panels.

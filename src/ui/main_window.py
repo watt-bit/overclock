@@ -439,12 +439,14 @@ class PowerSystemSimulator(QMainWindow):
             stop_audio()
             self.music_playing = False
             if hasattr(self, 'music_btn'):
-                self.music_btn.setText("🎵 Music")
+                # Minimal label
+                self.music_btn.setText("🎵")
         else:
             self._start_music_playlist()
             self.music_playing = True
             if hasattr(self, 'music_btn'):
-                self.music_btn.setText("⏸ Music")
+                # Minimal label
+                self.music_btn.setText("⏸")
             # marquee will be updated when playback starts
             
         # When turning music OFF, reflect state in marquee as "--"
@@ -526,7 +528,8 @@ class PowerSystemSimulator(QMainWindow):
         except TypeError:
             pass
         if hasattr(self, 'music_btn'):
-            self.music_btn.setText("🎵 Music")
+            # Minimal label
+            self.music_btn.setText("🎵")
         if hasattr(self, 'song_marquee') and hasattr(self.song_marquee, 'set_text'):
             try:
                 self.song_marquee.set_text("--")
@@ -555,7 +558,8 @@ class PowerSystemSimulator(QMainWindow):
             self._start_music_playlist()
             self.music_playing = True
             if hasattr(self, 'music_btn'):
-                self.music_btn.setText("⏸ Music")
+                # Minimal label
+                self.music_btn.setText("⏸")
             return
         # Advance index and play
         self._music_index = (self._music_index + 1) % len(playlist)
