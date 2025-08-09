@@ -617,7 +617,7 @@ class UIInitializer:
                     QLabel {
                         font-weight: bold;
                         font-size: 12px;
-                        background-color: rgba(37, 47, 52, 0.75);
+                        background-color: rgba(37, 47, 52, 0.6);
                         color: rgba(255, 255, 255, 0.9);
                         border-radius: 3px;
                         padding: 4px 8px;
@@ -690,7 +690,7 @@ class UIInitializer:
         compact_button_style = (
             """
             QPushButton {
-                background-color: rgba(37, 47, 52, 0.75);
+                background-color: rgba(37, 47, 52, 0.6);
                 color: rgba(255, 255, 255, 0.9);
                 border: 1px solid #555555;
                 border-radius: 3px;
@@ -739,10 +739,10 @@ class UIInitializer:
             right_edge = main_window.properties_dock.x() - 10
             available = max(0, right_edge - left_edge)
             x = left_edge + max(0, (available - main_window.music_container.width()) // 2)
-            main_window.music_container.move(x, 10)
+            main_window.music_container.move(x, 15)
         except Exception:
             # Fallback: place near top center if positioning dependencies not ready
-            main_window.music_container.move(max(10, (main_window.view.width() - main_window.music_container.width()) // 2), 10)
+            main_window.music_container.move(max(10, (main_window.view.width() - main_window.music_container.width()) // 2), 15)
 
         main_window.music_container.show()
 

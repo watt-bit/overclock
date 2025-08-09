@@ -645,10 +645,10 @@ class PowerSystemSimulator(QMainWindow):
                 right_edge = self.properties_dock.x() - 10
                 available = max(0, right_edge - left_edge)
                 x = left_edge + max(0, (available - self.music_container.width()) // 2)
-                self.music_container.move(x, 10)
+                self.music_container.move(x, 15)
             except Exception:
                 # Fallback to top-center
-                self.music_container.move(max(10, (self.view.width() - self.music_container.width()) // 2), 10)
+                self.music_container.move(max(10, (self.view.width() - self.music_container.width()) // 2), 15)
             
         # Reposition capex label and irr label in bottom left corner
         if hasattr(self, 'capex_label'):
