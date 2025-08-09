@@ -130,3 +130,8 @@ Floating overlay widgets should be children of `view` and repositioned on resize
 Marquee labels are easiest to implement with a simple rotating string and QTimer; keep styling consistent by reusing properties panel aesthetics (rgba(37,47,52,0.75), monospace, 1px #555 border).
 When music is OFF, set the marquee text to "--" to clearly convey state; update this in both manual toggle-off and no-playable-tracks stop paths.
 Minimal icon-only buttons reduce visual noise and should reuse the properties/control panel style for cohesion; avoid verbose text on playback controls.
+
+ - Custom painting on `QGraphicsLineItem` enables sophisticated connectors: use layered wide glow pens, a gradient core, animated dash flow (dash offset over time), and a small radial pulse to add life while keeping visuals soft.
+   - In PyQt6, prefer `drawEllipse(QRectF(...))` for floating-point coordinates to avoid overload ambiguity.
+   - For animated connectors, construct a wavy `QPainterPath` with a small perpendicular sine offset along the base line, hue-shift the gradient over time, add a breathing glow, and overlay a short thicker pulse segment around the moving highlight to convey motion without harshness.
+   - Adding small per-connection randomness (hue offset, amplitude/frequency jitter, glow intensity) creates organic variety without breaking cohesion; ensure base pen width covers glow and pulse extents for correct bounding/updates.
