@@ -107,6 +107,7 @@ QDialog styling can match properties panel theme using rgba(37, 47, 52, 0.95) ba
 - Qt.IntersectClip -> Qt.ClipOperation.IntersectClip; Qt.transparent constant now Qt.GlobalColor.transparent.
 
 - QMessageBox.Yes/No/Cancel button constants now in QMessageBox.StandardButton.* in PyQt6.
+Unified dialog look-and-feel via helper: apply consistent styling to QDialog/QMessageBox/QFileDialog using one utility for DRY, cohesive UI.
 
 - QDialog.Accepted/Rejected constants now in QDialog.DialogCode.* in PyQt6.
 

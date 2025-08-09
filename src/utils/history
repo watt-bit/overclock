@@ -148,3 +148,4 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-08-08: Added scrolling song title marquee to floating music controls; updates with current track and matches properties panel styling.
 2025-08-08: Music toggle now sets marquee to "--" when off; also applied when playlist stops with no playable tracks.
 2025-08-08: Simplified music controls to minimalist icon-only buttons and matched styling to properties/control panels.
+2025-08-09: Added unified dialog styling utility; updated all QMessageBox and file dialogs to match CSV format dialog styling.

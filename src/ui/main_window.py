@@ -10,6 +10,7 @@ from .capex_manager import CapexManager
 from .component_deleter import ComponentDeleter
 from src.ui.terminal_widget import TerminalWidget
 from src.utils.audio_utils import play_placecomponent, play_audio, stop_audio, get_audio_player
+from src.ui.dialog_styles import create_styled_message_box
 
 # TODO: This file needs to be refactored to be more modular and easier to understand. A lot of the setup and initialization / UI code can be pushed to other separate files.
 
@@ -351,25 +352,29 @@ class PowerSystemSimulator(QMainWindow):
         """Handle application close event with confirmation dialogs"""
         # First check if simulation is running and confirm exit
         if self.simulation_engine.simulation_running:
-            reply = QMessageBox.question(
-                self, 
-                "Confirm Exit", 
+            box = create_styled_message_box(
+                self,
+                QMessageBox.Icon.Question,
+                "Confirm Exit",
                 "The simulation is still running. Are you sure you want to quit?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No
+                QMessageBox.StandardButton.No,
             )
+            reply = box.exec()
             if reply == QMessageBox.StandardButton.No:
                 event.ignore()
                 return
                 
         # Then prompt to save the scenario
-        reply = QMessageBox.question(
-            self, 
-            "Save Before Exit", 
+        box2 = create_styled_message_box(
+            self,
+            QMessageBox.Icon.Question,
+            "Save Before Exit",
             "Would you like to save your scenario before exiting?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel,
-            QMessageBox.StandardButton.Yes
+            QMessageBox.StandardButton.Yes,
         )
+        reply = box2.exec()
         
         if reply == QMessageBox.StandardButton.Cancel:
             event.ignore()

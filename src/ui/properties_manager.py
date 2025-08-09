@@ -32,6 +32,7 @@ from src.components.solar_panel import SolarPanelComponent
 from src.components.wind_turbine import WindTurbineComponent
 from src.components.distribution_pole import DistributionPoleComponent
 from src.utils.resource import resource_path
+from src.ui.dialog_styles import apply_standard_dialog_style, get_open_file_name
 
 # Define common styles
 COMMON_BUTTON_STYLE = "QPushButton { border: 1px solid #777777; border-radius: 3px; padding: 1px; }"
@@ -406,36 +407,8 @@ class ComponentPropertiesManager:
         dialog.setModal(True)
         dialog.setFixedSize(350, 400)
         
-        # Match the properties panel styling
-        dialog.setStyleSheet('''
-            QDialog {
-                background-color: rgba(37, 47, 52, 0.95);
-                color: white;
-                font-family: Menlo, Consolas, Courier, monospace;
-                font-size: 10px;
-                border: 1px solid #777777;
-                border-radius: 3px;
-            }
-            QLabel {
-                color: white;
-                background: transparent;
-            }
-            QPushButton {
-                background-color: rgba(37, 47, 52, 0.75);
-                color: white;
-                border: 1px solid #777777;
-                border-radius: 3px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 12px;
-            }
-            QPushButton:hover {
-                background-color: #227D22;
-            }
-            QPushButton:pressed {
-                background-color: #103D10;
-            }
-        ''')
+        # Apply standard dialog styling (DRY)
+        apply_standard_dialog_style(dialog)
         
         # Create main layout
         layout = QVBoxLayout(dialog)
@@ -486,7 +459,7 @@ class ComponentPropertiesManager:
         if not self._show_csv_format_dialog():
             return  # User cancelled the dialog
             
-        filename, _ = QFileDialog.getOpenFileName(self.main_window, "Load CSV File", "", "CSV Files (*.csv)")
+        filename, _ = get_open_file_name(self.main_window, "Load CSV File", "CSV Files (*.csv)")
         if filename:
             try:
                 # Read the CSV file

@@ -7,6 +7,7 @@ Orientation   = Qt.Orientation
 # TODO_PYQT6: verify width()/isType() semantics
 import sys
 from PyQt6.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QFileDialog
+from src.ui.dialog_styles import get_open_file_name
 from PyQt6.QtGui import QPixmap, QFont, QCursor, QGuiApplication
 from PyQt6.QtCore import Qt, pyqtSignal
 from src.utils.resource import resource_path
@@ -263,7 +264,7 @@ class TitleScreen(QWidget):
         # Play click sound effect
         self.play_click_sound()
         
-        filename, _ = QFileDialog.getOpenFileName(self, "Load Scenario", "", "JSON Files (*.json)")
+        filename, _ = get_open_file_name(self, "Load Scenario", "JSON Files (*.json)")
         
         if filename:
             # Stop any playing audio before transitioning

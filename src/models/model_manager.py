@@ -1,5 +1,6 @@
 import json
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
+from src.ui.dialog_styles import create_styled_message_box, get_open_file_name, get_save_file_name
 from PyQt6.QtCore import Qt
 
 from src.components.generator import GeneratorComponent
@@ -111,7 +112,7 @@ class ModelManager:
     
     def save_scenario(self):
         """Save the current scenario to a file"""
-        filename, _ = QFileDialog.getSaveFileName(self.main_window, "Save Scenario", "", "JSON Files (*.json)")
+        filename, _ = get_save_file_name(self.main_window, "Save Scenario", "JSON Files (*.json)")
         
         if not filename:
             return
@@ -270,11 +271,19 @@ class ModelManager:
         with open(filename, 'w') as f:
             json.dump(data, f, indent=4)
             
-        QMessageBox.information(self.main_window, "Save Complete", "Scenario saved successfully.")
+        box = create_styled_message_box(
+            self.main_window,
+            QMessageBox.Icon.Information,
+            "Save Complete",
+            "Scenario saved successfully.",
+            QMessageBox.StandardButton.Ok,
+            QMessageBox.StandardButton.Ok,
+        )
+        box.exec()
 
     def load_scenario(self):
         """Load a scenario from a file"""
-        filename, _ = QFileDialog.getOpenFileName(self.main_window, "Load Scenario", "", "JSON Files (*.json)")
+        filename, _ = get_open_file_name(self.main_window, "Load Scenario", "JSON Files (*.json)")
         
         if not filename:
             return
@@ -561,6 +570,14 @@ class ModelManager:
                 self.main_window.simulation_controller.reset_simulation(skip_flash=False)
             
         except Exception as e:
-            QMessageBox.critical(self.main_window, "Error", f"Failed to load scenario: {str(e)}")
+            box = create_styled_message_box(
+                self.main_window,
+                QMessageBox.Icon.Critical,
+                "Error",
+                f"Failed to load scenario: {str(e)}",
+                QMessageBox.StandardButton.Ok,
+                QMessageBox.StandardButton.Ok,
+            )
+            box.exec()
             # Start fresh if loading failed
             self.new_scenario() 
