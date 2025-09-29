@@ -153,3 +153,4 @@ Modified AugurTitleScreen platform detection to default to Windows video file, o
 2025-08-09: Fixed connection paint crash by using QRectF in drawEllipse for PyQt6 overload compatibility.
 2025-08-09: Enhanced Connection visuals with animated wavy path, hue-shifting gradient, breathing glow, flowing dashes, and thick moving pulse segment.
 2025-08-09: Final pass on Connection visuals: per-connection style variance, breathing core width, endpoint glow orbs, and tiny sparkles along the path.
+2025-09-29: Expanded README with Beta Highlights, audio/media, UI/UX, data/scenario, requirements, troubleshooting sections.

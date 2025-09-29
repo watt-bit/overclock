@@ -135,3 +135,5 @@ Minimal icon-only buttons reduce visual noise and should reuse the properties/co
    - In PyQt6, prefer `drawEllipse(QRectF(...))` for floating-point coordinates to avoid overload ambiguity.
    - For animated connectors, construct a wavy `QPainterPath` with a small perpendicular sine offset along the base line, hue-shift the gradient over time, add a breathing glow, and overlay a short thicker pulse segment around the moving highlight to convey motion without harshness.
    - Adding small per-connection randomness (hue offset, amplitude/frequency jitter, glow intensity) creates organic variety without breaking cohesion; ensure base pen width covers glow and pulse extents for correct bounding/updates.
+
+2025-09-29: Keep README user-facing; log beta features succinctly (Terminal, audio/media, overlays, CSV flow).
