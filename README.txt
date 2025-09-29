@@ -1,12 +1,12 @@
 =========================================================================
-⚡️ **OVERCLOCK** – Watt-Bit Infrastructure Sandbox (Alpha 2025.01.02a) ⚡️
+⚡️ **OVERCLOCK** – Watt-Bit Infrastructure Sandbox (Beta 2025.02.01b) ⚡️
 =========================================================================
 
 By **Watt-Bit Research** <https://watt-bit.com>  
 Presented by **Augur VC** <https://augurvc.com>
 
-> **EXPANDED ALPHA PREVIEW – READ ME FIRST**  
-> This is early alpha / pre-beta software. Bugs, missing polish, and rapidly-changing UX are expected. Your feedback shapes the roadmap! 
+> **OPEN BETA – READ ME FIRST**  
+> This is beta software. Bugs, missing polish, and rapidly-changing UX are expected. Your feedback shapes the roadmap! 
 
 ---
 
@@ -35,7 +35,7 @@ A rich and high-impact user experience driven by opinionated design and configur
 
 ## 🚀  Core Features
 
-1. **Visual Modeling**  
+1. **Node-Based Visual AI Infra Modeling**  
    * Drag-and-drop components (Generator, Battery, Grid Import/Export, Bus, Load, Cloud, Solar, Wind, Props). 
    * **C** to create a connection, **A** to Autoconnect All.  
    * Properties panel allows configuration of deep component operational simulation with multiple smart modes per component. Defaults "just work".
@@ -54,15 +54,6 @@ A rich and high-impact user experience driven by opinionated design and configur
    * Runs the whole year in background, flips to Historian, and shows final IRR.
 
 5. **Scenario Management** – Save/Load/New JSON designs.
-
-6. **New 2025.01.02a**  
-   * **Terminal Panel** in the left dock streams live logs (startup BIOS text, component events, sim status) for better user understanding and feedback loop.  
-   * **Status Jewels** – every component now shows a tiny animated hexagon reflecting its interaction with the system as it operates.  
-   * **Improved CSV Import**  
-   * **Major Component Re-skin & Unified Text** – high-res, high-tech buttons, components, icons - cleaner fonts, color-coded $$ (green = revenue, red = cost), “MW | Mode” labels.  
-   * **Properties Panel 2.0** – added selected component display, click-to-open logic, sleeker styling, fixed location as anchor of status bar, no more title bar.  
-   * **Particle FX** – puff on add *and* delete for tactile feedback.
-   * **Refinements** – improved buttons, widened Build/Historian toggle, export-icon fix, miscellaneous polish.
 
 ---
 
@@ -85,26 +76,4 @@ Delete – Delete selection
 	4.	Space to simulate, or Enter to Autocomplete.
 	5.	Explore live charts (P) and Historian (\).
 
-⸻
 
-## 📝  Feedback & Bugs
-
-Open an issue or email alpha@watt-bit.com. Crash logs and screenshots help immensely—thanks for pushing us toward beta!
-
-⸻
-
-## 🗒️  Changelog
-
-2025.01.02a (Expanded Alpha)
-	•	Fixed: Battery charge glitch during gas generator maintenance mode.
-	•	Fixed: Export-connection icon mis-direction.
-	•	Added: Terminal Panel with BIOS-style startup and live sim logs.
-	•	Added: Animated status jewels on every component.
-	•	Added: Tooltip framework (initial rollout).
-	•	Component re-skin, unified fonts/colors, particle effects.
-	•	Add-Component button and simulation controls restyled.
-	•	Properties Panel overhaul + Selected Component display.
-	•	Build/Historian toggle widened for better legibility.
-	•	Robust CSV handler with import-format popup.
-	•	Refactored: Properties Manager isolated; internal code cleanup for maintainability.
-	•	Minor: Smoke particle tweaks, standard text boxes with subtle borders, consistent hover/press states across all icon buttons.
